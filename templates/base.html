@@ -70,32 +70,36 @@
         </div>
     </footer>
 
-    <!-- Chart.js Library -->
-    <script src="static/js/chart.min.js"></script>
+    <!-- Chart.js Library (UMD version) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     
     <!-- Custom JavaScript -->
     <script>
-        // Global configuration for Chart.js
-        Chart.defaults.responsive = true;
-        Chart.defaults.maintainAspectRatio = false;
-        Chart.defaults.plugins.legend.position = 'top';
-        Chart.defaults.plugins.title.display = true;
-        Chart.defaults.plugins.title.font = {
-            size: 16,
-            weight: 'bold'
-        };
+        // Wait for Chart.js to load before configuring
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Chart !== 'undefined') {
+                // Global configuration for Chart.js
+                Chart.defaults.responsive = true;
+                Chart.defaults.maintainAspectRatio = false;
+                Chart.defaults.plugins.legend.position = 'top';
+                Chart.defaults.plugins.title.display = true;
+                Chart.defaults.plugins.title.font = {
+                    size: 16,
+                    weight: 'bold'
+                };
+            }
+        });
         
         // Color palette for consistent styling
         const CVE_COLORS = {
-            primary: '#667eea',
-            secondary: '#764ba2',
+            primary: '#0066cc',
+            secondary: '#17a2b8',
             success: '#28a745',
             warning: '#ffc107',
             danger: '#dc3545',
-            info: '#17a2b8',
+            info: '#6f42c1',
             light: '#f8f9fa',
-            dark: '#343a40',
-            gradient: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
+            dark: '#343a40'
         };
         
         // Utility function to generate colors for charts

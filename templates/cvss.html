@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">CVSS Analysis</h1>
+    <p class="page-subtitle">
+        Comprehensive CVSS analysis and visualization
+    </p>
+</div>
+
+<div class="main-content">
+    <h2>CVSS Analysis</h2>
+    <p>This page will contain detailed CVSS analysis once the data processing modules are implemented.</p>
+    
+    <div class="chart-container">
+        <h3>CVSS Overview</h3>
+        <div class="chart-wrapper">
+            <canvas id="cvssChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// CVSS analysis functionality will be implemented here
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CVSS analysis page loaded');
+    // Chart initialization will go here
+});
+</script>
+{% endblock %}

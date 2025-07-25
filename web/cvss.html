@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVSS Analysis - CVE.ICU</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="static/images/logo.png">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="static/css/style.css">
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.">
+    <meta name="keywords" content="CVE, vulnerabilities, security, analysis, dashboard, cybersecurity">
+    <meta name="author" content="CVE.ICU">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="CVE.ICU - CVE Analysis Dashboard">
+    <meta property="og:description" content="Comprehensive CVE analysis and visualization from 1999 to present">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cve.icu">
+    <meta property="og:image" content="https://cve.icu/static/images/logo.png">
+</head>
+<body>
+    <!-- Header and Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="static/images/logo.png" alt="CVE.ICU Logo">
+                CVE.ICU
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="years.html">Year Analysis</a></li>
+                    <li><a href="cna.html">CNA Analysis</a></li>
+                    <li><a href="cpe.html">CPE Analysis</a></li>
+                    <li><a href="cvss.html">CVSS Analysis</a></li>
+                    <li><a href="cwe.html">CWE Analysis</a></li>
+                    <li><a href="calendar.html">Calendar View</a></li>
+                    <li><a href="growth.html">Growth Trends</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+<div class="page-header">
+    <h1 class="page-title">CVSS Analysis</h1>
+    <p class="page-subtitle">
+        Comprehensive CVSS analysis and visualization
+    </p>
+</div>
+
+<div class="main-content">
+    <h2>CVSS Analysis</h2>
+    <p>This page will contain detailed CVSS analysis once the data processing modules are implemented.</p>
+    
+    <div class="chart-container">
+        <h3>CVSS Overview</h3>
+        <div class="chart-wrapper">
+            <canvas id="cvssChart"></canvas>
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CVE.ICU | 
+               <a href="https://github.com/yourusername/cve.icu" target="_blank">GitHub</a> | 
+               Data updated every 6 hours | 
+               CVE coverage: 1999-2025
+            </p>
+            <p class="text-muted">
+                Built with ❤️ for the cybersecurity community | 
+                <a href="https://cnascorecard.org" target="_blank">CNA Scorecard</a> | 
+                <a href="https://cvceforecast.org" target="_blank">CVE Forecast</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chart.js Library -->
+    <script src="static/js/chart.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Global configuration for Chart.js
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+        Chart.defaults.plugins.legend.position = 'top';
+        Chart.defaults.plugins.title.display = true;
+        Chart.defaults.plugins.title.font = {
+            size: 16,
+            weight: 'bold'
+        };
+        
+        // Color palette for consistent styling
+        const CVE_COLORS = {
+            primary: '#667eea',
+            secondary: '#764ba2',
+            success: '#28a745',
+            warning: '#ffc107',
+            danger: '#dc3545',
+            info: '#17a2b8',
+            light: '#f8f9fa',
+            dark: '#343a40',
+            gradient: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
+        };
+        
+        // Utility function to generate colors for charts
+        function getChartColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                colors.push(CVE_COLORS.gradient[i % CVE_COLORS.gradient.length]);
+            }
+            return colors;
+        }
+        
+        // Utility function to format numbers
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // Utility function to show loading state
+        function showLoading(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading data...</div>';
+            }
+        }
+        
+        // Utility function to hide loading state
+        function hideLoading(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                const loading = container.querySelector('.loading');
+                if (loading) {
+                    loading.remove();
+                }
+            }
+        }
+        
+        // Get current year for dynamic functionality
+        const CURRENT_YEAR = new Date().getFullYear();
+        const AVAILABLE_YEARS = [];
+        for (let year = 1999; year <= CURRENT_YEAR; year++) {
+            AVAILABLE_YEARS.push(year);
+        }
+    </script>
+    
+    
+<script>
+// CVSS analysis functionality will be implemented here
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CVSS analysis page loaded');
+    // Chart initialization will go here
+});
+</script>
+
+</body>
+</html>

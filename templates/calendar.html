@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">CALENDAR Analysis</h1>
+    <p class="page-subtitle">
+        Comprehensive CALENDAR analysis and visualization
+    </p>
+</div>
+
+<div class="main-content">
+    <h2>CALENDAR Analysis</h2>
+    <p>This page will contain detailed CALENDAR analysis once the data processing modules are implemented.</p>
+    
+    <div class="chart-container">
+        <h3>CALENDAR Overview</h3>
+        <div class="chart-wrapper">
+            <canvas id="calendarChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// CALENDAR analysis functionality will be implemented here
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CALENDAR analysis page loaded');
+    // Chart initialization will go here
+});
+</script>
+{% endblock %}

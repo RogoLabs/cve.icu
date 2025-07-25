@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">CVE.ICU</h1>
+    <p class="page-subtitle">
+        Comprehensive CVE analysis and visualization from 1999 to {{ current_year }}
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-number">{{ available_years|length }}</span>
+        <span class="stat-label">Years of Data</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">{{ current_year }}</span>
+        <span class="stat-label">Current Year</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">27</span>
+        <span class="stat-label">Years Coverage</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">Auto</span>
+        <span class="stat-label">Updates</span>
+    </div>
+</div>
+
+<div class="main-content">
+    <h2>Welcome to CVE.ICU</h2>
+    <p>Your comprehensive dashboard for CVE (Common Vulnerabilities and Exposures) analysis covering {{ available_years|length }} years of security data from 1999 to {{ current_year }}.</p>
+    
+    <h3>Key Features</h3>
+    <ul>
+        <li><strong>Historical Coverage:</strong> Complete CVE data from 1999 to present</li>
+        <li><strong>Interactive Analysis:</strong> Dynamic charts and visualizations</li>
+        <li><strong>Auto-Updates:</strong> Refreshed every 6 hours with latest data</li>
+        <li><strong>Future-Proof:</strong> Automatically includes new years as they come</li>
+    </ul>
+    
+    <h3>Available Analyses</h3>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <a href="years.html" style="color: white; text-decoration: none;">
+                <span class="stat-number">📅</span>
+                <span class="stat-label">Year Analysis</span>
+            </a>
+        </div>
+        <div class="stat-card">
+            <a href="cna.html" style="color: white; text-decoration: none;">
+                <span class="stat-number">🏢</span>
+                <span class="stat-label">CNA Analysis</span>
+            </a>
+        </div>
+        <div class="stat-card">
+            <a href="cvss.html" style="color: white; text-decoration: none;">
+                <span class="stat-number">⚡</span>
+                <span class="stat-label">CVSS Scoring</span>
+            </a>
+        </div>
+        <div class="stat-card">
+            <a href="growth.html" style="color: white; text-decoration: none;">
+                <span class="stat-number">📈</span>
+                <span class="stat-label">Growth Trends</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <h2>Latest Updates</h2>
+    <p>This site is automatically updated every 6 hours with the latest CVE data. The system is designed to be completely future-proof - on January 1st, 2026, it will automatically start tracking CVE-2026 data without any manual intervention.</p>
+    
+    <h3>Data Sources</h3>
+    <ul>
+        <li><strong>NVD Database:</strong> National Vulnerability Database</li>
+        <li><strong>Real-time Processing:</strong> Latest CVE publications</li>
+        <li><strong>Historical Archive:</strong> Complete historical records</li>
+    </ul>
+</div>
+{% endblock %}
