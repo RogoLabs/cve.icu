@@ -6,10 +6,10 @@
     <title>{% block title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') if url_for else 'static/images/logo.png' }}">
+    <link rel="icon" type="image/x-icon" href="static/images/logo.png">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') if url_for else 'css/style.css' }}">
+    <link rel="stylesheet" href="static/css/style.css">
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="{% block description %}CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.{% endblock %}">
@@ -28,7 +28,7 @@
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <img src="{{ url_for('static', filename='images/logo.png') if url_for else 'static/images/logo.png' }}" alt="CVE.ICU Logo">
+                <img src="static/images/logo.png" alt="CVE.ICU Logo">
                 CVE.ICU
             </a>
             
@@ -71,7 +71,7 @@
     </footer>
 
     <!-- Chart.js Library -->
-    <script src="{{ url_for('static', filename='js/chart.min.js') if url_for else 'js/chart.min.js' }}"></script>
+    <script src="static/js/chart.min.js"></script>
     
     <!-- Custom JavaScript -->
     <script>
