@@ -130,6 +130,15 @@ class CVEYearsAnalyzer:
                         'score': base_score,
                         'severity': base_severity.upper()
                     }
+                elif isinstance(cvss_metrics, dict):
+                    cvss_data = cvss_metrics.get('cvssData', {})
+                    base_score = cvss_data.get('baseScore', 0)
+                    base_severity = cvss_data.get('baseSeverity', 'UNKNOWN')
+                    return {
+                        'version': 'v4.0',
+                        'score': base_score,
+                        'severity': base_severity.upper()
+                    }    
             
             # Try CVSS v3.1 (cvssMetricV31)
             if 'cvssMetricV31' in metrics:
@@ -143,6 +152,15 @@ class CVEYearsAnalyzer:
                         'score': base_score,
                         'severity': base_severity.upper()
                     }
+                elif isinstance(cvss_metrics, dict):
+                    cvss_data = cvss_metrics.get('cvssData', {})
+                    base_score = cvss_data.get('baseScore', 0)
+                    base_severity = cvss_data.get('baseSeverity', 'UNKNOWN')
+                    return {
+                        'version': 'v3.1',
+                        'score': base_score,
+                        'severity': base_severity.upper()
+                    }    
             
             # Try CVSS v3.0 (cvssMetricV30)
             if 'cvssMetricV30' in metrics:
@@ -156,6 +174,15 @@ class CVEYearsAnalyzer:
                         'score': base_score,
                         'severity': base_severity.upper()
                     }
+                elif isinstance(cvss_metrics, dict):
+                    cvss_data = cvss_metrics.get('cvssData', {})
+                    base_score = cvss_data.get('baseScore', 0)
+                    base_severity = cvss_data.get('baseSeverity', 'UNKNOWN')
+                    return {
+                        'version': 'v3.0',
+                        'score': base_score,
+                        'severity': base_severity.upper()
+                    }    
             
             # Try CVSS v2 (cvssMetricV2)
             if 'cvssMetricV2' in metrics:
@@ -179,6 +206,25 @@ class CVEYearsAnalyzer:
                         'score': base_score,
                         'severity': base_severity.upper()
                     }
+                elif isinstance(cvss_metrics, dict):
+                    cvss_data = cvss_metrics.get('cvssData', {})
+                    base_score = cvss_data.get('baseScore', 0)
+                    base_severity = cvss_metrics.get('baseSeverity', '')
+                    
+                    # If no severity provided, calculate from score (V2 fallback)
+                    if not base_severity:
+                        if base_score >= 7.0:
+                            base_severity = 'HIGH'
+                        elif base_score >= 4.0:
+                            base_severity = 'MEDIUM'
+                        else:
+                            base_severity = 'LOW'
+                    
+                    return {
+                        'version': 'v2.0',
+                        'score': base_score,
+                        'severity': base_severity.upper()
+                    }    
             
             return {
                 'version': 'unknown',
@@ -482,11 +528,11 @@ class CVEYearsAnalyzer:
         daily_counts = {}  # For daily publication analysis
         # CVSS severity organized by version
         cvss_data = {
-            'v2.0': {'severity_counts': Counter(), 'total': 0},
-            'v3.0': {'severity_counts': Counter(), 'total': 0},
-            'v3.1': {'severity_counts': Counter(), 'total': 0},
-            'v4.0': {'severity_counts': Counter(), 'total': 0},
-            'unknown': {'severity_counts': Counter(), 'total': 0}
+            'v2.0': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
+            'v3.0': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
+            'v3.1': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
+            'v4.0': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
+            'unknown': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0}
         }
         vendor_counts = Counter()
         cwe_counts = Counter()
@@ -554,13 +600,19 @@ class CVEYearsAnalyzer:
                 severity_info = self.extract_severity_info(cve_data)
                 cvss_version = severity_info['version']
                 severity = severity_info['severity']
+                score = severity_info['score']
                 
-                # Track severity by CVSS version
+                # Track severity and score distribution by CVSS version
                 if cvss_version in cvss_data:
                     cvss_data[cvss_version]['severity_counts'][severity] += 1
+                    # Round score to 1 decimal place for distribution tracking
+                    score_key = round(float(score), 1) if score > 0 else 0.0
+                    cvss_data[cvss_version]['score_distribution'][score_key] += 1
                     cvss_data[cvss_version]['total'] += 1
                 else:
                     cvss_data['unknown']['severity_counts'][severity] += 1
+                    score_key = round(float(score), 1) if score > 0 else 0.0
+                    cvss_data['unknown']['score_distribution'][score_key] += 1
                     cvss_data['unknown']['total'] += 1
                 
                 # Extract additional NVD schema fields
@@ -673,7 +725,8 @@ class CVEYearsAnalyzer:
             'cvss': {
                 version: {
                     'total': data['total'],
-                    'severity_distribution': dict(data['severity_counts'])
+                    'severity_distribution': dict(data['severity_counts']),
+                    'score_distribution': dict(data['score_distribution'])
                 }
                 for version, data in cvss_data.items()
                 if data['total'] > 0  # Only include versions with data

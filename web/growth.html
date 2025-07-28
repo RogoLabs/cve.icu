@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GROWTH Analysis - CVE.ICU</title>
+    <title>Growth Trends - CVE.ICU</title>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="static/images/logo.png">
@@ -32,17 +37,22 @@
                 CVE.ICU
             </a>
             
-            <nav>
+            <nav class="nav">
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="years.html">Year Analysis</a></li>
-                    <li><a href="cna.html">CNA Analysis</a></li>
-                    <li><a href="cpe.html">CPE Analysis</a></li>
-                    <li><a href="cvss.html">CVSS Analysis</a></li>
-                    <li><a href="cwe.html">CWE Analysis</a></li>
-                    <li><a href="calendar.html">Calendar View</a></li>
-                    <li><a href="growth.html">Growth Trends</a></li>
+                    <li><a href="years.html">Years</a></li>
+                    <li><a href="cna.html">CNA</a></li>
+                    <li><a href="cpe.html">CPE</a></li>
+                    <li><a href="cwe.html">CWE</a></li>
+                    <li><a href="cvss.html">CVSS</a></li>
+                    <li><a href="growth.html">Growth</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
                 </ul>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </nav>
         </div>
     </header>
@@ -87,39 +97,54 @@
         </div>
     </footer>
 
-    <!-- Chart.js Library -->
-    <script src="static/js/chart.min.js"></script>
+    <!-- Chart.js Library (UMD version) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
     <!-- Custom JavaScript -->
     <script>
-        // Global configuration for Chart.js
-        Chart.defaults.responsive = true;
-        Chart.defaults.maintainAspectRatio = false;
-        Chart.defaults.plugins.legend.position = 'top';
-        Chart.defaults.plugins.title.display = true;
-        Chart.defaults.plugins.title.font = {
-            size: 16,
-            weight: 'bold'
-        };
+        // Wait for Chart.js to load before configuring
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Chart !== 'undefined') {
+                // Global configuration for Chart.js
+                Chart.defaults.responsive = true;
+                Chart.defaults.maintainAspectRatio = false;
+                Chart.defaults.plugins.legend.position = 'top';
+                Chart.defaults.plugins.title.display = true;
+                Chart.defaults.plugins.title.font = {
+                    size: 16,
+                    weight: 'bold'
+                };
+            }
+            
+            // Add active class to current page navigation link
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                    link.classList.add('active');
+                }
+            });
+        });
         
-        // Color palette for consistent styling
-        const CVE_COLORS = {
-            primary: '#667eea',
-            secondary: '#764ba2',
-            success: '#28a745',
+        // Color palette for consistent styling (matching design system)
+        window.CVE_COLORS = window.CVE_COLORS || {
+            primary: '#0d6efd',
+            secondary: '#6c757d', 
+            success: '#198754',
             warning: '#ffc107',
             danger: '#dc3545',
-            info: '#17a2b8',
             light: '#f8f9fa',
-            dark: '#343a40',
-            gradient: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
+            dark: '#212529',
+            chartColors: ['#0d6efd', '#6c757d', '#198754', '#ffc107', '#dc3545']
         };
         
         // Utility function to generate colors for charts
         function getChartColors(count) {
             const colors = [];
             for (let i = 0; i < count; i++) {
-                colors.push(CVE_COLORS.gradient[i % CVE_COLORS.gradient.length]);
+                colors.push(CVE_COLORS.chartColors[i % CVE_COLORS.chartColors.length]);
             }
             return colors;
         }

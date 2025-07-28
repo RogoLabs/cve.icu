@@ -3,82 +3,284 @@
 {% block title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1 class="page-title">CVE.ICU</h1>
-    <p class="page-subtitle">
-        Comprehensive CVE analysis and visualization from 1999 to {{ current_year }}
-    </p>
+<!-- Hero Section -->
+<div class="text-center mb-5">
+    <h1 class="mb-3">CVE.ICU</h1>
+    <p class="text-muted">Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to {{ current_year if current_year else '2025' }}</p>
 </div>
 
+<!-- Statistics Cards -->
 <div class="stats-grid">
     <div class="stat-card">
-        <span class="stat-number">{{ available_years|length }}</span>
-        <span class="stat-label">Years of Data</span>
+        <div class="stat-number" id="cves-this-year">Loading...</div>
+        <div class="stat-label">CVEs This Year</div>
     </div>
     <div class="stat-card">
-        <span class="stat-number">{{ current_year }}</span>
-        <span class="stat-label">Current Year</span>
+        <div class="stat-number" id="avg-cves-per-day">Loading...</div>
+        <div class="stat-label">Avg CVEs/Day</div>
     </div>
     <div class="stat-card">
-        <span class="stat-number">27</span>
-        <span class="stat-label">Years Coverage</span>
+        <div class="stat-number" id="growth-rate">Loading...</div>
+        <div class="stat-label">YOY Growth</div>
+        <div class="stat-detail" id="growth-detail">Loading...</div>
     </div>
     <div class="stat-card">
-        <span class="stat-number">Auto</span>
-        <span class="stat-label">Updates</span>
+        <div class="stat-number" id="total-cves">Loading...</div>
+        <div class="stat-label">Total CVEs</div>
     </div>
 </div>
 
-<div class="main-content">
-    <h2>Welcome to CVE.ICU</h2>
-    <p>Your comprehensive dashboard for CVE (Common Vulnerabilities and Exposures) analysis covering {{ available_years|length }} years of security data from 1999 to {{ current_year }}.</p>
-    
-    <h3>Key Features</h3>
-    <ul>
-        <li><strong>Historical Coverage:</strong> Complete CVE data from 1999 to present</li>
-        <li><strong>Interactive Analysis:</strong> Dynamic charts and visualizations</li>
-        <li><strong>Auto-Updates:</strong> Refreshed every 6 hours with latest data</li>
-        <li><strong>Future-Proof:</strong> Automatically includes new years as they come</li>
-    </ul>
-    
-    <h3>Available Analyses</h3>
-    <div class="stats-grid">
-        <div class="stat-card">
-            <a href="years.html" style="color: white; text-decoration: none;">
-                <span class="stat-number">📅</span>
-                <span class="stat-label">Year Analysis</span>
-            </a>
-        </div>
-        <div class="stat-card">
-            <a href="cna.html" style="color: white; text-decoration: none;">
-                <span class="stat-number">🏢</span>
-                <span class="stat-label">CNA Analysis</span>
-            </a>
-        </div>
-        <div class="stat-card">
-            <a href="cvss.html" style="color: white; text-decoration: none;">
-                <span class="stat-number">⚡</span>
-                <span class="stat-label">CVSS Scoring</span>
-            </a>
-        </div>
-        <div class="stat-card">
-            <a href="growth.html" style="color: white; text-decoration: none;">
-                <span class="stat-number">📈</span>
-                <span class="stat-label">Growth Trends</span>
-            </a>
+<!-- CVEs by Year Chart -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">CVEs Published by Year</h3>
+    </div>
+    <div class="card-body">
+        <div class="chart-container">
+            <canvas id="cvesByYearChart"></canvas>
         </div>
     </div>
 </div>
 
-<div class="main-content">
-    <h2>Latest Updates</h2>
-    <p>This site is automatically updated every 6 hours with the latest CVE data. The system is designed to be completely future-proof - on January 1st, 2026, it will automatically start tracking CVE-2026 data without any manual intervention.</p>
-    
-    <h3>Data Sources</h3>
-    <ul>
-        <li><strong>NVD Database:</strong> National Vulnerability Database</li>
-        <li><strong>Real-time Processing:</strong> Latest CVE publications</li>
-        <li><strong>Historical Archive:</strong> Complete historical records</li>
-    </ul>
+<!-- Welcome Section -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">About CVE.ICU</h3>
+    </div>
+    <div class="card-body">
+        <p class="mb-4">CVE.ICU provides comprehensive vulnerability intelligence through advanced analytics and visualization of Common Vulnerabilities and Exposures (CVE) data spanning {{ available_years|length if available_years else '27' }} years of cybersecurity history from 1999 to {{ current_year if current_year else '2025' }}.</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Platform Capabilities</h4>
+                <ul class="mb-4">
+                    <li><strong>Comprehensive Coverage:</strong> Complete historical CVE dataset with continuous updates</li>
+                    <li><strong>Advanced Analytics:</strong> Interactive dashboards with dynamic data visualization</li>
+                    <li><strong>Real-Time Intelligence:</strong> Automated data refresh every 6 hours</li>
+                    <li><strong>Scalable Architecture:</strong> Self-expanding system accommodating future data</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h4>Data Infrastructure</h4>
+                <ul class="mb-4">
+                    <li><strong>Primary Source:</strong> NIST National Vulnerability Database (NVD)</li>
+                    <li><strong>Processing Pipeline:</strong> Automated ingestion and normalization</li>
+                    <li><strong>Historical Repository:</strong> Complete vulnerability records archive</li>
+                    <li><strong>Update Frequency:</strong> Continuous 6-hour synchronization cycle</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <div class="alert alert-info" style="background-color: rgba(13, 110, 253, 0.1); border: 1px solid rgba(13, 110, 253, 0.2); border-radius: 0.5rem; padding: 1rem; margin-top: 1.5rem;">
+                <p class="mb-0"><strong>Automated Intelligence Platform:</strong> CVE.ICU operates on a fully automated infrastructure that ensures continuous data availability and seamless expansion. The system is engineered to automatically incorporate new vulnerability data as it becomes available, requiring zero manual intervention for ongoing operations.</p>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Chart.js and CVE_COLORS to be available
+    if (typeof Chart === 'undefined' || typeof window.CVE_COLORS === 'undefined') {
+        console.error('Chart.js or CVE_COLORS not loaded');
+        return;
+    }
+    
+    // Initialize CVEs by Year Chart
+    const ctx = document.getElementById('cvesByYearChart');
+    if (ctx) {
+        // Sample data - this would be populated by the Python backend
+        const yearlyData = {
+            labels: [],
+            datasets: [{
+                label: 'CVEs Published',
+                data: [],
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                borderColor: window.CVE_COLORS.primary,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.1
+            }]
+        };
+        
+        // Load actual CVE data from JSON files
+        const currentYear = new Date().getFullYear();
+        const loadPromises = [];
+        
+        // Generate years from 1999 to current year and load data
+        for (let year = 1999; year <= currentYear; year++) {
+            yearlyData.labels.push(year.toString());
+            
+            // Load actual CVE data for each year
+            const promise = fetch(`data/cve_${year}.json`)
+                .then(response => {
+                    if (!response.ok) {
+                        console.warn(`No data found for year ${year}`);
+                        return { total_cves: 0 };
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    return { year: year, count: data.total_cves || 0 };
+                })
+                .catch(error => {
+                    console.warn(`Error loading data for year ${year}:`, error);
+                    return { year: year, count: 0 };
+                });
+            
+            loadPromises.push(promise);
+        }
+        
+        // Wait for all data to load, then create the chart and update stats
+        Promise.all(loadPromises).then(results => {
+            // Sort results by year to ensure correct order
+            results.sort((a, b) => a.year - b.year);
+            
+            // Extract the CVE counts in the correct order
+            yearlyData.datasets[0].data = results.map(result => result.count);
+            
+            // Calculate and update statistics
+            updateStatistics(results);
+            
+            // Create the chart with real data
+            createChart();
+        }).catch(error => {
+            console.error('Error loading CVE data:', error);
+            // Fallback: create chart with empty data and show error in stats
+            updateStatisticsError();
+            createChart();
+        });
+        
+        function updateStatistics(results) {
+            try {
+                // Calculate total CVEs
+                const totalCves = results.reduce((sum, result) => sum + result.count, 0);
+                
+                // Get current year data
+                const currentYear = new Date().getFullYear();
+                const currentYearData = results.find(r => r.year === currentYear);
+                const cvesThisYear = currentYearData ? currentYearData.count : 0;
+                
+                // Calculate average CVEs per day for current year
+                const dayOfYear = Math.floor((new Date() - new Date(currentYear, 0, 0)) / (1000 * 60 * 60 * 24));
+                const avgCvesPerDay = cvesThisYear > 0 && dayOfYear > 0 ? (cvesThisYear / dayOfYear).toFixed(1) : '0';
+                
+                // Calculate date-accurate YOY growth rate
+                // We need to compare CVEs published by the same date in both years
+                // For now, we'll estimate based on the current day of year
+                const previousYearData = results.find(r => r.year === currentYear - 1);
+                const previousYearFullCount = previousYearData ? previousYearData.count : 0;
+                
+                // Estimate what the previous year count would be by this same date
+                // Assume roughly even distribution throughout the year for estimation
+                // (reuse dayOfYear from above)
+                const yearProgress = dayOfYear / 365; // Percentage of year completed
+                const estimatedPreviousYearByDate = Math.round(previousYearFullCount * yearProgress);
+                
+                let growthRate = 'N/A';
+                let growthDetail = 'Calculating...';
+                
+                if (estimatedPreviousYearByDate > 0 && cvesThisYear > 0) {
+                    const growth = ((cvesThisYear - estimatedPreviousYearByDate) / estimatedPreviousYearByDate) * 100;
+                    growthRate = (growth >= 0 ? '+' : '') + growth.toFixed(1) + '%';
+                    
+                    // Create detail text showing the comparison
+                    const currentDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    growthDetail = `${cvesThisYear.toLocaleString()} vs ${estimatedPreviousYearByDate.toLocaleString()} (by ${currentDate})`;
+                }
+                
+                // Update the DOM elements
+                document.getElementById('cves-this-year').textContent = cvesThisYear.toLocaleString();
+                document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
+                document.getElementById('growth-rate').textContent = growthRate;
+                document.getElementById('growth-detail').textContent = growthDetail;
+                document.getElementById('total-cves').textContent = totalCves.toLocaleString();
+                
+            } catch (error) {
+                console.error('Error calculating statistics:', error);
+                updateStatisticsError();
+            }
+        }
+        
+        function updateStatisticsError() {
+            document.getElementById('cves-this-year').textContent = 'Error';
+            document.getElementById('avg-cves-per-day').textContent = 'Error';
+            document.getElementById('growth-rate').textContent = 'Error';
+            document.getElementById('growth-detail').textContent = 'Error';
+            document.getElementById('total-cves').textContent = 'Error';
+        }
+        
+        function createChart() {
+        
+            new Chart(ctx, {
+                type: 'line',
+                data: yearlyData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'CVE Publications by Year (1999-' + currentYear + ')'
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'CVEs: ' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'CVE Publications'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    elements: {
+                        line: {
+                            tension: 0.1,
+                            borderWidth: 2
+                        },
+                        point: {
+                            radius: 4,
+                            hoverRadius: 6
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+    }
+});
+</script>
 {% endblock %}

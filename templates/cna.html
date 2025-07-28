@@ -1,34 +1,1654 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}CNA Analysis - CVE.ICU{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1 class="page-title">CNA Analysis</h1>
-    <p class="page-subtitle">
-        Comprehensive CNA analysis and visualization
-    </p>
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CNA Intelligence Dashboard</h1>
+    <small class="text-muted d-block mb-3" id="pageSubtitle">
+        Showing comprehensive analysis across all years (1999-2025)
+    </small>
+    
+    <!-- Data Mode Toggle -->
+    <div class="d-flex justify-content-center mb-3">
+        <button type="button" id="dataToggleBtn" onclick="toggleDataMode()" style="
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: all 0.15s ease-in-out;
+            background: none;
+            border: 2px solid var(--color-border);
+            cursor: pointer;
+            font-size: inherit;
+        " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
+            <span id="toggleText">Switch to 2025 Only</span>
+        </button>
+    </div>
 </div>
 
-<div class="main-content">
-    <h2>CNA Analysis</h2>
-    <p>This page will contain detailed CNA analysis once the data processing modules are implemented.</p>
+<!-- Statistics Cards -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-number" id="activeCnas">Loading...</div>
+        <div class="stat-label">Active CNAs</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📈 Currently publishing</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="highVolumeCnas">Loading...</div>
+        <div class="stat-label">High-Volume CNAs</div>
+        <small class="text-muted" style="font-size: 0.75rem;">🚀 CNAs with 1000+ CVEs</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="medianYearsActive">Loading...</div>
+        <div class="stat-label">Median Years Active</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📊 Typical CNA lifespan</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="marketConcentration">Loading...</div>
+        <div class="stat-label">Top 5 CNA Share</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📊 Concentration of assignments</small>
+    </div>
+</div>
+
+<!-- Top CNAs and CNA Type Distribution -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Top CNAs by Volume</h3>
+                <small class="text-muted">Leading CVE Numbering Authorities by total assignments</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="topCnasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <div class="chart-container">
-        <h3>CNA Overview</h3>
-        <div class="chart-wrapper">
-            <canvas id="cnaChart"></canvas>
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">CNA Type Distribution</h3>
+                <small class="text-muted">CNAs by organization type</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cnaTypeChart"></canvas>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Note: CNAs can and often have multiple types (e.g., Vendor + Researcher).
+                </small>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- CNA Activity Analysis -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">CNA Lifecycle Stages</h3>
+                <small class="text-muted">CNAs categorized by years of activity</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cnaActivityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4" style="display: none;">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">REMOVE_THIS_CARD</h3>
+                <small class="text-muted">This chart has been temporarily removed</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-tools mb-2"></i><br>
+                    Chart temporarily unavailable
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Analysis Charts -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">CNA Assignment Volume</h3>
+                <small class="text-muted">CNAs categorized by total CVE assignments</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cnaVolumeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4" style="display: none;">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">REMOVE_THIS_CARD</h3>
+                <small class="text-muted">This chart has been temporarily removed</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-tools mb-2"></i><br>
+                    Chart temporarily unavailable
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Insights Panel -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">🔍 CNA Intelligence Insights</h3>
+    </div>
+    <div class="card-body py-3">
+        <div class="row" id="cnaInsights">
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">🏆</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Top CNA</div>
+                        <div class="insight-text" id="marketLeaderInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📊</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Activity Status</div>
+                        <div class="insight-text" id="activityInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">🏢</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Years Active</div>
+                        <div class="insight-text" id="orgTypeInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed CNA Table -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">📋 Comprehensive CNA Directory</h3>
+        <small class="text-muted">All CVE Numbering Authorities with assignment statistics - Click column headers to sort</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="cnaTable">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="rank" style="width: 80px;">Rank <span class="sort-indicator">▼</span></th>
+                        <th class="sortable" data-sort="name" style="width: 320px;">CNA Name <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="count" style="width: 140px;">CVEs Assigned <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="years_active" style="width: 140px;">Years Active <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="last_cve_date" style="width: 160px;">Last CVE Date <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="activity_status" style="width: 120px;">Status <span class="sort-indicator"></span></th>
+                    </tr>
+                </thead>
+                <tbody id="cnaTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">Loading CNA data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div class="mt-3 text-center">
+            <div class="text-muted mb-2" id="paginationInfo">
+                Showing 1-25 of 0 CNAs
+            </div>
+            <nav aria-label="CNA table pagination" class="d-inline-block">
+                <ul class="pagination pagination-sm mb-0" id="paginationControls">
+                    <!-- Pagination will be dynamically generated -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Export and Share Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📤 Export & Share</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="export-buttons">
+            <button class="btn btn-primary btn-sm" onclick="exportCnaCSV()">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="exportCnaJSON()">📋 Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="generatePermalink()">🔗 Share Link</button>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+        <div class="permalink-result mt-2" id="permalinkResult" style="display: none;">
+            <input type="text" class="form-control" id="permalinkInput" readonly>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="copyPermalink()">Copy Link</button>
+        </div>
+    </div>
+</div>
+
+<!-- Data Source Note -->
+<div class="card">
+    <div class="card-body py-3">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-info-circle text-muted me-2"></i>
+            <small class="text-muted mb-0">
+                <strong>Data Source:</strong> While the rest of CVE.ICU uses data from the NVD, this CNA Intelligence Dashboard uses data directly from the 
+                <a href="https://github.com/CVEProject/cvelistV5" target="_blank" class="text-decoration-none">
+                    CVEProject/cvelistV5 repository
+                </a> for enhanced data quality and accuracy.
+            </small>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<style>
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.sortable:hover {
+    background-color: #f8f9fa;
+}
+
+.sort-indicator {
+    font-size: 0.8em;
+    margin-left: 5px;
+    color: #6c757d;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    justify-content: center;
+}
+
+.pagination .page-item {
+    display: inline-block;
+}
+
+.pagination .page-link {
+    color: #0d6efd;
+    padding: 0.375rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    display: block;
+}
+
+.pagination .page-link:hover {
+    color: #0a58ca;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+}
+
+.pagination .page-item:first-child .page-link {
+    margin-left: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+</style>
+
 <script>
-// CNA analysis functionality will be implemented here
+// Global variables
+let cnaData = null;
+let currentYearData = null;
+let charts = {};
+let currentDataMode = 'all'; // 'all' or 'current'
+
+// Global state management
+window.CNA_STATE = {
+    dataMode: 'all',
+    cnaData: null,
+    currentYearData: null,
+    charts: {}
+};
+
+// Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CNA analysis page loaded');
-    // Chart initialization will go here
+    console.log('CNA Intelligence Dashboard loading...');
+    loadCnaData();
+    loadCurrentYearData();
 });
+
+// Load CNA data
+function loadCnaData() {
+    console.log('Loading comprehensive CNA data...');
+    fetch('/data/cna_analysis.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            cnaData = data;
+            window.CNA_STATE.cnaData = data;
+            console.log('CNA data loaded:', data);
+            if (currentYearData || !currentYearData) {
+                initializePage();
+            }
+        })
+        .catch(error => {
+            console.error('Error loading CNA data:', error);
+            const loadingElement = document.getElementById('loadingMessage');
+            if (loadingElement) {
+                loadingElement.textContent = 'Error loading data';
+            }
+        });
+}
+
+// Load current year data
+function loadCurrentYearData() {
+    fetch('/data/cna_analysis_current_year.json')
+        .then(response => response.json())
+        .then(data => {
+            currentYearData = data;
+            window.CNA_STATE.currentYearData = data;
+            console.log('Current year CNA data loaded:', data);
+            if (cnaData) {
+                initializePage();
+            }
+        })
+        .catch(error => {
+            console.error('Error loading current year CNA data:', error);
+            // Continue with all-time data only
+            if (cnaData) {
+                initializePage();
+            }
+        });
+}
+
+// Initialize page after data is loaded
+function initializePage() {
+    console.log('Initializing CNA Intelligence Dashboard...');
+    updateStatistics();
+    createCharts();
+    generateInsights();
+    populateTable(); // This calls renderTable() internally
+    console.log('CNA Intelligence Dashboard initialized successfully');
+}
+
+// Get current data source based on mode
+function getCurrentDataSource() {
+    console.log('getCurrentDataSource called, currentDataMode:', currentDataMode, 'window.CNA_STATE.dataMode:', window.CNA_STATE.dataMode);
+    const mode = currentDataMode || window.CNA_STATE.dataMode;
+    const result = mode === 'all' ? (cnaData || window.CNA_STATE.cnaData) : (currentYearData || window.CNA_STATE.currentYearData);
+    console.log('getCurrentDataSource returning:', result ? 'data object' : 'null', 'for mode:', mode);
+    return result;
+}
+
+// Process current year type distribution
+function processCurrentYearTypeDistribution(yearData) {
+    // For current year, we need to map CNA assigners to their types from the main data
+    const typeDistribution = [];
+    
+    if (!yearData.cna_assigners || !cnaData.cna_list) {
+        return typeDistribution;
+    }
+    
+    const typeCounts = {};
+    const totalCnas = yearData.cna_assigners.length;
+    
+    // Map current year CNAs to their types from the comprehensive data
+    yearData.cna_assigners.forEach(cna => {
+        const fullCnaInfo = cnaData.cna_list.find(c => c.name === cna.name);
+        if (fullCnaInfo && fullCnaInfo.cna_types) {
+            fullCnaInfo.cna_types.forEach(type => {
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+        }
+    });
+    
+    // Convert to percentage format
+    Object.entries(typeCounts).forEach(([type, count]) => {
+        const percentage = totalCnas > 0 ? (count / totalCnas) * 100 : 0;
+        typeDistribution.push({
+            type: type,
+            count: count,
+            percentage: Math.round(percentage * 10) / 10
+        });
+    });
+    
+    return typeDistribution.sort((a, b) => b.percentage - a.percentage);
+}
+
+// Generate color gradient
+function generateColorGradient(startColor, endColor, steps) {
+    const colors = [];
+    const start = hexToRgb(startColor);
+    const end = hexToRgb(endColor);
+    
+    for (let i = 0; i < steps; i++) {
+        const ratio = i / (steps - 1);
+        const r = Math.round(start.r + ratio * (end.r - start.r));
+        const g = Math.round(start.g + ratio * (end.g - start.g));
+        const b = Math.round(start.b + ratio * (end.b - start.b));
+        colors.push(`rgb(${r}, ${g}, ${b})`);
+    }
+    
+    return colors;
+}
+
+// Convert hex to RGB
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+// Set data mode
+function setDataMode(mode) {
+    console.log('setDataMode called with mode:', mode);
+    
+    // Update both global variables and window state
+    currentDataMode = mode;
+    window.CNA_STATE.dataMode = mode;
+    
+    console.log('Data mode updated to:', currentDataMode, 'window state:', window.CNA_STATE.dataMode);
+    
+    updateToggleUI();
+    
+    // Show/hide CNA Activity Status chart based on data mode
+    const activityStatusContainer = document.getElementById('cnaActivityStatusContainer');
+    if (activityStatusContainer) {
+        if (currentDataMode === 'current') {
+            // Hide in current year mode since all CNAs are active by definition
+            activityStatusContainer.style.display = 'none';
+            console.log('CNA Activity Status chart hidden for current year mode');
+        } else {
+            // Show in all-time mode where active/inactive distinction is meaningful
+            activityStatusContainer.style.display = 'block';
+            console.log('CNA Activity Status chart shown for all-time mode');
+        }
+    }
+    
+    // Refresh all visualizations with new data mode
+    console.log('Refreshing all visualizations...');
+    updateStatistics();
+    createCharts();
+    generateInsights();
+    populateTable(); // This calls renderTable() internally
+    
+    console.log('Data mode switch completed');
+}
+
+// Update toggle UI elements
+function updateToggleUI() {
+    const toggleText = document.getElementById('toggleText');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    
+    if (currentDataMode === 'all') {
+        toggleText.textContent = 'Switch to 2025 Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2025)';
+    } else {
+        toggleText.textContent = 'Switch to All-Time';
+        pageSubtitle.textContent = 'Showing analysis for 2025 data only';
+    }
+}
+
+// Legacy functions for backward compatibility
+function toggleDataMode() {
+    console.log('toggleDataMode called, current mode:', currentDataMode);
+    const newMode = currentDataMode === 'all' ? 'current' : 'all';
+    console.log('toggleDataMode switching to:', newMode);
+    setDataMode(newMode);
+}
+
+function switchDataMode(mode) {
+    setDataMode(mode);
+}
+
+// Update statistics cards
+function updateStatistics() {
+    const currentData = getCurrentDataSource();
+    if (!currentData) return;
+    
+    let activeCnas, highVolumeCnas, totalCves, medianYearsActive, marketConcentration;
+    
+    if (currentDataMode === 'all') {
+        // All-time data from comprehensive analysis
+        if (!currentData.cna_list) return;
+        
+        activeCnas = currentData.cna_list.filter(cna => cna.activity_status === 'Active').length;
+        highVolumeCnas = currentData.cna_list.filter(cna => cna.count >= 1000).length;
+        totalCves = currentData.cna_list.reduce((sum, cna) => sum + cna.count, 0);
+        
+        // Calculate median years active
+        const yearsActive = currentData.cna_list.map(cna => cna.years_active).sort((a, b) => a - b);
+        const medianIndex = Math.floor(yearsActive.length / 2);
+        medianYearsActive = yearsActive.length % 2 === 0 
+            ? Math.round((yearsActive[medianIndex - 1] + yearsActive[medianIndex]) / 2)
+            : yearsActive[medianIndex];
+        
+        // Calculate market concentration (top 5 CNAs' share)
+        const top5Cves = currentData.cna_list.slice(0, 5).reduce((sum, cna) => sum + cna.count, 0);
+        marketConcentration = ((top5Cves / totalCves) * 100).toFixed(1);
+    } else {
+        // Current year data
+        if (!currentData.cna_assigners) return;
+        
+        activeCnas = currentData.cna_assigners.length;
+        highVolumeCnas = currentData.cna_assigners.filter(cna => cna.count >= 1000).length;
+        totalCves = currentData.total_cves || currentData.cna_assigners.reduce((sum, cna) => sum + cna.count, 0);
+        
+        // For current year, years active is always 1
+        medianYearsActive = 1;
+        
+        // Calculate market concentration for current year
+        const sortedCnas = currentData.cna_assigners.sort((a, b) => b.count - a.count);
+        const top5Cves = sortedCnas.slice(0, 5).reduce((sum, cna) => sum + cna.count, 0);
+        marketConcentration = totalCves > 0 ? ((top5Cves / totalCves) * 100).toFixed(1) : '0.0';
+    }
+    
+    document.getElementById('activeCnas').textContent = activeCnas.toLocaleString();
+    document.getElementById('highVolumeCnas').textContent = highVolumeCnas.toLocaleString();
+    document.getElementById('medianYearsActive').textContent = `${medianYearsActive} year${medianYearsActive !== 1 ? 's' : ''}`;
+    document.getElementById('marketConcentration').textContent = `${marketConcentration}%`;
+}
+
+// Destroy existing charts
+function destroyCharts() {
+    Object.keys(charts).forEach(chartKey => {
+        if (charts[chartKey]) {
+            charts[chartKey].destroy();
+            delete charts[chartKey];
+        }
+    });
+}
+
+// Create all charts
+function createCharts() {
+    // Destroy existing charts first
+    destroyCharts();
+    
+    // Create new charts
+    createTopCnasChart();
+    createActivityChart();
+    // createRecencyChart(); // Temporarily disabled
+    createTypeChart();
+    createVolumeChart();
+}
+
+// Top CNAs horizontal bar chart
+function createTopCnasChart() {
+    console.log('createTopCnasChart() called, currentDataMode:', currentDataMode);
+    const ctx = document.getElementById('topCnasChart').getContext('2d');
+    
+    const currentData = getCurrentDataSource();
+    console.log('createTopCnasChart currentData:', currentData);
+    if (!currentData) return;
+    
+    let topCnas, labels, data;
+    
+    if (currentDataMode === 'all') {
+        console.log('Using all-time data, cna_list length:', currentData.cna_list?.length);
+        if (!currentData.cna_list) return;
+        topCnas = currentData.cna_list.slice(0, 15);
+        labels = topCnas.map(cna => cna.name);
+        data = topCnas.map(cna => cna.count);
+    } else {
+        console.log('Using current year data, cna_assigners length:', currentData.cna_assigners?.length);
+        if (!currentData.cna_assigners) return;
+        // Sort current year CNAs by count and take top 15
+        topCnas = currentData.cna_assigners
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 15);
+        labels = topCnas.map(cna => cna.name);
+        data = topCnas.map(cna => cna.count);
+    }
+    
+    console.log('Top CNAs for chart:');
+    topCnas.slice(0, 5).forEach((cna, index) => {
+        console.log(`  ${index + 1}. ${cna.name}: ${cna.count.toLocaleString()} CVEs`);
+    });
+    console.log('Chart data - labels:', labels.slice(0, 5));
+    console.log('Chart data - values:', data.slice(0, 5));
+    
+    // Update chart subtitle to show current mode
+    const subtitle = document.getElementById('topCnasSubtitle');
+    if (subtitle) {
+        if (currentDataMode === 'all') {
+            subtitle.textContent = 'Showing top 15 CNAs by total CVE assignments (All-Time Data)';
+        } else {
+            subtitle.textContent = 'Showing top 15 CNAs by CVE assignments in 2025 only';
+        }
+    }
+    
+    charts.topCnas = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'CVEs Assigned',
+                data: data,
+                backgroundColor: '#60a5fa',
+                borderColor: '#3b82f6',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            const cna = topCnas[context.dataIndex];
+                            return [
+                                `CVEs: ${context.parsed.x.toLocaleString()}`,
+                                `Years Active: ${cna.years_active}`,
+                                `Status: ${cna.activity_status}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        maxRotation: 0
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+// CNA lifecycle stages chart
+function createActivityChart() {
+    const ctx = document.getElementById('cnaActivityChart').getContext('2d');
+    
+    const currentData = getCurrentDataSource();
+    if (!currentData) return;
+    
+    let cnas;
+    if (currentDataMode === 'all') {
+        if (!currentData.cna_list) return;
+        cnas = currentData.cna_list;
+    } else {
+        if (!currentData.cna_assigners) return;
+        // Use the actual years_active values from current year data (now includes full history)
+        cnas = currentData.cna_assigners;
+    }
+    
+    const categories = {
+        'Established (10+ years)': cnas.filter(cna => cna.years_active >= 10).length,
+        'Mature (5-10 years)': cnas.filter(cna => cna.years_active >= 5 && cna.years_active < 10).length,
+        'Growing (2-5 years)': cnas.filter(cna => cna.years_active >= 2 && cna.years_active < 5).length,
+        'New (0-2 years)': cnas.filter(cna => cna.years_active < 2).length
+    };
+    
+    const labels = Object.keys(categories);
+    const data = Object.values(categories);
+    
+    // Blue gradient from dark to light
+    const colors = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd'];
+    
+    charts.activity = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of CNAs',
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                            return `${context.parsed.x} CNAs (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Activity Recency Distribution chart
+function createRecencyChart() {
+    console.log('createRecencyChart() called');
+    const canvasElement = document.getElementById('cnaRecencyChart');
+    if (!canvasElement) {
+        console.error('Canvas element cnaRecencyChart not found!');
+        return;
+    }
+    const ctx = canvasElement.getContext('2d');
+    
+    const currentData = getCurrentDataSource();
+    console.log('createRecencyChart currentData:', currentData);
+    if (!currentData) {
+        console.error('No currentData available for recency chart');
+        return;
+    }
+    
+    let cnas;
+    if (currentDataMode === 'all') {
+        console.log('createRecencyChart: all-time mode, cna_list length:', currentData.cna_list ? currentData.cna_list.length : 'undefined');
+        if (!currentData.cna_list) {
+            console.error('No cna_list available for all-time mode');
+            return;
+        }
+        cnas = currentData.cna_list;
+    } else {
+        console.log('createRecencyChart: current year mode, cna_assigners length:', currentData.cna_assigners ? currentData.cna_assigners.length : 'undefined');
+        if (!currentData.cna_assigners) {
+            console.error('No cna_assigners available for current year mode');
+            return;
+        }
+        // For current year, all CNAs are "Very Active" since they published in current year
+        cnas = currentData.cna_assigners.map(cna => ({
+            ...cna,
+            days_since_last_cve: 0 // Current year CNAs are treated as very recent
+        }));
+    }
+    
+    console.log('createRecencyChart: processing', cnas.length, 'CNAs');
+    console.log('Sample CNA for debugging:', cnas[0]);
+    
+    const categories = {
+        'Very Active (0-30 days)': cnas.filter(cna => cna.days_since_last_cve <= 30).length,
+        'Active (31-180 days)': cnas.filter(cna => cna.days_since_last_cve > 30 && cna.days_since_last_cve <= 180).length,
+        'Moderate (181-365 days)': cnas.filter(cna => cna.days_since_last_cve > 180 && cna.days_since_last_cve <= 365).length,
+        'Inactive (365+ days)': cnas.filter(cna => cna.days_since_last_cve > 365).length
+    };
+    
+    const labels = Object.keys(categories);
+    const data = Object.values(categories);
+    
+    // Activity-based color gradient (blue to grey)
+    const colors = ['#1e40af', '#3b82f6', '#60a5fa', '#6b7280'];
+    
+    charts.recency = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of CNAs',
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                            return `${context.parsed.x} CNAs (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// CNA type distribution chart
+function createTypeChart() {
+    const ctx = document.getElementById('cnaTypeChart').getContext('2d');
+    
+    const currentData = getCurrentDataSource();
+    if (!currentData) return;
+    
+    let typeDistribution = [];
+    
+    if (currentDataMode === 'all') {
+        // Use real type distribution data from comprehensive analysis
+        if (currentData.type_distribution && currentData.type_distribution.sorted_types) {
+            // Convert backend format to chart format
+            typeDistribution = currentData.type_distribution.sorted_types.map(([type, count]) => ({
+                type: type,
+                count: count,
+                percentage: currentData.type_distribution.type_percentages[type] || 0
+            }));
+            console.log('Loaded CNA type distribution:', typeDistribution);
+        } else {
+            console.log('No type distribution data available in all-time data');
+            return;
+        }
+    } else {
+        // For current year, calculate type distribution from individual CNA data
+        if (!currentData.cna_assigners || currentData.cna_assigners.length === 0) {
+            console.warn('No CNA assigners data available for current year');
+            return;
+        }
+        
+        // Calculate type distribution from current year CNAs
+        const typeCounts = {};
+        const totalCnas = currentData.cna_assigners.length;
+        
+        currentData.cna_assigners.forEach(cna => {
+            if (cna.cna_types && cna.cna_types.length > 0) {
+                cna.cna_types.forEach(type => {
+                    typeCounts[type] = (typeCounts[type] || 0) + 1;
+                });
+            } else {
+                // Fallback for CNAs without type info
+                typeCounts['Other'] = (typeCounts['Other'] || 0) + 1;
+            }
+        });
+        
+        // Convert to type distribution format and sort by count
+        typeDistribution = Object.entries(typeCounts)
+            .map(([type, count]) => ({
+                type: type,
+                count: count,
+                percentage: parseFloat(((count / totalCnas) * 100).toFixed(1))
+            }))
+            .sort((a, b) => b.count - a.count);
+        
+        console.log('Calculated current year type distribution:', typeDistribution);
+        
+        if (typeDistribution.length === 0) {
+            console.warn('No type distribution data calculated for current year');
+            return;
+        }
+    }
+    
+    // Filter out N/A entries and prepare data
+    const filteredDistribution = typeDistribution.filter(item => item.type !== 'N/A');
+    const labels = filteredDistribution.map(item => item.type);
+    const data = filteredDistribution.map(item => parseFloat(item.percentage.toFixed(1))); // Fix precision
+    
+    // Generate blue/grey color scheme to match site theme
+    const colorPalette = [
+        '#3b82f6', // Primary blue - Vendor (largest category)
+        '#60a5fa', // Light blue - CERT
+        '#93c5fd', // Lighter blue - Security Researcher
+        '#bfdbfe', // Very light blue - Open Source
+        '#6b7280', // Medium grey - Government
+        '#9ca3af', // Light grey - Program
+        '#d1d5db', // Very light grey - Other
+        '#e5e7eb'  // Lightest grey - Academic
+    ];
+    const colors = colorPalette.slice(0, labels.length);
+    
+    charts.types = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Percentage of CNAs',
+                data: data,
+                backgroundColor: colors.map(color => color + '90'), // Add transparency
+                borderColor: colors,
+                borderWidth: 2,
+                borderRadius: 4, // Rounded corners
+                borderSkipped: false
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#374151',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    callbacks: {
+                        title: function(context) {
+                            return `CNA Type: ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            const item = filteredDistribution[context.dataIndex];
+                            return [
+                                `Percentage: ${item.percentage}%`,
+                                `Count: ${item.count.toLocaleString()} CNAs`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100, // Fixed scale to 100% for better readability
+                    ticks: {
+                        stepSize: 10, // Show ticks every 10%
+                        callback: function(value) {
+                            return Math.round(value) + '%'; // Round to avoid precision issues
+                        },
+                        font: {
+                            size: 12
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Percentage of CNAs',
+                        font: {
+                            size: 13,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: '#e5e7eb',
+                        lineWidth: 1
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        },
+                        color: '#374151'
+                    },
+                    grid: {
+                        display: false // Remove horizontal grid lines for cleaner look
+                    }
+                }
+            }
+        }
+    });
+}
+
+// CNA Performance Tiers (Volume) chart
+function createVolumeChart() {
+    const ctx = document.getElementById('cnaVolumeChart').getContext('2d');
+    
+    const currentData = getCurrentDataSource();
+    if (!currentData) return;
+    
+    let cnas;
+    if (currentDataMode === 'all') {
+        if (!currentData.cna_list) return;
+        cnas = currentData.cna_list;
+    } else {
+        if (!currentData.cna_assigners) return;
+        cnas = currentData.cna_assigners;
+    }
+    
+    const categories = {
+        'High Volume (1000+ CVEs)': cnas.filter(cna => cna.count >= 1000).length,
+        'Medium Volume (100-999 CVEs)': cnas.filter(cna => cna.count >= 100 && cna.count < 1000).length,
+        'Low Volume (10-99 CVEs)': cnas.filter(cna => cna.count >= 10 && cna.count < 100).length,
+        'Minimal Volume (1-9 CVEs)': cnas.filter(cna => cna.count >= 1 && cna.count < 10).length
+    };
+    
+    const labels = Object.keys(categories);
+    const data = Object.values(categories);
+    
+    // Performance-based color gradient (dark to light blue)
+    const colors = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd'];
+    
+    charts.volume = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of CNAs',
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                            return `${context.parsed.x} CNAs (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Generate smart insights
+function generateInsights() {
+    console.log('generateInsights() called');
+    const currentData = getCurrentDataSource();
+    console.log('currentData:', currentData);
+    
+    // Update total CNAs count in CVE V5 data source card
+    const totalCnasElement = document.getElementById('totalCnasCount');
+    if (totalCnasElement && currentData) {
+        let totalCount = 0;
+        if (currentDataMode === 'all' && currentData.cna_list) {
+            totalCount = currentData.cna_list.length;
+        } else if (currentDataMode === 'current' && currentData.cna_assigners) {
+            totalCount = currentData.cna_assigners.length;
+        }
+        totalCnasElement.textContent = totalCount.toLocaleString();
+    }
+    
+    if (!currentData) {
+        console.error('generateInsights: No currentData available');
+        return;
+    }
+    
+    let cnas = [];
+    if (currentDataMode === 'all' && currentData.cna_list) {
+        cnas = currentData.cna_list;
+    } else if (currentDataMode === 'current' && currentData.cna_assigners) {
+        cnas = currentData.cna_assigners;
+    }
+    
+    if (cnas.length === 0) {
+        console.error('generateInsights: No CNAs available');
+        return;
+    }
+    
+    const totalCves = cnas.reduce((sum, cna) => sum + cna.count, 0);
+    const topCna = cnas[0];
+    
+    console.log('totalCves:', totalCves, 'topCna:', topCna.name, 'currentDataMode:', currentDataMode);
+    
+    if (currentDataMode === 'current') {
+        // Current year specific insights (2025)
+        const currentYear = new Date().getFullYear();
+        const topCnaShare = ((topCna.count / totalCves) * 100).toFixed(1);
+        
+        // Top 2025 CNA insight
+        document.getElementById('marketLeaderInsight').innerHTML = `
+            <strong>${topCna.name}</strong> leads ${currentYear} with <strong>${topCna.count.toLocaleString()}</strong> CVEs published (<strong>${topCnaShare}%</strong> of ${currentYear} volume)
+        `;
+        
+        // 2025 publication volume insight
+        document.getElementById('activityInsight').innerHTML = `
+            <strong>${totalCves.toLocaleString()}</strong> CVEs published in ${currentYear} by <strong>${cnas.length}</strong> active CNAs (averaging <strong>${Math.round(totalCves/cnas.length)}</strong> CVEs per CNA)
+        `;
+        
+        // Experience mix insight - veteran vs new CNAs
+        const veteranCnas = cnas.filter(cna => cna.years_active >= 10).length;
+        const newCnas = cnas.filter(cna => cna.years_active <= 2).length;
+        const longestActive = Math.max(...cnas.map(cna => cna.years_active));
+        
+        document.getElementById('orgTypeInsight').innerHTML = `
+            <strong>${veteranCnas}</strong> veteran CNAs (10+ years) and <strong>${newCnas}</strong> newer CNAs (≤2 years) published in ${currentYear}, with <strong>${longestActive}</strong> years max experience
+        `;
+    } else {
+        // All-time insights (original logic)
+        const activeCnas = cnas.filter(cna => cna.activity_status === 'Active');
+        const topCnaShare = ((topCna.count / totalCves) * 100).toFixed(1);
+        
+        // Top CNA insight
+        document.getElementById('marketLeaderInsight').innerHTML = `
+            <strong>${topCna.name}</strong> has assigned the most CVEs with <strong>${topCna.count.toLocaleString()}</strong> total assignments (<strong>${topCnaShare}%</strong> of all CVEs)
+        `;
+        
+        // Activity status insight
+        const activePercentage = ((activeCnas.length / cnas.length) * 100).toFixed(1);
+        document.getElementById('activityInsight').innerHTML = `
+            <strong>${activeCnas.length}</strong> of <strong>${cnas.length}</strong> CNAs are currently active (<strong>${activePercentage}%</strong>), having published CVEs within the last 12 months
+        `;
+        
+        // Years active insight
+        const avgYearsActive = Math.round(cnas.reduce((sum, cna) => sum + cna.years_active, 0) / cnas.length);
+        const longestActive = Math.max(...cnas.map(cna => cna.years_active));
+        
+        document.getElementById('orgTypeInsight').innerHTML = `
+            CNAs have been active for an average of <strong>${avgYearsActive} years</strong>, with the longest-running CNA active for <strong>${longestActive} years</strong>
+        `;
+    }
+}
+
+// Table pagination and sorting variables
+let currentPage = 1;
+let itemsPerPage = 25;
+let currentSort = { field: 'last_cve_date', direction: 'desc' };
+let sortedData = [];
+
+// Populate CNA table with pagination and sorting
+function populateTable() {
+    console.log('populateTable() called');
+    const currentData = getCurrentDataSource();
+    console.log('populateTable currentData:', currentData);
+    if (!currentData) {
+        console.error('populateTable: No currentData available');
+        return;
+    }
+    
+    let dataToSort;
+    
+    if (currentDataMode === 'all') {
+        console.log('populateTable: all-time mode');
+        if (!currentData.cna_list) {
+            console.error('populateTable: No cna_list in all-time data');
+            return;
+        }
+        dataToSort = currentData.cna_list;
+        console.log('populateTable: dataToSort length (all-time):', dataToSort.length);
+    } else {
+        console.log('populateTable: current year mode');
+        if (!currentData.cna_assigners) {
+            console.error('populateTable: No cna_assigners in current year data');
+            return;
+        }
+        // Use real CVE dates from backend data - no hardcoded overrides
+        dataToSort = currentData.cna_assigners.map(cna => ({
+            ...cna,
+            // Keep the real last_cve_date from backend data
+            activity_status: 'Active' // All current year CNAs are active
+        }));
+        console.log('populateTable: dataToSort length (current year):', dataToSort.length);
+    }
+    
+    // Initialize sorted data (default sort by rank, ascending)
+    sortedData = [...dataToSort].sort((a, b) => {
+        return (a.rank || 0) - (b.rank || 0); // Ascending order by rank
+    });
+    
+    // Set initial sort state to match default
+    currentSort = {
+        field: 'rank',
+        direction: 'asc'
+    };
+    
+    renderTable();
+    setupSortingHandlers();
+    updateSortIndicators(); // Show correct default sort indicator
+}
+
+// Render table with current page and sorting
+function renderTable() {
+    console.log('renderTable() called');
+    console.log('renderTable: sortedData length:', sortedData.length);
+    console.log('renderTable: currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
+    
+    const tbody = document.getElementById('cnaTableBody');
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageData = sortedData.slice(startIndex, endIndex);
+    
+    console.log('renderTable: pageData length:', pageData.length);
+    
+    const rows = pageData.map((cna, index) => {
+        let formattedDate = 'Invalid Date';
+        if (cna.last_cve_date) {
+            const lastCveDate = new Date(cna.last_cve_date);
+            
+            if (!isNaN(lastCveDate.getTime())) {
+                formattedDate = lastCveDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } else {
+                console.error('Invalid date for CNA:', cna.name, 'date:', cna.last_cve_date);
+                formattedDate = 'Invalid Date';
+            }
+        }
+        
+        const statusColor = cna.activity_status === 'Active' ? '#10b981' : '#ef4444';
+        const statusIcon = cna.activity_status === 'Active' ? '✅' : '❌';
+        
+        // Calculate rank based on current data mode
+        let originalRank;
+        if (currentDataMode === 'all') {
+            originalRank = cnaData.cna_list.findIndex(original => original.name === cna.name) + 1;
+        } else {
+            // For current year, use position in sorted data + 1
+            originalRank = startIndex + index + 1;
+        }
+        
+        return `
+            <tr>
+                <td><strong>#${originalRank}</strong></td>
+                <td>${cna.name}</td>
+                <td>${cna.count.toLocaleString()}</td>
+                <td>${cna.years_active} years</td>
+                <td>${formattedDate}</td>
+                <td><span style="color: ${statusColor}; font-weight: bold;">${statusIcon} ${cna.activity_status}</span></td>
+            </tr>
+        `;
+    }).join('');
+    
+    tbody.innerHTML = rows;
+    updatePaginationInfo();
+    updatePaginationControls();
+}
+
+// Update pagination info text
+function updatePaginationInfo() {
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, sortedData.length);
+    const totalItems = sortedData.length;
+    
+    document.getElementById('paginationInfo').textContent = 
+        `Showing ${startIndex}-${endIndex} of ${totalItems} CNAs`;
+}
+
+// Update pagination controls
+function updatePaginationControls() {
+    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+    const paginationControls = document.getElementById('paginationControls');
+    
+    if (totalPages <= 1) {
+        paginationControls.innerHTML = '';
+        return;
+    }
+    
+    let paginationHTML = '';
+    
+    // Previous button
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    paginationHTML += `<li class="page-item ${prevDisabled}"><a class="page-link" href="#" id="prevPage">&laquo;</a></li>`;
+    
+    // Always show first page
+    if (currentPage > 3) {
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+        if (currentPage > 4) {
+            paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+    
+    // Show pages around current page
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const active = i === currentPage ? 'active' : '';
+        paginationHTML += `<li class="page-item ${active}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+    }
+    
+    // Always show last page
+    if (currentPage < totalPages - 2) {
+        if (currentPage < totalPages - 3) {
+            paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+    }
+    
+    // Next button
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+    paginationHTML += `<li class="page-item ${nextDisabled}"><a class="page-link" href="#" id="nextPage">&raquo;</a></li>`;
+    
+    paginationControls.innerHTML = paginationHTML;
+    
+    // Add event listeners for pagination
+    setupPaginationHandlers();
+}
+
+// Setup pagination event handlers
+function setupPaginationHandlers() {
+    // Remove existing event listeners to prevent duplicates
+    const paginationControls = document.getElementById('paginationControls');
+    
+    // Use event delegation for better performance and reliability
+    paginationControls.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const target = e.target;
+        if (!target.classList.contains('page-link')) return;
+        
+        // Handle previous button
+        if (target.id === 'prevPage') {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+            return;
+        }
+        
+        // Handle next button
+        if (target.id === 'nextPage') {
+            const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+            return;
+        }
+        
+        // Handle page number clicks
+        const page = parseInt(target.getAttribute('data-page'));
+        if (page && page !== currentPage) {
+            currentPage = page;
+            renderTable();
+        }
+    });
+}
+
+// Track if handlers are already set up to prevent duplicates
+let sortHandlersSetup = false;
+
+// Setup sorting event handlers
+function setupSortingHandlers() {
+    // Only set up handlers once
+    if (sortHandlersSetup) {
+        return;
+    }
+    
+    document.querySelectorAll('.sortable').forEach(header => {
+        header.addEventListener('click', () => {
+            const sortField = header.getAttribute('data-sort');
+            
+            console.log('Sort clicked:', sortField, 'current:', currentSort.field, currentSort.direction);
+            
+            // Toggle direction if same field, otherwise default to ascending
+            if (currentSort.field === sortField) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = sortField;
+                currentSort.direction = sortField === 'last_cve_date' ? 'desc' : 'asc';
+            }
+            
+            console.log('New sort state:', currentSort.field, currentSort.direction);
+            
+            sortData();
+            currentPage = 1; // Reset to first page after sorting
+            renderTable();
+            updateSortIndicators();
+        });
+    });
+    
+    sortHandlersSetup = true;
+}
+
+// Sort data based on current sort settings
+function sortData() {
+    sortedData.sort((a, b) => {
+        let valueA, valueB;
+        
+        switch (currentSort.field) {
+            case 'rank':
+                valueA = cnaData.cna_list.findIndex(original => original.name === a.name) + 1;
+                valueB = cnaData.cna_list.findIndex(original => original.name === b.name) + 1;
+                break;
+            case 'name':
+                valueA = a.name.toLowerCase();
+                valueB = b.name.toLowerCase();
+                break;
+            case 'count':
+                valueA = a.count;
+                valueB = b.count;
+                break;
+            case 'years_active':
+                valueA = a.years_active;
+                valueB = b.years_active;
+                break;
+            case 'last_cve_date':
+                valueA = new Date(a.last_cve_date);
+                valueB = new Date(b.last_cve_date);
+                break;
+            case 'activity_status':
+                valueA = a.activity_status;
+                valueB = b.activity_status;
+                break;
+            default:
+                return 0;
+        }
+        
+        let comparison = 0;
+        if (valueA > valueB) comparison = 1;
+        if (valueA < valueB) comparison = -1;
+        
+        return currentSort.direction === 'desc' ? -comparison : comparison;
+    });
+}
+
+// Update sort indicators in table headers
+function updateSortIndicators() {
+    document.querySelectorAll('.sort-indicator').forEach(indicator => {
+        indicator.textContent = '';
+    });
+    
+    const activeHeader = document.querySelector(`[data-sort="${currentSort.field}"] .sort-indicator`);
+    if (activeHeader) {
+        activeHeader.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+    }
+}
+
+// Permalink functionality
+function generatePermalink() {
+    const permalink = `${window.location.origin}${window.location.pathname}`;
+    
+    const resultDiv = document.getElementById('permalinkResult');
+    const input = document.getElementById('permalinkInput');
+    
+    input.value = permalink;
+    resultDiv.style.display = 'block';
+}
+
+function copyPermalink() {
+    const input = document.getElementById('permalinkInput');
+    input.select();
+    document.execCommand('copy');
+    
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.style.backgroundColor = '#198754';
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.style.backgroundColor = '';
+    }, 2000);
+}
+
+// Export functions
+function exportCnaCSV() {
+    if (!cnaData || !cnaData.cna_list) {
+        alert('No data available for export');
+        return;
+    }
+    
+    const totalCves = cnaData.cna_list.reduce((sum, cna) => sum + cna.count, 0);
+    const activeCnas = cnaData.cna_list.filter(cna => cna.activity_status === 'Active').length;
+    
+    let csv = 'CNA Intelligence Dashboard Export\n\n';
+    csv += 'Rank,CNA Name,Official Status,CVEs Assigned,Years Active,Last CVE Date,Activity Status\n';
+    
+    cnaData.cna_list.forEach((cna, index) => {
+        const lastCveDate = new Date(cna.last_cve_date).toLocaleDateString('en-US');
+        const officialStatus = cna.is_official !== false ? 'Official' : 'Unofficial';
+        csv += `${index + 1},"${cna.name}",${officialStatus},${cna.count},${cna.years_active},${lastCveDate},${cna.activity_status}\n`;
+    });
+    
+    csv += '\n\nSummary Statistics\n';
+    csv += `Total CNAs,${cnaData.cna_list.length}\n`;
+    csv += `Active CNAs,${activeCnas}\n`;
+    csv += `Inactive CNAs,${cnaData.cna_list.length - activeCnas}\n`;
+    csv += `Total CVEs Assigned,${totalCves.toLocaleString()}\n`;
+    csv += `Average CVEs per CNA,${Math.round(totalCves / cnaData.cna_list.length)}\n`;
+    
+    downloadFile(csv, 'cna-comprehensive-analysis.csv', 'text/csv');
+}
+
+function exportCnaJSON() {
+    if (!cnaData) {
+        alert('No data available for export');
+        return;
+    }
+    
+    const totalCves = cnaData.cna_list.reduce((sum, cna) => sum + cna.count, 0);
+    const activeCnas = cnaData.cna_list.filter(cna => cna.activity_status === 'Active').length;
+    
+    const exportData = {
+        metadata: {
+            exportDate: new Date().toISOString(),
+            dataSource: 'CVE.ICU CNA Intelligence Dashboard',
+            totalCnas: cnaData.cna_list.length,
+            activeCnas: activeCnas,
+            inactiveCnas: cnaData.cna_list.length - activeCnas,
+            totalCves: totalCves,
+            averageCvesPerCna: Math.round(totalCves / cnaData.cna_list.length)
+        },
+        cnaData: cnaData.cna_list.map((cna, index) => ({
+            rank: index + 1,
+            name: cna.name,
+            officialStatus: cna.is_official !== false ? 'Official' : 'Unofficial',
+            cvesAssigned: cna.count,
+            yearsActive: cna.years_active,
+            firstCveYear: cna.first_cve_year,
+            lastCveYear: cna.last_cve_year,
+            lastCveDate: cna.last_cve_date,
+            daysSinceLastCve: cna.days_since_last_cve,
+            activityStatus: cna.activity_status,
+            severityDistribution: cna.severity_distribution,
+            topCweTypes: cna.top_cwe_types
+        }))
+    };
+    
+    const jsonStr = JSON.stringify(exportData, null, 2);
+    downloadFile(jsonStr, 'cna-comprehensive-analysis.json', 'application/json');
+}
+
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+function generatePermalink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Permalink copied to clipboard!');
+    }).catch(() => {
+        alert(`Permalink: ${url}`);
+    });
+}
+
+// Error state
+function showErrorState() {
+    document.getElementById('activeCnas').textContent = 'Error';
+    document.getElementById('highVolumeCnas').textContent = 'Error';
+    document.getElementById('medianYearsActive').textContent = 'Error';
+    document.getElementById('marketConcentration').textContent = 'Error';
+    
+    document.getElementById('cnaTableBody').innerHTML = 
+        '<tr><td colspan="7" class="text-center text-danger">Error loading CNA data. Please refresh the page.</td></tr>';
+}
 </script>
 {% endblock %}
