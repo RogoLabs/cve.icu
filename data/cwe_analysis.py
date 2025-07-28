@@ -24,15 +24,13 @@ class CWEAnalyzer:
         
         # Aggregate CWE data from all years
         combined_cwe = {}
-        total_cves_with_cwe = 0
         
         for year_data in all_year_data:
             if 'cwe' in year_data and 'top_cwes' in year_data['cwe']:
-                total_cves_with_cwe += year_data['cwe'].get('total_cves_with_cwe', 0)
-                
                 # Aggregate CWE counts
                 for cwe_entry in year_data['cwe']['top_cwes']:
-                    cwe_id = cwe_entry['id']
+                    cwe_full = cwe_entry['cwe']  # e.g., "CWE-79"
+                    cwe_id = cwe_full.replace('CWE-', '') if cwe_full.startswith('CWE-') else cwe_full
                     count = cwe_entry['count']
                     
                     if cwe_id not in combined_cwe:
@@ -46,6 +44,9 @@ class CWEAnalyzer:
         
         # Sort by count and get top CWEs
         top_cwes = sorted(combined_cwe.values(), key=lambda x: x['count'], reverse=True)
+        
+        # Calculate total CVEs with CWE from aggregated counts
+        total_cves_with_cwe = sum(cwe['count'] for cwe in combined_cwe.values())
         
         # Add common CWE descriptions for better understanding
         cwe_descriptions = {
@@ -84,7 +85,7 @@ class CWEAnalyzer:
             'generated_at': datetime.now().isoformat(),
             'total_cves_with_cwe': total_cves_with_cwe,
             'total_unique_cwes': len(combined_cwe),
-            'top_cwes': top_cwes[:50],  # Top 50 CWEs
+            'top_cwes': top_cwes,  # All CWEs
             'top_cwes_limited': top_cwes[:20]  # Top 20 for charts
         }
         
@@ -137,23 +138,29 @@ class CWEAnalyzer:
         # Enhance CWE entries with descriptions
         enhanced_cwes = []
         for cwe in current_year_cwes:
-            cwe_id = cwe['id']
+            cwe_full = cwe['cwe']  # e.g., "CWE-79"
+            cwe_id = cwe_full.replace('CWE-', '') if cwe_full.startswith('CWE-') else cwe_full
             enhanced_cwe = cwe.copy()
+            enhanced_cwe['id'] = cwe_id  # Add id field for consistency
             
             if cwe_id in cwe_descriptions:
                 enhanced_cwe['description'] = cwe_descriptions[cwe_id]
                 enhanced_cwe['name'] = f"CWE-{cwe_id}: {cwe_descriptions[cwe_id]}"
             else:
                 enhanced_cwe['description'] = f"CWE-{cwe_id}"
+                enhanced_cwe['name'] = f"CWE-{cwe_id}"
             
             enhanced_cwes.append(enhanced_cwe)
+        
+        # Calculate total CVEs with CWE from individual counts
+        total_cves_with_cwe = sum(cwe['count'] for cwe in current_year_cwes)
         
         current_year_cwe_analysis = {
             'generated_at': datetime.now().isoformat(),
             'year': self.current_year,
-            'total_cves_with_cwe': cwe_data.get('total_cves_with_cwe', 0),
+            'total_cves_with_cwe': total_cves_with_cwe,
             'total_unique_cwes': len(current_year_cwes),
-            'top_cwes': enhanced_cwes[:50],  # Top 50 CWEs
+            'top_cwes': enhanced_cwes,  # All CWEs
             'top_cwes_limited': enhanced_cwes[:20]  # Top 20 for charts
         }
         

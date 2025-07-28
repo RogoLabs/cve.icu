@@ -9,19 +9,52 @@
 
 /* Root Variables - Design System Colors */
 :root {
+    /* Base Colors */
     --color-bg-primary: #f8f9fa;
+    --color-bg-secondary: #e9ecef;
     --color-bg-content: #ffffff;
     --color-bg-hover: #f8f9fa;
     --color-text: #212529;
     --color-text-primary: #212529;
     --color-text-secondary: #6c757d;
+    --color-text-muted: #adb5bd;
     --color-primary: #0d6efd;
     --color-primary-light: rgba(13, 110, 253, 0.1);
     --color-accent: #0d6efd;
     --color-border: #dee2e6;
+    --color-border-light: #f1f3f4;
     --color-success: #198754;
     --color-warning: #ffc107;
     --color-danger: #dc3545;
+    
+    /* Light Blue to Light Grey Visualization Palette */
+    --viz-color-1: #e3f2fd;  /* Very light blue */
+    --viz-color-2: #bbdefb;  /* Light blue */
+    --viz-color-3: #90caf9;  /* Medium light blue */
+    --viz-color-4: #64b5f6;  /* Medium blue */
+    --viz-color-5: #42a5f5;  /* Blue */
+    --viz-color-6: #2196f3;  /* Primary blue */
+    --viz-color-7: #1e88e5;  /* Darker blue */
+    --viz-color-8: #1976d2;  /* Dark blue */
+    --viz-color-9: #9e9e9e;  /* Medium grey */
+    --viz-color-10: #757575; /* Dark grey */
+    
+    /* Chart Color Palette - Light Blue to Grey Gradient */
+    --chart-primary: #2196f3;
+    --chart-secondary: #64b5f6;
+    --chart-tertiary: #90caf9;
+    --chart-quaternary: #bbdefb;
+    --chart-accent-1: #81c784;
+    --chart-accent-2: #ffb74d;
+    --chart-accent-3: #f06292;
+    --chart-grey-light: #e0e0e0;
+    --chart-grey-medium: #9e9e9e;
+    --chart-grey-dark: #616161;
+    
+    /* Semantic Colors */
+    --color-info: #17a2b8;
+    --color-light: #f8f9fa;
+    --color-dark: #343a40;
     
     /* Spacing */
     --spacing-xs: 0.25rem;
@@ -434,10 +467,186 @@ tbody tr:hover {
     position: relative;
     height: 400px;
     margin: var(--spacing-lg) 0;
+    background-color: var(--color-bg-content);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--color-border-light);
 }
 
 .chart-container canvas {
     max-height: 100%;
+}
+
+/* Chart Title Styling */
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+/* Visualization Components */
+.viz-card {
+    background-color: var(--color-bg-content);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--box-shadow);
+    transition: all 0.2s ease;
+}
+
+.viz-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-lg);
+    border-color: var(--color-primary-light);
+}
+
+.viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.viz-title {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.viz-subtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: var(--spacing-xs) 0 0 0;
+}
+
+/* Chart Legend Styling */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border-light);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* Data Table Styling for Charts */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+    font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.data-table th {
+    background-color: var(--color-bg-secondary);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    position: sticky;
+    top: 0;
+}
+
+.data-table tr:hover {
+    background-color: var(--color-bg-hover);
+}
+
+/* Metric Cards for Visualizations */
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.metric-card {
+    background: linear-gradient(135deg, var(--viz-color-1), var(--viz-color-2));
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--chart-primary), var(--chart-secondary));
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--chart-primary);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-xs);
+}
+
+.metric-change {
+    font-size: 0.8rem;
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.metric-change.positive {
+    color: var(--color-success);
+}
+
+.metric-change.negative {
+    color: var(--color-danger);
+}
+
+.metric-change.neutral {
+    color: var(--color-text-muted);
 }
 
 /* Loading States */
@@ -667,7 +876,7 @@ tbody tr:hover {
     margin-top: 2px;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for visualizations */
 @media (max-width: 768px) {
     .insight-card {
         flex-direction: column;
@@ -688,6 +897,43 @@ tbody tr:hover {
     .export-buttons .btn {
         flex: 1;
         min-width: 120px;
+    }
+    
+    .metric-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-sm);
+    }
+    
+    .metric-card {
+        padding: var(--spacing-md);
+    }
+    
+    .metric-value {
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        height: 300px;
+        padding: var(--spacing-sm);
+    }
+    
+    .viz-card {
+        padding: var(--spacing-md);
+    }
+    
+    .chart-legend {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .data-table {
+        font-size: 0.8rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: var(--spacing-xs) var(--spacing-sm);
     }
 }
 
@@ -767,5 +1013,26 @@ tbody tr:hover {
     
     .chart-container {
         height: 250px;
+        padding: var(--spacing-xs);
+    }
+    
+    .metric-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metric-value {
+        font-size: 1.25rem;
+    }
+    
+    .viz-title {
+        font-size: 1.1rem;
+    }
+    
+    .chart-legend {
+        gap: var(--spacing-xs);
+    }
+    
+    .legend-item {
+        font-size: 0.75rem;
     }
 }
