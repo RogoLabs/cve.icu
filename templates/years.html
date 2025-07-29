@@ -1,0 +1,1738 @@
+{% extends "base.html" %}
+
+{% block title %}CVE Year Analysis - CVE.ICU{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CVE Year Analysis</h1>
+    <small class="text-muted d-block mb-3">
+        Comprehensive analysis of CVE data across {{ available_years|length }} years (1999-{{ current_year }})
+    </small>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number" id="selectedCount">1</div>
+        <div class="stat-label">Years Selected</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="selectedCvesTotal">Loading...</div>
+        <div class="stat-label">CVEs in Selection</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="dailyAverage">Loading...</div>
+        <div class="stat-label">Daily Average</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="totalCvesGlobal">Loading...</div>
+        <div class="stat-label">Total All CVEs</div>
+    </div>
+</div>
+
+<!-- Year Selection Section -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">Select Years to Compare</h2>
+    </div>
+    <div class="card-body py-3">
+        <!-- Year Grid -->
+        <div class="year-grid" id="yearSelector">
+            {% for year in available_years %}
+            <label class="year-item">
+                <input type="checkbox" value="{{ year }}">
+                <span class="year-label">{{ year }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        
+        <!-- Quick Selection Buttons -->
+        <div class="quick-select-buttons mt-3" style="text-align: center;">
+            <button class="quick-select-btn" onclick="selectRecentYears()">Recent 5 Years</button>
+            <button class="quick-select-btn" onclick="selectDecade('2020s')">2020s</button>
+            <button class="quick-select-btn" onclick="selectDecade('2010s')">2010s</button>
+            <button class="quick-select-btn" onclick="selectAllYears()">All Years</button>
+            <button class="quick-select-btn secondary" onclick="clearSelection()">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">CVE Trends Over Time</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="chart-container" style="height: 300px;">
+            <canvas id="yearlyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Charts Grid -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title mb-0" style="font-size: 1.1rem;">CVSS Score Distribution</h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Top CVE Numbering Authorities (CNAs)</h3>
+                <small class="text-muted">Showing top 15 CNAs by CVE count</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="vendorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Charts Row 2 -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Top CWE Vulnerability Types</h3>
+                <small class="text-muted">Showing top 15 vulnerability types by count</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cweChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Top Affected Vendors</h3>
+                <small class="text-muted">Showing top 15 vendors by vulnerability count</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="affectedVendorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Charts Row 3 -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Vulnerability Analysis Status</h3>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="analysisStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Reference Types Distribution</h3>
+                <small class="text-muted">Showing top 10 reference types by count</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="referenceTagsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Insights Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📊 Smart Insights</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="row" id="smartInsights">
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-content">
+                        <h4 class="insight-title">Publication Peak</h4>
+                        <p class="insight-text" id="peakInsight">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-content">
+                        <h4 class="insight-title">Top Vulnerability</h4>
+                        <p class="insight-text" id="topVulnInsight">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">⚡</div>
+                    <div class="insight-content">
+                        <h4 class="insight-title">Analysis Status</h4>
+                        <p class="insight-text" id="analysisInsight">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export and Share Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📤 Export & Share</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="export-buttons">
+            <button class="btn btn-primary btn-sm" onclick="exportData('csv')">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="exportData('json')">📋 Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="generatePermalink()">🔗 Share Link</button>
+            <button class="btn btn-secondary btn-sm" onclick="printReport()">🖨️ Print Report</button>
+        </div>
+        <div class="permalink-result mt-2" id="permalinkResult" style="display: none;">
+            <input type="text" class="form-control" id="permalinkInput" readonly>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="copyPermalink()">Copy Link</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Removed all console.log statements for production
+
+// Global variables
+let yearData = {};
+let selectedYears = [];
+let selectedCvesTotal = 0;
+let totalDays = 0;
+let yearlyChart = null;
+let severityChart = null;
+let vendorChart = null;
+let cweChart = null;
+let affectedVendorChart = null;
+let analysisStatusChart = null;
+let referenceTagsChart = null;
+
+// Debug function
+function debugLog(message, data = null) {
+    console.log(`[CVE Debug] ${message}`, data || '');
+}
+
+// Initialize page
+async function initializePage() {
+    debugLog('Starting page initialization...');
+    
+    try {
+        await loadYearData();
+    
+    // Initialize year selector event listeners
+    initializeYearSelector();
+    
+    // Load URL parameters first (this may override default selection)
+    loadUrlParameters();
+    
+    debugLog(`After URL parameters, selectedYears length: ${selectedYears.length}`);
+    
+    // Note: Default year selection will be handled by ensureDefaultYearSelection() with delay
+    
+        // Enhance stat cards with additional features
+        enhanceStatCards();
+        
+        // Ensure default year selection after DOM is fully ready
+        setTimeout(() => {
+            debugLog('Setting up default year selection with delay...');
+            ensureDefaultYearSelection();
+        }, 500);
+        
+        debugLog('Page initialization completed successfully');
+    } catch (error) {
+        debugLog('Error during page initialization:', error);
+        console.error('Failed to initialize page:', error);
+    }
+}
+
+// Ensure default year selection works properly
+function ensureDefaultYearSelection() {
+    debugLog(`Current selectedYears: ${selectedYears}`);
+    
+    // ALWAYS reset to just 2025, regardless of what's currently selected
+    const defaultYear = 2025;
+    debugLog(`Forcing selection to only year: ${defaultYear}`);
+    
+    const yearCheckbox = document.querySelector(`#yearSelector input[value="${defaultYear}"]`);
+    
+    if (yearCheckbox) {
+        debugLog('Found 2025 checkbox, clearing all and selecting only 2025...');
+        
+        // Clear ALL selections first
+        const allCheckboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+        allCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Clear the selectedYears array
+        selectedYears = [];
+        
+        // Select ONLY 2025
+        yearCheckbox.checked = true;
+        
+        // Update the UI
+        updateSelectedYears();
+        
+        debugLog(`Successfully reset to only year ${defaultYear}. selectedYears: ${selectedYears}`);
+    } else {
+        debugLog(`ERROR: Could not find checkbox for year ${defaultYear}`);
+        // List all available checkboxes for debugging
+        const allCheckboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+        debugLog(`Available year checkboxes: ${Array.from(allCheckboxes).map(cb => cb.value).join(', ')}`);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializePage);
+
+// Load year data from JSON
+async function loadYearData() {
+    try {
+        debugLog('Loading summary data...');
+        const summaryResponse = await fetch('data/cve_all.json');
+        if (!summaryResponse.ok) {
+            throw new Error(`Failed to load summary data: ${summaryResponse.status}`);
+        }
+        const summaryData = await summaryResponse.json();
+        debugLog('Summary data loaded successfully');
+        
+        // Create year data structure from available years (1999-2025)
+        const availableYears = [];
+        for (let year = 1999; year <= 2025; year++) {
+            availableYears.push(year);
+        }
+        
+        debugLog(`Loading data for ${availableYears.length} years...`);
+        // Load individual year data
+        for (const year of availableYears) {
+            try {
+                const response = await fetch(`data/cve_${year}.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    yearData[year] = data;
+                }
+            } catch (error) {
+                console.warn(`Could not load data for ${year}:`, error);
+            }
+        }
+        
+        console.log('Year data loaded:', Object.keys(yearData).length, 'years');
+    } catch (error) {
+        console.error('Error loading year data:', error);
+    }
+}
+
+// Initialize year selector
+function initializeYearSelector() {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    selectedYears = [];
+    
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedYears.push(parseInt(checkbox.value));
+        }
+        
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                selectedYears.push(parseInt(this.value));
+            } else {
+                selectedYears = selectedYears.filter(year => year !== parseInt(this.value));
+            }
+            selectedYears.sort((a, b) => a - b);
+            updateStatistics();
+            updateCharts();
+        });
+    });
+    
+    selectedYears.sort((a, b) => a - b);
+}
+
+// Update statistics
+function updateStatistics() {
+    if (Object.keys(yearData).length === 0) return;
+    
+    let totalCvesGlobal = 0;
+    let selectedCvesTotal = 0;
+    let totalDays = 0;
+    
+    // Calculate global totals
+    Object.keys(yearData).forEach(year => {
+        totalCvesGlobal += yearData[year].total_cves || 0;
+    });
+    
+    // Calculate selected years totals
+    selectedYears.forEach(year => {
+        const yearDataItem = yearData[year];
+        if (yearDataItem) {
+            selectedCvesTotal += yearDataItem.total_cves || 0;
+        }
+    });
+    
+    // Calculate daily average based on actual calendar days
+    let dailyAverage = 0;
+    if (selectedYears.length > 0 && selectedCvesTotal > 0) {
+        let totalCalendarDays = 0;
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        
+        selectedYears.forEach(year => {
+            if (year === currentYear) {
+                // For current year, use days elapsed so far
+                const startOfYear = new Date(year, 0, 1);
+                const elapsedDays = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+                totalCalendarDays += elapsedDays;
+            } else {
+                // For past years, use full year (365 or 366 days)
+                const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+                totalCalendarDays += isLeapYear ? 366 : 365;
+            }
+        });
+        
+        if (totalCalendarDays > 0) {
+            dailyAverage = Math.round(selectedCvesTotal / totalCalendarDays);
+        }
+        
+        // Update totalDays for debug output
+        totalDays = totalCalendarDays;
+    }
+    
+    // Debug logging (remove after fixing)
+    const debugInfo = {
+        selectedYears: selectedYears,
+        selectedCvesTotal: selectedCvesTotal,
+        totalDays: totalDays,
+        dailyAverage: dailyAverage
+    };
+    
+    // Add elapsed days info for single year selections
+    if (selectedYears.length === 1) {
+        const year = selectedYears[0];
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        
+        if (year === currentYear) {
+            const startOfYear = new Date(year, 0, 1);
+            const elapsedDays = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+            debugInfo.elapsedDaysInCurrentYear = elapsedDays;
+            debugInfo.calculationMethod = 'elapsed days in current year';
+        } else {
+            const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            debugInfo.daysInYear = isLeapYear ? 366 : 365;
+            debugInfo.calculationMethod = 'full year (past year)';
+        }
+    }
+    
+    console.log('Daily Average Debug:', debugInfo);
+    
+    // Update DOM elements
+    const selectedCountElement = document.getElementById('selectedCount');
+    const selectedCvesTotalElement = document.getElementById('selectedCvesTotal');
+    const dailyAverageElement = document.getElementById('dailyAverage');
+    const totalCvesGlobalElement = document.getElementById('totalCvesGlobal');
+    
+    if (selectedCountElement) selectedCountElement.textContent = selectedYears.length;
+    if (selectedCvesTotalElement) selectedCvesTotalElement.textContent = selectedCvesTotal.toLocaleString();
+    if (dailyAverageElement) dailyAverageElement.textContent = dailyAverage.toLocaleString();
+    if (totalCvesGlobalElement) totalCvesGlobalElement.textContent = totalCvesGlobal.toLocaleString();
+}
+
+// Update charts
+function updateCharts() {
+    if (Object.keys(yearData).length === 0 || selectedYears.length === 0) return;
+    
+    updateYearlyChart();
+    updateSeverityChart();
+    updateVendorChart();
+    updateCweChart();
+    updateAffectedVendorChart();
+    updateAnalysisStatusChart();
+    updateReferenceTagsChart();
+    updateSmartInsights();
+}
+
+// Update yearly chart
+function updateYearlyChart() {
+    const ctx = document.getElementById('yearlyChart');
+    if (!ctx) return;
+    
+    if (yearlyChart) {
+        yearlyChart.destroy();
+    }
+    
+    // Check if 2-5 consecutive years are selected for monthly view
+    if (selectedYears.length >= 2 && selectedYears.length <= 5) {
+        // Check if years are consecutive
+        const sortedYears = [...selectedYears].sort((a, b) => a - b);
+        let isConsecutive = true;
+        for (let i = 1; i < sortedYears.length; i++) {
+            if (sortedYears[i] - sortedYears[i-1] !== 1) {
+                isConsecutive = false;
+                break;
+            }
+        }
+        
+        if (isConsecutive) {
+            // Create monthly chart
+            const monthlyData = [];
+            const monthlyLabels = [];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            sortedYears.forEach(year => {
+                const yearDataForChart = yearData[year];
+                if (yearDataForChart && yearDataForChart.date_data && yearDataForChart.date_data.monthly_distribution) {
+                    const monthlyDist = yearDataForChart.date_data.monthly_distribution;
+                    for (let month = 1; month <= 12; month++) {
+                        const cveCount = monthlyDist[month.toString()] || 0;
+                        // Only add months with CVE data (> 0)
+                        if (cveCount > 0) {
+                            monthlyLabels.push(`${monthNames[month-1]} ${year}`);
+                            monthlyData.push(cveCount);
+                        }
+                    }
+                }
+            });
+            
+            if (monthlyData.length > 0) {
+                yearlyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: `Monthly CVEs (${sortedYears[0]}-${sortedYears[sortedYears.length-1]})`,
+                            data: monthlyData,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            title: {
+                                display: true,
+                                text: `Monthly CVE Publications (${sortedYears[0]}-${sortedYears[sortedYears.length-1]})`
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'CVEs Published'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                },
+                                ticks: {
+                                    maxTicksLimit: 24 // Show every other month for readability
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+                return;
+            }
+        }
+    }
+    
+    // Check if only one year is selected for monthly view
+    if (selectedYears.length === 1) {
+        const year = selectedYears[0];
+        const yearDataForChart = yearData[year];
+        
+        if (yearDataForChart && yearDataForChart.date_data && yearDataForChart.date_data.monthly_distribution) {
+            // Create monthly chart for single year
+            const monthlyDist = yearDataForChart.date_data.monthly_distribution;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyData = [];
+            const monthlyLabels = [];
+            
+            for (let month = 1; month <= 12; month++) {
+                const cveCount = monthlyDist[month.toString()] || 0;
+                // Only add months with CVE data (> 0) or if it's a past month
+                if (cveCount > 0) {
+                    monthlyLabels.push(monthNames[month-1]);
+                    monthlyData.push(cveCount);
+                }
+            }
+            
+            if (monthlyData.length > 0) {
+                yearlyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: `Monthly CVEs - ${year}`,
+                            data: monthlyData,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            title: {
+                                display: true,
+                                text: `Monthly CVE Publications - ${year}`
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'CVEs Published'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+                return;
+            }
+        }
+    }
+    
+    // Default yearly chart for multiple years
+    const labels = selectedYears;
+    const data = selectedYears.map(year => yearData[year]?.total_cves || 0);
+    
+    yearlyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'CVEs Published',
+                data: data,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'CVE Publications by Year'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'CVEs Published'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update score distribution chart
+function updateSeverityChart() {
+    const ctx = document.getElementById('severityChart');
+    if (!ctx) return;
+    
+    if (severityChart) {
+        severityChart.destroy();
+    }
+    
+    // Aggregate score distribution data by CVSS version from selected years
+    const versionBinnedData = {};
+    
+    // Define score bins: 0-0.99, 1-1.99, 2-2.99, ..., 9-9.99, 10.0
+    const scoreBins = [
+        { label: '0-0.99', min: 0, max: 0.99 },
+        { label: '1-1.99', min: 1, max: 1.99 },
+        { label: '2-2.99', min: 2, max: 2.99 },
+        { label: '3-3.99', min: 3, max: 3.99 },
+        { label: '4-4.99', min: 4, max: 4.99 },
+        { label: '5-5.99', min: 5, max: 5.99 },
+        { label: '6-6.99', min: 6, max: 6.99 },
+        { label: '7-7.99', min: 7, max: 7.99 },
+        { label: '8-8.99', min: 8, max: 8.99 },
+        { label: '9-9.99', min: 9, max: 9.99 },
+        { label: '10.0', min: 10, max: 10 }
+    ];
+    
+    selectedYears.forEach(year => {
+        const yearCvssData = yearData[year]?.cvss || {};
+        
+        Object.keys(yearCvssData).forEach(version => {
+            const versionData = yearCvssData[version];
+            if (versionData && versionData.score_distribution && version !== 'unknown') {
+                if (!versionBinnedData[version]) {
+                    versionBinnedData[version] = {};
+                    // Initialize all bins to 0
+                    scoreBins.forEach(bin => {
+                        versionBinnedData[version][bin.label] = 0;
+                    });
+                }
+                
+                Object.keys(versionData.score_distribution).forEach(score => {
+                    const scoreValue = parseFloat(score);
+                    if (scoreValue > 0) { // Exclude 0.0 scores (unknown/unscored)
+                        // Find the appropriate bin for this score
+                        const bin = scoreBins.find(b => scoreValue >= b.min && scoreValue <= b.max);
+                        if (bin) {
+                            versionBinnedData[version][bin.label] += versionData.score_distribution[score];
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
+    // Filter out bins with no data across all versions
+    const activeBins = scoreBins.filter(bin => {
+        return Object.keys(versionBinnedData).some(version => 
+            versionBinnedData[version][bin.label] > 0
+        );
+    });
+    
+    const activeBinLabels = activeBins.map(bin => bin.label);
+    
+    // Define colors using different shades of blue for consistency
+    const versionColors = {
+        'v2.0': '#1e3a8a',   // Dark blue
+        'v3.0': '#3b82f6',   // Medium blue  
+        'v3.1': '#60a5fa',   // Light blue
+        'v4.0': '#93c5fd'    // Very light blue (if it exists)
+    };
+    
+    // Create datasets for each version using binned data (only active bins)
+    const datasets = Object.keys(versionBinnedData).map(version => {
+        const data = activeBinLabels.map(binLabel => versionBinnedData[version][binLabel] || 0);
+        return {
+            label: `CVSS ${version}`,
+            data: data,
+            backgroundColor: versionColors[version] || '#6c757d',
+            borderColor: versionColors[version] || '#6c757d',
+            borderWidth: 1
+        };
+    });
+    
+    severityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: activeBinLabels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'CVSS Score'
+                    },
+                    ticks: {
+                        maxTicksLimit: 20 // Limit number of score labels for readability
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of CVEs'
+                    },
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+}
+
+// Update CNA chart
+function updateVendorChart() {
+    const ctx = document.getElementById('vendorChart');
+    if (!ctx) return;
+    
+    if (vendorChart) {
+        vendorChart.destroy();
+    }
+    
+    // Aggregate CNA data from selected years
+    const cnaData = {};
+    
+    selectedYears.forEach(year => {
+        const yearVendorData = yearData[year]?.vendors?.cna_assigners || [];
+        yearVendorData.forEach(cna => {
+            if (cna.name && cna.count) {
+                cnaData[cna.name] = (cnaData[cna.name] || 0) + cna.count;
+            }
+        });
+    });
+    
+    // Sort CNAs by count and take top 15
+    const sortedCnas = Object.entries(cnaData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15);
+    
+    const cnaNames = sortedCnas.map(([name]) => name);
+    const cnaCounts = sortedCnas.map(([,count]) => count);
+    
+    vendorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cnaNames,
+            datasets: [{
+                label: 'CVEs Assigned',
+                data: cnaCounts,
+                backgroundColor: '#60a5fa',
+                borderColor: '#60a5fa',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Update CWE chart
+function updateCweChart() {
+    const ctx = document.getElementById('cweChart');
+    if (!ctx) return;
+    
+    if (cweChart) {
+        cweChart.destroy();
+    }
+    
+    // Aggregate CWE data from selected years
+    const cweData = {};
+    
+    selectedYears.forEach(year => {
+        const yearCweData = yearData[year]?.cwe?.top_cwes || [];
+        yearCweData.forEach(cwe => {
+            if (cwe.cwe && cwe.count) {
+                cweData[cwe.cwe] = (cweData[cwe.cwe] || 0) + cwe.count;
+            }
+        });
+    });
+    
+    // Sort CWEs by count and take top 15
+    const sortedCwes = Object.entries(cweData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15);
+    
+    // CWE descriptions for common ones
+    const cweDescriptions = {
+        'CWE-79': 'Cross-site Scripting (XSS)',
+        'CWE-89': 'SQL Injection',
+        'CWE-74': 'Command Injection',
+        'CWE-352': 'Cross-Site Request Forgery',
+        'CWE-862': 'Missing Authorization',
+        'CWE-94': 'Code Injection',
+        'CWE-119': 'Buffer Overflow',
+        'CWE-120': 'Buffer Copy without Checking Size',
+        'CWE-787': 'Out-of-bounds Write',
+        'CWE-284': 'Improper Access Control',
+        'CWE-22': 'Path Traversal',
+        'CWE-476': 'NULL Pointer Dereference',
+        'CWE-20': 'Improper Input Validation',
+        'CWE-125': 'Out-of-bounds Read',
+        'CWE-200': 'Information Exposure'
+    };
+    
+    const cweLabels = sortedCwes.map(([cwe]) => {
+        const description = cweDescriptions[cwe];
+        return description ? `${cwe}: ${description}` : cwe;
+    });
+    const cweCounts = sortedCwes.map(([,count]) => count);
+    
+    cweChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cweLabels,
+            datasets: [{
+                label: 'CVE Count',
+                data: cweCounts,
+                backgroundColor: '#60a5fa',
+                borderColor: '#60a5fa',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update affected vendor chart
+function updateAffectedVendorChart() {
+    const ctx = document.getElementById('affectedVendorChart');
+    if (!ctx) return;
+    
+    if (affectedVendorChart) {
+        affectedVendorChart.destroy();
+    }
+    
+    // Aggregate affected vendor data from selected years
+    const vendorData = {};
+    
+    selectedYears.forEach(year => {
+        const yearVendorData = yearData[year]?.vendors?.cpe_vendors || [];
+        yearVendorData.forEach(vendor => {
+            if (vendor.name && vendor.count) {
+                vendorData[vendor.name] = (vendorData[vendor.name] || 0) + vendor.count;
+            }
+        });
+    });
+    
+    // Sort vendors by count and take top 15
+    const sortedVendors = Object.entries(vendorData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15);
+    
+    const vendorNames = sortedVendors.map(([name]) => name);
+    const vendorCounts = sortedVendors.map(([,count]) => count);
+    
+    affectedVendorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: vendorNames,
+            datasets: [{
+                label: 'Vulnerabilities Found',
+                data: vendorCounts,
+                backgroundColor: '#60a5fa',
+                borderColor: '#60a5fa',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update analysis status chart
+function updateAnalysisStatusChart() {
+    const ctx = document.getElementById('analysisStatusChart');
+    if (!ctx) return;
+    
+    if (analysisStatusChart) {
+        analysisStatusChart.destroy();
+    }
+    
+    // Aggregate analysis status data from selected years
+    const statusData = {};
+    
+    selectedYears.forEach(year => {
+        const yearStatusData = yearData[year]?.metadata?.vulnerability_status || [];
+        yearStatusData.forEach(status => {
+            if (status.status && status.count) {
+                statusData[status.status] = (statusData[status.status] || 0) + status.count;
+            }
+        });
+    });
+    
+    // Sort status data by count (descending) like other charts
+    const sortedStatus = Object.entries(statusData)
+        .sort(([,a], [,b]) => b - a);
+    
+    const statusLabels = sortedStatus.map(([status]) => status);
+    const statusCounts = sortedStatus.map(([,count]) => count);
+    
+    // Use single consistent blue color like other charts
+    const backgroundColor = '#60a5fa';
+    const backgroundColors = statusLabels.map(() => backgroundColor);
+    
+    analysisStatusChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusCounts,
+                backgroundColor: backgroundColors,
+                borderColor: backgroundColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // Makes it horizontal
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of CVEs'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Analysis Status'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Hide legend for bar charts to match other charts
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.parsed.x.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update reference tags chart
+function updateReferenceTagsChart() {
+    const ctx = document.getElementById('referenceTagsChart');
+    if (!ctx) return;
+    
+    if (referenceTagsChart) {
+        referenceTagsChart.destroy();
+    }
+    
+    // Aggregate reference tags data from selected years
+    const tagsData = {};
+    
+    selectedYears.forEach(year => {
+        const yearTagsData = yearData[year]?.metadata?.reference_tags || [];
+        yearTagsData.forEach(tag => {
+            if (tag.tag && tag.count) {
+                tagsData[tag.tag] = (tagsData[tag.tag] || 0) + tag.count;
+            }
+        });
+    });
+    
+    // Sort tags by count and take top 10
+    const sortedTags = Object.entries(tagsData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10);
+    
+    const tagLabels = sortedTags.map(([tag]) => tag);
+    const tagCounts = sortedTags.map(([,count]) => count);
+    
+    referenceTagsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: tagLabels,
+            datasets: [{
+                label: 'Reference Count',
+                data: tagCounts,
+                backgroundColor: '#60a5fa',
+                borderColor: '#60a5fa',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update smart insights
+function updateSmartInsights() {
+    // Publication Peak Insight
+    let peakDay = null;
+    let peakCount = 0;
+    
+    selectedYears.forEach(year => {
+        const dailyAnalysis = yearData[year]?.date_data?.daily_analysis;
+        if (dailyAnalysis?.highest_day && dailyAnalysis.highest_day.count > peakCount) {
+            peakCount = dailyAnalysis.highest_day.count;
+            peakDay = dailyAnalysis.highest_day.date;
+        }
+    });
+    
+    const peakInsight = document.getElementById('peakInsight');
+    if (peakInsight && peakDay) {
+        const date = new Date(peakDay).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+        peakInsight.textContent = `${date} with ${peakCount.toLocaleString()} CVEs published`;
+    }
+    
+    // Top Vulnerability Type Insight
+    const cweData = {};
+    selectedYears.forEach(year => {
+        const yearCweData = yearData[year]?.cwe?.top_cwes || [];
+        yearCweData.forEach(cwe => {
+            if (cwe.cwe && cwe.count) {
+                cweData[cwe.cwe] = (cweData[cwe.cwe] || 0) + cwe.count;
+            }
+        });
+    });
+    
+    const topCwe = Object.entries(cweData).sort(([,a], [,b]) => b - a)[0];
+    const topVulnInsight = document.getElementById('topVulnInsight');
+    if (topVulnInsight && topCwe) {
+        const cweDescriptions = {
+            'CWE-79': 'Cross-site Scripting (XSS)',
+            'CWE-89': 'SQL Injection',
+            'CWE-74': 'Command Injection'
+        };
+        const description = cweDescriptions[topCwe[0]] || 'Vulnerability';
+        topVulnInsight.textContent = `${topCwe[0]} (${description}) with ${topCwe[1].toLocaleString()} occurrences`;
+    }
+    
+    // Analysis Status Insight
+    const statusData = {};
+    selectedYears.forEach(year => {
+        const yearStatusData = yearData[year]?.metadata?.vulnerability_status || [];
+        yearStatusData.forEach(status => {
+            if (status.status && status.count) {
+                statusData[status.status] = (statusData[status.status] || 0) + status.count;
+            }
+        });
+    });
+    
+    const totalCves = Object.values(statusData).reduce((a, b) => a + b, 0);
+    const analyzedCount = statusData['Analyzed'] || 0;
+    const analysisPercentage = totalCves > 0 ? ((analyzedCount / totalCves) * 100).toFixed(1) : 0;
+    
+    const analysisInsight = document.getElementById('analysisInsight');
+    if (analysisInsight) {
+        analysisInsight.textContent = `${analysisPercentage}% analyzed (${analyzedCount.toLocaleString()} of ${totalCves.toLocaleString()} CVEs)`;
+    }
+}
+
+// Export functionality
+function exportData(format) {
+    const data = {
+        selectedYears: selectedYears,
+        totalCves: selectedCvesTotal,
+        dailyAverage: Math.round(selectedCvesTotal / totalDays),
+        exportDate: new Date().toISOString(),
+        yearData: {}
+    };
+    
+    // Include data for selected years only
+    selectedYears.forEach(year => {
+        if (yearData[year]) {
+            data.yearData[year] = yearData[year];
+        }
+    });
+    
+    if (format === 'csv') {
+        exportCSV(data);
+    } else if (format === 'json') {
+        exportJSON(data);
+    }
+}
+
+function exportCSV(data) {
+    // Create comprehensive CSV with data from all charts
+    let csv = '';
+    
+    // 1. Basic Year Statistics
+    csv += 'YEAR STATISTICS\n';
+    csv += 'Year,Total CVEs,Daily Average\n';
+    selectedYears.forEach(year => {
+        const yearTotal = yearData[year]?.total_cves || 0;
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        let dailyAvg = 0;
+        
+        if (year === currentYear) {
+            const startOfYear = new Date(year, 0, 1);
+            const elapsedDays = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+            dailyAvg = Math.round(yearTotal / elapsedDays);
+        } else {
+            const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            dailyAvg = Math.round(yearTotal / (isLeapYear ? 366 : 365));
+        }
+        
+        csv += `${year},${yearTotal},${dailyAvg}\n`;
+    });
+    
+    // 2. Top CNAs
+    csv += '\nTOP CVE NUMBERING AUTHORITIES\n';
+    csv += 'CNA,CVE Count\n';
+    const cnaData = {};
+    selectedYears.forEach(year => {
+        const yearCnaData = yearData[year]?.cna_assigners || [];
+        yearCnaData.forEach(cna => {
+            if (cna.assigner && cna.count) {
+                cnaData[cna.assigner] = (cnaData[cna.assigner] || 0) + cna.count;
+            }
+        });
+    });
+    Object.entries(cnaData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15)
+        .forEach(([cna, count]) => {
+            csv += `"${cna}",${count}\n`;
+        });
+    
+    // 3. Top CWE Types
+    csv += '\nTOP CWE VULNERABILITY TYPES\n';
+    csv += 'CWE,Description,Count\n';
+    const cweData = {};
+    selectedYears.forEach(year => {
+        const yearCweData = yearData[year]?.cwe?.top_cwes || [];
+        yearCweData.forEach(cwe => {
+            if (cwe.cwe_id && cwe.count) {
+                const key = `${cwe.cwe_id}: ${cwe.name || 'Unknown'}`;
+                cweData[key] = (cweData[key] || 0) + cwe.count;
+            }
+        });
+    });
+    Object.entries(cweData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15)
+        .forEach(([cwe, count]) => {
+            const [id, desc] = cwe.split(': ');
+            csv += `"${id}","${desc}",${count}\n`;
+        });
+    
+    // 4. Top Affected Vendors
+    csv += '\nTOP AFFECTED VENDORS\n';
+    csv += 'Vendor,Vulnerability Count\n';
+    const vendorData = {};
+    selectedYears.forEach(year => {
+        const yearVendorData = yearData[year]?.vendors?.cpe_vendors || [];
+        yearVendorData.forEach(vendor => {
+            if (vendor.vendor && vendor.count) {
+                vendorData[vendor.vendor] = (vendorData[vendor.vendor] || 0) + vendor.count;
+            }
+        });
+    });
+    Object.entries(vendorData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 15)
+        .forEach(([vendor, count]) => {
+            csv += `"${vendor}",${count}\n`;
+        });
+    
+    // 5. Analysis Status
+    csv += '\nVULNERABILITY ANALYSIS STATUS\n';
+    csv += 'Status,Count\n';
+    const statusData = {};
+    selectedYears.forEach(year => {
+        const yearStatusData = yearData[year]?.metadata?.vulnerability_status || [];
+        yearStatusData.forEach(status => {
+            if (status.status && status.count) {
+                statusData[status.status] = (statusData[status.status] || 0) + status.count;
+            }
+        });
+    });
+    Object.entries(statusData)
+        .sort(([,a], [,b]) => b - a)
+        .forEach(([status, count]) => {
+            csv += `"${status}",${count}\n`;
+        });
+    
+    // 6. Reference Types
+    csv += '\nREFERENCE TYPES DISTRIBUTION\n';
+    csv += 'Reference Type,Count\n';
+    const tagsData = {};
+    selectedYears.forEach(year => {
+        const yearTagsData = yearData[year]?.metadata?.reference_tags || [];
+        yearTagsData.forEach(tag => {
+            if (tag.tag && tag.count) {
+                tagsData[tag.tag] = (tagsData[tag.tag] || 0) + tag.count;
+            }
+        });
+    });
+    Object.entries(tagsData)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10)
+        .forEach(([tag, count]) => {
+            csv += `"${tag}",${count}\n`;
+        });
+    
+    downloadFile(csv, `cve-comprehensive-analysis-${selectedYears.join('-')}.csv`, 'text/csv');
+}
+
+function exportJSON(data) {
+    // Create comprehensive JSON with data from all charts
+    const exportData = {
+        metadata: {
+            exportDate: new Date().toISOString(),
+            selectedYears: selectedYears,
+            dataSource: 'CVE.ICU Analytics Dashboard'
+        },
+        
+        // 1. Year Statistics
+        yearStatistics: selectedYears.map(year => {
+            const yearTotal = yearData[year]?.total_cves || 0;
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            let dailyAvg = 0;
+            
+            if (year === currentYear) {
+                const startOfYear = new Date(year, 0, 1);
+                const elapsedDays = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+                dailyAvg = Math.round(yearTotal / elapsedDays);
+            } else {
+                const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+                dailyAvg = Math.round(yearTotal / (isLeapYear ? 366 : 365));
+            }
+            
+            return {
+                year: year,
+                totalCves: yearTotal,
+                dailyAverage: dailyAvg
+            };
+        }),
+        
+        // 2. CVE Trends (monthly data for charts)
+        cveTrends: {},
+        
+        // 3. CVSS Score Distribution
+        cvssScoreDistribution: {},
+        
+        // 4. Top CNAs
+        topCnas: (() => {
+            const cnaData = {};
+            selectedYears.forEach(year => {
+                const yearCnaData = yearData[year]?.cna_assigners || [];
+                yearCnaData.forEach(cna => {
+                    if (cna.assigner && cna.count) {
+                        cnaData[cna.assigner] = (cnaData[cna.assigner] || 0) + cna.count;
+                    }
+                });
+            });
+            return Object.entries(cnaData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 15)
+                .map(([cna, count]) => ({ cna, count }));
+        })(),
+        
+        // 5. Top CWE Types
+        topCweTypes: (() => {
+            const cweData = {};
+            selectedYears.forEach(year => {
+                const yearCweData = yearData[year]?.cwe?.top_cwes || [];
+                yearCweData.forEach(cwe => {
+                    if (cwe.cwe_id && cwe.count) {
+                        const key = cwe.cwe_id;
+                        if (!cweData[key]) {
+                            cweData[key] = {
+                                cweId: cwe.cwe_id,
+                                name: cwe.name || 'Unknown',
+                                count: 0
+                            };
+                        }
+                        cweData[key].count += cwe.count;
+                    }
+                });
+            });
+            return Object.values(cweData)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 15);
+        })(),
+        
+        // 6. Top Affected Vendors
+        topAffectedVendors: (() => {
+            const vendorData = {};
+            selectedYears.forEach(year => {
+                const yearVendorData = yearData[year]?.vendors?.cpe_vendors || [];
+                yearVendorData.forEach(vendor => {
+                    if (vendor.vendor && vendor.count) {
+                        vendorData[vendor.vendor] = (vendorData[vendor.vendor] || 0) + vendor.count;
+                    }
+                });
+            });
+            return Object.entries(vendorData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 15)
+                .map(([vendor, count]) => ({ vendor, count }));
+        })(),
+        
+        // 7. Vulnerability Analysis Status
+        vulnerabilityAnalysisStatus: (() => {
+            const statusData = {};
+            selectedYears.forEach(year => {
+                const yearStatusData = yearData[year]?.metadata?.vulnerability_status || [];
+                yearStatusData.forEach(status => {
+                    if (status.status && status.count) {
+                        statusData[status.status] = (statusData[status.status] || 0) + status.count;
+                    }
+                });
+            });
+            return Object.entries(statusData)
+                .sort(([,a], [,b]) => b - a)
+                .map(([status, count]) => ({ status, count }));
+        })(),
+        
+        // 8. Reference Types Distribution
+        referenceTypesDistribution: (() => {
+            const tagsData = {};
+            selectedYears.forEach(year => {
+                const yearTagsData = yearData[year]?.metadata?.reference_tags || [];
+                yearTagsData.forEach(tag => {
+                    if (tag.tag && tag.count) {
+                        tagsData[tag.tag] = (tagsData[tag.tag] || 0) + tag.count;
+                    }
+                });
+            });
+            return Object.entries(tagsData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10)
+                .map(([tag, count]) => ({ referenceType: tag, count }));
+        })()
+    };
+    
+    // Add CVE trends data if available
+    selectedYears.forEach(year => {
+        if (yearData[year]?.date_data?.monthly_distribution) {
+            exportData.cveTrends[year] = yearData[year].date_data.monthly_distribution;
+        }
+    });
+    
+    // Add CVSS score distribution if available
+    selectedYears.forEach(year => {
+        if (yearData[year]?.cvss) {
+            exportData.cvssScoreDistribution[year] = yearData[year].cvss;
+        }
+    });
+    
+    const jsonStr = JSON.stringify(exportData, null, 2);
+    downloadFile(jsonStr, `cve-comprehensive-analysis-${selectedYears.join('-')}.json`, 'application/json');
+}
+
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Permalink functionality
+function generatePermalink() {
+    const params = new URLSearchParams();
+    params.set('years', selectedYears.join(','));
+    
+    const permalink = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    
+    const resultDiv = document.getElementById('permalinkResult');
+    const input = document.getElementById('permalinkInput');
+    
+    input.value = permalink;
+    resultDiv.style.display = 'block';
+}
+
+function copyPermalink() {
+    const input = document.getElementById('permalinkInput');
+    input.select();
+    document.execCommand('copy');
+    
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.style.backgroundColor = '#198754';
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.style.backgroundColor = '';
+    }, 2000);
+}
+
+function printReport() {
+    window.print();
+}
+
+// Enhance stat cards with additional features
+function enhanceStatCards() {
+    // Add hover effects and trend indicators to stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    statCards.forEach(card => {
+        // Add enhanced hover effect
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+        });
+    });
+}
+
+
+
+// Load URL parameters on page load
+function loadUrlParameters() {
+    const params = new URLSearchParams(window.location.search);
+    const yearsParam = params.get('years');
+    
+    if (yearsParam) {
+        const years = yearsParam.split(',').map(y => parseInt(y)).filter(y => !isNaN(y));
+        if (years.length > 0) {
+            const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = years.includes(parseInt(checkbox.value));
+            });
+            updateSelectedYears();
+        }
+    }
+}
+
+// Quick selection functions
+function selectRecentYears() {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    const currentYear = new Date().getFullYear();
+    
+    checkboxes.forEach(checkbox => {
+        const year = parseInt(checkbox.value);
+        checkbox.checked = year >= currentYear - 4;
+    });
+    
+    updateSelectedYears();
+}
+
+function selectDecade(decade) {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    
+    // Parse decade string to get start year
+    let startYear;
+    if (decade === '2020s') {
+        startYear = 2020;
+    } else if (decade === '2010s') {
+        startYear = 2010;
+    } else if (decade === '2000s') {
+        startYear = 2000;
+    } else if (decade === '1990s') {
+        startYear = 1990;
+    } else {
+        // If it's already a number, use it directly
+        startYear = parseInt(decade);
+    }
+    
+    checkboxes.forEach(checkbox => {
+        const year = parseInt(checkbox.value);
+        checkbox.checked = year >= startYear && year < startYear + 10;
+    });
+    
+    updateSelectedYears();
+}
+
+function selectAllYears() {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    
+    updateSelectedYears();
+}
+
+function clearAllYears() {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    updateSelectedYears();
+}
+
+// Alias for clearAllYears for consistency with button naming
+function clearSelection() {
+    clearAllYears();
+}
+
+// Update selected years array
+function updateSelectedYears() {
+    const checkboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
+    selectedYears = [];
+    
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedYears.push(parseInt(checkbox.value));
+        }
+    });
+    
+    selectedYears.sort((a, b) => a - b);
+    updateStatistics();
+    updateCharts();
+}
+</script>
+{% endblock %}

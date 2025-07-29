@@ -1,10 +1,35 @@
-calplot
-ipython
-itables
-jupyter-book
-matplotlib
-numpy
-pandas
-plotly
-pyarrow
-seaborn
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Template rendering
+jinja2>=3.1.0
+
+# HTTP requests and data fetching (required for CVE data download)
+requests>=2.28.0
+
+# Date and time handling
+python-dateutil>=2.8.0
+
+# JSON handling (built-in, but explicit for clarity)
+# json - built-in
+
+# File system operations (built-in)
+# os, shutil - built-in
+
+# For potential future CSV/Excel data sources
+openpyxl>=3.1.0
+
+# For potential future API integrations
+urllib3>=1.26.0
+
+# For data validation and cleaning
+jsonschema>=4.17.0
+
+# For potential future database connections
+sqlite3  # built-in
+
+# Development and testing (optional)
+pytest>=7.0.0
+black>=23.0.0
+flake8>=6.0.0

@@ -1,0 +1,791 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Active button styling for better visual indication */
+.quick-select-btn.active {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    border-color: #2563eb !important;
+}
+
+.quick-select-btn:hover {
+    background-color: #60a5fa;
+    color: white;
+    border-color: #3b82f6;
+}
+</style>
+
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">Growth Intelligence Dashboard</h1>
+    <small class="text-muted d-block mb-3" id="pageSubtitle">
+        Showing comprehensive growth analysis across all years (1999-{{ current_year }})
+    </small>
+    
+    <!-- Note about historical data requirement -->
+    <div class="d-flex justify-content-center mb-3">
+        <div class="text-muted small">
+            <i class="fas fa-info-circle me-1"></i>
+            Growth analysis shows comprehensive trends across all years (1999-{{ current_year }})
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-number" id="totalCvesCount">-</div>
+        <div class="stat-label">Total CVEs</div>
+        <small class="text-muted" style="font-size: 0.75rem;" id="totalCvesSubtext">📊 Loading...</small>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="avgGrowthRate">-</div>
+        <div class="stat-label">Average Annual Growth</div>
+        <small class="text-muted" style="font-size: 0.75rem;" id="avgGrowthSubtext">📈 Loading...</small>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="peakGrowthYear">-</div>
+        <div class="stat-label">Peak Growth Year</div>
+        <small class="text-muted" style="font-size: 0.75rem;" id="peakGrowthSubtext">🚀 Loading...</small>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="ytdComparison">-</div>
+        <div class="stat-label">Year-to-Date Growth</div>
+        <small class="text-muted" style="font-size: 0.75rem;" id="ytdSubtext">📅 Loading...</small>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-4 mb-4">
+    <!-- CVE Growth Trends Chart -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-chart-line me-2"></i>CVE Growth Trends Over Time
+                </h3>
+                <div class="chart-controls">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active quick-select-btn" id="absoluteBtn" onclick="toggleGrowthView('absolute')">
+                            <i class="fas fa-chart-bar me-1"></i>Absolute
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary quick-select-btn" id="rateBtn" onclick="toggleGrowthView('rate')">
+                            <i class="fas fa-percentage me-1"></i>Growth Rate
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="growthTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Growth Rate Distribution Chart -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <h3 class="card-title mb-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-chart-bar me-2"></i>Growth Rate Distribution
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="growthDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cumulative Growth Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <h3 class="card-title mb-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-chart-area me-2"></i>Cumulative CVE Growth
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="cumulativeGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Growth Insights Panel -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">🔍 Growth Intelligence Insights</h3>
+    </div>
+    <div class="card-body py-3">
+        <div class="row" id="growthInsights">
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Highest Growth</div>
+                        <div class="insight-text" id="highestGrowthInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📉</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Lowest Growth</div>
+                        <div class="insight-text" id="lowestGrowthInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📊</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Trend Analysis</div>
+                        <div class="insight-text" id="trendAnalysisInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Growth Data Table -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <h3 class="card-title mb-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-table me-2"></i>Year-over-Year Growth Data
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Total CVEs</th>
+                                <th>Growth Rate</th>
+                                <th>Absolute Change</th>
+                                <th>3-Year Avg</th>
+                            </tr>
+                        </thead>
+                        <tbody id="growthTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Loading growth data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export and Share Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📤 Export & Share</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="export-buttons">
+            <button class="btn btn-primary btn-sm" onclick="exportData('csv')">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="exportData('json')">📋 Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="copyPermalink()">🔗 Copy Permalink</button>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+        <div class="permalink-result mt-2" id="permalinkResult" style="display: none;">
+            <input type="text" class="form-control" id="permalinkInput" readonly>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="copyPermalink()">Copy Link</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+<script>
+// Global variables
+let currentGrowthView = 'absolute';
+let growthData = null;
+let charts = {};
+
+// Light blue/gray color palette
+const colorPalette = {
+    primary: '#60a5fa',      // Light blue
+    secondary: '#93c5fd',    // Lighter blue
+    tertiary: '#bfdbfe',     // Very light blue
+    accent: '#3b82f6',       // Standard blue
+    gray: '#9ca3af',         // Light gray
+    lightGray: '#d1d5db',    // Very light gray
+    success: '#10b981',      // Green
+    warning: '#f59e0b',      // Orange
+    danger: '#ef4444',       // Red
+    info: '#06b6d4'          // Cyan
+};
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadGrowthData();
+});
+
+// Load growth data
+function loadGrowthData() {
+    fetch('/data/growth_analysis.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            growthData = data;
+            updateStatsCards(data);
+            updateGrowthTrendsChart(data);
+            updateGrowthDistributionChart(data);
+            updateCumulativeGrowthChart(data);
+            updateGrowthInsights(data);
+            updateGrowthTable(data);
+        })
+        .catch(error => {
+            console.error('Error loading growth data:', error);
+            showErrorState();
+        });
+}
+
+// Update stats cards
+function updateStatsCards(data) {
+    const growthDataArray = data.growth_data || [];
+    
+    if (growthDataArray.length === 0) {
+        document.getElementById('totalCvesCount').textContent = '0';
+        document.getElementById('avgGrowthRate').textContent = '0%';
+        document.getElementById('peakGrowthYear').textContent = '-';
+        document.getElementById('ytdComparison').textContent = '0%';
+        return;
+    }
+    
+    // Total CVEs (latest year)
+    const latestYear = growthDataArray[growthDataArray.length - 1];
+    document.getElementById('totalCvesCount').textContent = latestYear.cves.toLocaleString();
+    document.getElementById('totalCvesSubtext').textContent = `As of ${latestYear.year}`;
+    
+    // Average annual growth
+    const avgGrowth = data.avg_annual_growth || 0;
+    document.getElementById('avgGrowthRate').textContent = `${avgGrowth}%`;
+    document.getElementById('avgGrowthSubtext').textContent = `Across ${growthDataArray.length} years`;
+    
+    // Peak growth year
+    const peakGrowth = data.highest_growth_year;
+    if (peakGrowth) {
+        document.getElementById('peakGrowthYear').textContent = peakGrowth.year;
+        document.getElementById('peakGrowthSubtext').textContent = `${peakGrowth.growth_rate}% growth`;
+    }
+    
+    // Year-to-date comparison - use same data source as table (growth_data array)
+    const ytdGrowthDataArray = data.growth_data || [];
+    const currentYearData = ytdGrowthDataArray.find(d => d.is_ytd === true);
+    
+    if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
+        const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
+        const currentYearCVEs = currentYearData.cves;
+        const prevYearYTDEstimate = currentYearData.prev_year_ytd_estimate || 0;
+        
+        document.getElementById('ytdComparison').textContent = `${ytdGrowth > 0 ? '+' : ''}${ytdGrowth}%`;
+        document.getElementById('ytdSubtext').innerHTML = `${currentYearCVEs.toLocaleString()} vs ${prevYearYTDEstimate.toLocaleString()} CVEs<br>(YTD vs Same Period Last Year)`;
+    } else {
+        console.log('YTD validation failed:', { 
+            hasData: !!currentYearData, 
+            hasYTDField: currentYearData ? 'ytd_vs_prev_ytd' in currentYearData : false,
+            ytdValue: currentYearData ? currentYearData.ytd_vs_prev_ytd : 'N/A'
+        });
+        document.getElementById('ytdComparison').textContent = 'N/A';
+        document.getElementById('ytdSubtext').textContent = 'Insufficient data';
+    }
+}
+
+// Update growth trends chart
+function updateGrowthTrendsChart(data) {
+    const ctx = document.getElementById('growthTrendsChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (charts.growthTrends) {
+        charts.growthTrends.destroy();
+    }
+    
+    const growthDataArray = data.growth_data || [];
+    // Filter out current year YTD data for trend analysis since it's not comparable to completed years
+    const completedYearsData = growthDataArray.filter(d => !d.is_ytd);
+    const labels = completedYearsData.map(d => d.year);
+    
+    let chartData, yAxisLabel, yAxisConfig;
+    
+    if (currentGrowthView === 'absolute') {
+        chartData = completedYearsData.map(d => d.cves);
+        yAxisLabel = 'Total CVEs';
+        yAxisConfig = {
+            beginAtZero: true,
+            ticks: {
+                callback: function(value) {
+                    return value.toLocaleString();
+                }
+            }
+        };
+    } else {
+        chartData = completedYearsData.map(d => d.growth_rate);
+        yAxisLabel = 'Growth Rate (%)';
+        yAxisConfig = {
+            ticks: {
+                callback: function(value) {
+                    return value + '%';
+                }
+            }
+        };
+    }
+    
+    charts.growthTrends = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: yAxisLabel,
+                data: chartData,
+                borderColor: colorPalette.primary,
+                backgroundColor: `${colorPalette.primary}20`,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: colorPalette.primary,
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return `Year ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            if (currentGrowthView === 'absolute') {
+                                return `Total CVEs: ${context.parsed.y.toLocaleString()}`;
+                            } else {
+                                return `Growth Rate: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: yAxisLabel
+                    },
+                    ...yAxisConfig
+                }
+            }
+        });
+}
+
+// Update growth distribution chart
+function updateGrowthDistributionChart(data) {
+    const ctx = document.getElementById('growthDistributionChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (charts.growthDistribution) {
+        charts.growthDistribution.destroy();
+    }
+    
+    const growthDataArray = data.growth_data || [];
+    // Skip first year (0% growth) and exclude current year YTD data
+    const growthRates = growthDataArray.slice(1)
+        .filter(d => !d.is_ytd) // Exclude YTD data from distribution
+        .map(d => d.growth_rate);
+    
+    // Create growth rate bins (ordered from highest to lowest, negative at bottom)
+    const bins = {
+        '50%+': growthRates.filter(r => r >= 50).length,
+        '25-50%': growthRates.filter(r => r >= 25 && r < 50).length,
+        '10-25%': growthRates.filter(r => r >= 10 && r < 25).length,
+        '0-10%': growthRates.filter(r => r >= 0 && r < 10).length,
+        'Negative': growthRates.filter(r => r < 0).length
+    };
+    
+    charts.growthDistribution = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(bins),
+            datasets: [{
+                label: 'Years',
+                data: Object.values(bins),
+                backgroundColor: [
+                    colorPalette.accent,     // Darkest blue for 50%+ (highest growth)
+                    colorPalette.primary,    // Light blue for 25-50%
+                    colorPalette.secondary,  // Lighter blue for 10-25%
+                    colorPalette.tertiary,   // Very light blue for 0-10%
+                    colorPalette.lightGray   // Light gray for negative (lowest)
+                ],
+                borderColor: [
+                    colorPalette.accent,
+                    colorPalette.primary,
+                    colorPalette.secondary,
+                    colorPalette.tertiary,
+                    colorPalette.gray
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // This makes it a horizontal bar chart
+            plugins: {
+                legend: {
+                    display: false // Hide legend for cleaner look
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                            return `${context.parsed.x} years (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Years'
+                    },
+                    grid: {
+                        color: colorPalette.lightGray
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Growth Rate Range'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update cumulative growth chart
+function updateCumulativeGrowthChart(data) {
+    const ctx = document.getElementById('cumulativeGrowthChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (charts.cumulativeGrowth) {
+        charts.cumulativeGrowth.destroy();
+    }
+    
+    const growthDataArray = data.growth_data || [];
+    // Filter out current year YTD data for consistency with other charts
+    const completedYearsData = growthDataArray.filter(d => !d.is_ytd);
+    const labels = completedYearsData.map(d => d.year);
+    const cumulativeData = completedYearsData.map(d => d.cves);
+    
+    charts.cumulativeGrowth = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Cumulative CVEs',
+                data: cumulativeData,
+                backgroundColor: `${colorPalette.primary}CC`,
+                borderColor: colorPalette.accent,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return `Year ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            return `Total CVEs: ${context.parsed.y.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Cumulative CVEs'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update growth insights
+function updateGrowthInsights(data) {
+    const highestGrowth = data.highest_growth_year;
+    const lowestGrowth = data.lowest_growth_year;
+    const avgGrowth = data.avg_annual_growth || 0;
+    
+    // Highest growth insight
+    if (highestGrowth) {
+        document.getElementById('highestGrowthInsight').innerHTML = 
+            `<strong>${highestGrowth.year}</strong> saw the highest growth at <strong>${highestGrowth.growth_rate}%</strong> with ${highestGrowth.growth_absolute.toLocaleString()} new CVEs.`;
+    }
+    
+    // Lowest growth insight
+    if (lowestGrowth) {
+        document.getElementById('lowestGrowthInsight').innerHTML = 
+            `<strong>${lowestGrowth.year}</strong> had the lowest growth at <strong>${lowestGrowth.growth_rate}%</strong> with ${lowestGrowth.growth_absolute.toLocaleString()} new CVEs.`;
+    }
+    
+    // Trend analysis
+    const growthDataArray = data.growth_data || [];
+    if (growthDataArray.length >= 5) {
+        const recentYears = growthDataArray.slice(-5);
+        const recentAvg = recentYears.reduce((sum, year) => sum + year.growth_rate, 0) / recentYears.length;
+        const trend = recentAvg > avgGrowth ? 'accelerating' : 'decelerating';
+        
+        document.getElementById('trendAnalysisInsight').innerHTML = 
+            `Recent 5-year average growth is <strong>${recentAvg.toFixed(1)}%</strong>, indicating <strong>${trend}</strong> growth trends.`;
+    }
+}
+
+// Update growth table
+function updateGrowthTable(data) {
+    const tableBody = document.getElementById('growthTableBody');
+    const growthDataArray = data.growth_data || [];
+    
+    if (growthDataArray.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No growth data available</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = growthDataArray.map(yearData => {
+        const growthRateClass = yearData.growth_rate > 0 ? 'text-success' : yearData.growth_rate < 0 ? 'text-danger' : 'text-muted';
+        const growthIcon = yearData.growth_rate > 0 ? '↗️' : yearData.growth_rate < 0 ? '↘️' : '➡️';
+        
+        let rowClass = '';
+        let yearDisplay = yearData.year;
+        let borderLeftStyle = '';
+        
+        if (yearData.is_ytd) {
+            rowClass = 'table-warning';
+            borderLeftStyle = '4px solid #ffc107';
+            yearDisplay = `${yearData.year} <span class="badge bg-warning text-dark ms-1">YTD</span>`;
+        }
+        
+        const growthIconHtml = yearData.growth_rate > 0 ? 
+            '<i class="fas fa-arrow-up text-success me-1"></i>' : 
+            '<i class="fas fa-arrow-down text-danger me-1"></i>';
+        
+        return `
+            <tr class="${rowClass}" style="border-left: ${borderLeftStyle}">
+                <td>${yearDisplay}</td>
+                <td>${yearData.cves.toLocaleString()}</td>
+                <td class="${growthRateClass}">
+                    ${growthIconHtml}${yearData.growth_rate > 0 ? '+' : ''}${yearData.growth_rate}%
+                </td>
+                <td class="${yearData.growth_absolute >= 0 ? 'text-success' : 'text-danger'}">
+                    ${yearData.growth_absolute >= 0 ? '+' : ''}${yearData.growth_absolute.toLocaleString()}
+                </td>
+                <td>${yearData.growth_rate_3yr_avg}%</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Growth view toggle (absolute vs rate)
+function toggleGrowthView(view) {
+    if (currentGrowthView === view) return;
+    
+    currentGrowthView = view;
+    
+    // Update button states
+    document.getElementById('absoluteBtn').classList.toggle('active', view === 'absolute');
+    document.getElementById('rateBtn').classList.toggle('active', view === 'rate');
+    
+    // Update chart
+    if (growthData) {
+        updateGrowthTrendsChart(growthData);
+    }
+}
+
+
+
+// Sort table
+function sortTable(column) {
+    if (!growthData || !growthData.growth_data) return;
+    
+    const sortedData = [...growthData.growth_data];
+    
+    sortedData.sort((a, b) => {
+        if (column === 'year') {
+            return b.year - a.year; // Descending by year
+        } else if (column === 'growth_rate') {
+            return b.growth_rate - a.growth_rate; // Descending by growth rate
+        }
+        return 0;
+    });
+    
+    // Update table with sorted data
+    const tempData = { ...growthData, growth_data: sortedData };
+    updateGrowthTable(tempData);
+}
+
+// Export data
+function exportData(format) {
+    if (!growthData) {
+        alert('No data available to export');
+        return;
+    }
+    
+    const filename = `growth_analysis_${new Date().toISOString().split('T')[0]}`;
+    
+    if (format === 'csv') {
+        const csv = convertToCSV(growthData.growth_data);
+        downloadFile(csv, `${filename}.csv`, 'text/csv');
+    } else if (format === 'json') {
+        const json = JSON.stringify(growthData, null, 2);
+        downloadFile(json, `${filename}.json`, 'application/json');
+    }
+}
+
+// Convert data to CSV
+function convertToCSV(data) {
+    if (!data || data.length === 0) return '';
+    
+    const headers = ['Year', 'Total CVEs', 'Growth Rate (%)', 'Absolute Change', '3-Year Average (%)'];
+    const csvContent = [
+        headers.join(','),
+        ...data.map(row => [
+            row.year,
+            row.cves,
+            row.growth_rate,
+            row.growth_absolute,
+            row.growth_rate_3yr_avg
+        ].join(','))
+    ].join('\n');
+    
+    return csvContent;
+}
+
+// Download file
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Timestamp now handled by universal loader in base.html
+
+// Copy permalink
+function copyPermalink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        // Show success feedback
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-primary');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-primary');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy permalink:', err);
+        alert('Failed to copy permalink to clipboard');
+    });
+}
+
+// Show error state
+function showErrorState() {
+    document.getElementById('totalCvesCount').textContent = 'Error';
+    document.getElementById('avgGrowthRate').textContent = 'Error';
+    document.getElementById('peakGrowthYear').textContent = 'Error';
+    document.getElementById('ytdComparison').textContent = 'Error';
+    
+    document.getElementById('totalCvesSubtext').textContent = 'Failed to load data';
+    document.getElementById('avgGrowthSubtext').textContent = 'Failed to load data';
+    document.getElementById('peakGrowthSubtext').textContent = 'Failed to load data';
+    document.getElementById('ytdSubtext').textContent = 'Failed to load data';
+    
+    document.getElementById('growthTableBody').innerHTML = 
+        '<tr><td colspan="5" class="text-center text-danger">Error loading growth data</td></tr>';
+}
+</script>
+{% endblock %}

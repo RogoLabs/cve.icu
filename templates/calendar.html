@@ -1,0 +1,937 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+<!-- Custom Calendar Heatmap CSS -->
+<style>
+/* Calendar-specific styles */
+.calendar-container {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.calendar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.calendar-nav-btn {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.calendar-nav-btn:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.calendar-nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.year-selector {
+    background: white;
+    border: 2px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+}
+
+.calendar-legend {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.legend-scale {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-item {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* Custom D3 Calendar Heatmap Styles */
+.calendar-heatmap {
+    font-family: var(--font-family);
+}
+
+.calendar-heatmap .month {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+.calendar-heatmap .day {
+    fill: #ebedf0;
+    stroke: #fff;
+    stroke-width: 1px;
+    cursor: pointer;
+}
+
+.calendar-heatmap .day:hover {
+    stroke: #333;
+    stroke-width: 2px;
+}
+
+.calendar-heatmap .month-label {
+    fill: var(--color-text-primary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.calendar-heatmap .day-label {
+    fill: var(--color-text-secondary);
+    font-size: 10px;
+}
+
+/* Tooltip styling */
+.calendar-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1000;
+}
+
+.calendar-tooltip.show {
+    opacity: 1;
+}
+
+.calendar-legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.legend-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-colors {
+    display: flex;
+    gap: 2px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1px solid #d1d5db;
+}
+
+.legend-label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+/* Calendar container styling */
+#calendar {
+    width: 100%;
+    overflow-x: auto;
+    margin: 0;
+}
+
+.calendar-heatmap {
+    width: 100%;
+    max-width: none;
+}
+
+#calendarContainer {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Loading state */
+.calendar-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.75rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .calendar-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .calendar-controls {
+        justify-content: center;
+    }
+    
+    .calendar-container {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">Calendar Intelligence Dashboard</h1>
+    <small class="text-muted d-block mb-3">
+        Daily CVE publication patterns and temporal analysis
+    </small>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-number" id="peakMonth">Loading...</div>
+        <div class="stat-label">Peak Month</div>
+        <small class="text-muted" id="peakMonthCount" style="font-size: 0.75rem;">📅 Highest monthly total</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="peakDay">Loading...</div>
+        <div class="stat-label">Peak Day</div>
+        <small class="text-muted" id="peakDayDate" style="font-size: 0.75rem;">🔥 Highest single day</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="avgPerDay">Loading...</div>
+        <div class="stat-label">Average Per Day</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📈 Daily publication rate</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="totalCVEs">Loading...</div>
+        <div class="stat-label">Total CVEs</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📊 All published vulnerabilities</small>
+    </div>
+</div>
+
+<!-- Calendar Heatmap -->
+<div class="card">
+    <div class="card-header">
+        <div class="calendar-header">
+            <h3 class="calendar-title">Daily CVE Publication Calendar</h3>
+        </div>
+    </div>
+    <div class="card-body" style="padding: 1rem 0.5rem;">
+        <div id="calendarLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading calendar data...</p>
+        </div>
+        
+        <div id="calendarContainer" style="display: none;">
+            <div id="calendar" style="margin: 0 auto; max-width: 100%; overflow-x: auto;"></div>
+        
+        <!-- Simplified Year Navigation -->
+        <div class="mt-3 text-center">
+            <div id="yearNavigationContainer" style="display:flex; justify-content:center; align-items:center; margin:20px 0; font-size:1.2rem;">
+                <!-- Simple year navigation will be generated here -->
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar Insights -->
+<div class="card">
+    <div class="card-header">
+        <h3>Calendar Insights</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="insight-card">
+                    <div class="insight-icon">📅</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Publication Patterns</div>
+                        <div class="insight-text" id="publicationPatterns">Loading insights...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="insight-card">
+                    <div class="insight-icon">📊</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Temporal Trends</div>
+                        <div class="insight-text" id="temporalTrends">Loading insights...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export and Share Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📤 Export & Share</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="export-buttons">
+            <button class="btn btn-primary btn-sm" onclick="exportCalendarData('csv')">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="exportCalendarData('json')">📋 Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="generatePermalink()">🔗 Share Link</button>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+        <div class="permalink-result mt-2" id="permalinkResult" style="display: none;">
+            <input type="text" class="form-control" id="permalinkInput" readonly>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="copyPermalink()">Copy Link</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- D3.js dependency -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+// Calendar Intelligence Dashboard JavaScript
+let calendarData = null;
+let currentYear = new Date().getFullYear();
+let selectedYear = currentYear;
+let tooltip = null;
+
+// Color palette for calendar heatmap (Blue theme)
+const colorPalette = {
+    empty: '#ebedf0',
+    scale: ['#ebedf0', '#c6e7ff', '#7cc7ff', '#3b9eff', '#0969da']
+};
+
+// Color scale function
+function getColor(value) {
+    if (!value || value === 0) return colorPalette.empty;
+    if (value <= 5) return colorPalette.scale[1];
+    if (value <= 15) return colorPalette.scale[2];
+    if (value <= 30) return colorPalette.scale[3];
+    return colorPalette.scale[4];
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadCalendarData();
+});
+
+async function loadCalendarData() {
+    try {
+        const response = await fetch('/data/calendar_analysis.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        calendarData = await response.json();
+        
+        initializeCalendar();
+        updateLastUpdated();
+        
+    } catch (error) {
+        console.error('Error loading calendar data:', error);
+        showErrorState();
+    }
+}
+
+// Initialize calendar when data is loaded
+function initializeCalendar() {
+    // Set current year to latest year in data
+    const years = [...new Set(calendarData.daily_data.map(d => new Date(d.date).getFullYear()))];
+    currentYear = Math.max(...years);
+    
+    // Create initial calendar
+    createCalendarHeatmap();
+    updateStatsCards();
+    updateInsights();
+    updateLastUpdated();
+    
+    // Show calendar container
+    document.getElementById('calendarContainer').style.display = 'block';
+    document.getElementById('calendarLoading').style.display = 'none';
+    
+    // Initialize simple year navigation
+    initializeYearNavigation();
+}
+
+function initializeYearNavigation() {
+    renderYearNavigation();
+}
+
+// Render simple year navigation in << Year >> format
+function renderYearNavigation() {
+    const container = document.getElementById('yearNavigationContainer');
+    
+    if (!container) {
+        console.error('Year navigation container not found');
+        return;
+    }
+    
+    // Get sorted years from daily data (newest first)
+    const years = [...new Set(calendarData.daily_data.map(d => new Date(d.date).getFullYear()))].sort((a, b) => b - a);
+    const currentIndex = years.indexOf(currentYear);
+    
+    // Clear container
+    container.innerHTML = '';
+    
+    // Create navigation elements
+    const navDiv = document.createElement('div');
+    navDiv.style.cssText = 'display: flex; align-items: center; gap: 15px; font-weight: 500;';
+    
+    // Left arrow
+    const leftArrow = document.createElement('span');
+    leftArrow.innerHTML = '&laquo;';
+    leftArrow.style.cssText = `
+        cursor: ${currentIndex >= years.length - 1 ? 'not-allowed' : 'pointer'};
+        color: ${currentIndex >= years.length - 1 ? '#ccc' : '#007bff'};
+        font-size: 1.5rem;
+        user-select: none;
+        transition: color 0.2s;
+    `;
+    
+    if (currentIndex < years.length - 1) {
+        leftArrow.onclick = () => {
+            currentYear = years[currentIndex + 1];
+            createCalendarHeatmap();
+            renderYearNavigation();
+        };
+        leftArrow.onmouseover = () => leftArrow.style.color = '#0056b3';
+        leftArrow.onmouseout = () => leftArrow.style.color = '#007bff';
+    }
+    
+    // Current year display
+    const yearDisplay = document.createElement('span');
+    yearDisplay.textContent = currentYear;
+    yearDisplay.style.cssText = 'font-size: 1.3rem; font-weight: 600; color: #333; min-width: 60px; text-align: center;';
+    
+    // Right arrow
+    const rightArrow = document.createElement('span');
+    rightArrow.innerHTML = '&raquo;';
+    rightArrow.style.cssText = `
+        cursor: ${currentIndex <= 0 ? 'not-allowed' : 'pointer'};
+        color: ${currentIndex <= 0 ? '#ccc' : '#007bff'};
+        font-size: 1.5rem;
+        user-select: none;
+        transition: color 0.2s;
+    `;
+    
+    if (currentIndex > 0) {
+        rightArrow.onclick = () => {
+            currentYear = years[currentIndex - 1];
+            createCalendarHeatmap();
+            renderYearNavigation();
+        };
+        rightArrow.onmouseover = () => rightArrow.style.color = '#0056b3';
+        rightArrow.onmouseout = () => rightArrow.style.color = '#007bff';
+    }
+    
+    // Assemble navigation
+    navDiv.appendChild(leftArrow);
+    navDiv.appendChild(yearDisplay);
+    navDiv.appendChild(rightArrow);
+    
+    container.appendChild(navDiv);
+}
+
+function calculatePeakMonth() {
+    if (!calendarData?.daily_data) {
+        return { month: 'N/A', count: 0 };
+    }
+    
+    // Group daily data by month
+    const monthTotals = {};
+    
+    calendarData.daily_data.forEach(day => {
+        const date = new Date(day.date);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        if (!monthTotals[monthKey]) {
+            monthTotals[monthKey] = {
+                name: monthName,
+                count: 0
+            };
+        }
+        monthTotals[monthKey].count += day.value || 0;
+    });
+    
+    // Find the month with the highest total
+    let peakMonth = { month: 'N/A', count: 0 };
+    Object.values(monthTotals).forEach(month => {
+        if (month.count > peakMonth.count) {
+            peakMonth = {
+                month: month.name,
+                count: month.count
+            };
+        }
+    });
+    
+    return peakMonth;
+}
+
+function updateStatsCards() {
+    const stats = calendarData.statistics;
+    
+    // Update stats cards
+    document.getElementById('totalCVEs').textContent = stats.total_cves?.toLocaleString() || '0';
+    document.getElementById('avgPerDay').textContent = stats.daily_stats?.average_per_day || '0';
+    document.getElementById('peakDay').textContent = stats.daily_stats?.max_per_day?.toLocaleString() || '0';
+    // Calculate peak month from daily data
+    const peakMonthData = calculatePeakMonth();
+    document.getElementById('peakMonth').textContent = peakMonthData.month || 'N/A';
+    document.getElementById('peakMonthCount').textContent = `📅 ${peakMonthData.count?.toLocaleString() || '0'} CVEs`;
+    
+    // Update peak day date
+    const peakDate = stats.daily_stats?.peak_day?.date;
+    if (peakDate) {
+        const formattedDate = new Date(peakDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        document.getElementById('peakDayDate').textContent = `🔥 ${formattedDate}`;
+    }
+}
+
+function updateInsights() {
+    const stats = calendarData.statistics;
+    
+    // Publication patterns insight
+    const totalDays = stats.total_days_with_data || 0;
+    const avgPerDay = stats.daily_stats?.average_per_day || 0;
+    const patternsText = `CVE publications span ${totalDays.toLocaleString()} days with an average of ${avgPerDay} CVEs per day. Peak activity reached ${stats.daily_stats?.max_per_day || 0} CVEs in a single day.`;
+    document.getElementById('publicationPatterns').textContent = patternsText;
+    
+    // Temporal trends insight
+    const dateRange = stats.date_range;
+    const trendsText = `Data coverage spans from ${new Date(dateRange?.start).getFullYear()} to ${new Date(dateRange?.end).getFullYear()}, showing the evolution of vulnerability disclosure patterns over time.`;
+    document.getElementById('temporalTrends').textContent = trendsText;
+}
+
+function updateLastUpdated() {
+    if (calendarData.generated_at) {
+        const date = new Date(calendarData.generated_at);
+        const formatted = date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+        document.getElementById('lastUpdated').textContent = formatted;
+    }
+}
+
+function exportCalendarData(format) {
+    if (format === 'csv') {
+        const csv = convertToCSV(calendarData.daily_data);
+        downloadFile(csv, 'calendar_data.csv', 'text/csv');
+    } else if (format === 'json') {
+        const json = JSON.stringify(calendarData, null, 2);
+        downloadFile(json, 'calendar_data.json', 'application/json');
+    }
+}
+
+function convertToCSV(data) {
+    const headers = ['Date', 'CVE Count', 'Average CVSS', 'CVEs with CVSS'];
+    const rows = data.map(item => [
+        item.date,
+        item.value,
+        item.avg_cvss || '',
+        item.cvss_count || ''
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
+}
+
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+function createCalendarHeatmap() {
+    const data = calendarData;
+    
+    // Clear existing calendar
+    d3.select('#calendar').selectAll('*').remove();
+    
+    // Create tooltip if it doesn't exist
+    if (!tooltip) {
+        tooltip = d3.select('body').append('div')
+            .attr('class', 'calendar-tooltip');
+    }
+    
+    // Prepare data map
+    const dataMap = new Map();
+    data.daily_data.forEach(item => {
+        dataMap.set(item.date, {
+            count: item.value,
+            avgCvss: item.avg_cvss,
+            cvssCount: item.cvss_count
+        });
+    });
+    
+    // Calendar dimensions for 3x4 month grid - maximize card space for better readability
+    const containerElement = document.getElementById('calendar').parentElement;
+    const containerWidth = containerElement ? containerElement.clientWidth - 10 : 1400;
+    const maxWidth = Math.max(1200, containerWidth);
+    const cellSize = 26; // Even larger cells for 3-digit numbers
+    const cellPadding = 3; // More padding between cells
+    const monthWidth = Math.max(250, Math.floor((maxWidth - 60) / 4) - 12); // 4 columns for better fit
+    const monthHeight = Math.max(180, Math.floor(monthWidth * 0.75)); // Proportional height
+    const monthPadding = 8; // Much tighter spacing
+    const gridCols = 4; // 4 columns for better fit
+    const gridRows = 3; // 3 rows
+    const width = maxWidth;
+    const height = gridRows * (monthHeight + monthPadding) + 100; // More space for year title
+    
+    // Create SVG
+    const svg = d3.select('#calendar')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('class', 'calendar-heatmap');
+    
+    // Create month data for current year
+    const months = [];
+    for (let month = 0; month < 12; month++) {
+        const startDate = new Date(currentYear, month, 1);
+        months.push({
+            month: month,
+            name: d3.timeFormat('%B')(startDate)
+        });
+    }
+    
+    // Add prominent year title - centered over the actual calendar grid
+    const calendarGridWidth = gridCols * (monthWidth + monthPadding) - monthPadding;
+    const calendarCenterX = 20 + (calendarGridWidth / 2);
+    
+    svg.append('text')
+        .attr('class', 'year-title')
+        .attr('x', calendarCenterX)
+        .attr('y', 30)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '26px')
+        .style('font-weight', 'bold')
+        .style('fill', 'var(--color-text-primary)')
+        .text(currentYear);
+    
+    // Create month groups in 4x3 grid
+    const monthGroups = svg.selectAll('.month-group')
+        .data(months)
+        .enter().append('g')
+        .attr('class', 'month-group')
+        .attr('transform', (d, i) => {
+            const col = i % gridCols;
+            const row = Math.floor(i / gridCols);
+            const x = col * (monthWidth + monthPadding) + 20;
+            const y = row * (monthHeight + monthPadding) + 80; // Even more space from year title
+            return `translate(${x}, ${y})`;
+        });
+    
+    // Add month labels - centered over the calendar grid
+    monthGroups.append('text')
+        .attr('class', 'month-title')
+        .attr('x', (7 * (cellSize + cellPadding) - cellPadding) / 2) // Center over 7-day grid
+        .attr('y', -8)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '18px')
+        .style('font-weight', 'bold')
+        .style('fill', 'var(--color-text-primary)')
+        .text(d => d.name);
+    
+    // Add day labels (Sun, Mon, etc.) for each month
+    const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    monthGroups.each(function() {
+        const monthGroup = d3.select(this);
+        monthGroup.selectAll('.day-label')
+            .data(dayLabels)
+            .enter().append('text')
+            .attr('class', 'day-label')
+            .attr('x', (d, i) => i * (cellSize + cellPadding) + cellSize / 2)
+            .attr('y', 12)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '13px')
+            .style('font-weight', '600')
+            .style('fill', 'var(--color-text-secondary)')
+            .text(d => d);
+    });
+    
+    // Add calendar days for each month with proper weekly grid layout
+    monthGroups.each(function(monthData) {
+        const monthGroup = d3.select(this);
+        const month = monthData.month;
+        
+        // Create proper calendar grid with weeks as rows
+        const firstDay = new Date(currentYear, month, 1);
+        const firstDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+        const daysInMonth = new Date(currentYear, month + 1, 0).getDate();
+        
+        // Create all calendar positions (6 weeks × 7 days = 42 positions)
+        const calendarPositions = [];
+        for (let week = 0; week < 6; week++) {
+            for (let day = 0; day < 7; day++) {
+                const dayNumber = (week * 7 + day) - firstDayOfWeek + 1;
+                calendarPositions.push({
+                    week: week,
+                    dayOfWeek: day,
+                    dayNumber: dayNumber,
+                    isValidDay: dayNumber >= 1 && dayNumber <= daysInMonth,
+                    date: dayNumber >= 1 && dayNumber <= daysInMonth ? 
+                          new Date(currentYear, month, dayNumber) : null
+                });
+            }
+        }
+        
+        // Create day cells for all positions
+        const dayGroups = monthGroup.selectAll('.day-group')
+            .data(calendarPositions)
+            .enter().append('g')
+            .attr('class', 'day-group')
+            .attr('transform', d => {
+                const x = d.dayOfWeek * (cellSize + cellPadding);
+                const y = d.week * (cellSize + cellPadding) + 25;
+                return `translate(${x}, ${y})`;
+            });
+        
+        dayGroups.each(function(d) {
+            const dayGroup = d3.select(this);
+            
+            if (d.isValidDay) {
+                const dateStr = d3.timeFormat('%Y-%m-%d')(d.date);
+                const dayData = dataMap.get(dateStr);
+                const count = dayData ? dayData.count : 0;
+                
+                // Add day cell
+                dayGroup.append('rect')
+                    .attr('class', 'day')
+                    .attr('width', cellSize)
+                    .attr('height', cellSize)
+                    .attr('fill', getColor(count))
+                    .attr('stroke', '#fff')
+                    .attr('stroke-width', 0.5)
+                    .attr('rx', 2);
+                
+                // Add CVE count text if count > 0
+                if (count > 0) {
+                    dayGroup.append('text')
+                        .attr('x', cellSize / 2)
+                        .attr('y', cellSize / 2)
+                        .attr('dy', '0.35em')
+                        .attr('text-anchor', 'middle')
+                        .style('font-size', count > 99 ? '14px' : count > 9 ? '16px' : '18px')
+                        .style('font-weight', 'bold')
+                        .style('fill', 'white')
+                        .style('pointer-events', 'none')
+                        .text(count);
+                }
+                
+                // Add hover tooltip
+                dayGroup
+                    .style('cursor', 'pointer')
+                    .on('mouseover', function(event) {
+                        const avgCvss = dayData ? dayData.avgCvss : 0;
+                        const cvssCount = dayData ? dayData.cvssCount : 0;
+                        
+                        tooltip.transition().duration(200).style('opacity', .9);
+                        tooltip.html(`
+                            <strong>${d3.timeFormat('%B %d, %Y')(d.date)}</strong><br/>
+                            CVEs: ${count}<br/>
+                            ${avgCvss > 0 ? `Avg CVSS: ${avgCvss.toFixed(1)} (${cvssCount} scored)` : 'No CVSS scores'}
+                        `)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', function() {
+                        tooltip.transition().duration(500).style('opacity', 0);
+                    });
+            }
+        });
+    });
+    
+    console.log(`Calendar heatmap rendered for ${currentYear} with 12-month grid layout`);
+}
+
+function updateCalendarView() {
+    createCalendarHeatmap();
+}
+
+function updateStatsCards() {
+    const stats = calendarData.statistics;
+    
+    // Update stats cards
+    document.getElementById('totalCVEs').textContent = stats.total_cves?.toLocaleString() || '0';
+    document.getElementById('avgPerDay').textContent = stats.daily_stats?.average_per_day || '0';
+    document.getElementById('peakDay').textContent = stats.daily_stats?.max_per_day?.toLocaleString() || '0';
+    // Calculate peak month from daily data
+    const peakMonthData = calculatePeakMonth();
+    document.getElementById('peakMonth').textContent = peakMonthData.month || 'N/A';
+    document.getElementById('peakMonthCount').textContent = `📅 ${peakMonthData.count?.toLocaleString() || '0'} CVEs`;
+    
+    // Update peak day date
+    const peakDate = stats.daily_stats?.peak_day?.date;
+    if (peakDate) {
+        const formattedDate = new Date(peakDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        document.getElementById('peakDayDate').textContent = `🔥 ${formattedDate}`;
+    }
+}
+
+function updateInsights() {
+    const stats = calendarData.statistics;
+    
+    // Publication patterns insight
+    const totalDays = stats.total_days_with_data || 0;
+    const avgPerDay = stats.daily_stats?.average_per_day || 0;
+    const patternsText = `CVE publications span ${totalDays.toLocaleString()} days with an average of ${avgPerDay} CVEs per day. Peak activity reached ${stats.daily_stats?.max_per_day || 0} CVEs in a single day.`;
+    document.getElementById('publicationPatterns').textContent = patternsText;
+    
+    // Temporal trends insight
+    const dateRange = stats.date_range;
+    const trendsText = `Data coverage spans from ${new Date(dateRange?.start).getFullYear()} to ${new Date(dateRange?.end).getFullYear()}, showing the evolution of vulnerability disclosure patterns over time.`;
+    document.getElementById('temporalTrends').textContent = trendsText;
+}
+
+function updateLastUpdated() {
+    if (calendarData.generated_at) {
+        const date = new Date(calendarData.generated_at);
+        const formatted = date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+        document.getElementById('lastUpdated').textContent = formatted;
+    }
+}
+
+function exportCalendarData(format) {
+    if (format === 'csv') {
+        const csv = convertToCSV(calendarData.daily_data);
+        downloadFile(csv, 'calendar_data.csv', 'text/csv');
+    } else if (format === 'json') {
+        const json = JSON.stringify(calendarData, null, 2);
+        downloadFile(json, 'calendar_data.json', 'application/json');
+    }
+}
+
+function convertToCSV(data) {
+    const headers = ['Date', 'CVE Count', 'Average CVSS', 'CVEs with CVSS'];
+    const rows = data.map(item => [
+        item.date,
+        item.value,
+        item.avg_cvss || '',
+        item.cvss_count || ''
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
+}
+
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function copyPermalink() {
+    const url = new URL(window.location);
+    url.searchParams.set('year', selectedYear);
+    
+    navigator.clipboard.writeText(url.toString()).then(() => {
+        // Show temporary success message
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
+    });
+}
+
+function showErrorState() {
+    document.getElementById('calendarLoading').innerHTML = `
+        <div style="text-align: center; color: #dc3545;">
+            <h4>⚠️ Error Loading Calendar Data</h4>
+            <p>Unable to load calendar analysis data. Please try refreshing the page.</p>
+        </div>
+    `;
+    
+    // Show error in stats cards
+    ['totalCVEs', 'avgPerDay', 'peakDay', 'avgCVSS'].forEach(id => {
+        document.getElementById(id).textContent = 'Error';
+    });
+}
+</script>
+{% endblock %}

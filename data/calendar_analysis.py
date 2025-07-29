@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""
+Calendar Analysis Module for CVE.ICU
+Generates daily CVE publication data for calendar heatmap visualization
+"""
+
+import json
+import pandas as pd
+from datetime import datetime, date
+from pathlib import Path
+import numpy as np
+from collections import defaultdict
+
+
+class CalendarAnalyzer:
+    """Analyzer for generating calendar-based CVE publication data"""
+    
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
+        self.base_dir = Path(base_dir)
+        self.cache_dir = Path(cache_dir)
+        self.data_dir = Path(data_dir)
+        self.nvd_file = self.cache_dir / 'nvd.jsonl'
+        
+    def load_nvd_data(self):
+        """Load and parse NVD data from JSONL file"""
+        if not self.quiet:
+            print("    📂 Loading NVD data for calendar analysis...")
+        
+        if not self.nvd_file.exists():
+            print(f"    ❌ NVD file not found: {self.nvd_file}")
+            return []
+        
+        cve_records = []
+        try:
+            with open(self.nvd_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            if not self.quiet:
+                print(f"    📊 Processing {len(data):,} CVE records for calendar analysis...")
+            
+            for entry in data:
+                try:
+                    cve_id = entry.get('cve', {}).get('id', '')
+                    published = entry.get('cve', {}).get('published', '')
+                    
+                    # Extract CVSS score (try v3.1 first, then v3.0, then v2.0)
+                    cvss_score = None
+                    metrics = entry.get('cve', {}).get('metrics', {})
+                    
+                    if 'cvssMetricV31' in metrics and metrics['cvssMetricV31']:
+                        cvss_score = metrics['cvssMetricV31'][0].get('cvssData', {}).get('baseScore')
+                    elif 'cvssMetricV30' in metrics and metrics['cvssMetricV30']:
+                        cvss_score = metrics['cvssMetricV30'][0].get('cvssData', {}).get('baseScore')
+                    elif 'cvssMetricV2' in metrics and metrics['cvssMetricV2']:
+                        cvss_score = metrics['cvssMetricV2'][0].get('cvssData', {}).get('baseScore')
+                    
+                    # Skip rejected CVEs
+                    status = entry.get('cve', {}).get('vulnStatus', '')
+                    if 'Rejected' in status:
+                        continue
+                    
+                    if cve_id and published:
+                        cve_records.append({
+                            'cve_id': cve_id,
+                            'published': published,
+                            'cvss_score': cvss_score
+                        })
+                        
+                except Exception as e:
+                    continue  # Skip malformed entries
+                    
+            if not self.quiet:
+                print(f"    ✅ Loaded {len(cve_records):,} valid CVE records")
+            return cve_records
+            
+        except Exception as e:
+            print(f"    ❌ Error loading NVD data: {e}")
+            return []
+    
+    def process_daily_data(self, cve_records):
+        """Process CVE records into daily publication counts"""
+        if not self.quiet:
+            print("    📅 Processing daily CVE publication data...")
+        
+        daily_counts = defaultdict(int)
+        daily_scores = defaultdict(list)
+        
+        for record in cve_records:
+            try:
+                # Parse publication date
+                pub_date = datetime.fromisoformat(record['published'].replace('Z', '+00:00'))
+                date_key = pub_date.strftime('%Y-%m-%d')
+                
+                daily_counts[date_key] += 1
+                
+                if record['cvss_score'] is not None:
+                    daily_scores[date_key].append(record['cvss_score'])
+                    
+            except Exception as e:
+                continue  # Skip invalid dates
+        
+        # Calculate daily averages
+        daily_data = {}
+        for date_key, count in daily_counts.items():
+            scores = daily_scores.get(date_key, [])
+            avg_score = np.mean(scores) if scores else None
+            
+            daily_data[date_key] = {
+                'date': date_key,
+                'count': count,
+                'avg_cvss_score': round(avg_score, 2) if avg_score else None,
+                'cvss_count': len(scores)
+            }
+        
+        if not self.quiet:
+            print(f"    ✅ Processed {len(daily_data):,} days of CVE data")
+        return daily_data
+    
+    def calculate_statistics(self, daily_data, cve_records):
+        """Calculate overall statistics for the calendar analysis"""
+        if not self.quiet:
+            print("    📊 Calculating calendar statistics...")
+        
+        total_cves = len(cve_records)
+        total_days = len(daily_data)
+        
+        # Calculate date range
+        dates = [datetime.strptime(date_key, '%Y-%m-%d') for date_key in daily_data.keys()]
+        start_date = min(dates) if dates else datetime.now()
+        end_date = max(dates) if dates else datetime.now()
+        
+        # Calculate averages
+        daily_counts = [data['count'] for data in daily_data.values()]
+        avg_per_day = np.mean(daily_counts) if daily_counts else 0
+        max_per_day = max(daily_counts) if daily_counts else 0
+        min_per_day = min(daily_counts) if daily_counts else 0
+        
+        # Find peak day
+        peak_day_data = max(daily_data.values(), key=lambda x: x['count']) if daily_data else None
+        
+        # Calculate CVSS statistics
+        cvss_scores = [record['cvss_score'] for record in cve_records if record['cvss_score'] is not None]
+        avg_cvss = np.mean(cvss_scores) if cvss_scores else None
+        
+        # Calculate current year statistics
+        current_year = datetime.now().year
+        current_year_data = {k: v for k, v in daily_data.items() if k.startswith(str(current_year))}
+        current_year_cves = sum(data['count'] for data in current_year_data.values())
+        
+        statistics = {
+            'total_cves': total_cves,
+            'total_days_with_data': total_days,
+            'date_range': {
+                'start': start_date.strftime('%Y-%m-%d'),
+                'end': end_date.strftime('%Y-%m-%d')
+            },
+            'daily_stats': {
+                'average_per_day': round(avg_per_day, 2),
+                'max_per_day': max_per_day,
+                'min_per_day': min_per_day,
+                'peak_day': {
+                    'date': peak_day_data['date'] if peak_day_data else None,
+                    'count': peak_day_data['count'] if peak_day_data else 0
+                }
+            },
+            'cvss_stats': {
+                'average_score': round(avg_cvss, 2) if avg_cvss else None,
+                'total_with_scores': len(cvss_scores)
+            },
+            'current_year': {
+                'year': current_year,
+                'total_cves': current_year_cves,
+                'days_with_data': len(current_year_data)
+            }
+        }
+        
+        return statistics
+    
+    def generate_calendar_analysis(self):
+        """Generate comprehensive calendar analysis"""
+        print("  📅 Generating calendar analysis...")
+        
+        # Load CVE data
+        cve_records = self.load_nvd_data()
+        if not cve_records:
+            print("  ❌ No CVE data available for calendar analysis")
+            return None
+        
+        # Process daily data
+        daily_data = self.process_daily_data(cve_records)
+        if not daily_data:
+            print("  ❌ No daily data generated")
+            return None
+        
+        # Calculate statistics
+        statistics = self.calculate_statistics(daily_data, cve_records)
+        
+        # Prepare calendar data for frontend
+        calendar_data = []
+        for date_key, data in daily_data.items():
+            calendar_data.append({
+                'date': date_key,
+                'value': data['count'],
+                'avg_cvss': data['avg_cvss_score'],
+                'cvss_count': data['cvss_count']
+            })
+        
+        # Sort by date
+        calendar_data.sort(key=lambda x: x['date'])
+        
+        analysis_result = {
+            'generated_at': datetime.now().isoformat(),
+            'statistics': statistics,
+            'daily_data': calendar_data,
+            'metadata': {
+                'total_records': len(cve_records),
+                'total_days': len(daily_data),
+                'data_source': 'NVD JSONL',
+                'analysis_type': 'calendar_heatmap'
+            }
+        }
+        
+        # Save to file
+        output_file = self.data_dir / 'calendar_analysis.json'
+        with open(output_file, 'w') as f:
+            json.dump(analysis_result, f, indent=2)
+        
+        if not self.quiet:
+            print(f"  ✅ Generated calendar analysis with {len(calendar_data):,} days of data")
+        return analysis_result
+    
+    def generate_current_year_calendar_analysis(self):
+        """Generate current year specific calendar analysis"""
+        print("  📅 Generating current year calendar analysis...")
+        
+        # Load full analysis first
+        full_analysis = self.generate_calendar_analysis()
+        if not full_analysis:
+            return None
+        
+        current_year = datetime.now().year
+        
+        # Filter for current year data
+        current_year_daily = [
+            data for data in full_analysis['daily_data'] 
+            if data['date'].startswith(str(current_year))
+        ]
+        
+        # Calculate current year statistics
+        if current_year_daily:
+            total_cves = sum(data['value'] for data in current_year_daily)
+            avg_per_day = total_cves / len(current_year_daily) if current_year_daily else 0
+            max_day = max(current_year_daily, key=lambda x: x['value']) if current_year_daily else None
+            
+            # Calculate CVSS average for current year
+            cvss_scores = [data['avg_cvss'] for data in current_year_daily if data['avg_cvss'] is not None]
+            avg_cvss = np.mean(cvss_scores) if cvss_scores else None
+            
+            current_year_stats = {
+                'year': current_year,
+                'total_cves': total_cves,
+                'total_days_with_data': len(current_year_daily),
+                'average_per_day': round(avg_per_day, 2),
+                'peak_day': {
+                    'date': max_day['date'] if max_day else None,
+                    'count': max_day['value'] if max_day else 0
+                },
+                'average_cvss': round(avg_cvss, 2) if avg_cvss else None
+            }
+        else:
+            current_year_stats = {
+                'year': current_year,
+                'total_cves': 0,
+                'total_days_with_data': 0,
+                'average_per_day': 0,
+                'peak_day': {'date': None, 'count': 0},
+                'average_cvss': None
+            }
+        
+        current_year_analysis = {
+            'generated_at': datetime.now().isoformat(),
+            'statistics': current_year_stats,
+            'daily_data': current_year_daily,
+            'metadata': {
+                'year': current_year,
+                'total_days': len(current_year_daily),
+                'data_source': 'NVD JSONL',
+                'analysis_type': 'current_year_calendar'
+            }
+        }
+        
+        # Save to file
+        output_file = self.data_dir / 'calendar_analysis_current_year.json'
+        with open(output_file, 'w') as f:
+            json.dump(current_year_analysis, f, indent=2)
+        
+        if not self.quiet:
+            print(f"  ✅ Generated current year calendar analysis with {len(current_year_daily):,} days")
+        return current_year_analysis
+
+
+if __name__ == "__main__":
+    # Test the analyzer
+    base_dir = Path(__file__).parent.parent
+    cache_dir = base_dir / 'data' / 'cache'
+    data_dir = base_dir / 'web' / 'data'
+    
+    analyzer = CalendarAnalyzer(base_dir, cache_dir, data_dir)
+    
+    print("🗓️  Testing Calendar Analysis...")
+    comprehensive_analysis = analyzer.generate_calendar_analysis()
+    current_year_analysis = analyzer.generate_current_year_calendar_analysis()
+    
+    if comprehensive_analysis and current_year_analysis:
+        print("✅ Calendar analysis test completed successfully!")
+    else:
+        print("❌ Calendar analysis test failed!")
