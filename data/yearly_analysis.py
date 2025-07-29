@@ -12,7 +12,8 @@ from datetime import datetime
 class YearlyAnalyzer:
     """Handles yearly data processing and aggregation"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -21,14 +22,16 @@ class YearlyAnalyzer:
     
     def generate_year_data_json(self):
         """Generate JSON data files for all available years"""
-        print("📊 Generating year data JSON files...")
+        if not self.quiet:
+            print("📊 Generating year data JSON files...")
         
         try:
             # Import the years analyzer
             from cve_years import CVEYearsAnalyzer
             
-            print("🔽 Initializing CVE data processing...")
-            analyzer = CVEYearsAnalyzer()
+            if not self.quiet:
+                print("🔽 Initializing CVE data processing...")
+            analyzer = CVEYearsAnalyzer(quiet=self.quiet)
             
             # Generate data for all years
             all_year_data = []
@@ -313,5 +316,6 @@ class YearlyAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(growth_analysis, f, indent=2)
         
-        print(f"  ✅ Generated growth analysis with {len(growth_data)} years of data")
+        if not self.quiet:
+            print(f"  ✅ Generated growth analysis with {len(growth_data)} years of data")
         return growth_analysis

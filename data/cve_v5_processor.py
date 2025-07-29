@@ -16,7 +16,8 @@ import os
 class CVEV5Processor:
     """Processes CVE V5 list data for authoritative CNA analysis"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -365,7 +366,8 @@ class CVEV5Processor:
         total_files = len(cve_files)
         processed = 0
         
-        print(f"    📊 Found {total_files} CVE files for {year}")
+        if not self.quiet:
+            print(f"    📊 Found {total_files} CVE files for {year}")
         
         for cve_file in cve_files:
             cve_record = self.parse_cve_v5_record(cve_file)
@@ -387,10 +389,11 @@ class CVEV5Processor:
                         cna_stats[org_id]['last_date'] = pub_date
             
             processed += 1
-            if processed % 1000 == 0:
+            if processed % 1000 == 0 and not self.quiet:
                 print(f"    📈 Processed {processed}/{total_files} files...")
         
-        print(f"    ✅ Processed {processed} CVE files, found {len(cna_stats)} CNAs for {year}")
+        if not self.quiet:
+            print(f"    ✅ Processed {processed} CVE files, found {len(cna_stats)} CNAs for {year}")
         return dict(cna_stats)
     
     def generate_comprehensive_cna_analysis(self):
@@ -554,7 +557,8 @@ class CVEV5Processor:
                 continue
                 
             year = int(year_dir.name)
-            print(f"    📂 Scanning CVE-{year}-* files for {self.current_year} publications...")
+            if not self.quiet:
+                print(f"    📂 Scanning CVE-{year}-* files for {self.current_year} publications...")
             
             # Get all CVE files in this year directory (handle nested structure)
             cve_files = []
@@ -594,13 +598,14 @@ class CVEV5Processor:
                             pass
                 
                 total_processed += 1
-                if total_processed % 5000 == 0:
+                if total_processed % 5000 == 0 and not self.quiet:
                     print(f"    📈 Processed {total_processed} files, found {current_year_cves} {self.current_year} publications...")
             
-            if year_current_cves > 0:
+            if year_current_cves > 0 and not self.quiet:
                 print(f"    ✅ Found {year_current_cves} CVEs published in {self.current_year} from CVE-{year}-* files")
         
-        print(f"    🎯 Total: {current_year_cves} CVEs published in {self.current_year}, from {len(cna_stats)} CNAs")
+        if not self.quiet:
+            print(f"    🎯 Total: {current_year_cves} CVEs published in {self.current_year}, from {len(cna_stats)} CNAs")
         return dict(cna_stats)
     
     def generate_current_year_analysis(self):
@@ -644,7 +649,8 @@ class CVEV5Processor:
                 comprehensive_cna = comprehensive_cnas[org_id]
                 if 'years_active' in comprehensive_cna:
                     years_active = comprehensive_cna['years_active']
-                    print(f"    📅 {stats['assigner_short_name']}: Using full history {years_active} years")
+                    if not self.quiet:
+                        print(f"    📅 {stats['assigner_short_name']}: Using full history {years_active} years")
                 elif 'first_cve_year' in comprehensive_cna and 'last_cve_year' in comprehensive_cna:
                     # Calculate from full year range
                     years_active = max(1, comprehensive_cna['last_cve_year'] - comprehensive_cna['first_cve_year'] + 1)

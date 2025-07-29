@@ -40,7 +40,7 @@
             <nav class="nav">
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="years.html">Years</a></li>
+                    <li><a href="years.html">Yearly Analysis</a></li>
                     <li><a href="cna.html">CNA</a></li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
@@ -77,8 +77,9 @@
                     </p>
                 </div>
                 <div style="flex: 1; min-width: 200px; text-align: right;">
-                    <p class="mb-1"><strong>Community Projects:</strong></p>
+                    <p class="mb-1"><strong>Platform Links:</strong></p>
                     <p class="text-muted small mb-0">
+                        <a href="about.html" class="text-decoration-none">About CVE.ICU</a><br>
                         <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
                         <a href="https://cvceforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
                         <a href="https://github.com/yourusername/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
@@ -96,7 +97,49 @@
     </footer>
 
     <!-- Chart.js Library (UMD version) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- D3.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Universal timestamp loader -->
+    <script>
+    // Universal function to load and display the last updated timestamp
+    // Uses cve_all.json as the single source of truth for all pages
+    function loadUniversalTimestamp() {
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        if (!lastUpdatedElement) return;
+        
+        fetch('data/cve_all.json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.generated_at) {
+                    const date = new Date(data.generated_at);
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    const formattedDate = date.toLocaleString('en-US', options);
+                    lastUpdatedElement.textContent = formattedDate;
+                } else {
+                    lastUpdatedElement.textContent = 'Unknown';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading timestamp:', error);
+                lastUpdatedElement.textContent = 'Error loading timestamp';
+            });
+    }
+    
+    // Load timestamp when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUniversalTimestamp();
+    });
+    </script>
     
     <!-- Custom JavaScript -->
     <script>

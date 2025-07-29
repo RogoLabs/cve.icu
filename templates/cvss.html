@@ -218,7 +218,6 @@ function updateDisplay() {
     
     updateStatsCards(data);
     updateCharts(data);
-    updateLastUpdated(data);
 }
 
 // Update statistics cards
@@ -584,14 +583,7 @@ function updateToggleUI() {
     }
 }
 
-// Update last updated timestamp
-function updateLastUpdated(data) {
-    const lastUpdatedElement = document.getElementById('lastUpdated');
-    if (lastUpdatedElement && data.generated_at) {
-        const date = new Date(data.generated_at);
-        lastUpdatedElement.textContent = date.toLocaleString();
-    }
-}
+// Timestamp now handled by universal loader in base.html
 
 // Show error state
 function showErrorState() {

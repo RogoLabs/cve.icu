@@ -3,10 +3,12 @@
 {% block title %}CVE Year Analysis - CVE.ICU{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="text-center mb-5">
-    <h1 class="mb-3">CVE Year Analysis</h1>
-    <p class="text-muted">Comprehensive analysis of CVE data across {{ available_years|length }} years (1999-{{ current_year }})</p>
+<!-- Page Header -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CVE Year Analysis</h1>
+    <small class="text-muted d-block mb-3">
+        Comprehensive analysis of CVE data across {{ available_years|length }} years (1999-{{ current_year }})
+    </small>
 </div>
 
 <!-- Statistics Cards -->

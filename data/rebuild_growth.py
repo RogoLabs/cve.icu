@@ -8,8 +8,7 @@ import sys
 import os
 from pathlib import Path
 
-# Add the data directory to the Python path
-sys.path.insert(0, str(Path(__file__).parent / 'data'))
+
 
 def main():
     """Main function to rebuild growth analysis"""
@@ -21,7 +20,7 @@ def main():
         from yearly_analysis import YearlyAnalyzer
         
         # Initialize paths
-        base_dir = Path(__file__).parent
+        base_dir = Path(__file__).parent.parent
         cache_dir = base_dir / 'data' / 'cache'
         data_dir = base_dir / 'data'
         

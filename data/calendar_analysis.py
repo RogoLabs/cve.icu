@@ -15,7 +15,8 @@ from collections import defaultdict
 class CalendarAnalyzer:
     """Analyzer for generating calendar-based CVE publication data"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -23,7 +24,8 @@ class CalendarAnalyzer:
         
     def load_nvd_data(self):
         """Load and parse NVD data from JSONL file"""
-        print("    📂 Loading NVD data for calendar analysis...")
+        if not self.quiet:
+            print("    📂 Loading NVD data for calendar analysis...")
         
         if not self.nvd_file.exists():
             print(f"    ❌ NVD file not found: {self.nvd_file}")
@@ -34,7 +36,8 @@ class CalendarAnalyzer:
             with open(self.nvd_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 
-            print(f"    📊 Processing {len(data):,} CVE records for calendar analysis...")
+            if not self.quiet:
+                print(f"    📊 Processing {len(data):,} CVE records for calendar analysis...")
             
             for entry in data:
                 try:
@@ -67,7 +70,8 @@ class CalendarAnalyzer:
                 except Exception as e:
                     continue  # Skip malformed entries
                     
-            print(f"    ✅ Loaded {len(cve_records):,} valid CVE records")
+            if not self.quiet:
+                print(f"    ✅ Loaded {len(cve_records):,} valid CVE records")
             return cve_records
             
         except Exception as e:
@@ -76,7 +80,8 @@ class CalendarAnalyzer:
     
     def process_daily_data(self, cve_records):
         """Process CVE records into daily publication counts"""
-        print("    📅 Processing daily CVE publication data...")
+        if not self.quiet:
+            print("    📅 Processing daily CVE publication data...")
         
         daily_counts = defaultdict(int)
         daily_scores = defaultdict(list)
@@ -108,12 +113,14 @@ class CalendarAnalyzer:
                 'cvss_count': len(scores)
             }
         
-        print(f"    ✅ Processed {len(daily_data):,} days of CVE data")
+        if not self.quiet:
+            print(f"    ✅ Processed {len(daily_data):,} days of CVE data")
         return daily_data
     
     def calculate_statistics(self, daily_data, cve_records):
         """Calculate overall statistics for the calendar analysis"""
-        print("    📊 Calculating calendar statistics...")
+        if not self.quiet:
+            print("    📊 Calculating calendar statistics...")
         
         total_cves = len(cve_records)
         total_days = len(daily_data)
@@ -219,7 +226,8 @@ class CalendarAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(analysis_result, f, indent=2)
         
-        print(f"  ✅ Generated calendar analysis with {len(calendar_data):,} days of data")
+        if not self.quiet:
+            print(f"  ✅ Generated calendar analysis with {len(calendar_data):,} days of data")
         return analysis_result
     
     def generate_current_year_calendar_analysis(self):
@@ -287,7 +295,8 @@ class CalendarAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(current_year_analysis, f, indent=2)
         
-        print(f"  ✅ Generated current year calendar analysis with {len(current_year_daily):,} days")
+        if not self.quiet:
+            print(f"  ✅ Generated current year calendar analysis with {len(current_year_daily):,} days")
         return current_year_analysis
 
 

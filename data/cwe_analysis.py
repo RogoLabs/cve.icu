@@ -12,7 +12,8 @@ from datetime import datetime
 class CWEAnalyzer:
     """Handles CWE-specific analysis and data processing"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -20,7 +21,8 @@ class CWEAnalyzer:
     
     def generate_cwe_analysis(self, all_year_data):
         """Generate CWE analysis across all years"""
-        print(f"  🔍 Generating CWE analysis...")
+        if not self.quiet:
+            print(f"  🔍 Generating CWE analysis...")
         
         # Aggregate CWE data from all years
         combined_cwe = {}
@@ -94,12 +96,14 @@ class CWEAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(cwe_analysis, f, indent=2)
         
-        print(f"  ✅ Generated CWE analysis with {len(combined_cwe):,} unique CWEs")
+        if not self.quiet:
+            print(f"  ✅ Generated CWE analysis with {len(combined_cwe):,} unique CWEs")
         return cwe_analysis
     
     def generate_current_year_cwe_analysis(self, current_year_data):
         """Generate current year CWE analysis"""
-        print(f"    🔍 Generating current year CWE analysis...")
+        if not self.quiet:
+            print(f"    🔍 Generating current year CWE analysis...")
         
         # Extract CWE data from current year
         cwe_data = current_year_data.get('cwe', {})
@@ -169,5 +173,6 @@ class CWEAnalyzer:
         with open(current_year_file, 'w') as f:
             json.dump(current_year_cwe_analysis, f, indent=2)
         
-        print(f"    ✅ Generated current year CWE analysis with {len(current_year_cwes)} CWEs")
+        if not self.quiet:
+            print(f"    ✅ Generated current year CWE analysis with {len(current_year_cwes)} CWEs")
         return current_year_cwe_analysis

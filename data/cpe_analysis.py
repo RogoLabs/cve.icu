@@ -13,7 +13,8 @@ from collections import defaultdict, Counter
 class CPEAnalyzer:
     """Handles CPE-specific analysis and data processing"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -57,7 +58,8 @@ class CPEAnalyzer:
     
     def generate_cpe_analysis(self, all_year_data):
         """Generate CPE analysis across all years"""
-        print(f"  🔍 Generating CPE analysis...")
+        if not self.quiet:
+            print(f"  🔍 Generating CPE analysis...")
         
         # Process raw CVE data to extract CPE information
         cpe_data = self._process_cpe_data_from_cache()
@@ -216,7 +218,8 @@ class CPEAnalyzer:
             print(f"    ⚠️  NVD cache file not found: {nvd_file}")
             return None
         
-        print(f"    📂 Processing CPE data from {nvd_file}")
+        if not self.quiet:
+            print(f"    📂 Processing CPE data from {nvd_file}")
         
         cpe_list = []
         vendor_list = []
@@ -226,7 +229,8 @@ class CPEAnalyzer:
         
         try:
             with open(nvd_file, 'r', encoding='utf-8') as f:
-                print(f"    📂 Loading NVD data from {nvd_file}...")
+                if not self.quiet:
+                    print(f"    📂 Loading NVD data from {nvd_file}...")
                 nvd_data = json.load(f)
                 
                 # Handle different possible data structures
@@ -243,10 +247,11 @@ class CPEAnalyzer:
                         # Assume it's a single CVE item
                         cve_items = [nvd_data]
                 
-                print(f"    📊 Processing {len(cve_items):,} CVE records...")
+                if not self.quiet:
+                    print(f"    📊 Processing {len(cve_items):,} CVE records...")
                 
                 for idx, cve_item in enumerate(cve_items):
-                    if idx % 50000 == 0 and idx > 0:
+                    if idx % 50000 == 0 and idx > 0 and not self.quiet:
                         print(f"    📊 Processed {idx:,} CVE records...")
                     
                     try:
@@ -282,7 +287,8 @@ class CPEAnalyzer:
             print(f"    ❌ Error processing NVD file: {e}")
             return None
         
-        print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs")
+        if not self.quiet:
+            print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs")
         
         return {
             'cpe_list': cpe_list,
@@ -300,7 +306,8 @@ class CPEAnalyzer:
             print(f"    ⚠️  NVD cache file not found: {nvd_file}")
             return None
         
-        print(f"    📂 Processing current year CPE data from {nvd_file}")
+        if not self.quiet:
+            print(f"    📂 Processing current year CPE data from {nvd_file}")
         
         cpe_list = []
         vendor_list = []
@@ -310,7 +317,8 @@ class CPEAnalyzer:
         
         try:
             with open(nvd_file, 'r', encoding='utf-8') as f:
-                print(f"    📂 Loading NVD data for current year from {nvd_file}...")
+                if not self.quiet:
+                    print(f"    📂 Loading NVD data for current year from {nvd_file}...")
                 nvd_data = json.load(f)
                 
                 # Handle different possible data structures
@@ -327,10 +335,11 @@ class CPEAnalyzer:
                         # Assume it's a single CVE item
                         cve_items = [nvd_data]
                 
-                print(f"    📊 Processing {len(cve_items):,} CVE records for current year...")
+                if not self.quiet:
+                    print(f"    📊 Processing {len(cve_items):,} CVE records for current year...")
                 
                 for idx, cve_item in enumerate(cve_items):
-                    if idx % 50000 == 0 and idx > 0:
+                    if idx % 50000 == 0 and idx > 0 and not self.quiet:
                         print(f"    📊 Processed {idx:,} CVE records for current year...")
                     
                     try:
@@ -371,7 +380,8 @@ class CPEAnalyzer:
             print(f"    ❌ Error processing NVD file for current year: {e}")
             return None
         
-        print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs for {self.current_year}")
+        if not self.quiet:
+            print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs for {self.current_year}")
         
         return {
             'cpe_list': cpe_list,

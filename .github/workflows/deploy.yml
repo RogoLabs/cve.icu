@@ -12,6 +12,11 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -33,14 +38,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
           
-    - name: Cache CVE data
-      uses: actions/cache@v3
-      with:
-        path: data/cache
-        key: cve-data-${{ hashFiles('data/cache/nvd.jsonl') }}
-        restore-keys: |
-          cve-data-
-          
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
@@ -48,7 +45,7 @@ jobs:
         
     - name: Build site
       run: |
-        python build.py
+        python build.py --quiet
         
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3

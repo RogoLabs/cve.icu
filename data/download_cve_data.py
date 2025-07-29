@@ -17,7 +17,8 @@ import time
 class CVEDataDownloader:
     """Downloads and manages CVE data from NVD source"""
     
-    def __init__(self, cache_dir=None):
+    def __init__(self, cache_dir=None, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(__file__).parent
         self.cache_dir = cache_dir or (self.base_dir / 'cache')
         self.cache_dir.mkdir(exist_ok=True)
@@ -34,9 +35,10 @@ class CVEDataDownloader:
         self.cna_list_file = self.cache_dir / "cna_list.json"
         self.cna_name_map_file = self.cache_dir / "cna_name_map.json"
         
-        print(f"🔽 CVE Data Downloader Initialized")
-        print(f"📁 Cache directory: {self.cache_dir}")
-        print(f"🌐 Data source: {self.nvd_url}")
+        if not self.quiet:
+            print(f"🔽 CVE Data Downloader Initialized")
+            print(f"📁 Cache directory: {self.cache_dir}")
+            print(f"🌐 Data source: {self.nvd_url}")
     
     def is_cache_valid(self):
         """Check if cached data is still valid"""
@@ -49,23 +51,28 @@ class CVEDataDownloader:
             
             cache_time = datetime.fromisoformat(cache_info['download_time'])
             if datetime.now() - cache_time > self.cache_duration:
-                print(f"⏰ Cache expired (older than {self.cache_duration})")
+                if not self.quiet:
+                    print(f"⏰ Cache expired (older than {self.cache_duration})")
                 return False
             
-            print(f"✅ Cache is valid (downloaded {cache_time.strftime('%Y-%m-%d %H:%M:%S')})")
+            if not self.quiet:
+                print(f"✅ Cache is valid (downloaded {cache_time.strftime('%Y-%m-%d %H:%M:%S')})")
             return True
             
         except (json.JSONDecodeError, KeyError, ValueError) as e:
-            print(f"⚠️  Cache info corrupted: {e}")
+            if not self.quiet:
+                print(f"⚠️  Cache info corrupted: {e}")
             return False
     
     def download_data(self, force=False):
         """Download CVE data from NVD source"""
         if not force and self.is_cache_valid():
-            print("📋 Using cached data")
+            if not self.quiet:
+                print("📋 Using cached data")
             return self.cache_file
         
-        print(f"🔽 Downloading CVE data from {self.nvd_url}")
+        if not self.quiet:
+            print(f"🔽 Downloading CVE data from {self.nvd_url}")
         
         try:
             # Start download with progress tracking

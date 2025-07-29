@@ -273,7 +273,6 @@ function loadGrowthData() {
             updateCumulativeGrowthChart(data);
             updateGrowthInsights(data);
             updateGrowthTable(data);
-            updateLastUpdated(data);
         })
         .catch(error => {
             console.error('Error loading growth data:', error);
@@ -761,22 +760,7 @@ function downloadFile(content, filename, contentType) {
     URL.revokeObjectURL(url);
 }
 
-// Update last updated timestamp
-function updateLastUpdated(data) {
-    const lastUpdatedElement = document.getElementById('lastUpdated');
-    if (lastUpdatedElement && data.generated_at) {
-        const timestamp = new Date(data.generated_at);
-        const formattedDate = timestamp.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
-        lastUpdatedElement.textContent = formattedDate;
-    }
-}
+// Timestamp now handled by universal loader in base.html
 
 // Copy permalink
 function copyPermalink() {

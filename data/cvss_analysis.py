@@ -12,7 +12,8 @@ from datetime import datetime
 class CVSSAnalyzer:
     """Handles CVSS-specific analysis and data processing"""
     
-    def __init__(self, base_dir, cache_dir, data_dir):
+    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
@@ -20,7 +21,8 @@ class CVSSAnalyzer:
     
     def generate_cvss_analysis(self, all_year_data):
         """Generate comprehensive CVSS analysis from all years data"""
-        print("  📊 Generating CVSS analysis...")
+        if not self.quiet:
+            print("  📊 Generating CVSS analysis...")
         
         # Initialize combined CVSS data structure for available versions
         combined_cvss = {
@@ -130,12 +132,14 @@ class CVSSAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(cvss_analysis, f, indent=2)
         
-        print(f"  ✅ Generated CVSS analysis with {total_cves_with_cvss:,} CVEs across all versions")
+        if not self.quiet:
+            print(f"  ✅ Generated CVSS analysis with {total_cves_with_cvss:,} CVEs across all versions")
         return cvss_analysis
     
     def generate_current_year_cvss_analysis(self, current_year_data):
         """Generate current year CVSS analysis"""
-        print(f"    📊 Generating current year CVSS analysis...")
+        if not self.quiet:
+            print(f"    📊 Generating current year CVSS analysis...")
         
         # Extract CVSS data from current year
         cvss_data = current_year_data.get('cvss', {})
@@ -202,5 +206,6 @@ class CVSSAnalyzer:
         with open(current_year_file, 'w') as f:
             json.dump(current_year_cvss_analysis, f, indent=2)
         
-        print(f"    ✅ Generated current year CVSS analysis")
+        if not self.quiet:
+            print(f"    ✅ Generated current year CVSS analysis")
         return current_year_cvss_analysis

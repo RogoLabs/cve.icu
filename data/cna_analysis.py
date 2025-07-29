@@ -164,14 +164,15 @@ class CNAAnalyzer:
         # Load CVE data from cache
         nvd_file = self.cache_dir / 'nvd.jsonl'
         if nvd_file.exists():
-            print(f"    📂 Loading CVE data from {nvd_file}...")
+            if not self.quiet:
+                print(f"    📂 Loading CVE data from {nvd_file}...")
             with open(nvd_file, 'r') as f:
                 cve_data = json.load(f)
             
             print(f"    📊 Processing {len(cve_data)} CVEs for comprehensive CNA analysis...")
             
             for i, cve_entry in enumerate(cve_data):
-                if i % 50000 == 0 and i > 0:
+                if i % 50000 == 0 and i > 0 and not self.quiet:
                     print(f"    📊 Processed {i:,} CVEs...")
                 
                 try:
@@ -214,7 +215,8 @@ class CNAAnalyzer:
                 except Exception as e:
                     continue
             
-            print(f"    ✅ Processed all CVEs, found {len(cna_stats)} CNAs with published CVEs")
+            if not self.quiet:
+                print(f"    ✅ Processed all CVEs, found {len(cna_stats)} CNAs with published CVEs")
         
         # Create comprehensive CNA list with official data integration
         cna_list = []

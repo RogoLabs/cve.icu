@@ -16,9 +16,10 @@ from download_cve_data import CVEDataDownloader
 class CVEYearsAnalyzer:
     """Analyzes CVE data by year and generates structured data for visualization"""
     
-    def __init__(self):
+    def __init__(self, quiet=False):
+        self.quiet = quiet
         self.base_dir = Path(__file__).parent
-        self.downloader = CVEDataDownloader()
+        self.downloader = CVEDataDownloader(quiet=quiet)
         self.data_file = None
         self.year_data_cache = {}
         
@@ -26,15 +27,18 @@ class CVEYearsAnalyzer:
         self.cna_list = {}
         self.cna_name_map = {}
         
-        print(f"📊 CVE Years Analyzer Initialized")
-        print(f"📅 Target coverage: 1999-{datetime.now().year}")
+        if not self.quiet:
+            print(f"📊 CVE Years Analyzer Initialized")
+            print(f"📅 Target coverage: 1999-{datetime.now().year}")
     
     def ensure_data_loaded(self):
         """Ensure CVE data is downloaded and available"""
         if self.data_file is None:
-            print("🔽 Loading CVE data...")
+            if not self.quiet:
+                print("🔽 Loading CVE data...")
             self.data_file = self.downloader.ensure_data_available()
-            print(f"✅ Data loaded from: {self.data_file}")
+            if not self.quiet:
+                print(f"✅ Data loaded from: {self.data_file}")
             
             # Load CNA mapping data
             self.load_cna_mappings()
@@ -52,18 +56,21 @@ class CVEYearsAnalyzer:
                         source_id = cna.get('sourceIdentifier', '')
                         if source_id:
                             self.cna_list[source_id] = cna
-                print(f"✅ Loaded {len(self.cna_list)} CNA entries")
+                if not self.quiet:
+                    print(f"✅ Loaded {len(self.cna_list)} CNA entries")
             
             # Load CNA name mapping
             cna_name_map_file = self.downloader.cache_dir / "cna_name_map.json"
             if cna_name_map_file.exists():
                 with open(cna_name_map_file, 'r', encoding='utf-8') as f:
                     self.cna_name_map = json.load(f)
-                print(f"✅ Loaded CNA name mappings for {len(self.cna_name_map)} entries")
+                if not self.quiet:
+                    print(f"✅ Loaded CNA name mappings for {len(self.cna_name_map)} entries")
                 
         except Exception as e:
-            print(f"⚠️  Warning: Could not load CNA mappings: {e}")
-            print("  📝 Will use raw sourceIdentifier values as fallback")
+            if not self.quiet:
+                print(f"⚠️  Warning: Could not load CNA mappings: {e}")
+                print("  📝 Will use raw sourceIdentifier values as fallback")
     
     def parse_cve_date(self, cve_data):
         """Extract publication date from CVE data"""
@@ -521,7 +528,8 @@ class CVEYearsAnalyzer:
         
         self.ensure_data_loaded()
         
-        print(f"📊 Processing CVE data for {year}...")
+        if not self.quiet:
+            print(f"📊 Processing CVE data for {year}...")
         
         # Initialize counters
         monthly_counts = [0] * 12
@@ -540,23 +548,26 @@ class CVEYearsAnalyzer:
         tag_counts = Counter()     # CVE tags tracking
         reference_tag_counts = Counter()  # Reference tags
         cpe_vendor_counts = Counter()     # CPE-based vendor analysis
-        print("🔽 Loading CVE data...")
+        if not self.quiet:
+            print("🔽 Loading CVE data...")
         
         # Load and parse JSON array data
-        print("  📊 Reading JSON array format...")
+        if not self.quiet:
+            print("  📊 Reading JSON array format...")
         with open(self.data_file, 'r', encoding='utf-8') as f:
             try:
                 # Load the entire JSON array
                 all_cves = json.load(f)
-                print(f"  📊 Loaded {len(all_cves)} CVE records")
+                if not self.quiet:
+                    print(f"  📊 Loaded {len(all_cves)} CVE records")
             except json.JSONDecodeError as e:
-                print(f"  ❌ Failed to parse JSON: {e}")
+                print(f"  ❌ Failed to parse JSON: {e}")  # Always show errors
                 return self.create_empty_year_data(year)
         
         # Process each CVE record
         total_cves = 0
         for cve_idx, cve_data in enumerate(all_cves):
-            if cve_idx % 10000 == 0 and cve_idx > 0:
+            if cve_idx % 10000 == 0 and cve_idx > 0 and not self.quiet:
                 print(f"  📊 Processed {cve_idx:,} CVEs...")
                 
             try:
@@ -656,7 +667,8 @@ class CVEYearsAnalyzer:
                 continue
                 # Progress update every 10000 lines
                 if line_num % 10000 == 0:
-                    print(f"    📋 Processed {line_num} lines, found {total_cves} CVEs for {year}")
+                    if not self.quiet:
+                        print(f"    📋 Processed {line_num} lines, found {total_cves} CVEs for {year}")
         
         # Prepare CVSS data organized by version
         cvss_severity_data = {}
@@ -778,7 +790,8 @@ class CVEYearsAnalyzer:
         # Cache the result
         self.year_data_cache[year] = year_data
         
-        print(f"  ✅ Found {total_cves} CVEs for {year}")
+        if not self.quiet:
+            print(f"  ✅ Found {total_cves} CVEs for {year}")
         return year_data
     
     def get_year_data(self, year):

@@ -29,9 +29,11 @@ class ComprehensiveCNAAnalyzer:
     def ensure_data_loaded(self):
         """Ensure CVE data is downloaded and available"""
         if self.data_file is None:
-            print("🔽 Loading CVE data...")
+            if not self.quiet:
+                print("🔽 Loading CVE data...")
             self.data_file = self.downloader.ensure_data_available()
-            print(f"✅ Data loaded from: {self.data_file}")
+            if not self.quiet:
+                print(f"✅ Data loaded from: {self.data_file}")
             
             # Load CNA mapping data
             self.load_cna_mappings()
@@ -396,7 +398,7 @@ class ComprehensiveCNAAnalyzer:
                         pass
                     
                 # Progress indicator
-                if entry_num % 10000 == 0:
+                if entry_num % 10000 == 0 and entry_num > 0 and not self.quiet:
                     print(f"  📊 Processed {entry_num:,} entries, found {len(cna_stats)} unique CNAs so far...")
             
             except (KeyError, ValueError, TypeError) as e:

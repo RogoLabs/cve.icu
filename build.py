@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 import sys
+import argparse
 
 # Add data folder to path for imports
 sys.path.append('data')
@@ -20,7 +21,8 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 class CVESiteBuilder:
     """Main class for building the CVE.ICU static site"""
     
-    def __init__(self):
+    def __init__(self, quiet=False):
+        self.quiet = quiet or os.getenv('CVE_BUILD_QUIET', '').lower() in ('1', 'true', 'yes')
         self.current_year = datetime.now().year
         self.available_years = list(range(1999, self.current_year + 1))
         self.base_dir = Path(__file__).parent
@@ -42,11 +44,21 @@ class CVESiteBuilder:
         self.jinja_env.globals['available_years'] = self.available_years
         self.jinja_env.filters['format_number'] = self.format_number
         
-        print(f"🚀 CVE.ICU Build System Initialized")
-        print(f"📅 Current Year: {self.current_year}")
-        print(f"📊 Coverage: 1999-{self.current_year} ({len(self.available_years)} years)")
-        print(f"🌐 Web output: {self.web_dir}")
-        print(f"📁 Data scripts: {self.data_scripts_dir}")
+        if not self.quiet:
+            print(f"🚀 CVE.ICU Build System Initialized")
+            print(f"📅 Current Year: {self.current_year}")
+            print(f"📊 Coverage: 1999-{self.current_year} ({len(self.available_years)} years)")
+            print(f"🌐 Web output: {self.web_dir}")
+            print(f"📁 Data scripts: {self.data_scripts_dir}")
+    
+    def print_verbose(self, message):
+        """Print message only if not in quiet mode"""
+        if not self.quiet:
+            print(message)
+    
+    def print_always(self, message):
+        """Print message regardless of quiet mode (for errors and essential info)"""
+        print(message)
     
     def format_number(self, num):
         """Format numbers for display (e.g., 1000 -> 1K)"""
@@ -58,7 +70,7 @@ class CVESiteBuilder:
     
     def clean_build(self):
         """Clean and recreate the web directory"""
-        print("🧹 Cleaning web directory...")
+        self.print_verbose("🧹 Cleaning web directory...")
         
         # Remove existing HTML files and data directory, but keep static assets
         if self.web_dir.exists():
@@ -74,14 +86,14 @@ class CVESiteBuilder:
         self.web_dir.mkdir(exist_ok=True)
         self.data_dir.mkdir(exist_ok=True)
         
-        print("✅ Web directory cleaned and recreated")
+        self.print_verbose("✅ Web directory cleaned and recreated")
     
     def ensure_static_assets(self):
         """Ensure static assets are in place"""
-        print("📁 Checking static assets...")
+        self.print_verbose("📁 Checking static assets...")
         
         if not self.static_dir.exists():
-            print("⚠️  Warning: Static directory not found, creating...")
+            self.print_verbose("⚠️  Warning: Static directory not found, creating...")
             self.static_dir.mkdir(parents=True, exist_ok=True)
         
         # Check for required files
@@ -94,28 +106,28 @@ class CVESiteBuilder:
         for file_path in required_files:
             full_path = self.static_dir / file_path
             if full_path.exists():
-                print(f"  ✅ Found {file_path}")
+                self.print_verbose(f"  ✅ Found {file_path}")
             else:
-                print(f"  ⚠️  Missing {file_path}")
+                self.print_verbose(f"  ⚠️  Missing {file_path}")
         
-        print("✅ Static assets check complete")
+        self.print_verbose("✅ Static assets check complete")
     
     def generate_year_data_json(self):
         """Generate JSON data files for all available years"""
-        print("📊 Generating year data JSON files...")
+        self.print_verbose("📊 Generating year data JSON files...")
         
         try:
             # Import the real CVE years analyzer
             from cve_years import CVEYearsAnalyzer
             
-            print("🔽 Initializing CVE data processing...")
-            analyzer = CVEYearsAnalyzer()
+            self.print_verbose("🔽 Initializing CVE data processing...")
+            analyzer = CVEYearsAnalyzer(quiet=self.quiet)
             
             # Generate data for all years
             all_year_data = []
             
             for year in self.available_years:
-                print(f"  📅 Processing {year}...")
+                self.print_verbose(f"  📅 Processing year {year}...")
                 
                 try:
                     # Use the real analyzer to get year data
@@ -128,28 +140,29 @@ class CVESiteBuilder:
                             json.dump(year_data, f, indent=2, default=str)
                         
                         all_year_data.append(year_data)
-                        print(f"  ✅ Generated cve_{year}.json ({year_data.get('total_cves', 0):,} CVEs)")
+                        self.print_verbose(f"    ✅ Generated cve_{year}.json ({year_data.get('total_cves', 0):,} CVEs)")
                     else:
-                        print(f"  ⚠️  No data available for {year}")
+                        self.print_verbose(f"    ⚠️  Skipped {year} - no data available")
                         
                 except Exception as e:
-                    print(f"  ❌ Failed to process {year}: {e}")
+                    self.print_always(f"  ❌ Failed to process {year}: {e}")
                     continue
             
-            print(f"✅ Generated {len(all_year_data)} year data files")
+            self.print_always(f"✅ Generated {len(all_year_data)} year data files")
             return all_year_data
             
         except ImportError as e:
-            print(f"❌ Failed to import CVE years analyzer: {e}")
-            print("📝 Creating minimal data as fallback...")
+            self.print_always(f"❌ Failed to import CVE years analyzer: {e}")
+            self.print_always("📝 Creating minimal data as fallback...")
             return self.create_minimal_year_data()
         except Exception as e:
-            print(f"❌ Error generating year data: {e}")
-            print("📝 Creating minimal data as fallback...")
+            self.print_always(f"❌ Error generating year data: {e}")
+            self.print_verbose("📝 Creating minimal data as fallback...")
             return self.create_minimal_year_data()
     
     def create_minimal_year_data(self):
         """Create minimal year data for basic functionality"""
+        self.print_verbose("📝 Creating minimal year data for basic functionality...")
         all_year_data = []
         
         for year in self.available_years:
@@ -185,15 +198,17 @@ class CVESiteBuilder:
         # Generate comprehensive CNA analysis using CVE V5 as authoritative source
         try:
             from cve_v5_processor import CVEV5Processor
-            print("  🏢 Generating comprehensive CNA analysis from CVE V5 data...")
-            v5_processor = CVEV5Processor(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  🏢 Generating comprehensive CNA analysis from CVE V5 data...")
+            v5_processor = CVEV5Processor(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             cna_analysis = v5_processor.generate_comprehensive_cna_analysis()
             
             if cna_analysis:
-                print(f"  ✅ Generated cna_analysis.json with {cna_analysis['total_cnas']} CNAs (CVE V5 authoritative)")
+                if not self.quiet:
+                    print(f"  ✅ Generated cna_analysis.json with {cna_analysis['total_cnas']} CNAs (CVE V5 authoritative)")
             else:
                 print("  ❌ CVE V5 CNA analysis failed")
-            
+                
         except Exception as e:
             print(f"  ❌ Error generating CVE V5 CNA analysis: {e}")
             import traceback
@@ -203,15 +218,17 @@ class CVESiteBuilder:
         # Generate current year CNA analysis using CVE V5 data
         try:
             from cve_v5_processor import CVEV5Processor
-            print("  🗓️  Generating current year CNA analysis from CVE V5 data...")
-            v5_processor = CVEV5Processor(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  🗓️  Generating current year CNA analysis from CVE V5 data...")
+            v5_processor = CVEV5Processor(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             current_cna_analysis = v5_processor.generate_current_year_analysis()
             
             if current_cna_analysis:
-                print(f"  ✅ Generated cna_analysis_current_year.json with {current_cna_analysis['total_cnas']} CNAs (CVE V5 authoritative)")
+                if not self.quiet:
+                    print(f"  ✅ Generated cna_analysis_current_year.json with {current_cna_analysis['total_cnas']} CNAs (CVE V5 authoritative)")
             else:
                 print("  ❌ CVE V5 current year analysis failed")
-            
+                
         except Exception as e:
             print(f"  ❌ Error generating CVE V5 current year CNA analysis: {e}")
             import traceback
@@ -221,15 +238,17 @@ class CVESiteBuilder:
         # Generate CPE analysis
         try:
             from cpe_analysis import CPEAnalyzer
-            print("  🔍 Generating comprehensive CPE analysis...")
-            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  🔍 Generating comprehensive CPE analysis...")
+            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             cpe_analysis = cpe_analyzer.generate_cpe_analysis(all_year_data)
             
             if cpe_analysis:
-                print(f"  ✅ Generated cpe_analysis.json with {cpe_analysis['total_unique_cpes']:,} unique CPEs")
+                if not self.quiet:
+                    print(f"  ✅ Generated cpe_analysis.json with {cpe_analysis['total_unique_cpes']:,} unique CPEs")
             else:
                 print("  ❌ CPE analysis failed")
-            
+                
         except Exception as e:
             print(f"  ❌ Error generating CPE analysis: {e}")
             import traceback
@@ -239,13 +258,15 @@ class CVESiteBuilder:
         # Generate current year CPE analysis
         try:
             from cpe_analysis import CPEAnalyzer
-            print("  📅 Generating current year CPE analysis...")
-            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  📅 Generating current year CPE analysis...")
+            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             current_year_data = next((data for data in all_year_data if data['year'] == datetime.now().year), {})
             current_cpe_analysis = cpe_analyzer.generate_current_year_cpe_analysis(current_year_data)
             
             if current_cpe_analysis:
-                print(f"  ✅ Generated cpe_analysis_current_year.json with {current_cpe_analysis['total_unique_cpes']:,} unique CPEs")
+                if not self.quiet:
+                    print(f"  ✅ Generated cpe_analysis_current_year.json with {current_cpe_analysis['total_unique_cpes']:,} unique CPEs")
             else:
                 print("  ❌ Current year CPE analysis failed")
             
@@ -258,12 +279,14 @@ class CVESiteBuilder:
         # Generate CVSS analysis
         try:
             from cvss_analysis import CVSSAnalyzer
-            print("  📊 Generating comprehensive CVSS analysis...")
-            cvss_analyzer = CVSSAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  📊 Generating comprehensive CVSS analysis...")
+            cvss_analyzer = CVSSAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             cvss_analysis = cvss_analyzer.generate_cvss_analysis(all_year_data)
             
             if cvss_analysis:
-                print("  ✅ Comprehensive CVSS analysis generated")
+                if not self.quiet:
+                    print("  ✅ Comprehensive CVSS analysis generated")
             else:
                 print("  ❌ Comprehensive CVSS analysis failed")
                 
@@ -277,11 +300,13 @@ class CVESiteBuilder:
         try:
             current_year_data = next((d for d in all_year_data if d.get('year') == self.current_year), None)
             if current_year_data:
-                print("  📅 Generating current year CVSS analysis...")
+                if not self.quiet:
+                    print("  📅 Generating current year CVSS analysis...")
                 current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_data)
                 
                 if current_year_cvss_analysis:
-                    print("  ✅ Current year CVSS analysis generated")
+                    if not self.quiet:
+                        print("  ✅ Current year CVSS analysis generated")
                 else:
                     print("  ❌ Current year CVSS analysis failed")
             else:
@@ -296,12 +321,14 @@ class CVESiteBuilder:
         # Generate CWE analysis
         try:
             from cwe_analysis import CWEAnalyzer
-            print("  🔍 Generating comprehensive CWE analysis...")
-            cwe_analyzer = CWEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  🔍 Generating comprehensive CWE analysis...")
+            cwe_analyzer = CWEAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             cwe_analysis = cwe_analyzer.generate_cwe_analysis(all_year_data)
             
             if cwe_analysis:
-                print(f"  ✅ Generated cwe_analysis.json with {cwe_analysis['total_unique_cwes']} unique CWEs")
+                if not self.quiet:
+                    print(f"  ✅ Generated cwe_analysis.json with {cwe_analysis['total_unique_cwes']} unique CWEs")
             else:
                 print("  ❌ CWE analysis failed")
                 
@@ -315,11 +342,13 @@ class CVESiteBuilder:
         try:
             current_year_data = next((d for d in all_year_data if d.get('year') == self.current_year), None)
             if current_year_data:
-                print("  📅 Generating current year CWE analysis...")
+                if not self.quiet:
+                    print("  📅 Generating current year CWE analysis...")
                 current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_data)
                 
                 if current_year_cwe_analysis:
-                    print(f"  ✅ Generated cwe_analysis_current_year.json with {current_year_cwe_analysis['total_unique_cwes']} unique CWEs")
+                    if not self.quiet:
+                        print(f"  ✅ Generated cwe_analysis_current_year.json with {current_year_cwe_analysis['total_unique_cwes']} unique CWEs")
                 else:
                     print("  ❌ Current year CWE analysis failed")
             else:
@@ -334,12 +363,14 @@ class CVESiteBuilder:
         # Generate Calendar analysis
         try:
             from calendar_analysis import CalendarAnalyzer
-            print("  📅 Generating comprehensive calendar analysis...")
-            calendar_analyzer = CalendarAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            if not self.quiet:
+                print("  📅 Generating comprehensive calendar analysis...")
+            calendar_analyzer = CalendarAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
             calendar_analysis = calendar_analyzer.generate_calendar_analysis()
             
             if calendar_analysis:
-                print(f"  ✅ Generated calendar_analysis.json with {calendar_analysis['metadata']['total_days']:,} days of data")
+                if not self.quiet:
+                    print(f"  ✅ Generated calendar_analysis.json with {calendar_analysis['metadata']['total_days']:,} days of data")
             else:
                 print("  ❌ Calendar analysis failed")
                 
@@ -465,18 +496,19 @@ class CVESiteBuilder:
     
     def generate_html_pages(self):
         """Generate HTML pages from templates"""
-        print("📄 Generating HTML pages...")
+        self.print_verbose("📄 Generating HTML pages...")
         
         # Define pages to generate
         pages = [
             {'template': 'index.html', 'output': 'index.html', 'title': 'CVE Intelligence Dashboard'},
-            {'template': 'years.html', 'output': 'years.html', 'title': 'Years Analysis'},
+            {'template': 'years.html', 'output': 'years.html', 'title': 'Yearly Analysis'},
             {'template': 'cna.html', 'output': 'cna.html', 'title': 'CNA Intelligence Dashboard'},
             {'template': 'cpe.html', 'output': 'cpe.html', 'title': 'CPE Analysis'},
             {'template': 'cvss.html', 'output': 'cvss.html', 'title': 'CVSS Analysis'},
             {'template': 'cwe.html', 'output': 'cwe.html', 'title': 'CWE Analysis'},
             {'template': 'calendar.html', 'output': 'calendar.html', 'title': 'Calendar View'},
-            {'template': 'growth.html', 'output': 'growth.html', 'title': 'Growth Analysis'}
+            {'template': 'growth.html', 'output': 'growth.html', 'title': 'Growth Analysis'},
+            {'template': 'about.html', 'output': 'about.html', 'title': 'About CVE.ICU'}
         ]
         
         # Generate each page
@@ -495,17 +527,18 @@ class CVESiteBuilder:
                 with open(self.web_dir / page['output'], 'w') as f:
                     f.write(html_content)
                 
-                print(f"  📄 Generated {page['output']}")
+                self.print_verbose(f"  📄 Generated {page['output']}")
                 
             except Exception as e:
-                print(f"  ❌ Error generating {page['output']}: {e}")
+                self.print_always(f"  ❌ Error generating {page['output']}: {e}")
         
-        print("✅ HTML pages generated successfully")
+        self.print_always("✅ HTML pages generated successfully")
     
     def build_site(self):
         """Main build function - orchestrates the entire build process"""
-        print("\n🏗️  Starting CVE.ICU site build...")
-        print("=" * 50)
+        self.print_always("\n🏗️  Starting CVE.ICU site build...")
+        if not self.quiet:
+            print("=" * 50)
         
         try:
             # Step 1: Clean build directory
@@ -518,7 +551,7 @@ class CVESiteBuilder:
             all_year_data = self.generate_year_data_json()
             
             if not all_year_data:
-                print("❌ No year data generated, cannot continue build")
+                self.print_always("❌ No year data generated, cannot continue build")
                 return False
             
             # Step 4: Generate combined analysis JSON files
@@ -530,28 +563,53 @@ class CVESiteBuilder:
             # Step 6: Generate HTML pages
             self.generate_html_pages()
             
-            print("\n" + "=" * 50)
-            print("✅ Build completed successfully!")
-            print(f"📁 Site generated in: {self.web_dir}")
-            print(f"🌐 Ready for deployment")
-            print(f"📊 Coverage: {len(self.available_years)} years (1999-{self.current_year})")
-            print(f"📊 Year data files: {len(all_year_data)} years processed")
-            print(f"🏢 CNA Analysis: {combined_analysis.get('cna_analysis', 'processed')}")
-            print(f"📈 CVE All data: {combined_analysis.get('cve_all', 'processed')}")
-            print(f"🗓️  Current year analysis: {current_year_analysis.get('cna_current', 'processed')}")
+            if not self.quiet:
+                print("\n" + "=" * 50)
+            self.print_always("✅ Build completed successfully!")
+            if not self.quiet:
+                print(f"📁 Site generated in: {self.web_dir}")
+                print(f"🌐 Ready for deployment")
+                print(f"📊 Coverage: {len(self.available_years)} years (1999-{self.current_year})")
+                print(f"📊 Year data files: {len(all_year_data)} years processed")
+                print(f"🏢 CNA Analysis: {combined_analysis.get('cna_analysis', 'processed')}")
+                print(f"📈 CVE All data: {combined_analysis.get('cve_all', 'processed')}")
+                print(f"🗓️  Current year analysis: {current_year_analysis.get('cna_current', 'processed')}")
             
             return True
             
         except Exception as e:
-            print(f"\n❌ Build failed: {e}")
-            import traceback
-            traceback.print_exc()
+            self.print_always(f"\n❌ Build failed: {e}")
+            if not self.quiet:
+                import traceback
+                traceback.print_exc()
             return False
 
 
 def main():
     """Main entry point"""
-    builder = CVESiteBuilder()
+    parser = argparse.ArgumentParser(
+        description='CVE.ICU Static Site Generator',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Environment Variables:
+  CVE_BUILD_QUIET=1    Enable quiet mode (same as --quiet)
+
+Examples:
+  python build.py              # Normal verbose output
+  python build.py --quiet      # Minimal output for CI/CD
+  CVE_BUILD_QUIET=1 python build.py  # Quiet mode via environment variable
+'''
+    )
+    
+    parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Minimal output mode - reduces verbosity for CI/CD environments'
+    )
+    
+    args = parser.parse_args()
+    
+    builder = CVESiteBuilder(quiet=args.quiet)
     success = builder.build_site()
     sys.exit(0 if success else 1)
 

@@ -9,8 +9,7 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-# Add data folder to path for imports
-sys.path.append('data')
+
 
 from cwe_analysis import CWEAnalyzer
 
@@ -39,7 +38,7 @@ def main():
     print("=" * 40)
     
     # Set up paths
-    base_dir = Path(__file__).parent
+    base_dir = Path(__file__).parent.parent
     cache_dir = base_dir / 'data' / 'cache'
     data_dir = base_dir / 'web' / 'data'
     

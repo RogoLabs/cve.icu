@@ -7,9 +7,6 @@ Quick rebuild script for CNA analysis only - much faster than full site rebuild
 import sys
 from pathlib import Path
 
-# Add data folder to path for imports
-sys.path.append('data')
-
 from cve_v5_processor import CVEV5Processor
 import json
 from datetime import datetime
@@ -21,7 +18,7 @@ def main():
     print("=" * 40)
     
     # Set up paths
-    base_dir = Path(__file__).parent
+    base_dir = Path(__file__).parent.parent
     cache_dir = base_dir / 'data' / 'cache'
     data_dir = base_dir / 'web' / 'data'
     

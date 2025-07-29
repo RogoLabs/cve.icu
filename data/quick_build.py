@@ -11,9 +11,6 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-# Add data folder to path for imports
-sys.path.append('data')
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 class CVEQuickBuilder:
@@ -22,7 +19,7 @@ class CVEQuickBuilder:
     def __init__(self):
         self.current_year = datetime.now().year
         self.available_years = list(range(1999, self.current_year + 1))
-        self.base_dir = Path(__file__).parent
+        self.base_dir = Path(__file__).parent.parent
         self.templates_dir = self.base_dir / 'templates'
         self.web_dir = self.base_dir / 'web'
         self.static_dir = self.web_dir / 'static'
@@ -76,13 +73,14 @@ class CVEQuickBuilder:
         # Define pages to generate
         pages = [
             ('index.html', 'CVE.ICU - Vulnerability Intelligence Platform'),
-            ('years.html', 'Year Analysis - CVE.ICU'),
+            ('years.html', 'Yearly Analysis - CVE.ICU'),
             ('cna.html', 'CNA Analysis - CVE.ICU'),
             ('cpe.html', 'CPE Analysis - CVE.ICU'),
             ('cvss.html', 'CVSS Analysis - CVE.ICU'),
             ('cwe.html', 'CWE Analysis - CVE.ICU'),
             ('calendar.html', 'Calendar View - CVE.ICU'),
             ('growth.html', 'Growth Trends - CVE.ICU'),
+            ('about.html', 'About CVE.ICU - Vulnerability Intelligence Platform'),
         ]
         
         for template_name, title in pages:

@@ -40,7 +40,7 @@
             <nav class="nav">
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="years.html">Years</a></li>
+                    <li><a href="years.html">Yearly Analysis</a></li>
                     <li><a href="cna.html">CNA</a></li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
@@ -60,10 +60,48 @@
     <!-- Main Content -->
     <main class="container">
         
-<!-- Hero Section -->
-<div class="text-center mb-5">
-    <h1 class="mb-3">CVE.ICU</h1>
-    <p class="text-muted">Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to 2025</p>
+<style>
+/* Quick select button styling matching CVSS dashboard */
+.quick-select-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    padding: 0.375rem 0.75rem;
+    margin: 0 0.125rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.quick-select-btn.active {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    border-color: #2563eb !important;
+}
+
+.quick-select-btn:hover {
+    background-color: #60a5fa;
+    color: white;
+    border-color: #3b82f6;
+}
+</style>
+
+<!-- Page Header -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CVE.ICU</h1>
+    <small class="text-muted d-block mb-3">
+        Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to 2025
+    </small>
+    <div class="mt-2">
+        <a href="about.html" class="btn btn-outline-secondary btn-sm" style="font-size: 0.875rem;">
+            <i class="fas fa-info-circle me-1"></i>Learn More About the Platform
+        </a>
+        <small class="text-muted d-block mt-1" style="font-size: 0.875rem;">
+            Discover data sources, technical architecture, and intelligence capabilities
+        </small>
+    </div>
 </div>
 
 <!-- Statistics Cards -->
@@ -87,136 +125,172 @@
     </div>
 </div>
 
-<!-- Featured Visualization: CVEs by Year -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title mb-0">📊 CVE Publications by Year</h3>
-        <small class="text-muted">Historical trend of vulnerability disclosures from 1999 to present</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 400px;">
-            <canvas id="cvesByYearChart"></canvas>
+<!-- Main Chart Section -->
+<section class="homepage-chart-section">
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📊 CVE Publications by Year</h4>
+            <small class="homepage-chart-subtitle">Historical trend of vulnerability disclosures from 1999 to present</small>
         </div>
-        <div class="text-center mt-3">
-            <small class="text-muted">Interactive visualization showing annual CVE publication trends</small>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container">
+                <canvas id="cvesByYearChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="years.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Dashboard Previews -->
-
-<!-- Growth Preview -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h4 class="card-title mb-0">📈 Growth</h4>
-        <small class="text-muted">Year-over-year CVE publication trends and growth analysis</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="growthPreviewChart"></canvas>
+<!-- Preview Charts Section -->
+<section class="homepage-preview-section">
+    
+    <!-- Growth Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📈 Growth</h4>
+            <small class="homepage-chart-subtitle">Year-over-year CVE publication trends and growth analysis</small>
         </div>
-        <div class="text-center mt-3">
-            <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-        </div>
-    </div>
-</div>
-
-<!-- CVSS Preview -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h4 class="card-title mb-0">🎯 CVSS</h4>
-        <small class="text-muted">Vulnerability severity scoring analysis across all CVSS versions</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="cvssPreviewChart"></canvas>
-        </div>
-        <div class="text-center mt-3">
-            <a href="cvss.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="growthPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- CWE Preview -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h4 class="card-title mb-0">🔍 CWE</h4>
-        <small class="text-muted">Common Weakness Enumeration patterns and vulnerability types</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="cwePreviewChart"></canvas>
+    
+    <!-- CVSS Interactive Analysis -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🎯 CVSS Analysis</h4>
+            <small class="homepage-chart-subtitle">Score distribution for <span id="homepageCvssVersionLabel">CVSS v3.1</span></small>
+            
+            <!-- Version Selection Buttons -->
+            <div class="text-center mt-3">
+                <button class="quick-select-btn cvss-version-btn" data-version="v2.0">v2.0</button>
+                <button class="quick-select-btn cvss-version-btn" data-version="v3.0">v3.0</button>
+                <button class="quick-select-btn active cvss-version-btn" data-version="v3.1">v3.1</button>
+                <button class="quick-select-btn cvss-version-btn" data-version="v4.0">v4.0</button>
+            </div>
         </div>
-        <div class="text-center mt-3">
-            <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-        </div>
-    </div>
-</div>
-
-<!-- CNA Preview -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h4 class="card-title mb-0">🏢 CNA</h4>
-        <small class="text-muted">CVE Numbering Authority activity and organizational analysis</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="cnaPreviewChart"></canvas>
-        </div>
-        <div class="text-center mt-3">
-            <a href="cna.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        <div class="homepage-chart-body">
+            <!-- Score Distribution Only -->
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="homepageScoreChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer mt-3">
+                <a href="cvss.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- CPE Preview -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h4 class="card-title mb-0">💻 CPE</h4>
-        <small class="text-muted">Common Platform Enumeration and affected technology analysis</small>
-    </div>
-    <div class="card-body">
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="cpePreviewChart"></canvas>
+    
+    <!-- CWE Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🔍 CWE</h4>
+            <small class="homepage-chart-subtitle">Common Weakness Enumeration patterns and vulnerability types</small>
         </div>
-        <div class="text-center mt-3">
-            <a href="cpe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="cwePreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
         </div>
     </div>
-</div>
+    
+    <!-- CNA Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🏢 CNA</h4>
+            <small class="homepage-chart-subtitle">CVE Numbering Authority activity and organizational analysis</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="cnaPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="cna.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CPE Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">💻 CPE</h4>
+            <small class="homepage-chart-subtitle">Common Platform Enumeration and affected technology analysis</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="cpePreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="cpe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+</section>
 
 <!-- About Section -->
-<div class="card mt-5">
-    <div class="card-header">
-        <h3 class="card-title mb-0">About CVE.ICU</h3>
+<div class="card feature-card mt-5">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h3 class="card-title mb-0">🌐 About CVE.ICU</h3>
+        <a href="about.html" class="btn btn-outline-light btn-sm">Full About Page →</a>
     </div>
     <div class="card-body">
-        <p class="mb-4">CVE.ICU provides comprehensive vulnerability intelligence through advanced analytics and visualization of Common Vulnerabilities and Exposures (CVE) data spanning 27 years of cybersecurity history from 1999 to 2025.</p>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Platform Capabilities</h4>
-                <ul class="mb-4">
-                    <li><strong>Comprehensive Coverage:</strong> Complete historical CVE dataset with continuous updates</li>
-                    <li><strong>Advanced Analytics:</strong> Interactive dashboards with dynamic data visualization</li>
-                    <li><strong>Real-Time Intelligence:</strong> Automated data refresh every 6 hours</li>
-                    <li><strong>Scalable Architecture:</strong> Self-expanding system accommodating future data</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h4>Data Infrastructure</h4>
-                <ul class="mb-4">
-                    <li><strong>Primary Source:</strong> NIST National Vulnerability Database (NVD)</li>
-                    <li><strong>Processing Pipeline:</strong> Automated ingestion and normalization</li>
-                    <li><strong>Historical Repository:</strong> Complete vulnerability records archive</li>
-                    <li><strong>Update Frequency:</strong> Continuous 6-hour synchronization cycle</li>
-                </ul>
+        <!-- Mission Statement Card -->
+        <div class="card mb-4 border-0 bg-light">
+            <div class="card-body">
+                <h6 class="card-title mb-3" style="color: #0d6efd;">🎯 Where Vulnerability Chaos Meets Clarity</h6>
+                <p class="mb-0">CVE.ICU embodies <a href="https://rogolabs.net" target="_blank" class="fw-bold text-decoration-none" style="color: #0d6efd;">RogoLabs'</a> mission of transforming overwhelming vulnerability data into clear, actionable intelligence that security teams can actually use.</p>
             </div>
         </div>
         
-        <div class="text-center">
-            <div class="alert alert-info" style="background-color: rgba(13, 110, 253, 0.1); border: 1px solid rgba(13, 110, 253, 0.2); border-radius: 0.5rem; padding: 1rem; margin-top: 1.5rem;">
-                <p class="mb-0"><strong>Automated Intelligence Platform:</strong> CVE.ICU operates on a fully automated infrastructure that ensures continuous data availability and seamless expansion. The system is engineered to automatically incorporate new vulnerability data as it becomes available, requiring zero manual intervention for ongoing operations.</p>
+        <!-- Coverage Statistics Card -->
+        <div class="card mb-4 border-0 bg-light">
+            <div class="card-body">
+                <h6 class="card-title mb-3">📈 Coverage Statistics</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li class="mb-2">✓ <strong>287,800+ CVE entries</strong> across 27 years (1999-2025)</li>
+                            <li class="mb-2">✓ <strong>284,181 CVSS scored</strong> vulnerabilities</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li class="mb-2">✓ <strong>206,053 CWE classified</strong> weaknesses</li>
+                            <li class="mb-2">✓ <strong>290 active CNAs</strong> with attribution data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Platform Features Card -->
+        <div class="card border-0 bg-light">
+            <div class="card-body">
+                <h6 class="card-title mb-3">🚀 Platform Features</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li class="mb-1">✓ <strong>Real-Time Analytics:</strong> 6-hour automated updates</li>
+                            <li class="mb-1">✓ <strong>Intelligence Dashboards:</strong> CNA, CVSS, CWE, Growth</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li class="mb-1">✓ <strong>Open Source:</strong> Free access for everyone</li>
+                            <li class="mb-1">✓ <strong>Modern Tech:</strong> Python, Chart.js, D3.js</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -237,8 +311,9 @@
                     </p>
                 </div>
                 <div style="flex: 1; min-width: 200px; text-align: right;">
-                    <p class="mb-1"><strong>Community Projects:</strong></p>
+                    <p class="mb-1"><strong>Platform Links:</strong></p>
                     <p class="text-muted small mb-0">
+                        <a href="about.html" class="text-decoration-none">About CVE.ICU</a><br>
                         <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
                         <a href="https://cvceforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
                         <a href="https://github.com/yourusername/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
@@ -256,7 +331,49 @@
     </footer>
 
     <!-- Chart.js Library (UMD version) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- D3.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Universal timestamp loader -->
+    <script>
+    // Universal function to load and display the last updated timestamp
+    // Uses cve_all.json as the single source of truth for all pages
+    function loadUniversalTimestamp() {
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        if (!lastUpdatedElement) return;
+        
+        fetch('data/cve_all.json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.generated_at) {
+                    const date = new Date(data.generated_at);
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    const formattedDate = date.toLocaleString('en-US', options);
+                    lastUpdatedElement.textContent = formattedDate;
+                } else {
+                    lastUpdatedElement.textContent = 'Unknown';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading timestamp:', error);
+                lastUpdatedElement.textContent = 'Error loading timestamp';
+            });
+    }
+    
+    // Load timestamp when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUniversalTimestamp();
+    });
+    </script>
     
     <!-- Custom JavaScript -->
     <script>
@@ -440,6 +557,8 @@
     
     
 <script>
+// Global CVSS variables removed temporarily
+
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for Chart.js and CVE_COLORS to be available
     if (typeof Chart === 'undefined' || typeof window.CVE_COLORS === 'undefined') {
@@ -612,312 +731,338 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Initialize Intelligence Dashboard Preview Charts
-    initializePreviewCharts();
+    // Initialize preview charts with simplified, error-free approach
+    initializeSimplePreviewCharts();
 });
 
-function initializePreviewCharts() {
-    // Growth Intelligence Preview Chart
-    const growthPreviewCtx = document.getElementById('growthPreviewChart');
-    if (growthPreviewCtx) {
-        fetch('data/growth_analysis.json')
-            .then(response => response.json())
-            .then(data => {
-                const growthData = data.growth_data || [];
-                const labels = [];
-                const growthRates = [];
-                
-                // Show all years of data (exclude current year as it's YTD)
-                const allData = growthData.filter(item => item.year !== new Date().getFullYear());
-                allData.forEach(item => {
-                    labels.push(item.year.toString());
-                    growthRates.push(item.growth_rate || 0);
-                });
-                
-                new Chart(growthPreviewCtx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: growthRates,
-                            borderColor: '#6c9bd1',
-                            backgroundColor: 'rgba(108, 155, 209, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `Growth: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(1)}%`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Growth Rate (%)'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Year'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        },
-                        elements: {
-                            point: { radius: 2 }
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading growth preview data:', error);
-                growthPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
-            });
-    }
+// Simplified preview charts initialization to eliminate JavaScript syntax errors
+function initializeSimplePreviewCharts() {
+    // Growth Preview Chart
+    initializeGrowthPreview();
     
-    // CVSS Intelligence Preview Chart
-    const cvssPreviewCtx = document.getElementById('cvssPreviewChart');
-    if (cvssPreviewCtx) {
-        fetch('data/cvss_analysis.json')
-            .then(response => response.json())
-            .then(data => {
-                // Aggregate severity data across all CVSS versions
-                const aggregatedSeverity = {};
-                const severityDistribution = data.severity_distribution || {};
-                
-                Object.values(severityDistribution).forEach(versionData => {
-                    Object.entries(versionData).forEach(([severity, count]) => {
-                        aggregatedSeverity[severity] = (aggregatedSeverity[severity] || 0) + count;
-                    });
-                });
-                
-                const labels = Object.keys(aggregatedSeverity);
-                const values = Object.values(aggregatedSeverity);
-                
-                new Chart(cvssPreviewCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: '#6c9bd1',
-                            borderColor: '#5a8bc4',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CVE Count'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Severity Level'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading CVSS preview data:', error);
-                cvssPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
-            });
-    }
+    // CVSS Preview Chart (temporarily disabled)
+    initializeCvssPreview();
     
-    // CWE Intelligence Preview Chart
-    const cwePreviewCtx = document.getElementById('cwePreviewChart');
-    if (cwePreviewCtx) {
-        fetch('data/cwe_analysis.json')
-            .then(response => response.json())
-            .then(data => {
-                const cweData = data.top_cwes || [];
-                const topCWEs = cweData.slice(0, 5); // Top 5 CWEs
-                const labels = topCWEs.map(item => `CWE-${item.id}`);
-                const values = topCWEs.map(item => item.count);
-                
-                new Chart(cwePreviewCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: '#6c9bd1',
-                            borderColor: '#5a8bc4',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CVE Count'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CWE Type'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading CWE preview data:', error);
-                cwePreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
-            });
-    }
+    // CWE Preview Chart
+    initializeCwePreview();
     
-    // CNA Intelligence Preview Chart
-    const cnaPreviewCtx = document.getElementById('cnaPreviewChart');
-    if (cnaPreviewCtx) {
-        fetch('data/cna_analysis.json')
-            .then(response => response.json())
-            .then(data => {
-                const cnaData = data.cna_assigners || [];
-                const topCNAs = cnaData.slice(0, 5); // Top 5 CNAs
-                const labels = topCNAs.map(item => item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name);
-                const values = topCNAs.map(item => item.count);
-                
-                new Chart(cnaPreviewCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: '#6c9bd1',
-                            borderColor: '#5a8bc4',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: 'y',
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CNA Organization'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CVE Count'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading CNA preview data:', error);
-                cnaPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
-            });
-    }
+    // CNA Preview Chart
+    initializeCnaPreview();
     
-    // CPE Intelligence Preview Chart
-    const cpePreviewCtx = document.getElementById('cpePreviewChart');
-    if (cpePreviewCtx) {
-        fetch('data/cpe_analysis.json')
-            .then(response => response.json())
-            .then(data => {
-                const cpeData = data.top_cpes || [];
-                const topCPEs = cpeData.slice(0, 5); // Top 5 CPEs
-                const labels = topCPEs.map(item => item.vendor.length > 12 ? item.vendor.substring(0, 12) + '...' : item.vendor);
-                const values = topCPEs.map(item => item.count);
-                
-                new Chart(cpePreviewCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: '#6c9bd1',
-                            borderColor: '#5a8bc4',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'CVE Count'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            x: {
-                                display: true,
-                                title: {
-                                    display: true,
-                                    text: 'Vendor'
-                                },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading CPE preview data:', error);
-                cpePreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
-            });
-    }
+    // CPE Preview Chart
+    initializeCpePreview();
 }
+
+function initializeGrowthPreview() {
+    const ctx = document.getElementById('growthPreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/growth_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const growthData = data.growth_data || [];
+            const currentYear = new Date().getFullYear();
+            const filteredData = growthData.filter(item => item.year !== currentYear);
+            
+            const labels = filteredData.map(item => item.year.toString());
+            const values = filteredData.map(item => item.growth_rate || 0);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        borderColor: '#5a9bd4',
+                        backgroundColor: 'rgba(90, 155, 212, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Growth preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
+
+// Global variables for CVSS preview chart
+let cvssPreviewChart = null;
+let cvssPreviewData = null;
+let currentCvssVersion = 'v3.1';
+
+function initializeCvssPreview() {
+    const ctx = document.getElementById('homepageScoreChart');
+    if (!ctx) return;
+    
+    fetch('data/cvss_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            cvssPreviewData = data;
+            
+            // Initialize chart with default version (v3.1)
+            updateCvssPreviewChart('v3.1');
+            
+            // Add event listeners for version buttons
+            const versionButtons = document.querySelectorAll('.cvss-version-btn');
+            versionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const version = this.getAttribute('data-version');
+                    updateCvssPreviewChart(version);
+                    
+                    // Update button states
+                    versionButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update version label
+                    const versionLabel = document.getElementById('homepageCvssVersionLabel');
+                    if (versionLabel) {
+                        versionLabel.textContent = `CVSS ${version}`;
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('CVSS preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
+
+function updateCvssPreviewChart(version) {
+    const ctx = document.getElementById('homepageScoreChart');
+    if (!ctx || !cvssPreviewData) return;
+    
+    currentCvssVersion = version;
+    
+    // Get score data for the selected version
+    const versionScores = cvssPreviewData.score_distribution[version] || {};
+    const scoreBins = {};
+    
+    // Create 1-point score bins for the selected version
+    Object.entries(versionScores).forEach(([score, count]) => {
+        const scoreFloat = parseFloat(score);
+        let bin;
+        
+        // Create 1-point score bins (0-0.99, 1.0-1.99, etc.)
+        if (scoreFloat >= 10.0) bin = '10.0';
+        else if (scoreFloat >= 9.0) bin = '9.0-9.9';
+        else if (scoreFloat >= 8.0) bin = '8.0-8.9';
+        else if (scoreFloat >= 7.0) bin = '7.0-7.9';
+        else if (scoreFloat >= 6.0) bin = '6.0-6.9';
+        else if (scoreFloat >= 5.0) bin = '5.0-5.9';
+        else if (scoreFloat >= 4.0) bin = '4.0-4.9';
+        else if (scoreFloat >= 3.0) bin = '3.0-3.9';
+        else if (scoreFloat >= 2.0) bin = '2.0-2.9';
+        else if (scoreFloat >= 1.0) bin = '1.0-1.9';
+        else bin = '0.0-0.9';
+        
+        scoreBins[bin] = (scoreBins[bin] || 0) + count;
+    });
+    
+    // Display all bins in sequential order from 0-10
+    const orderedBins = ['0.0-0.9', '1.0-1.9', '2.0-2.9', '3.0-3.9', '4.0-4.9', 
+                        '5.0-5.9', '6.0-6.9', '7.0-7.9', '8.0-8.9', '9.0-9.9', '10.0'];
+    
+    const labels = orderedBins;
+    const values = orderedBins.map(bin => scoreBins[bin] || 0);
+    
+    // Light blue/gray color palette matching CVE.ICU design (11 bins)
+    const colors = [
+        '#d6e7f5', // Lightest blue (0.0-0.9)
+        '#c8dff0', // Very light blue (1.0-1.9)
+        '#b9d7eb', // Light blue (2.0-2.9)
+        '#aacfe6', // Light-medium blue (3.0-3.9)
+        '#9bc7e1', // Medium blue (4.0-4.9)
+        '#8cbfdc', // Medium-dark blue (5.0-5.9)
+        '#7db7d7', // Dark blue (6.0-6.9)
+        '#6eafd2', // Darker blue (7.0-7.9)
+        '#5fa7cd', // Very dark blue (8.0-8.9)
+        '#509fc8', // Darkest blue (9.0-9.9)
+        '#4197c3'  // Deepest blue (10.0)
+    ];
+    
+    // Destroy existing chart if it exists
+    if (cvssPreviewChart) {
+        cvssPreviewChart.destroy();
+    }
+    
+    // Create new chart
+    cvssPreviewChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    display: true,
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    title: {
+                        display: true,
+                        text: 'CVE Count',
+                        font: { size: 10 }
+                    }
+                },
+                x: {
+                    display: true,
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    title: {
+                        display: true,
+                        text: 'CVSS Score Range',
+                        font: { size: 10 }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function initializeCwePreview() {
+    const ctx = document.getElementById('cwePreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/cwe_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const cweData = data.top_cwes || [];
+            const topCWEs = cweData.slice(0, 5);
+            const labels = topCWEs.map(item => `CWE-${item.id}`);
+            const values = topCWEs.map(item => item.count);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#a8c8ec', '#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2'],
+                        borderColor: ['#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2', '#5fa7cd'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('CWE preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
+
+function initializeCnaPreview() {
+    const ctx = document.getElementById('cnaPreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/cna_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const cnaData = data.cna_assigners || [];
+            const topCNAs = cnaData.slice(0, 5);
+            const labels = topCNAs.map(item => item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name);
+            const values = topCNAs.map(item => item.count);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#a8c8ec', '#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2'],
+                        borderColor: ['#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2', '#5fa7cd'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('CNA preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
+
+function initializeCpePreview() {
+    const ctx = document.getElementById('cpePreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/cpe_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const cpeData = data.top_cpes || [];
+            const topCPEs = cpeData.slice(0, 5);
+            const labels = topCPEs.map(item => item.vendor.length > 12 ? item.vendor.substring(0, 12) + '...' : item.vendor);
+            const values = topCPEs.map(item => item.count);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#a8c8ec', '#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2'],
+                        borderColor: ['#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2', '#5fa7cd'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('CPE preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
+
+// CVSS functionality is handled inline in the initializeCvssPreview function above
+
 </script>
 
 </body>
