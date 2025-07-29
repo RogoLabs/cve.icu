@@ -51,7 +51,7 @@ jobs:
         python build.py --quiet
         
     - name: Copy CNAME for GitHub Pages
-      run: cp cname web/CNAME
+      run: cp CNAME web/CNAME
       
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
