@@ -423,8 +423,7 @@ function updateGrowthTrendsChart(data) {
                     ...yAxisConfig
                 }
             }
-        }
-    });
+        });
 }
 
 // Update growth distribution chart
@@ -706,7 +705,7 @@ function exportData(format) {
         return;
     }
     
-    const filename = `growth_analysis_${currentDataMode}_${new Date().toISOString().split('T')[0]}`;
+    const filename = `growth_analysis_${new Date().toISOString().split('T')[0]}`;
     
     if (format === 'csv') {
         const csv = convertToCSV(growthData.growth_data);
