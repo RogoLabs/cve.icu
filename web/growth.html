@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth Analysis - CVE.ICU</title>
+    <title>Growth Trends - CVE.ICU</title>
     
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -738,7 +738,8 @@ function updateGrowthTrendsChart(data) {
                     ...yAxisConfig
                 }
             }
-        });
+        }
+    });
 }
 
 // Update growth distribution chart
@@ -1020,7 +1021,7 @@ function exportData(format) {
         return;
     }
     
-    const filename = `growth_analysis_${new Date().toISOString().split('T')[0]}`;
+    const filename = `growth_analysis_${currentDataMode}_${new Date().toISOString().split('T')[0]}`;
     
     if (format === 'csv') {
         const csv = convertToCSV(growthData.growth_data);

@@ -35,7 +35,7 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CVE.ICU</h1>
     <small class="text-muted d-block mb-3">
-        Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to {{ current_year if current_year else now().year }}
+        Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to {{ current_year if current_year else '2025' }}
     </small>
     <div class="mt-2">
         <a href="about.html" class="btn btn-outline-secondary btn-sm" style="font-size: 0.875rem;">
@@ -202,7 +202,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <ul class="list-unstyled small">
-                            <li class="mb-2">✓ <strong>{{ total_cves|default('287,800+') }} CVE entries</strong> across {{ available_years|length if available_years else '27' }} years (1999-{{ current_year if current_year else now().year }})</li>
+                            <li class="mb-2">✓ <strong>{{ total_cves|default('287,800+') }} CVE entries</strong> across {{ available_years|length if available_years else '27' }} years (1999-{{ current_year if current_year else '2025' }})</li>
                             <li class="mb-2">✓ <strong>{{ cvss_coverage|default('284,181') }} CVSS scored</strong> vulnerabilities</li>
                         </ul>
                     </div>
@@ -242,6 +242,8 @@
 
 {% block scripts %}
 <script>
+// Global CVSS variables removed temporarily
+
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for Chart.js and CVE_COLORS to be available
     if (typeof Chart === 'undefined' || typeof window.CVE_COLORS === 'undefined') {

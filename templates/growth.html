@@ -34,14 +34,14 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">Growth Intelligence Dashboard</h1>
     <small class="text-muted d-block mb-3" id="pageSubtitle">
-        Showing comprehensive growth analysis across all years (1999-{{ current_year }})
+        Showing comprehensive growth analysis across all years (1999-2025)
     </small>
     
     <!-- Note about historical data requirement -->
     <div class="d-flex justify-content-center mb-3">
         <div class="text-muted small">
             <i class="fas fa-info-circle me-1"></i>
-            Growth analysis shows comprehensive trends across all years (1999-{{ current_year }})
+            Growth analysis shows comprehensive trends across all years (1999-2025)
         </div>
     </div>
 </div>
@@ -423,7 +423,8 @@ function updateGrowthTrendsChart(data) {
                     ...yAxisConfig
                 }
             }
-        });
+        }
+    });
 }
 
 // Update growth distribution chart
@@ -705,7 +706,7 @@ function exportData(format) {
         return;
     }
     
-    const filename = `growth_analysis_${new Date().toISOString().split('T')[0]}`;
+    const filename = `growth_analysis_${currentDataMode}_${new Date().toISOString().split('T')[0]}`;
     
     if (format === 'csv') {
         const csv = convertToCSV(growthData.growth_data);
