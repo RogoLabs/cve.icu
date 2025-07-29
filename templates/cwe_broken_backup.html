@@ -234,7 +234,6 @@ const colorPalette = [
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CWE Intelligence Dashboard loaded');
     loadCweData();
     updatePermalink();
 });
@@ -254,11 +253,6 @@ async function loadCweData() {
         
         cweData = await comprehensiveResponse.json();
         currentYearCweData = await currentYearResponse.json();
-        
-        console.log('CWE data loaded:', {
-            comprehensive: cweData.total_unique_cwes,
-            currentYear: currentYearCweData.total_unique_cwes
-        });
         
         // Initialize with comprehensive data
         displayCweData(cweData);

@@ -368,21 +368,17 @@ function getColor(value) {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('Calendar Intelligence Dashboard loaded');
     await loadCalendarData();
 });
 
 async function loadCalendarData() {
     try {
-        console.log('Loading calendar data...');
-        
         const response = await fetch('/data/calendar_analysis.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         calendarData = await response.json();
-        console.log('Calendar data loaded successfully');
         
         initializeCalendar();
         updateLastUpdated();

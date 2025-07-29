@@ -198,13 +198,11 @@ let cweCategoryChart = null;
 
 // Load data on page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CWE Intelligence Dashboard loaded');
     loadCweData();
 });
 
 // Render custom pagination controls (integrated solution)
 function renderCustomPagination() {
-    console.log('Rendering custom pagination');
     const paginationContainer = document.getElementById('customPaginationContainer');
     if (!paginationContainer) {
         console.error('Custom pagination container not found');
@@ -261,13 +259,10 @@ function renderCustomPagination() {
         nextBtn.onclick = function() { currentPage++; renderTable(); };
     }
     paginationContainer.appendChild(nextBtn);
-    
-    console.log('Custom pagination rendered with', totalPages, 'pages');
 }
 
 async function loadCweData() {
     try {
-        console.log('Loading CWE data...');
         const [allDataResponse, currentYearResponse] = await Promise.all([
             fetch('/data/cwe_analysis.json'),
             fetch('/data/cwe_analysis_current_year.json')
@@ -276,7 +271,6 @@ async function loadCweData() {
         cweData = await allDataResponse.json();
         currentYearCweData = await currentYearResponse.json();
         
-        console.log('CWE data loaded:', cweData);
         displayCweData(cweData);
     } catch (error) {
         console.error('Error loading CWE data:', error);
@@ -535,14 +529,11 @@ function updateInsights(data) {
 
 // Populate CWE table with pagination and sorting
 function populateTable() {
-    console.log('populateTable() called');
     const data = isCurrentYearMode ? currentYearCweData : cweData;
     if (!data || !data.top_cwes) {
         console.error('No CWE data available');
         return;
     }
-    
-    console.log('CWE data available:', data.top_cwes.length, 'items');
     
     // Create a copy of the data for sorting
     let dataToSort = data.top_cwes.map((cwe, index) => {
@@ -554,8 +545,6 @@ function populateTable() {
             percentage: ((cwe.count / data.total_cves_with_cwe) * 100).toFixed(2)
         };
     });
-    
-    console.log('dataToSort created with', dataToSort.length, 'items');
     
     // Sort the data
     sortedData = [...dataToSort].sort((a, b) => {
@@ -575,8 +564,6 @@ function populateTable() {
         return 0;
     });
     
-    console.log('sortedData populated with', sortedData.length, 'items');
-    
     // Force sortedData to have content if it's empty (failsafe)
     if (!sortedData.length && dataToSort.length) {
         console.warn('sortedData is empty but dataToSort has data! Forcing copy...');
@@ -588,16 +575,10 @@ function populateTable() {
 
 // Render table with current sort and pagination
 function renderTable() {
-    console.log('renderTable() called');
-    console.log('renderTable: sortedData length:', sortedData.length);
-    console.log('renderTable: currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
-    
     // Calculate indices for current page
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = sortedData.slice(startIndex, endIndex);
-    
-    console.log('renderTable: pageData length:', pageData.length);
     
     // Clear and populate table body
     const tbody = document.getElementById('cweTableBody');
@@ -635,12 +616,7 @@ function updatePaginationInfo() {
 
 // Update pagination controls
 function updatePaginationControls() {
-    console.log('updatePaginationControls called');
-    console.log('sortedData.length:', sortedData.length);
-    console.log('itemsPerPage:', itemsPerPage);
-    
     const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-    console.log('totalPages calculated:', totalPages);
     
     const paginationControls = document.getElementById('paginationControls');
     if (!paginationControls) {

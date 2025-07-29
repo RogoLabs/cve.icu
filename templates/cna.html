@@ -344,14 +344,12 @@ window.CNA_STATE = {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CNA Intelligence Dashboard loading...');
     loadCnaData();
     loadCurrentYearData();
 });
 
 // Load CNA data
 function loadCnaData() {
-    console.log('Loading comprehensive CNA data...');
     fetch('/data/cna_analysis.json')
         .then(response => {
             if (!response.ok) {
@@ -362,7 +360,6 @@ function loadCnaData() {
         .then(data => {
             cnaData = data;
             window.CNA_STATE.cnaData = data;
-            console.log('CNA data loaded:', data);
             if (currentYearData || !currentYearData) {
                 initializePage();
             }
@@ -383,7 +380,6 @@ function loadCurrentYearData() {
         .then(data => {
             currentYearData = data;
             window.CNA_STATE.currentYearData = data;
-            console.log('Current year CNA data loaded:', data);
             if (cnaData) {
                 initializePage();
             }
@@ -399,20 +395,16 @@ function loadCurrentYearData() {
 
 // Initialize page after data is loaded
 function initializePage() {
-    console.log('Initializing CNA Intelligence Dashboard...');
     updateStatistics();
     createCharts();
     generateInsights();
     populateTable(); // This calls renderTable() internally
-    console.log('CNA Intelligence Dashboard initialized successfully');
 }
 
 // Get current data source based on mode
 function getCurrentDataSource() {
-    console.log('getCurrentDataSource called, currentDataMode:', currentDataMode, 'window.CNA_STATE.dataMode:', window.CNA_STATE.dataMode);
     const mode = currentDataMode || window.CNA_STATE.dataMode;
     const result = mode === 'all' ? (cnaData || window.CNA_STATE.cnaData) : (currentYearData || window.CNA_STATE.currentYearData);
-    console.log('getCurrentDataSource returning:', result ? 'data object' : 'null', 'for mode:', mode);
     return result;
 }
 
@@ -480,13 +472,9 @@ function hexToRgb(hex) {
 
 // Set data mode
 function setDataMode(mode) {
-    console.log('setDataMode called with mode:', mode);
-    
     // Update both global variables and window state
     currentDataMode = mode;
     window.CNA_STATE.dataMode = mode;
-    
-    console.log('Data mode updated to:', currentDataMode, 'window state:', window.CNA_STATE.dataMode);
     
     updateToggleUI();
     
@@ -496,22 +484,17 @@ function setDataMode(mode) {
         if (currentDataMode === 'current') {
             // Hide in current year mode since all CNAs are active by definition
             activityStatusContainer.style.display = 'none';
-            console.log('CNA Activity Status chart hidden for current year mode');
         } else {
             // Show in all-time mode where active/inactive distinction is meaningful
             activityStatusContainer.style.display = 'block';
-            console.log('CNA Activity Status chart shown for all-time mode');
         }
     }
     
     // Refresh all visualizations with new data mode
-    console.log('Refreshing all visualizations...');
     updateStatistics();
     createCharts();
     generateInsights();
     populateTable(); // This calls renderTable() internally
-    
-    console.log('Data mode switch completed');
 }
 
 // Update toggle UI elements
@@ -530,9 +513,7 @@ function updateToggleUI() {
 
 // Legacy functions for backward compatibility
 function toggleDataMode() {
-    console.log('toggleDataMode called, current mode:', currentDataMode);
     const newMode = currentDataMode === 'all' ? 'current' : 'all';
-    console.log('toggleDataMode switching to:', newMode);
     setDataMode(newMode);
 }
 
@@ -613,23 +594,19 @@ function createCharts() {
 
 // Top CNAs horizontal bar chart
 function createTopCnasChart() {
-    console.log('createTopCnasChart() called, currentDataMode:', currentDataMode);
     const ctx = document.getElementById('topCnasChart').getContext('2d');
     
     const currentData = getCurrentDataSource();
-    console.log('createTopCnasChart currentData:', currentData);
     if (!currentData) return;
     
     let topCnas, labels, data;
     
     if (currentDataMode === 'all') {
-        console.log('Using all-time data, cna_list length:', currentData.cna_list?.length);
         if (!currentData.cna_list) return;
         topCnas = currentData.cna_list.slice(0, 15);
         labels = topCnas.map(cna => cna.name);
         data = topCnas.map(cna => cna.count);
     } else {
-        console.log('Using current year data, cna_assigners length:', currentData.cna_assigners?.length);
         if (!currentData.cna_assigners) return;
         // Sort current year CNAs by count and take top 15
         topCnas = currentData.cna_assigners
@@ -638,13 +615,6 @@ function createTopCnasChart() {
         labels = topCnas.map(cna => cna.name);
         data = topCnas.map(cna => cna.count);
     }
-    
-    console.log('Top CNAs for chart:');
-    topCnas.slice(0, 5).forEach((cna, index) => {
-        console.log(`  ${index + 1}. ${cna.name}: ${cna.count.toLocaleString()} CVEs`);
-    });
-    console.log('Chart data - labels:', labels.slice(0, 5));
-    console.log('Chart data - values:', data.slice(0, 5));
     
     // Update chart subtitle to show current mode
     const subtitle = document.getElementById('topCnasSubtitle');
@@ -786,7 +756,6 @@ function createActivityChart() {
 
 // Activity Recency Distribution chart
 function createRecencyChart() {
-    console.log('createRecencyChart() called');
     const canvasElement = document.getElementById('cnaRecencyChart');
     if (!canvasElement) {
         console.error('Canvas element cnaRecencyChart not found!');
@@ -795,7 +764,6 @@ function createRecencyChart() {
     const ctx = canvasElement.getContext('2d');
     
     const currentData = getCurrentDataSource();
-    console.log('createRecencyChart currentData:', currentData);
     if (!currentData) {
         console.error('No currentData available for recency chart');
         return;
@@ -1118,9 +1086,7 @@ function createVolumeChart() {
 
 // Generate smart insights
 function generateInsights() {
-    console.log('generateInsights() called');
     const currentData = getCurrentDataSource();
-    console.log('currentData:', currentData);
     
     // Update total CNAs count in CVE V5 data source card
     const totalCnasElement = document.getElementById('totalCnasCount');
@@ -1153,8 +1119,6 @@ function generateInsights() {
     
     const totalCves = cnas.reduce((sum, cna) => sum + cna.count, 0);
     const topCna = cnas[0];
-    
-    console.log('totalCves:', totalCves, 'topCna:', topCna.name, 'currentDataMode:', currentDataMode);
     
     if (currentDataMode === 'current') {
         // Current year specific insights (2025)
@@ -1213,9 +1177,7 @@ let sortedData = [];
 
 // Populate CNA table with pagination and sorting
 function populateTable() {
-    console.log('populateTable() called');
     const currentData = getCurrentDataSource();
-    console.log('populateTable currentData:', currentData);
     if (!currentData) {
         console.error('populateTable: No currentData available');
         return;
@@ -1264,16 +1226,10 @@ function populateTable() {
 
 // Render table with current page and sorting
 function renderTable() {
-    console.log('renderTable() called');
-    console.log('renderTable: sortedData length:', sortedData.length);
-    console.log('renderTable: currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
-    
     const tbody = document.getElementById('cnaTableBody');
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = sortedData.slice(startIndex, endIndex);
-    
-    console.log('renderTable: pageData length:', pageData.length);
     
     const rows = pageData.map((cna, index) => {
         let formattedDate = 'Invalid Date';
@@ -1436,8 +1392,6 @@ function setupSortingHandlers() {
         header.addEventListener('click', () => {
             const sortField = header.getAttribute('data-sort');
             
-            console.log('Sort clicked:', sortField, 'current:', currentSort.field, currentSort.direction);
-            
             // Toggle direction if same field, otherwise default to ascending
             if (currentSort.field === sortField) {
                 currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -1445,8 +1399,6 @@ function setupSortingHandlers() {
                 currentSort.field = sortField;
                 currentSort.direction = sortField === 'last_cve_date' ? 'desc' : 'asc';
             }
-            
-            console.log('New sort state:', currentSort.field, currentSort.direction);
             
             sortData();
             currentPage = 1; // Reset to first page after sorting

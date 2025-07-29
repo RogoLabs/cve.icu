@@ -214,18 +214,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Load CPE data
 async function loadCpeData() {
-    console.log('Loading CPE data...');
-    
     try {
         // Load comprehensive data
-        console.log('Fetching comprehensive CPE data...');
-        console.log('Current URL:', window.location.href);
-        console.log('Attempting to fetch: data/cpe_analysis.json');
-        
         const response = await fetch('data/cpe_analysis.json');
-        console.log('Fetch response status:', response.status);
-        console.log('Fetch response ok:', response.ok);
-        console.log('Fetch response headers:', [...response.headers.entries()]);
         
         if (!response.ok) {
             const errorText = await response.text().catch(() => 'Unable to read error text');
@@ -240,17 +231,14 @@ async function loadCpeData() {
         }
         
         cpeData = comprehensiveData;
-        console.log('Comprehensive CPE data loaded successfully:', cpeData.total_unique_cpes, 'unique CPEs');
         
         // Load current year data
         try {
-            console.log('Fetching current year CPE data...');
             const currentResponse = await fetch('data/cpe_analysis_current_year.json');
             if (currentResponse.ok) {
                 const currentData = await currentResponse.json();
                 if (currentData && typeof currentData === 'object') {
                     currentYearCpeData = currentData;
-                    console.log('Current year CPE data loaded successfully:', currentYearCpeData.total_unique_cpes, 'unique CPEs');
                 } else {
                     console.warn('Invalid current year CPE data structure');
                 }
@@ -263,7 +251,6 @@ async function loadCpeData() {
         
         // Initialize display with validation
         if (cpeData || currentYearCpeData) {
-            console.log('Initializing CPE display...');
             updateDisplay();
         } else {
             throw new Error('No valid CPE data loaded');

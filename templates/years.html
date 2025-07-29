@@ -221,15 +221,7 @@
 
 {% block scripts %}
 <script>
-// Debug logging for development
-console.log('🚀 CVE.ICU Years page loading...');
-
-// Test if Chart.js is available
-if (typeof Chart !== 'undefined') {
-    console.log('✅ Chart.js is available!');
-} else {
-    console.log('❌ Chart.js is NOT available!');
-}
+// Removed all console.log statements for production
 
 // Global variables
 let yearData = {};

@@ -251,7 +251,6 @@ const colorPalette = {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Growth Intelligence Dashboard loaded');
     loadGrowthData();
 });
 
@@ -265,7 +264,6 @@ function loadGrowthData() {
             return response.json();
         })
         .then(data => {
-            console.log('Growth data loaded:', data);
             growthData = data;
             updateStatsCards(data);
             updateGrowthTrendsChart(data);
@@ -313,20 +311,11 @@ function updateStatsCards(data) {
     const ytdGrowthDataArray = data.growth_data || [];
     const currentYearData = ytdGrowthDataArray.find(d => d.is_ytd === true);
     
-    console.log('YTD Data Debug (from growth_data):', currentYearData);
-    if (currentYearData) {
-        console.log('All YTD fields:', Object.keys(currentYearData));
-        console.log('ytd_vs_prev_ytd value:', currentYearData.ytd_vs_prev_ytd);
-        console.log('prev_year_ytd_estimate value:', currentYearData.prev_year_ytd_estimate);
-    }
-        
     if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
         const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
         const currentYearCVEs = currentYearData.cves;
         const prevYearYTDEstimate = currentYearData.prev_year_ytd_estimate || 0;
         
-        console.log('YTD Values:', { ytdGrowth, currentYearCVEs, prevYearYTDEstimate });
-            
         document.getElementById('ytdComparison').textContent = `${ytdGrowth > 0 ? '+' : ''}${ytdGrowth}%`;
         document.getElementById('ytdSubtext').innerHTML = `${currentYearCVEs.toLocaleString()} vs ${prevYearYTDEstimate.toLocaleString()} CVEs<br>(YTD vs Same Period Last Year)`;
     } else {
