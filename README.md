@@ -4,8 +4,6 @@
 
 CVE.ICU is a powerful, automated platform that provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data. Built with Python and deployed via GitHub Actions, it delivers fresh insights into the cybersecurity landscape through interactive web visualizations.
 
-[![Build and Deploy](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml/badge.svg)](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 🌟 Features
 
@@ -228,3 +226,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ for the cybersecurity community**
 
 *CVE.ICU - Making vulnerability data accessible, understandable, and actionable.*
+
+[![Build and Deploy](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml/badge.svg)](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
