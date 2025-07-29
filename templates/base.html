@@ -110,7 +110,7 @@
         const lastUpdatedElement = document.getElementById('lastUpdated');
         if (!lastUpdatedElement) return;
         
-        fetch('data/cve_all.json')
+        fetch('data/cve_all.json?v=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
                 if (data.generated_at) {

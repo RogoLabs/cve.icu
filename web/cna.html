@@ -330,7 +330,7 @@
                         <a href="about.html" class="text-decoration-none">About CVE.ICU</a><br>
                         <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
                         <a href="https://cvceforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
-                        <a href="https://github.com/yourusername/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
+                        <a href="https://github.com/rogolabs/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
                     </p>
                 </div>
             </div>
@@ -358,7 +358,7 @@
         const lastUpdatedElement = document.getElementById('lastUpdated');
         if (!lastUpdatedElement) return;
         
-        fetch('data/cve_all.json')
+        fetch('data/cve_all.json?v=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
                 if (data.generated_at) {
