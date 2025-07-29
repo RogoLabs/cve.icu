@@ -242,6 +242,13 @@
 </div>
 
 <script>
+// CWE category ID constants for maintainability
+const CWE_INPUT_VALIDATION_IDS = [20, 79, 352, 601, 1284, 129, 134, 190, 200, 209, 235, 236, 242, 244, 248, 252, 253, 256, 257, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286];
+const CWE_MEMORY_SAFETY_IDS = [119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 131, 415, 416, 476, 665, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 733, 787, 788, 789, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861];
+const CWE_AUTH_ACCESS_IDS = [287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900];
+const CWE_INJECTION_IDS = [74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118];
+const CWE_CRYPTO_IDS = [310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400];
+
 // Global variables
 let cweData = null;
 let currentYearCweData = null;
@@ -255,13 +262,11 @@ let cweCategoryChart = null;
 
 // Load data on page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CWE Intelligence Dashboard loaded');
     loadCweData();
 });
 
 // Render custom pagination controls (integrated solution)
 function renderCustomPagination() {
-    console.log('Rendering custom pagination');
     const paginationContainer = document.getElementById('customPaginationContainer');
     if (!paginationContainer) {
         console.error('Custom pagination container not found');
@@ -318,13 +323,10 @@ function renderCustomPagination() {
         nextBtn.onclick = function() { currentPage++; renderTable(); };
     }
     paginationContainer.appendChild(nextBtn);
-    
-    console.log('Custom pagination rendered with', totalPages, 'pages');
 }
 
 async function loadCweData() {
     try {
-        console.log('Loading CWE data...');
         const [allDataResponse, currentYearResponse] = await Promise.all([
             fetch('/data/cwe_analysis.json'),
             fetch('/data/cwe_analysis_current_year.json')
@@ -333,7 +335,6 @@ async function loadCweData() {
         cweData = await allDataResponse.json();
         currentYearCweData = await currentYearResponse.json();
         
-        console.log('CWE data loaded:', cweData);
         displayCweData(cweData);
     } catch (error) {
         console.error('Error loading CWE data:', error);
@@ -472,29 +473,17 @@ function updateCharts(data) {
         // Comprehensive CWE categorization based on CWE Research Concepts
         chartData.forEach(cwe => {
             const id = parseInt(cwe.id);
-            
-            // Input Validation Issues (CWE-20 family)
-            if ([20, 79, 352, 601, 1284, 129, 134, 190, 200, 209, 235, 236, 242, 244, 248, 252, 253, 256, 257, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286].includes(id)) {
+            if (CWE_INPUT_VALIDATION_IDS.includes(id)) {
                 categories['Input Validation'] += cwe.count;
-            }
-            // Memory Safety Issues (CWE-119 family)
-            else if ([119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 131, 415, 416, 476, 665, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 733, 787, 788, 789, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861].includes(id)) {
+            } else if (CWE_MEMORY_SAFETY_IDS.includes(id)) {
                 categories['Memory Safety'] += cwe.count;
-            }
-            // Authentication & Access Control (CWE-287, CWE-862 families)
-            else if ([287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900].includes(id)) {
+            } else if (CWE_AUTH_ACCESS_IDS.includes(id)) {
                 categories['Authentication & Access'] += cwe.count;
-            }
-            // Injection Flaws (CWE-74 family)
-            else if ([74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118].includes(id)) {
+            } else if (CWE_INJECTION_IDS.includes(id)) {
                 categories['Injection Flaws'] += cwe.count;
-            }
-            // Cryptographic Issues (CWE-310 family)
-            else if ([310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400].includes(id)) {
+            } else if (CWE_CRYPTO_IDS.includes(id)) {
                 categories['Cryptographic Issues'] += cwe.count;
-            }
-            // Everything else
-            else {
+            } else {
                 categories['Other'] += cwe.count;
             }
         });
@@ -531,8 +520,7 @@ function updateCharts(data) {
                         }
                     }
                 }
-            }
-        });
+            });
     }
 }
 
@@ -592,14 +580,11 @@ function updateInsights(data) {
 
 // Populate CWE table with pagination and sorting
 function populateTable() {
-    console.log('populateTable() called');
     const data = isCurrentYearMode ? currentYearCweData : cweData;
     if (!data || !data.top_cwes) {
         console.error('No CWE data available');
         return;
     }
-    
-    console.log('CWE data available:', data.top_cwes.length, 'items');
     
     // Create a copy of the data for sorting
     let dataToSort = data.top_cwes.map((cwe, index) => {
@@ -611,8 +596,6 @@ function populateTable() {
             percentage: ((cwe.count / data.total_cves_with_cwe) * 100).toFixed(2)
         };
     });
-    
-    console.log('dataToSort created with', dataToSort.length, 'items');
     
     // Sort the data
     sortedData = [...dataToSort].sort((a, b) => {
@@ -632,8 +615,6 @@ function populateTable() {
         return 0;
     });
     
-    console.log('sortedData populated with', sortedData.length, 'items');
-    
     // Force sortedData to have content if it's empty (failsafe)
     if (!sortedData.length && dataToSort.length) {
         console.warn('sortedData is empty but dataToSort has data! Forcing copy...');
@@ -645,16 +626,10 @@ function populateTable() {
 
 // Render table with current sort and pagination
 function renderTable() {
-    console.log('renderTable() called');
-    console.log('renderTable: sortedData length:', sortedData.length);
-    console.log('renderTable: currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
-    
     // Calculate indices for current page
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = sortedData.slice(startIndex, endIndex);
-    
-    console.log('renderTable: pageData length:', pageData.length);
     
     // Clear and populate table body
     const tbody = document.getElementById('cweTableBody');
@@ -692,12 +667,7 @@ function updatePaginationInfo() {
 
 // Update pagination controls
 function updatePaginationControls() {
-    console.log('updatePaginationControls called');
-    console.log('sortedData.length:', sortedData.length);
-    console.log('itemsPerPage:', itemsPerPage);
-    
     const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-    console.log('totalPages calculated:', totalPages);
     
     const paginationControls = document.getElementById('paginationControls');
     if (!paginationControls) {
