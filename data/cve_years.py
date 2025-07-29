@@ -458,21 +458,21 @@ class CVEYearsAnalyzer:
                     try:
                         parsed = urlparse(url)
                         hostname = parsed.hostname or ''
-                        if hostname.endswith('github.com'):
+                        if hostname == 'github.com' or hostname.endswith('.github.com'):
                             identifiers.append('GitHub')
-                        elif hostname.endswith('nvd.nist.gov'):
+                        elif hostname == 'nvd.nist.gov':
                             identifiers.append('NVD')
-                        elif hostname.endswith('cve.mitre.org'):
+                        elif hostname == 'cve.mitre.org':
                             identifiers.append('MITRE')
-                        elif hostname.endswith('security-tracker.debian.org'):
+                        elif hostname == 'security-tracker.debian.org':
                             identifiers.append('Debian')
-                        elif hostname.endswith('access.redhat.com'):
+                        elif hostname == 'access.redhat.com':
                             identifiers.append('Red Hat')
-                        elif hostname.endswith('ubuntu.com'):
+                        elif hostname == 'ubuntu.com' or hostname.endswith('.ubuntu.com'):
                             identifiers.append('Ubuntu')
                         elif 'bugzilla' in hostname:
                             identifiers.append('Bugzilla')
-                        elif hostname.endswith('exploit-db.com'):
+                        elif hostname == 'exploit-db.com' or hostname == 'www.exploit-db.com':
                             identifiers.append('Exploit-DB')
                         else:
                             if hostname:
