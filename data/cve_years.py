@@ -447,44 +447,39 @@ class CVEYearsAnalyzer:
             return []
     
     def extract_identifier_info(self, cve_data):
-        """Extract CVE identifiers and references information"""
+        """Extract CVE identifiers and references information (secure hostname check)"""
         identifiers = []
         try:
             # Extract references/identifiers from the CVE data
             references = cve_data.get('cve', {}).get('references', [])
-            
             for ref in references:
                 url = ref.get('url', '')
                 if url:
-                    # Extract domain/source from URL for categorization
-                    if 'github.com' in url:
-                        identifiers.append('GitHub')
-                    elif 'nvd.nist.gov' in url:
-                        identifiers.append('NVD')
-                    elif 'cve.mitre.org' in url:
-                        identifiers.append('MITRE')
-                    elif 'security-tracker.debian.org' in url:
-                        identifiers.append('Debian')
-                    elif 'access.redhat.com' in url:
-                        identifiers.append('Red Hat')
-                    elif 'ubuntu.com' in url:
-                        identifiers.append('Ubuntu')
-                    elif 'bugzilla' in url:
-                        identifiers.append('Bugzilla')
-                    elif 'exploit-db.com' in url:
-                        identifiers.append('Exploit-DB')
-                    else:
-                        # Extract domain for other sources
-                        try:
-                            from urllib.parse import urlparse
-                            domain = urlparse(url).netloc
-                            if domain:
-                                identifiers.append(domain)
-                        except:
-                            pass
-            
+                    try:
+                        parsed = urlparse(url)
+                        hostname = parsed.hostname or ''
+                        if hostname.endswith('github.com'):
+                            identifiers.append('GitHub')
+                        elif hostname.endswith('nvd.nist.gov'):
+                            identifiers.append('NVD')
+                        elif hostname.endswith('cve.mitre.org'):
+                            identifiers.append('MITRE')
+                        elif hostname.endswith('security-tracker.debian.org'):
+                            identifiers.append('Debian')
+                        elif hostname.endswith('access.redhat.com'):
+                            identifiers.append('Red Hat')
+                        elif hostname.endswith('ubuntu.com'):
+                            identifiers.append('Ubuntu')
+                        elif 'bugzilla' in hostname:
+                            identifiers.append('Bugzilla')
+                        elif hostname.endswith('exploit-db.com'):
+                            identifiers.append('Exploit-DB')
+                        else:
+                            if hostname:
+                                identifiers.append(hostname)
+                    except Exception:
+                        pass
             return identifiers
-            
         except Exception:
             return []
     
