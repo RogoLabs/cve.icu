@@ -269,50 +269,212 @@ main {
     margin-bottom: var(--spacing-xl);
 }
 
-.stat-cards {
+/* Professional Stats Cards Design System */
+.stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Responsive grid for smaller screens */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 }
 
 .stat-card {
-    background: var(--color-bg-content);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-md);
+    position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
     text-align: center;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--chart-primary) 0%, 
+        var(--chart-secondary) 50%, 
+        var(--chart-tertiary) 100%);
+    opacity: 0.8;
 }
 
 .stat-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    border-color: var(--color-primary-light);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.1),
+        0 6px 10px rgba(0, 0, 0, 0.05);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
-.stat-value {
+.stat-card:hover::before {
+    height: 6px;
+    opacity: 1;
+}
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.1) 0%, 
+        rgba(147, 197, 253, 0.1) 100%);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
     font-size: 1.5rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-xs);
-    line-height: 1.2;
+    color: var(--chart-primary);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.15) 0%, 
+        rgba(147, 197, 253, 0.15) 100%);
+}
+
+.stat-content {
+    text-align: left;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
 }
 
 .stat-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.025em;
+}
+
+.stat-sublabel {
     font-size: 0.75rem;
     color: var(--color-text-secondary);
-    font-weight: var(--font-weight-medium);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+/* Enhanced stats cards for specific use cases */
+.stat-card.highlight {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.02) 0%, 
+        rgba(147, 197, 253, 0.02) 100%);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.stat-card.highlight::before {
+    background: linear-gradient(90deg, 
+        var(--chart-primary) 0%, 
+        var(--color-success) 100%);
+}
+
+/* Growth/trend indicators */
+.stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.stat-trend.positive {
+    color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.stat-trend.negative {
+    color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.stat-trend.neutral {
+    color: var(--color-text-secondary);
+    background: rgba(156, 163, 175, 0.1);
+}
+
+/* Additional responsive adjustments for card content */
+@media (max-width: 768px) {
+    .stat-card {
+        padding: 1.5rem 1.25rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        padding: 1.25rem 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+    }
+}
+
+/* Legacy support for existing stat-cards class */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Legacy stat-value, stat-label, stat-detail classes */
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
 }
 
 .stat-detail {
     font-size: 0.75rem;
     color: var(--color-text-secondary);
-    margin-top: var(--spacing-xs);
-    line-height: 1.3;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+    font-weight: 500;
 }
 
 /* Year Grid Selector - Compact Version */

@@ -218,6 +218,170 @@ class CVESiteBuilder:
             traceback.print_exc()
             print("  ⚠️  Current year CNA analysis will be missing")
         
+        # Generate CPE analysis
+        try:
+            from cpe_analysis import CPEAnalyzer
+            print("  🔍 Generating comprehensive CPE analysis...")
+            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            cpe_analysis = cpe_analyzer.generate_cpe_analysis(all_year_data)
+            
+            if cpe_analysis:
+                print(f"  ✅ Generated cpe_analysis.json with {cpe_analysis['total_unique_cpes']:,} unique CPEs")
+            else:
+                print("  ❌ CPE analysis failed")
+            
+        except Exception as e:
+            print(f"  ❌ Error generating CPE analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  CPE analysis will be missing")
+        
+        # Generate current year CPE analysis
+        try:
+            from cpe_analysis import CPEAnalyzer
+            print("  📅 Generating current year CPE analysis...")
+            cpe_analyzer = CPEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            current_year_data = next((data for data in all_year_data if data['year'] == datetime.now().year), {})
+            current_cpe_analysis = cpe_analyzer.generate_current_year_cpe_analysis(current_year_data)
+            
+            if current_cpe_analysis:
+                print(f"  ✅ Generated cpe_analysis_current_year.json with {current_cpe_analysis['total_unique_cpes']:,} unique CPEs")
+            else:
+                print("  ❌ Current year CPE analysis failed")
+            
+        except Exception as e:
+            print(f"  ❌ Error generating current year CPE analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Current year CPE analysis will be missing")
+        
+        # Generate CVSS analysis
+        try:
+            from cvss_analysis import CVSSAnalyzer
+            print("  📊 Generating comprehensive CVSS analysis...")
+            cvss_analyzer = CVSSAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            cvss_analysis = cvss_analyzer.generate_cvss_analysis(all_year_data)
+            
+            if cvss_analysis:
+                print("  ✅ Comprehensive CVSS analysis generated")
+            else:
+                print("  ❌ Comprehensive CVSS analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating comprehensive CVSS analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Comprehensive CVSS analysis will be missing")
+        
+        # Generate current year CVSS analysis
+        try:
+            current_year_data = next((d for d in all_year_data if d.get('year') == self.current_year), None)
+            if current_year_data:
+                print("  📅 Generating current year CVSS analysis...")
+                current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_data)
+                
+                if current_year_cvss_analysis:
+                    print("  ✅ Current year CVSS analysis generated")
+                else:
+                    print("  ❌ Current year CVSS analysis failed")
+            else:
+                print(f"  ⚠️  No data found for current year {self.current_year}")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating current year CVSS analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Current year CVSS analysis will be missing")
+        
+        # Generate CWE analysis
+        try:
+            from cwe_analysis import CWEAnalyzer
+            print("  🔍 Generating comprehensive CWE analysis...")
+            cwe_analyzer = CWEAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            cwe_analysis = cwe_analyzer.generate_cwe_analysis(all_year_data)
+            
+            if cwe_analysis:
+                print(f"  ✅ Generated cwe_analysis.json with {cwe_analysis['total_unique_cwes']} unique CWEs")
+            else:
+                print("  ❌ CWE analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating CWE analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  CWE analysis will be missing")
+        
+        # Generate current year CWE analysis
+        try:
+            current_year_data = next((d for d in all_year_data if d.get('year') == self.current_year), None)
+            if current_year_data:
+                print("  📅 Generating current year CWE analysis...")
+                current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_data)
+                
+                if current_year_cwe_analysis:
+                    print(f"  ✅ Generated cwe_analysis_current_year.json with {current_year_cwe_analysis['total_unique_cwes']} unique CWEs")
+                else:
+                    print("  ❌ Current year CWE analysis failed")
+            else:
+                print(f"  ⚠️  No data found for current year {self.current_year}")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating current year CWE analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Current year CWE analysis will be missing")
+        
+        # Generate Calendar analysis
+        try:
+            from calendar_analysis import CalendarAnalyzer
+            print("  📅 Generating comprehensive calendar analysis...")
+            calendar_analyzer = CalendarAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            calendar_analysis = calendar_analyzer.generate_calendar_analysis()
+            
+            if calendar_analysis:
+                print(f"  ✅ Generated calendar_analysis.json with {calendar_analysis['metadata']['total_days']:,} days of data")
+            else:
+                print("  ❌ Calendar analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating calendar analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Calendar analysis will be missing")
+        
+        # Generate current year calendar analysis
+        try:
+            current_year_calendar_analysis = calendar_analyzer.generate_current_year_calendar_analysis()
+            
+            if current_year_calendar_analysis:
+                print(f"  ✅ Generated calendar_analysis_current_year.json with {current_year_calendar_analysis['metadata']['total_days']:,} days")
+            else:
+                print("  ❌ Current year calendar analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating current year calendar analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Current year calendar analysis will be missing")
+        
+        # Generate growth analysis
+        try:
+            from yearly_analysis import YearlyAnalyzer
+            print("  📈 Generating growth analysis...")
+            yearly_analyzer = YearlyAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            growth_analysis = yearly_analyzer.generate_growth_analysis(all_year_data)
+            
+            if growth_analysis:
+                print("  ✅ Growth analysis generated")
+            else:
+                print("  ❌ Growth analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating growth analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Growth analysis will be missing")
+        
         # Generate cve_all.json from year data
         self.generate_cve_all_json(all_year_data)
         
@@ -225,6 +389,11 @@ class CVESiteBuilder:
         
         return {
             'cna_analysis': 'generated',
+            'cpe_analysis': 'generated',
+            'cvss_analysis': 'generated',
+            'cwe_analysis': 'generated',
+            'calendar_analysis': 'generated',
+            'growth_analysis': 'generated',
             'cve_all': 'generated'
         }
     

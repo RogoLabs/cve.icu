@@ -307,19 +307,7 @@
 </div>
 
 <!-- Data Source Note -->
-<div class="card">
-    <div class="card-body py-3">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-info-circle text-muted me-2"></i>
-            <small class="text-muted mb-0">
-                <strong>Data Source:</strong> While the rest of CVE.ICU uses data from the NVD, this CNA Intelligence Dashboard uses data directly from the 
-                <a href="https://github.com/CVEProject/cvelistV5" target="_blank" class="text-decoration-none">
-                    CVEProject/cvelistV5 repository
-                </a> for enhanced data quality and accuracy.
-            </small>
-        </div>
-    </div>
-</div>
+
 
 
     </main>
@@ -327,16 +315,31 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 CVE.ICU | 
-               <a href="https://github.com/yourusername/cve.icu" target="_blank">GitHub</a> | 
-               Data updated every 6 hours | 
-               CVE coverage: 1999-2025
-            </p>
-            <p class="text-muted">
-                Built with ❤️ for the cybersecurity community | 
-                <a href="https://cnascorecard.org" target="_blank">CNA Scorecard</a> | 
-                <a href="https://cvceforecast.org" target="_blank">CVE Forecast</a>
-            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+                <div style="flex: 1; min-width: 200px;">
+                    <p class="mb-1"><strong>Data Sources:</strong></p>
+                    <p class="text-muted small mb-0">
+                        <a href="https://nvd.nist.gov/" target="_blank" class="text-decoration-none">National Vulnerability Database (NVD)</a><br>
+                        <a href="https://cve.org/" target="_blank" class="text-decoration-none">CVE Program</a><br>
+                        Last updated: <span id="lastUpdated">Loading...</span>
+                    </p>
+                </div>
+                <div style="flex: 1; min-width: 200px; text-align: right;">
+                    <p class="mb-1"><strong>Community Projects:</strong></p>
+                    <p class="text-muted small mb-0">
+                        <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
+                        <a href="https://cvceforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
+                        <a href="https://github.com/yourusername/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
+                    </p>
+                </div>
+            </div>
+            <hr class="my-2">
+            <div class="text-center">
+                <small class="text-muted">
+                    &copy; 2025 CVE.ICU • Built by <a href="https://rogolabs.net" target="_blank" class="text-decoration-none">RogoLabs</a><br>
+                    Data updated every 6 hours • CVE coverage: 1999-2025
+                </small>
+            </div>
         </div>
     </footer>
 

@@ -37,7 +37,7 @@ class YearlyAnalyzer:
                 print(f"  📅 Processing {year}...")
                 
                 try:
-                    year_data = analyzer.analyze_year(year)
+                    year_data = analyzer.get_year_data(year)
                     
                     if year_data:
                         # Save individual year file
@@ -205,6 +205,11 @@ class YearlyAnalyzer:
         """Generate growth trend analysis across all years"""
         print(f"  📈 Generating growth trend analysis...")
         
+        # Get current date for year-to-date calculations
+        current_date = datetime.now()
+        current_year = current_date.year
+        day_of_year = current_date.timetuple().tm_yday
+        
         # Calculate year-over-year growth rates
         growth_data = []
         
@@ -215,39 +220,92 @@ class YearlyAnalyzer:
                     'year': year_data['year'],
                     'cves': year_data['total_cves'],
                     'growth_rate': 0,
-                    'growth_absolute': 0
+                    'growth_absolute': 0,
+                    'is_ytd': year_data['year'] == current_year
                 })
             else:
                 prev_year_data = sorted(all_year_data, key=lambda x: x['year'])[i-1]
                 prev_count = prev_year_data['total_cves']
                 current_count = year_data['total_cves']
                 
-                growth_rate = 0
-                if prev_count > 0:
-                    growth_rate = ((current_count - prev_count) / prev_count) * 100
-                
-                growth_data.append({
-                    'year': year_data['year'],
-                    'cves': current_count,
-                    'growth_rate': round(growth_rate, 1),
-                    'growth_absolute': current_count - prev_count
-                })
+                # For current year, we need to calculate YTD comparison
+                if year_data['year'] == current_year:
+                    # Calculate proper YTD comparison: current YTD vs same period last year
+                    # We need to get CVEs from previous year up to the same day of year
+                    
+                    # First, calculate projected full year for growth rate
+                    days_in_year = 366 if current_year % 4 == 0 else 365
+                    projected_full_year = (current_count / day_of_year) * days_in_year
+                    
+                    # Calculate growth rate based on projection vs previous full year
+                    growth_rate = 0
+                    if prev_count > 0:
+                        growth_rate = ((projected_full_year - prev_count) / prev_count) * 100
+                    
+                    # For YTD comparison, we need to estimate previous year's YTD count
+                    # Since we don't have daily data, we'll estimate based on year progress
+                    prev_year_ytd_estimate = (prev_count / days_in_year) * day_of_year
+                    
+                    # Calculate true YTD comparison (current YTD vs previous year same period)
+                    ytd_comparison = 0
+                    if prev_year_ytd_estimate > 0:
+                        ytd_comparison = ((current_count - prev_year_ytd_estimate) / prev_year_ytd_estimate) * 100
+                    
+                    growth_data.append({
+                        'year': year_data['year'],
+                        'cves': current_count,
+                        'growth_rate': round(growth_rate, 1),
+                        'growth_absolute': int(projected_full_year - prev_count),
+                        'is_ytd': True,
+                        'projected_full_year': int(projected_full_year),
+                        'ytd_vs_prev_full': round(((current_count - prev_count) / prev_count) * 100, 1) if prev_count > 0 else 0,
+                        'ytd_vs_prev_ytd': round(ytd_comparison, 1),
+                        'prev_year_ytd_estimate': int(prev_year_ytd_estimate)
+                    })
+                else:
+                    # Normal year-over-year calculation for completed years
+                    growth_rate = 0
+                    if prev_count > 0:
+                        growth_rate = ((current_count - prev_count) / prev_count) * 100
+                    
+                    growth_data.append({
+                        'year': year_data['year'],
+                        'cves': current_count,
+                        'growth_rate': round(growth_rate, 1),
+                        'growth_absolute': current_count - prev_count,
+                        'is_ytd': False
+                    })
         
-        # Calculate moving averages
+        # Calculate moving averages (exclude current year from averages since it's YTD)
         window_size = 3
         for i, entry in enumerate(growth_data):
-            if i >= window_size - 1:
-                window_rates = [growth_data[j]['growth_rate'] for j in range(i - window_size + 1, i + 1)]
-                entry['growth_rate_3yr_avg'] = round(sum(window_rates) / len(window_rates), 1)
+            if entry.get('is_ytd', False):
+                # For YTD data, don't calculate moving average
+                entry['growth_rate_3yr_avg'] = entry['growth_rate']
+            elif i >= window_size - 1:
+                # Only include completed years in moving average
+                window_rates = [growth_data[j]['growth_rate'] for j in range(i - window_size + 1, i + 1) 
+                               if not growth_data[j].get('is_ytd', False)]
+                if window_rates:
+                    entry['growth_rate_3yr_avg'] = round(sum(window_rates) / len(window_rates), 1)
+                else:
+                    entry['growth_rate_3yr_avg'] = entry['growth_rate']
             else:
                 entry['growth_rate_3yr_avg'] = entry['growth_rate']
+        
+        # Filter out YTD data for aggregate statistics since it's not comparable
+        completed_years = [entry for entry in growth_data[1:] if not entry.get('is_ytd', False)]
+        
+        # Get current year data for YTD comparison
+        current_year_data = next((entry for entry in growth_data if entry.get('is_ytd', False)), None)
         
         growth_analysis = {
             'generated_at': datetime.now().isoformat(),
             'growth_data': growth_data,
-            'avg_annual_growth': round(sum(entry['growth_rate'] for entry in growth_data[1:]) / len(growth_data[1:]), 1) if len(growth_data) > 1 else 0,
-            'highest_growth_year': max(growth_data[1:], key=lambda x: x['growth_rate']) if len(growth_data) > 1 else None,
-            'lowest_growth_year': min(growth_data[1:], key=lambda x: x['growth_rate']) if len(growth_data) > 1 else None
+            'avg_annual_growth': round(sum(entry['growth_rate'] for entry in completed_years) / len(completed_years), 1) if completed_years else 0,
+            'highest_growth_year': max(completed_years, key=lambda x: x['growth_rate']) if completed_years else None,
+            'lowest_growth_year': min(completed_years, key=lambda x: x['growth_rate']) if completed_years else None,
+            'current_year_ytd': current_year_data
         }
         
         # Save to file
