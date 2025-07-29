@@ -30,20 +30,106 @@
     </div>
 </div>
 
-<!-- CVEs by Year Chart -->
-<div class="card">
+<!-- Featured Visualization: CVEs by Year -->
+<div class="card mb-4">
     <div class="card-header">
-        <h3 class="card-title mb-0">CVEs Published by Year</h3>
+        <h3 class="card-title mb-0">📊 CVE Publications by Year</h3>
+        <small class="text-muted">Historical trend of vulnerability disclosures from 1999 to present</small>
     </div>
     <div class="card-body">
-        <div class="chart-container">
+        <div class="chart-container" style="height: 400px;">
             <canvas id="cvesByYearChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <small class="text-muted">Interactive visualization showing annual CVE publication trends</small>
         </div>
     </div>
 </div>
 
-<!-- Welcome Section -->
-<div class="card">
+<!-- Dashboard Previews -->
+
+<!-- Growth Preview -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">📈 Growth</h4>
+        <small class="text-muted">Year-over-year CVE publication trends and growth analysis</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+            <canvas id="growthPreviewChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        </div>
+    </div>
+</div>
+
+<!-- CVSS Preview -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">🎯 CVSS</h4>
+        <small class="text-muted">Vulnerability severity scoring analysis across all CVSS versions</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+            <canvas id="cvssPreviewChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <a href="cvss.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        </div>
+    </div>
+</div>
+
+<!-- CWE Preview -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">🔍 CWE</h4>
+        <small class="text-muted">Common Weakness Enumeration patterns and vulnerability types</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+            <canvas id="cwePreviewChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        </div>
+    </div>
+</div>
+
+<!-- CNA Preview -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">🏢 CNA</h4>
+        <small class="text-muted">CVE Numbering Authority activity and organizational analysis</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+            <canvas id="cnaPreviewChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <a href="cna.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        </div>
+    </div>
+</div>
+
+<!-- CPE Preview -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">💻 CPE</h4>
+        <small class="text-muted">Common Platform Enumeration and affected technology analysis</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+            <canvas id="cpePreviewChart"></canvas>
+        </div>
+        <div class="text-center mt-3">
+            <a href="cpe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="card mt-5">
     <div class="card-header">
         <h3 class="card-title mb-0">About CVE.ICU</h3>
     </div>
@@ -98,10 +184,9 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'CVEs Published',
                 data: [],
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
                 borderColor: window.CVE_COLORS.primary,
-                borderWidth: 2,
-                fill: true,
+                backgroundColor: window.CVE_COLORS.primaryLight,
+                fill: false,
                 tension: 0.1
             }]
         };
@@ -158,63 +243,52 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 // Calculate total CVEs
                 const totalCves = results.reduce((sum, result) => sum + result.count, 0);
+                document.getElementById('total-cves').textContent = totalCves.toLocaleString();
                 
-                // Get current year data
+                // Calculate CVEs this year (current year)
                 const currentYear = new Date().getFullYear();
                 const currentYearData = results.find(r => r.year === currentYear);
                 const cvesThisYear = currentYearData ? currentYearData.count : 0;
+                document.getElementById('cves-this-year').textContent = cvesThisYear.toLocaleString();
                 
-                // Calculate average CVEs per day for current year
+                // Calculate average CVEs per day (based on current year)
                 const dayOfYear = Math.floor((new Date() - new Date(currentYear, 0, 0)) / (1000 * 60 * 60 * 24));
                 const avgCvesPerDay = cvesThisYear > 0 && dayOfYear > 0 ? (cvesThisYear / dayOfYear).toFixed(1) : '0';
-                
-                // Calculate date-accurate YOY growth rate
-                // We need to compare CVEs published by the same date in both years
-                // For now, we'll estimate based on the current day of year
-                const previousYearData = results.find(r => r.year === currentYear - 1);
-                const previousYearFullCount = previousYearData ? previousYearData.count : 0;
-                
-                // Estimate what the previous year count would be by this same date
-                // Assume roughly even distribution throughout the year for estimation
-                // (reuse dayOfYear from above)
-                const yearProgress = dayOfYear / 365; // Percentage of year completed
-                const estimatedPreviousYearByDate = Math.round(previousYearFullCount * yearProgress);
-                
-                let growthRate = 'N/A';
-                let growthDetail = 'Calculating...';
-                
-                if (estimatedPreviousYearByDate > 0 && cvesThisYear > 0) {
-                    const growth = ((cvesThisYear - estimatedPreviousYearByDate) / estimatedPreviousYearByDate) * 100;
-                    growthRate = (growth >= 0 ? '+' : '') + growth.toFixed(1) + '%';
-                    
-                    // Create detail text showing the comparison
-                    const currentDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    growthDetail = `${cvesThisYear.toLocaleString()} vs ${estimatedPreviousYearByDate.toLocaleString()} (by ${currentDate})`;
-                }
-                
-                // Update the DOM elements
-                document.getElementById('cves-this-year').textContent = cvesThisYear.toLocaleString();
                 document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
-                document.getElementById('growth-rate').textContent = growthRate;
-                document.getElementById('growth-detail').textContent = growthDetail;
-                document.getElementById('total-cves').textContent = totalCves.toLocaleString();
                 
+                // Calculate YTD growth rate (current year YTD vs same period last year)
+                const prevYearData = results.find(r => r.year === currentYear - 1);
+                const prevYearCount = prevYearData ? prevYearData.count : 0;
+                
+                if (prevYearCount > 0) {
+                    // Calculate same period last year (YTD comparison)
+                    const dayOfYear = Math.floor((new Date() - new Date(currentYear, 0, 0)) / (1000 * 60 * 60 * 24));
+                    const yearProgress = dayOfYear / 365; // Approximate year progress
+                    const prevYearYtdEstimate = Math.round(prevYearCount * yearProgress);
+                    
+                    const growthRate = prevYearYtdEstimate > 0 ? ((cvesThisYear - prevYearYtdEstimate) / prevYearYtdEstimate) * 100 : 0;
+                    const growthText = growthRate >= 0 ? `+${growthRate.toFixed(1)}%` : `${growthRate.toFixed(1)}%`;
+                    document.getElementById('growth-rate').textContent = growthText;
+                    document.getElementById('growth-detail').textContent = `${cvesThisYear.toLocaleString()} vs ${prevYearYtdEstimate.toLocaleString()} (YTD vs Same Period ${currentYear - 1})`;
+                } else {
+                    document.getElementById('growth-rate').textContent = 'N/A';
+                    document.getElementById('growth-detail').textContent = 'No previous year data';
+                }
             } catch (error) {
-                console.error('Error calculating statistics:', error);
+                console.error('Error updating statistics:', error);
                 updateStatisticsError();
             }
         }
         
         function updateStatisticsError() {
+            document.getElementById('total-cves').textContent = 'Error';
             document.getElementById('cves-this-year').textContent = 'Error';
             document.getElementById('avg-cves-per-day').textContent = 'Error';
             document.getElementById('growth-rate').textContent = 'Error';
-            document.getElementById('growth-detail').textContent = 'Error';
-            document.getElementById('total-cves').textContent = 'Error';
+            document.getElementById('growth-detail').textContent = 'Error loading data';
         }
         
         function createChart() {
-        
             new Chart(ctx, {
                 type: 'line',
                 data: yearlyData,
@@ -224,17 +298,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'CVE Publications by Year (1999-' + currentYear + ')'
+                            text: 'CVE Publications by Year',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
                         },
                         legend: {
                             display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'CVEs: ' + context.parsed.y.toLocaleString();
-                                }
-                            }
                         }
                     },
                     scales: {
@@ -242,12 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'CVE Publications'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString();
-                                }
+                                text: 'Number of CVEs'
                             },
                             grid: {
                                 color: 'rgba(0, 0, 0, 0.1)'
@@ -264,23 +330,321 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     },
                     elements: {
-                        line: {
-                            tension: 0.1,
-                            borderWidth: 2
-                        },
                         point: {
                             radius: 4,
                             hoverRadius: 6
                         }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
                     }
                 }
             });
         }
     }
+    
+    // Initialize Intelligence Dashboard Preview Charts
+    initializePreviewCharts();
 });
+
+function initializePreviewCharts() {
+    // Growth Intelligence Preview Chart
+    const growthPreviewCtx = document.getElementById('growthPreviewChart');
+    if (growthPreviewCtx) {
+        fetch('data/growth_analysis.json')
+            .then(response => response.json())
+            .then(data => {
+                const growthData = data.growth_data || [];
+                const labels = [];
+                const growthRates = [];
+                
+                // Show all years of data (exclude current year as it's YTD)
+                const allData = growthData.filter(item => item.year !== new Date().getFullYear());
+                allData.forEach(item => {
+                    labels.push(item.year.toString());
+                    growthRates.push(item.growth_rate || 0);
+                });
+                
+                new Chart(growthPreviewCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: growthRates,
+                            borderColor: '#6c9bd1',
+                            backgroundColor: 'rgba(108, 155, 209, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Growth: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(1)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Growth Rate (%)'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Year'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        },
+                        elements: {
+                            point: { radius: 2 }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading growth preview data:', error);
+                growthPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+            });
+    }
+    
+    // CVSS Intelligence Preview Chart
+    const cvssPreviewCtx = document.getElementById('cvssPreviewChart');
+    if (cvssPreviewCtx) {
+        fetch('data/cvss_analysis.json')
+            .then(response => response.json())
+            .then(data => {
+                // Aggregate severity data across all CVSS versions
+                const aggregatedSeverity = {};
+                const severityDistribution = data.severity_distribution || {};
+                
+                Object.values(severityDistribution).forEach(versionData => {
+                    Object.entries(versionData).forEach(([severity, count]) => {
+                        aggregatedSeverity[severity] = (aggregatedSeverity[severity] || 0) + count;
+                    });
+                });
+                
+                const labels = Object.keys(aggregatedSeverity);
+                const values = Object.values(aggregatedSeverity);
+                
+                new Chart(cvssPreviewCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: '#6c9bd1',
+                            borderColor: '#5a8bc4',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CVE Count'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Severity Level'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading CVSS preview data:', error);
+                cvssPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+            });
+    }
+    
+    // CWE Intelligence Preview Chart
+    const cwePreviewCtx = document.getElementById('cwePreviewChart');
+    if (cwePreviewCtx) {
+        fetch('data/cwe_analysis.json')
+            .then(response => response.json())
+            .then(data => {
+                const cweData = data.top_cwes || [];
+                const topCWEs = cweData.slice(0, 5); // Top 5 CWEs
+                const labels = topCWEs.map(item => `CWE-${item.id}`);
+                const values = topCWEs.map(item => item.count);
+                
+                new Chart(cwePreviewCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: '#6c9bd1',
+                            borderColor: '#5a8bc4',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CVE Count'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CWE Type'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading CWE preview data:', error);
+                cwePreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+            });
+    }
+    
+    // CNA Intelligence Preview Chart
+    const cnaPreviewCtx = document.getElementById('cnaPreviewChart');
+    if (cnaPreviewCtx) {
+        fetch('data/cna_analysis.json')
+            .then(response => response.json())
+            .then(data => {
+                const cnaData = data.cna_assigners || [];
+                const topCNAs = cnaData.slice(0, 5); // Top 5 CNAs
+                const labels = topCNAs.map(item => item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name);
+                const values = topCNAs.map(item => item.count);
+                
+                new Chart(cnaPreviewCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: '#6c9bd1',
+                            borderColor: '#5a8bc4',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CNA Organization'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CVE Count'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading CNA preview data:', error);
+                cnaPreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+            });
+    }
+    
+    // CPE Intelligence Preview Chart
+    const cpePreviewCtx = document.getElementById('cpePreviewChart');
+    if (cpePreviewCtx) {
+        fetch('data/cpe_analysis.json')
+            .then(response => response.json())
+            .then(data => {
+                const cpeData = data.top_cpes || [];
+                const topCPEs = cpeData.slice(0, 5); // Top 5 CPEs
+                const labels = topCPEs.map(item => item.vendor.length > 12 ? item.vendor.substring(0, 12) + '...' : item.vendor);
+                const values = topCPEs.map(item => item.count);
+                
+                new Chart(cpePreviewCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: '#6c9bd1',
+                            borderColor: '#5a8bc4',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'CVE Count'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Vendor'
+                                },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading CPE preview data:', error);
+                cpePreviewCtx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+            });
+    }
+}
 </script>
 {% endblock %}
