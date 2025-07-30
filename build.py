@@ -465,7 +465,7 @@ class CVESiteBuilder:
             })
         
         cve_all_data = {
-            'generated_at': datetime.now().isoformat(),
+            'generated_at': datetime.utcnow().isoformat() + 'Z',
             'total_cves': total_cves,
             'years_covered': years_with_data,
             'current_year': self.current_year,
