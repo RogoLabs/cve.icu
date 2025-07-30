@@ -329,7 +329,7 @@
                     <p class="text-muted small mb-0">
                         <a href="about.html" class="text-decoration-none">About CVE.ICU</a><br>
                         <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
-                        <a href="https://cvceforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
+                        <a href="https://cveforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
                         <a href="https://github.com/rogolabs/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
                     </p>
                 </div>
@@ -369,6 +369,8 @@
                         day: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
+                        hour12: false, // Use 24-hour clock
+                        timeZone: 'UTC', // Always show UTC
                         timeZoneName: 'short'
                     };
                     const formattedDate = date.toLocaleString('en-US', options);
