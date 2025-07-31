@@ -88,7 +88,7 @@
                             <i class="fas fa-chart-bar me-1"></i>Absolute
                         </button>
                         <button type="button" class="btn btn-outline-secondary quick-select-btn" id="rateBtn" onclick="toggleGrowthView('rate')">
-                            <i class="fas fa-percentage me-1"></i>YoY Growth Rate
+                            <i class="fas fa-percentage me-1"></i>Growth Rate
                         </button>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
         <div class="card mb-4">
             <div class="card-header py-2">
                 <h3 class="card-title mb-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-chart-bar me-2"></i>YoY Growth Rate Distribution
+                    <i class="fas fa-chart-bar me-2"></i>Growth Rate Distribution
                 </h3>
             </div>
             <div class="card-body">
@@ -190,7 +190,7 @@
                             <tr>
                                 <th>Year</th>
                                 <th>Total CVEs</th>
-                                <th>YoY Growth Rate</th>
+                                <th>Growth Rate</th>
                                 <th>Absolute Change</th>
                                 <th>3-Year Avg</th>
                             </tr>
@@ -358,7 +358,7 @@ function updateGrowthTrendsChart(data) {
         };
     } else {
         chartData = completedYearsData.map(d => d.growth_rate);
-        yAxisLabel = 'YoY Growth Rate (%)';
+        yAxisLabel = 'Growth Rate (%)';
         yAxisConfig = {
             ticks: {
                 callback: function(value) {
@@ -402,7 +402,7 @@ function updateGrowthTrendsChart(data) {
                             if (currentGrowthView === 'absolute') {
                                 return `Total CVEs: ${context.parsed.y.toLocaleString()}`;
                             } else {
-                                return `YoY Growth Rate: ${context.parsed.y}%`;
+                                return `Growth Rate: ${context.parsed.y}%`;
                             }
                         }
                     }
@@ -423,7 +423,8 @@ function updateGrowthTrendsChart(data) {
                     ...yAxisConfig
                 }
             }
-        });
+        }
+    });
 }
 
 // Update growth distribution chart
@@ -506,7 +507,7 @@ function updateGrowthDistributionChart(data) {
                 y: {
                     title: {
                         display: true,
-                        text: 'YoY Growth Rate Range'
+                        text: 'Growth Rate Range'
                     },
                     grid: {
                         display: false
@@ -629,27 +630,21 @@ function updateGrowthTable(data) {
     tableBody.innerHTML = growthDataArray.map(yearData => {
         const growthRateClass = yearData.growth_rate > 0 ? 'text-success' : yearData.growth_rate < 0 ? 'text-danger' : 'text-muted';
         const growthIcon = yearData.growth_rate > 0 ? '↗️' : yearData.growth_rate < 0 ? '↘️' : '➡️';
-
-        // Color logic for 3-Year Avg
-        const avg3yrClass = yearData.growth_rate_3yr_avg > 0 ? 'text-success' : yearData.growth_rate_3yr_avg < 0 ? 'text-danger' : 'text-muted';
-        const avg3yrIconHtml = yearData.growth_rate_3yr_avg > 0 ? 
-            '<i class="fas fa-arrow-up text-success me-1"></i>' : 
-            yearData.growth_rate_3yr_avg < 0 ? '<i class="fas fa-arrow-down text-danger me-1"></i>' : '<i class="fas fa-minus text-muted me-1"></i>';
-
+        
         let rowClass = '';
         let yearDisplay = yearData.year;
         let borderLeftStyle = '';
-
+        
         if (yearData.is_ytd) {
             rowClass = 'table-warning';
             borderLeftStyle = '4px solid #ffc107';
             yearDisplay = `${yearData.year} <span class="badge bg-warning text-dark ms-1">YTD</span>`;
         }
-
+        
         const growthIconHtml = yearData.growth_rate > 0 ? 
             '<i class="fas fa-arrow-up text-success me-1"></i>' : 
             '<i class="fas fa-arrow-down text-danger me-1"></i>';
-
+        
         return `
             <tr class="${rowClass}" style="border-left: ${borderLeftStyle}">
                 <td>${yearDisplay}</td>
@@ -660,9 +655,7 @@ function updateGrowthTable(data) {
                 <td class="${yearData.growth_absolute >= 0 ? 'text-success' : 'text-danger'}">
                     ${yearData.growth_absolute >= 0 ? '+' : ''}${yearData.growth_absolute.toLocaleString()}
                 </td>
-                <td class="${avg3yrClass}">
-                    ${avg3yrIconHtml}${yearData.growth_rate_3yr_avg > 0 ? '+' : ''}${yearData.growth_rate_3yr_avg}%
-                </td>
+                <td>${yearData.growth_rate_3yr_avg}%</td>
             </tr>
         `;
     }).join('');
@@ -728,7 +721,7 @@ function exportData(format) {
 function convertToCSV(data) {
     if (!data || data.length === 0) return '';
     
-    const headers = ['Year', 'Total CVEs', 'YoY Growth Rate (%)', 'Absolute Change', '3-Year Average (%)'];
+    const headers = ['Year', 'Total CVEs', 'Growth Rate (%)', 'Absolute Change', '3-Year Average (%)'];
     const csvContent = [
         headers.join(','),
         ...data.map(row => [
