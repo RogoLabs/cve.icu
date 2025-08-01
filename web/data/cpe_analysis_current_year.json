@@ -1,11 +1,11 @@
 {
-  "generated_at": "2025-07-31T18:51:15.119141",
+  "generated_at": "2025-08-01T02:21:20.154108",
   "year": 2025,
-  "total_unique_cpes": 11564,
-  "total_cpe_entries": 70872,
-  "total_cves_with_cpes": 12169,
-  "total_unique_vendors": 2027,
-  "total_unique_products": 4421,
+  "total_unique_cpes": 11595,
+  "total_cpe_entries": 71745,
+  "total_cves_with_cpes": 12262,
+  "total_unique_vendors": 2030,
+  "total_unique_products": 4427,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -16,7 +16,7 @@
     },
     {
       "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
-      "count": 679,
+      "count": 806,
       "vendor": "apple",
       "product": "macos",
       "type": "Operating System"
@@ -127,6 +127,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
+      "count": 304,
+      "vendor": "apple",
+      "product": "ipados",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1507:*:*:*:*:*:*:x64:*",
       "count": 299,
       "vendor": "microsoft",
@@ -145,13 +152,6 @@
       "count": 286,
       "vendor": "microsoft",
       "product": "windows_server_2012",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
-      "count": 270,
-      "vendor": "apple",
-      "product": "ipados",
       "type": "Operating System"
     },
     {
@@ -177,14 +177,14 @@
     },
     {
       "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
-      "count": 190,
+      "count": 211,
       "vendor": "apple",
       "product": "iphone_os",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:a:oracle:mysql_server:*:*:*:*:*:*:*:*",
-      "count": 159,
+      "count": 160,
       "vendor": "oracle",
       "product": "mysql_server",
       "type": "Application"
@@ -211,17 +211,17 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.14:rc1:*:*:*:*:*:*",
+      "cpe": "cpe:2.3:o:apple:visionos:*:*:*:*:*:*:*:*",
       "count": 130,
-      "vendor": "linux",
-      "product": "linux_kernel",
+      "vendor": "apple",
+      "product": "visionos",
       "type": "Operating System"
     }
   ],
   "top_vendors": [
     {
       "vendor": "cisco",
-      "count": 18564
+      "count": 19164
     },
     {
       "vendor": "qualcomm",
@@ -245,7 +245,7 @@
     },
     {
       "vendor": "apple",
-      "count": 1494
+      "count": 1737
     },
     {
       "vendor": "ibm",
@@ -261,7 +261,7 @@
     },
     {
       "vendor": "oracle",
-      "count": 559
+      "count": 560
     },
     {
       "vendor": "autodesk",
@@ -273,7 +273,7 @@
     },
     {
       "vendor": "google",
-      "count": 468
+      "count": 471
     },
     {
       "vendor": "mozilla",
@@ -310,16 +310,20 @@
       "count": 1246
     },
     {
+      "product": "catalyst_sd-wan_manager",
+      "count": 843
+    },
+    {
+      "product": "macos",
+      "count": 808
+    },
+    {
       "product": "commerce_b2b",
       "count": 760
     },
     {
       "product": "windows_10_1809",
       "count": 717
-    },
-    {
-      "product": "macos",
-      "count": 681
     },
     {
       "product": "windows_10_1607",
@@ -336,22 +340,18 @@
     {
       "product": "windows_server_2012",
       "count": 598
-    },
-    {
-      "product": "unified_contact_center_express",
-      "count": 532
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 49265,
-      "percentage": 69.5
+      "count": 49503,
+      "percentage": 69.0
     },
     {
       "type": "Application",
-      "count": 21553,
-      "percentage": 30.4
+      "count": 22188,
+      "percentage": 30.9
     },
     {
       "type": "Hardware",
@@ -417,8 +417,16 @@
       "cpe_count": 329
     },
     {
+      "cve": "CVE-2025-20122",
+      "cpe_count": 282
+    },
+    {
       "cve": "CVE-2025-20216",
       "cpe_count": 282
+    },
+    {
+      "cve": "CVE-2025-20147",
+      "cpe_count": 279
     },
     {
       "cve": "CVE-2025-21433",
@@ -431,15 +439,7 @@
     {
       "cve": "CVE-2025-20272",
       "cpe_count": 259
-    },
-    {
-      "cve": "CVE-2024-53014",
-      "cpe_count": 252
-    },
-    {
-      "cve": "CVE-2025-21432",
-      "cpe_count": 246
     }
   ],
-  "average_cpes_per_cve": 5.8
+  "average_cpes_per_cve": 5.9
 }
