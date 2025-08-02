@@ -366,10 +366,7 @@ function loadCnaData() {
         })
         .catch(error => {
             console.error('Error loading CNA data:', error);
-            const loadingElement = document.getElementById('loadingMessage');
-            if (loadingElement) {
-                loadingElement.textContent = 'Error loading data';
-            }
+            showErrorState();
         });
 }
 
@@ -386,10 +383,7 @@ function loadCurrentYearData() {
         })
         .catch(error => {
             console.error('Error loading current year CNA data:', error);
-            // Continue with all-time data only
-            if (cnaData) {
-                initializePage();
-            }
+            showErrorState();
         });
 }
 
@@ -1235,7 +1229,6 @@ function renderTable() {
         let formattedDate = 'Invalid Date';
         if (cna.last_cve_date) {
             const lastCveDate = new Date(cna.last_cve_date);
-            
             if (!isNaN(lastCveDate.getTime())) {
                 formattedDate = lastCveDate.toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -1247,22 +1240,13 @@ function renderTable() {
                 formattedDate = 'Invalid Date';
             }
         }
-        
         const statusColor = cna.activity_status === 'Active' ? '#10b981' : '#ef4444';
         const statusIcon = cna.activity_status === 'Active' ? '✅' : '❌';
-        
-        // Calculate rank based on current data mode
-        let originalRank;
-        if (currentDataMode === 'all') {
-            originalRank = cnaData.cna_list.findIndex(original => original.name === cna.name) + 1;
-        } else {
-            // For current year, use position in sorted data + 1
-            originalRank = startIndex + index + 1;
-        }
-        
+        // Use rank from JSON data, not recalculated
+        let displayRank = cna.rank || (index + 1);
         return `
             <tr>
-                <td><strong>#${originalRank}</strong></td>
+                <td><strong>#${displayRank}</strong></td>
                 <td>${cna.name}</td>
                 <td>${cna.count.toLocaleString()}</td>
                 <td>${cna.years_active} years</td>
@@ -1340,17 +1324,14 @@ function updatePaginationControls() {
 
 // Setup pagination event handlers
 function setupPaginationHandlers() {
-    // Remove existing event listeners to prevent duplicates
     const paginationControls = document.getElementById('paginationControls');
-    
-    // Use event delegation for better performance and reliability
-    paginationControls.addEventListener('click', (e) => {
+    // Remove all previous listeners by replacing the element
+    const newControls = paginationControls.cloneNode(true);
+    paginationControls.parentNode.replaceChild(newControls, paginationControls);
+    newControls.addEventListener('click', (e) => {
         e.preventDefault();
-        
         const target = e.target;
         if (!target.classList.contains('page-link')) return;
-        
-        // Handle previous button
         if (target.id === 'prevPage') {
             if (currentPage > 1) {
                 currentPage--;
@@ -1358,8 +1339,6 @@ function setupPaginationHandlers() {
             }
             return;
         }
-        
-        // Handle next button
         if (target.id === 'nextPage') {
             const totalPages = Math.ceil(sortedData.length / itemsPerPage);
             if (currentPage < totalPages) {
@@ -1368,8 +1347,6 @@ function setupPaginationHandlers() {
             }
             return;
         }
-        
-        // Handle page number clicks
         const page = parseInt(target.getAttribute('data-page'));
         if (page && page !== currentPage) {
             currentPage = page;
@@ -1457,7 +1434,6 @@ function updateSortIndicators() {
     document.querySelectorAll('.sort-indicator').forEach(indicator => {
         indicator.textContent = '';
     });
-    
     const activeHeader = document.querySelector(`[data-sort="${currentSort.field}"] .sort-indicator`);
     if (activeHeader) {
         activeHeader.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
@@ -1525,36 +1501,17 @@ function exportCnaJSON() {
         alert('No data available for export');
         return;
     }
-    
     const totalCves = cnaData.cna_list.reduce((sum, cna) => sum + cna.count, 0);
     const activeCnas = cnaData.cna_list.filter(cna => cna.activity_status === 'Active').length;
-    
     const exportData = {
         metadata: {
-            exportDate: new Date().toISOString(),
-            dataSource: 'CVE.ICU CNA Intelligence Dashboard',
+            averageCvesPerCna: Math.round(totalCves / cnaData.cna_list.length),
             totalCnas: cnaData.cna_list.length,
             activeCnas: activeCnas,
             inactiveCnas: cnaData.cna_list.length - activeCnas,
-            totalCves: totalCves,
-            averageCvesPerCna: Math.round(totalCves / cnaData.cna_list.length)
-        },
-        cnaData: cnaData.cna_list.map((cna, index) => ({
-            rank: index + 1,
-            name: cna.name,
-            officialStatus: cna.is_official !== false ? 'Official' : 'Unofficial',
-            cvesAssigned: cna.count,
-            yearsActive: cna.years_active,
-            firstCveYear: cna.first_cve_year,
-            lastCveYear: cna.last_cve_year,
-            lastCveDate: cna.last_cve_date,
-            daysSinceLastCve: cna.days_since_last_cve,
-            activityStatus: cna.activity_status,
-            severityDistribution: cna.severity_distribution,
-            topCweTypes: cna.top_cwe_types
-        }))
+            totalCves: totalCves
+        }
     };
-    
     const jsonStr = JSON.stringify(exportData, null, 2);
     downloadFile(jsonStr, 'cna-comprehensive-analysis.json', 'application/json');
 }
@@ -1571,24 +1528,13 @@ function downloadFile(content, filename, contentType) {
     window.URL.revokeObjectURL(url);
 }
 
-function generatePermalink() {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-        alert('Permalink copied to clipboard!');
-    }).catch(() => {
-        alert(`Permalink: ${url}`);
-    });
-}
-
 // Error state
 function showErrorState() {
     document.getElementById('activeCnas').textContent = 'Error';
     document.getElementById('highVolumeCnas').textContent = 'Error';
     document.getElementById('medianYearsActive').textContent = 'Error';
     document.getElementById('marketConcentration').textContent = 'Error';
-    
-    document.getElementById('cnaTableBody').innerHTML = 
-        '<tr><td colspan="7" class="text-center text-danger">Error loading CNA data. Please refresh the page.</td></tr>';
+    document.getElementById('cnaTableBody').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading CNA data. Please refresh the page.</td></tr>';
 }
 </script>
 {% endblock %}
