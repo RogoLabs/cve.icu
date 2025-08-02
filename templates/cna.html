@@ -407,15 +407,15 @@ function processCurrentYearTypeDistribution(yearData) {
     // For current year, we need to map CNA assigners to their types from the main data
     const typeDistribution = [];
     
-    if (!yearData.cna_assigners || !cnaData.cna_list) {
+    if (!yearData.cna_list || !cnaData.cna_list) {
         return typeDistribution;
     }
     
     const typeCounts = {};
-    const totalCnas = yearData.cna_assigners.length;
+    const totalCnas = yearData.cna_list.length;
     
     // Map current year CNAs to their types from the comprehensive data
-    yearData.cna_assigners.forEach(cna => {
+    yearData.cna_list.forEach(cna => {
         const fullCnaInfo = cnaData.cna_list.find(c => c.name === cna.name);
         if (fullCnaInfo && fullCnaInfo.cna_types) {
             fullCnaInfo.cna_types.forEach(type => {
@@ -542,17 +542,17 @@ function updateStatistics() {
         marketConcentration = ((top5Cves / totalCves) * 100).toFixed(1);
     } else {
         // Current year data
-        if (!currentData.cna_assigners) return;
+        if (!currentData.cna_list) return;
         
-        activeCnas = currentData.cna_assigners.length;
-        highVolumeCnas = currentData.cna_assigners.filter(cna => cna.count >= 1000).length;
-        totalCves = currentData.total_cves || currentData.cna_assigners.reduce((sum, cna) => sum + cna.count, 0);
+        activeCnas = currentData.cna_list.length;
+        highVolumeCnas = currentData.cna_list.filter(cna => cna.count >= 1000).length;
+        totalCves = currentData.total_cves || currentData.cna_list.reduce((sum, cna) => sum + cna.count, 0);
         
         // For current year, years active is always 1
         medianYearsActive = 1;
         
         // Calculate market concentration for current year
-        const sortedCnas = currentData.cna_assigners.sort((a, b) => b.count - a.count);
+        const sortedCnas = currentData.cna_list.slice().sort((a, b) => b.count - a.count);
         const top5Cves = sortedCnas.slice(0, 5).reduce((sum, cna) => sum + cna.count, 0);
         marketConcentration = totalCves > 0 ? ((top5Cves / totalCves) * 100).toFixed(1) : '0.0';
     }
@@ -601,10 +601,10 @@ function createTopCnasChart() {
         labels = topCnas.map(cna => cna.name);
         data = topCnas.map(cna => cna.count);
     } else {
-        if (!currentData.cna_assigners) return;
+        if (!currentData.cna_list) return;
         // Sort current year CNAs by count and take top 15
-        topCnas = currentData.cna_assigners
-            .sort((a, b) => b.count - a.count)
+        topCnas = currentData.cna_list
+            .slice().sort((a, b) => b.count - a.count)
             .slice(0, 15);
         labels = topCnas.map(cna => cna.name);
         data = topCnas.map(cna => cna.count);
@@ -689,9 +689,9 @@ function createActivityChart() {
         if (!currentData.cna_list) return;
         cnas = currentData.cna_list;
     } else {
-        if (!currentData.cna_assigners) return;
+        if (!currentData.cna_list) return;
         // Use the actual years_active values from current year data (now includes full history)
-        cnas = currentData.cna_assigners;
+        cnas = currentData.cna_list;
     }
     
     const categories = {
@@ -772,13 +772,13 @@ function createRecencyChart() {
         }
         cnas = currentData.cna_list;
     } else {
-        console.log('createRecencyChart: current year mode, cna_assigners length:', currentData.cna_assigners ? currentData.cna_assigners.length : 'undefined');
-        if (!currentData.cna_assigners) {
-            console.error('No cna_assigners available for current year mode');
+        console.log('createRecencyChart: current year mode, cna_list length:', currentData.cna_list ? currentData.cna_list.length : 'undefined');
+        if (!currentData.cna_list) {
+            console.error('No cna_list available for current year mode');
             return;
         }
         // For current year, all CNAs are "Very Active" since they published in current year
-        cnas = currentData.cna_assigners.map(cna => ({
+        cnas = currentData.cna_list.map(cna => ({
             ...cna,
             days_since_last_cve: 0 // Current year CNAs are treated as very recent
         }));
@@ -866,16 +866,16 @@ function createTypeChart() {
         }
     } else {
         // For current year, calculate type distribution from individual CNA data
-        if (!currentData.cna_assigners || currentData.cna_assigners.length === 0) {
-            console.warn('No CNA assigners data available for current year');
+        if (!currentData.cna_list || currentData.cna_list.length === 0) {
+            console.warn('No CNA data available for current year');
             return;
         }
         
         // Calculate type distribution from current year CNAs
         const typeCounts = {};
-        const totalCnas = currentData.cna_assigners.length;
+        const totalCnas = currentData.cna_list.length;
         
-        currentData.cna_assigners.forEach(cna => {
+        currentData.cna_list.forEach(cna => {
             if (cna.cna_types && cna.cna_types.length > 0) {
                 cna.cna_types.forEach(type => {
                     typeCounts[type] = (typeCounts[type] || 0) + 1;
@@ -1020,8 +1020,8 @@ function createVolumeChart() {
         if (!currentData.cna_list) return;
         cnas = currentData.cna_list;
     } else {
-        if (!currentData.cna_assigners) return;
-        cnas = currentData.cna_assigners;
+        if (!currentData.cna_list) return;
+        cnas = currentData.cna_list;
     }
     
     const categories = {
@@ -1088,8 +1088,8 @@ function generateInsights() {
         let totalCount = 0;
         if (currentDataMode === 'all' && currentData.cna_list) {
             totalCount = currentData.cna_list.length;
-        } else if (currentDataMode === 'current' && currentData.cna_assigners) {
-            totalCount = currentData.cna_assigners.length;
+        } else if (currentDataMode === 'current' && currentData.cna_list) {
+            totalCount = currentData.cna_list.length;
         }
         totalCnasElement.textContent = totalCount.toLocaleString();
     }
@@ -1102,8 +1102,8 @@ function generateInsights() {
     let cnas = [];
     if (currentDataMode === 'all' && currentData.cna_list) {
         cnas = currentData.cna_list;
-    } else if (currentDataMode === 'current' && currentData.cna_assigners) {
-        cnas = currentData.cna_assigners;
+    } else if (currentDataMode === 'current' && currentData.cna_list) {
+        cnas = currentData.cna_list;
     }
     
     if (cnas.length === 0) {
@@ -1189,12 +1189,12 @@ function populateTable() {
         console.log('populateTable: dataToSort length (all-time):', dataToSort.length);
     } else {
         console.log('populateTable: current year mode');
-        if (!currentData.cna_assigners) {
-            console.error('populateTable: No cna_assigners in current year data');
+        if (!currentData.cna_list) {
+            console.error('populateTable: No cna_list in current year data');
             return;
         }
         // Use real CVE dates from backend data - no hardcoded overrides
-        dataToSort = currentData.cna_assigners.map(cna => ({
+        dataToSort = currentData.cna_list.map(cna => ({
             ...cna,
             // Keep the real last_cve_date from backend data
             activity_status: 'Active' // All current year CNAs are active
