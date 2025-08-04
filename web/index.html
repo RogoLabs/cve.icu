@@ -989,7 +989,7 @@ function initializeCnaPreview() {
     fetch('data/cna_analysis.json')
         .then(response => response.json())
         .then(data => {
-            const cnaData = data.cna_assigners || [];
+            const cnaData = data.cna_list || [];
             const topCNAs = cnaData.slice(0, 5);
             const labels = topCNAs.map(item => item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name);
             const values = topCNAs.map(item => item.count);
