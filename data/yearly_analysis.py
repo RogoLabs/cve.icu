@@ -6,7 +6,7 @@ Handles year-by-year data processing and aggregation
 
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class YearlyAnalyzer:
@@ -19,6 +19,57 @@ class YearlyAnalyzer:
         self.data_dir = Path(data_dir)
         self.current_year = datetime.now().year
         self.available_years = list(range(1999, self.current_year + 1))
+    
+    def calculate_actual_ytd_count(self, year, day_of_year):
+        """Calculate actual YTD CVE count for a given year up to specific day of year"""
+        try:
+            # Import the CVE analyzer
+            from cve_years import CVEYearsAnalyzer
+            
+            # Load the raw CVE data
+            analyzer = CVEYearsAnalyzer(quiet=True)
+            analyzer.ensure_data_loaded()
+            
+            # Count CVEs published in the specified year up to the given day
+            ytd_count = 0
+            target_date = datetime(self.current_year, 1, 1) + timedelta(days=day_of_year - 1)
+            
+            # Load and process the JSON data
+            import json
+            with open(analyzer.data_file, 'r', encoding='utf-8') as f:
+                all_cves = json.load(f)
+            
+            for cve_data in all_cves:
+                try:
+                    # Check CVE status and skip rejected CVEs (same as fixed logic)
+                    vuln_status = cve_data.get('cve', {}).get('vulnStatus', '')
+                    if 'Rejected' in vuln_status:
+                        continue
+                    
+                    # Parse the published date (using same logic as cve_years.py)
+                    pub_date = analyzer.parse_cve_date(cve_data)
+                    if not pub_date:
+                        continue
+                    
+                    # Check if this CVE belongs to the target year and is within YTD period
+                    if (pub_date.year == year and 
+                        pub_date.replace(year=self.current_year) <= target_date):
+                        ytd_count += 1
+                        
+                except (KeyError, ValueError, TypeError):
+                    continue
+            
+            return ytd_count
+            
+        except Exception as e:
+            if not self.quiet:
+                print(f"⚠️  Warning: Could not calculate actual YTD for {year}: {e}")
+            # Fallback to the old flawed method as last resort
+            year_data = next((d for d in self.all_year_data if d.get('year') == year), None)
+            if year_data:
+                days_in_year = 366 if year % 4 == 0 else 365
+                return int((year_data['total_cves'] / days_in_year) * day_of_year)
+            return 0
     
     def generate_year_data_json(self):
         """Generate JSON data files for all available years"""
@@ -240,30 +291,29 @@ class YearlyAnalyzer:
                     days_in_year = 366 if current_year % 4 == 0 else 365
                     projected_full_year = (current_count / day_of_year) * days_in_year
                     
-                    # Calculate growth rate based on projection vs previous full year
-                    growth_rate = 0
-                    if prev_count > 0:
-                        growth_rate = ((projected_full_year - prev_count) / prev_count) * 100
+                    # Calculate ACTUAL YTD count for previous year using same date filtering
+                    # This fixes the major bug of using uniform distribution assumption
+                    prev_year_ytd_actual = self.calculate_actual_ytd_count(current_year - 1, day_of_year)
                     
-                    # For YTD comparison, we need to estimate previous year's YTD count
-                    # Since we don't have daily data, we'll estimate based on year progress
-                    prev_year_ytd_estimate = (prev_count / days_in_year) * day_of_year
-                    
-                    # Calculate true YTD comparison (current YTD vs previous year same period)
+                    # Calculate true YTD comparison (current YTD vs previous year actual same period)
+                    # This should be the PRIMARY growth rate for YTD data
                     ytd_comparison = 0
-                    if prev_year_ytd_estimate > 0:
-                        ytd_comparison = ((current_count - prev_year_ytd_estimate) / prev_year_ytd_estimate) * 100
+                    if prev_year_ytd_actual > 0:
+                        ytd_comparison = ((current_count - prev_year_ytd_actual) / prev_year_ytd_actual) * 100
+                    
+                    # Calculate projected full year for reference but don't use as main growth rate
+                    projected_full_year = (current_count / day_of_year) * days_in_year
                     
                     growth_data.append({
                         'year': year_data['year'],
                         'cves': current_count,
-                        'growth_rate': round(growth_rate, 1),
-                        'growth_absolute': int(projected_full_year - prev_count),
+                        'growth_rate': round(ytd_comparison, 1),  # Use YTD comparison as main growth rate!
+                        'growth_absolute': int(current_count - prev_year_ytd_actual),  # YTD absolute change
                         'is_ytd': True,
                         'projected_full_year': int(projected_full_year),
                         'ytd_vs_prev_full': round(((current_count - prev_count) / prev_count) * 100, 1) if prev_count > 0 else 0,
                         'ytd_vs_prev_ytd': round(ytd_comparison, 1),
-                        'prev_year_ytd_estimate': int(prev_year_ytd_estimate)
+                        'prev_year_ytd_actual': int(prev_year_ytd_actual)
                     })
                 else:
                     # Normal year-over-year calculation for completed years

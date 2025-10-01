@@ -73,15 +73,15 @@ class CVEYearsAnalyzer:
                 print("  📝 Will use raw sourceIdentifier values as fallback")
     
     def parse_cve_date(self, cve_data):
-        """Extract publication date from CVE data"""
+        """Extract publication date from CVE data - prioritize 'published' field"""
         try:
-            # Try multiple date fields in order of preference
+            # Try date fields in order of preference - published date is primary
             date_fields = [
-                ['publishedDate'],
-                ['lastModifiedDate'],
-                ['cve', 'CVE_data_meta', 'DATE_PUBLIC'],
                 ['cve', 'published'],
-                ['cve', 'lastModified']
+                ['publishedDate'],
+                ['cve', 'lastModified'],
+                ['lastModifiedDate'],
+                ['cve', 'CVE_data_meta', 'DATE_PUBLIC']
             ]
             
             for field_path in date_fields:
@@ -106,12 +106,8 @@ class CVEYearsAnalyzer:
                 except (KeyError, TypeError, ValueError):
                     continue
             
-            # Fallback: extract year from CVE ID (CVE-YYYY-NNNN)
-            cve_id = cve_data.get('cve', {}).get('CVE_data_meta', {}).get('ID', '')
-            if cve_id.startswith('CVE-'):
-                year = int(cve_id.split('-')[1])
-                return datetime(year, 1, 1)  # Default to January 1st
-            
+            # No fallback to CVE ID year - require valid published date
+            # This ensures we count CVEs by when they were actually published
             return None
             
         except Exception as e:
@@ -576,16 +572,12 @@ class CVEYearsAnalyzer:
                 if 'Rejected' in vuln_status:
                     continue
                     
-                # Extract year from CVE ID for primary filtering
-                cve_year = int(cve_id.split('-')[1])
-                
-                # For historical data (1999-2016), we need to check publication date
-                # as CVE-2016-XXXX might contain older CVEs
+                # Use PUBLISHED DATE as primary method (not CVE ID year)
                 pub_date = self.parse_cve_date(cve_data)
-                if pub_date:
-                    actual_year = pub_date.year
-                else:
-                    actual_year = cve_year
+                if not pub_date:
+                    continue  # Skip CVEs without valid published dates
+                
+                actual_year = pub_date.year
                 
                 # Skip if not the year we're looking for
                 if actual_year != year:
