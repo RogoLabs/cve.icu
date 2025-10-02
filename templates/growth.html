@@ -314,10 +314,10 @@ function updateStatsCards(data) {
     if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
         const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
         const currentYearCVEs = currentYearData.cves;
-        const prevYearYTDEstimate = currentYearData.prev_year_ytd_estimate || 0;
+        const prevYearYTDActual = currentYearData.prev_year_ytd_actual || 0;
         
         document.getElementById('ytdComparison').textContent = `${ytdGrowth > 0 ? '+' : ''}${ytdGrowth}%`;
-        document.getElementById('ytdSubtext').innerHTML = `${currentYearCVEs.toLocaleString()} vs ${prevYearYTDEstimate.toLocaleString()} CVEs<br>(YTD vs Same Period Last Year)`;
+        document.getElementById('ytdSubtext').innerHTML = `${currentYearCVEs.toLocaleString()} vs ${prevYearYTDActual.toLocaleString()} CVEs<br>(YTD vs Same Period Last Year)`;
     } else {
         console.log('YTD validation failed:', { 
             hasData: !!currentYearData, 

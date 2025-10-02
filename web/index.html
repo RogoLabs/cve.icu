@@ -649,24 +649,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 const avgCvesPerDay = cvesThisYear > 0 && dayOfYear > 0 ? (cvesThisYear / dayOfYear).toFixed(1) : '0';
                 document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
                 
-                // Calculate YTD growth rate (current year YTD vs same period last year)
-                const prevYearData = results.find(r => r.year === currentYear - 1);
-                const prevYearCount = prevYearData ? prevYearData.count : 0;
-                
-                if (prevYearCount > 0) {
-                    // Calculate same period last year (YTD comparison)
-                    const dayOfYear = Math.floor((new Date() - new Date(currentYear, 0, 0)) / (1000 * 60 * 60 * 24));
-                    const yearProgress = dayOfYear / 365; // Approximate year progress
-                    const prevYearYtdEstimate = Math.round(prevYearCount * yearProgress);
-                    
-                    const growthRate = prevYearYtdEstimate > 0 ? ((cvesThisYear - prevYearYtdEstimate) / prevYearYtdEstimate) * 100 : 0;
-                    const growthText = growthRate >= 0 ? `+${growthRate.toFixed(1)}%` : `${growthRate.toFixed(1)}%`;
-                    document.getElementById('growth-rate').textContent = growthText;
-                    document.getElementById('growth-detail').textContent = `${cvesThisYear.toLocaleString()} vs ${prevYearYtdEstimate.toLocaleString()} (YTD vs Same Period ${currentYear - 1})`;
-                } else {
-                    document.getElementById('growth-rate').textContent = 'N/A';
-                    document.getElementById('growth-detail').textContent = 'No previous year data';
-                }
+                // Load YTD growth data from growth_analysis.json (accurate calculation)
+                fetch('data/growth_analysis.json')
+                    .then(response => response.json())
+                    .then(growthData => {
+                        const currentYearData = growthData.growth_data.find(d => d.is_ytd === true);
+                        
+                        if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
+                            const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
+                            const prevYearYTDActual = currentYearData.prev_year_ytd_actual || 0;
+                            
+                            const growthText = ytdGrowth >= 0 ? `+${ytdGrowth}%` : `${ytdGrowth}%`;
+                            document.getElementById('growth-rate').textContent = growthText;
+                            document.getElementById('growth-detail').textContent = `${cvesThisYear.toLocaleString()} vs ${prevYearYTDActual.toLocaleString()} (YTD vs Same Period ${currentYear - 1})`;
+                        } else {
+                            document.getElementById('growth-rate').textContent = 'N/A';
+                            document.getElementById('growth-detail').textContent = 'No previous year data';
+                        }
+                    })
+                    .catch(error => {
+                        console.warn('Could not load growth analysis data:', error);
+                        document.getElementById('growth-rate').textContent = 'N/A';
+                        document.getElementById('growth-detail').textContent = 'Data unavailable';
+                    });
             } catch (error) {
                 console.error('Error updating statistics:', error);
                 updateStatisticsError();

@@ -2676,7 +2676,7 @@
   {
     "shortName": "Fidelis",
     "cnaID": "CNA-2021-0026",
-    "organizationName": "Fidelis Cybersecurity, Inc.",
+    "organizationName": "Fidelis Security, LLC",
     "scope": "Fidelis issues only.",
     "contact": [
       {
@@ -4478,7 +4478,7 @@
         "email": [
           {
             "label": "Email",
-            "emailAddr": "vuln@krcert.or.kr"
+            "emailAddr": "vuln_notice@krcert.or.kr"
           }
         ],
         "contact": [],
@@ -4497,7 +4497,7 @@
       "advisories": [
         {
           "label": "Advisories",
-          "url": "https://www.krcert.or.kr/kr/bbs/list.do?menuNo=205023&amp;bbsId=B0000302"
+          "url": "https://www.krcert.or.kr/kr/bbs/list.do?menuNo=205023&bbsId=B0000302"
         }
       ]
     },
@@ -15692,7 +15692,7 @@
     "shortName": "VulnCheck",
     "cnaID": "CNA-2023-0021",
     "organizationName": "VulnCheck",
-    "scope": "Vulnerabilities discovered by, or reported to, VulnCheck that are not in another CNA\u2019s scope.",
+    "scope": "Vulnerabilities observed by, discovered by, or reported to VulnCheck that are not in another CNA\u2019s scope.",
     "contact": [
       {
         "email": [
@@ -17338,7 +17338,7 @@
         "contact": [
           {
             "label": "Report a Security Vulnerability",
-            "url": "https://www.phoenix.com/report-a-security-vulnerability/"
+            "url": "https://phoenixtech.com/report-a-security-vulnerability/"
           }
         ],
         "form": []
@@ -17348,7 +17348,7 @@
       {
         "label": "Policy",
         "language": "",
-        "url": "https://www.phoenix.com/report-a-security-vulnerability/"
+        "url": "https://phoenixtech.com/vulnerability-disclosure-policy/"
       }
     ],
     "securityAdvisories": {
@@ -17356,7 +17356,7 @@
       "advisories": [
         {
           "label": "Advisories",
-          "url": "https://www.phoenix.com/product-security/"
+          "url": "https://phoenixtech.com/security-notifications/"
         }
       ]
     },
@@ -18008,7 +18008,7 @@
     "shortName": "Canon_EMEA",
     "cnaID": "CNA-2023-0061",
     "organizationName": "Canon EMEA",
-    "scope": "Products, services, and solutions developed internally by Canon EMEA, Canon USA Inc., and those from Canon Production Printing, IRIS, NT-ware, and Therefore Corporation.",
+    "scope": "Products, services, and solutions developed internally by Canon EMEA, Canon USA Inc. and those from Canon Production Printing, IRIS, NT-ware, Onyx Graphics Inc. and Therefore Corporation.",
     "contact": [
       {
         "email": [
@@ -26539,5 +26539,852 @@
       ]
     },
     "country": "Spain"
+  },
+  {
+    "shortName": "GoogleCloud",
+    "cnaID": "CNA-2025-0038",
+    "organizationName": "Google Cloud",
+    "scope": "Vulnerabilities in any Google Cloud developed product and not under the scope of another CNA.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "google-cloud-cve-program@google.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://about.google/company-info/appsecurity/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "language": "",
+          "url": "https://cloud.google.com/support/bulletins"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "Google",
+        "organizationName": "Google LLC"
+      },
+      "type": [
+        "Vendor"
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "bcorg",
+    "cnaID": "CNA-2025-0039",
+    "organizationName": "Legion of the Bouncy Castle Inc.",
+    "scope": "Legion of the Bouncy Castle issues only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "feedback-crypto@bouncycastle.org"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.bouncycastle.org/disclosure.html"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.bouncycastle.org/vulnerability-advisory.html"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Open Source"
+      ]
+    },
+    "country": "Australia"
+  },
+  {
+    "shortName": "NETGEAR",
+    "cnaID": "CNA-2025-0040",
+    "organizationName": "NETGEAR",
+    "scope": "Vulnerabilities in all products from NETGEAR, its subsidiaries, and third-party components used in NETGEAR products that are not in another CNA\u2019s scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@netgear.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.netgear.com/about/security/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.netgear.com/about/security/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "spartans-security",
+    "cnaID": "CNA-2025-0041",
+    "organizationName": "Spartans Security",
+    "scope": "Vulnerabilities in software, services, and infrastructure owned and managed by Spartans Security, and vulnerabilities researched and found by Spartans Security in third-party products that are not part of another CNA's scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "vulnerability@spartanssec.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.spartanssec.com/vulnerability-disclosure-policy"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.spartanssec.com/blog"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "redhat",
+        "organizationName": "Red Hat, Inc."
+      },
+      "type": [
+        "Researcher"
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "Australia"
+  },
+  {
+    "shortName": "Software",
+    "cnaID": "CNA-2025-0042",
+    "organizationName": "Software.com",
+    "scope": "Software.com issues only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security_team@software.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.software.com/security/vulnerability-reporting"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.software.com/security/advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Open Source"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "GV",
+    "cnaID": "CNA-2025-0043",
+    "organizationName": "GeoVision Inc.",
+    "scope": "Vulnerabilities in GeoVision products only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@geovision.com.tw"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.geovision.com.tw/cyber_security.php"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.geovision.com.tw/cyber_security.php"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "Taiwan"
+  },
+  {
+    "shortName": "Commvault",
+    "cnaID": "CNA-2025-0044",
+    "organizationName": "Commvault Systems Inc.",
+    "scope": "Vulnerabilities in Commvault SaaS and software products only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "PSIRT@Commvault.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://trust.commvault.com/resources?s=vwnojdk0a0vsbx0qknnb&amp;name=vulnerability-disclosure-policy#689bba5cdc60fd4597bfd694"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://documentation.commvault.com/securityadvisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Hosted Service"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "AxxonSoft",
+    "cnaID": "CNA-2025-0045",
+    "organizationName": "AxxonSoft Limited",
+    "scope": "AxxonSoft products and solutions, GRUNDIG security products, and C-WERK software solutions.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@axxonsoft.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.axxonsoft.com/legal/axxonsoft-vulnerability-disclosure-policy"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.axxonsoft.com/legal/axxonsoft-vulnerability-disclosure-policy/security-advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Hosted Service"
+      ]
+    },
+    "country": "Ireland"
+  },
+  {
+    "shortName": "HackRTU",
+    "cnaID": "CNA-2025-0046",
+    "organizationName": "HackRTU",
+    "scope": "Vulnerability assignment related to its vulnerability coordination role for Industrial Control Systems (ICS) that are not covered by another CNA\u2019s scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "cve.coordination@hackrtu.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.hackrtu.com/cna/cve-disclosure-policy/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.hackrtu.com/cna/cve-list/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "INCIBE",
+        "organizationName": "Spanish National Cybersecurity Institute, S.A. (INCIBE)"
+      },
+      "type": [
+        "Researcher"
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "Spain"
+  },
+  {
+    "shortName": "Echo",
+    "cnaID": "CNA-2025-0047",
+    "organizationName": "Echo Software Ltd.",
+    "scope": "Vulnerabilities in Echo products, as well as vulnerabilities discovered by or reported to Echo that are not in another CNA\u2019s scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "cve-coordination@echohq.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.echohq.com/vulnerability-disclosure"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.echohq.com/vulnerability-disclosure"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Open Source",
+        "Researcher"
+      ]
+    },
+    "country": "Israel"
+  },
+  {
+    "shortName": "Uniview",
+    "cnaID": "CNA-2025-0048",
+    "organizationName": "Zhejiang Uniview Technologies Co., Ltd.",
+    "scope": "Uniview products only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@uniview.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://global.uniview.com/About_Us/Security/Process/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://global.uniview.com/About_Us/Security/Notice/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "China"
+  },
+  {
+    "shortName": "YesWeHack",
+    "cnaID": "CNA-2025-0049",
+    "organizationName": "YesWeHack",
+    "scope": "Vulnerabilities discovered by YesWeHack community hunters on products being tested on the platform with the permission of their owners, as part of Coordinated Vulnerability Disclosure.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "support@yeswehack.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://yeswehack.com/programs/yes-we-hack"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.yeswehack.com/product/trust-security"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Bug Bounty Provider"
+      ]
+    },
+    "country": "France"
+  },
+  {
+    "shortName": "Leonardo",
+    "cnaID": "CNA-2025-0050",
+    "organizationName": "Leonardo S.p.A.",
+    "scope": "Vulnerabilities found in the following product: Leonardo SC2.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "psirt@leonardo.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://cybersecurity.leonardo.com/documents/16277703/0/VULNERABILITIES+REPORT+%28LDO_IT25_01520%29.pdf?t=1757318888035"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://cybersecurity.leonardo.com/documents/16277703/0/VULNERABILITIES+REPORT+%28LDO_IT25_01520%29.pdf?t=1757318888035"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "icscert",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA) Industrial Control Systems (ICS)"
+      },
+      "type": [
+        "Vendor",
+        "CERT"
+      ],
+      "TLR": {
+        "shortName": "CISA",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA)"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "Italy"
+  },
+  {
+    "shortName": "azure-access",
+    "cnaID": "CNA-2025-0051",
+    "organizationName": "Azure Access Technology",
+    "scope": "Azure Access branded products and technologies only.",
+    "contact": [
+      {
+        "email": [],
+        "contact": [
+          {
+            "label": "Responsible Disclosure contact page",
+            "url": "https://azure-access.com/responsible-disclosure-policy"
+          }
+        ],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://azure-access.com/responsible-disclosure-policy"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://azure-access.com/security-advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "icscert",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA) Industrial Control Systems (ICS)"
+      },
+      "type": [
+        "Vendor"
+      ],
+      "TLR": {
+        "shortName": "CISA",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA)"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "Almaviva",
+    "cnaID": "CNA-2025-0052",
+    "organizationName": "Almaviva S.p.A.",
+    "scope": "Vulnerabilities in Almaviva proprietary software solutions such as Joshua CybeRisk Vision, Jiano, Sofia, and Giotto, as well as Almaviva-developed IT solutions.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "cve-reporting@almaviva.it"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.almaviva.it/it_IT/CNA_vulnerability_disclosure_policy"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.cyberiskvision.com/zero-day/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Hosted Service"
+      ]
+    },
+    "country": "Italy"
   }
 ]
