@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>{% block title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}</title>
     
     <!-- Google Fonts - Inter -->
@@ -20,6 +20,13 @@
     <meta name="description" content="{% block description %}CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.{% endblock %}">
     <meta name="keywords" content="CVE, vulnerabilities, security, analysis, dashboard, cybersecurity">
     <meta name="author" content="CVE.ICU">
+    
+    <!-- Mobile-specific meta tags -->
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CVE.ICU">
+    <meta name="format-detection" content="telephone=no">
     
     <!-- Open Graph tags -->
     <meta property="og:title" content="{% block og_title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}">
@@ -141,6 +148,47 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadUniversalTimestamp();
     });
+    </script>
+    
+    <!-- Mobile Navigation Enhancement -->
+    <script>
+        // Enhanced mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    
+                    // Prevent body scroll when menu is open
+                    if (navMenu.classList.contains('active')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = navToggle.contains(event.target) || navMenu.contains(event.target);
+                    
+                    if (!isClickInside && navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Close menu when a nav link is clicked
+                const navLinks = navMenu.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+        });
     </script>
     
     <!-- Custom JavaScript -->
@@ -321,6 +369,50 @@
         for (let year = 1999; year <= CURRENT_YEAR; year++) {
             AVAILABLE_YEARS.push(year);
         }
+        
+        // Mobile table enhancement - add touch scroll indicators
+        function enhanceMobileTable(tableContainer) {
+            if (window.innerWidth <= 768 && tableContainer) {
+                const table = tableContainer.querySelector('table');
+                if (table && table.scrollWidth > tableContainer.clientWidth) {
+                    tableContainer.style.overflowX = 'auto';
+                    tableContainer.style.webkitOverflowScrolling = 'touch';
+                    
+                    // Add scroll shadow indicators
+                    tableContainer.addEventListener('scroll', function() {
+                        const scrollLeft = this.scrollLeft;
+                        const maxScroll = this.scrollWidth - this.clientWidth;
+                        
+                        if (scrollLeft > 0) {
+                            this.classList.add('scrolled-left');
+                        } else {
+                            this.classList.remove('scrolled-left');
+                        }
+                        
+                        if (scrollLeft < maxScroll - 1) {
+                            this.classList.add('scrolled-right');
+                        } else {
+                            this.classList.remove('scrolled-right');
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Apply mobile table enhancements on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainers = document.querySelectorAll('.table-container');
+            tableContainers.forEach(enhanceMobileTable);
+            
+            // Re-apply on window resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    tableContainers.forEach(enhanceMobileTable);
+                }, 250);
+            });
+        });
     </script>
     
     {% block scripts %}

@@ -1331,3 +1331,502 @@ tbody tr:hover {
         font-size: 0.75rem;
     }
 }
+
+/* ========================================
+   COMPREHENSIVE MOBILE ENHANCEMENTS
+   ======================================== */
+
+/* Touch-friendly minimum sizes for mobile */
+@media (max-width: 768px) {
+    /* Improved touch targets (minimum 44px) */
+    button,
+    .btn,
+    .quick-select-btn,
+    .nav-menu a,
+    .year-label {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Better button group layouts */
+    .quick-select-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .quick-select-buttons .quick-select-btn {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    /* Mobile-optimized year grid */
+    .year-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .year-label {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.25rem;
+    }
+    
+    /* Improved table handling on mobile */
+    .table-container {
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+    }
+    
+    table {
+        min-width: 600px;
+        font-size: 0.8rem;
+    }
+    
+    th, td {
+        white-space: nowrap;
+        padding: 0.5rem;
+    }
+    
+    /* Sticky first column for data tables */
+    .data-table th:first-child,
+    .data-table td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: var(--color-bg-content);
+        z-index: 10;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Better card layouts */
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .row > [class*='col-'] {
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    /* Mobile-friendly navigation */
+    .nav-container {
+        height: auto;
+        min-height: 4rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .logo img {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+    
+    /* Full-width mobile menu */
+    .nav-menu {
+        position: fixed;
+        top: 4rem;
+        left: 0;
+        right: 0;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-menu li {
+        width: 100%;
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .nav-menu a {
+        display: block;
+        width: 100%;
+        padding: 1rem 1.5rem;
+        text-align: left;
+    }
+    
+    /* Improved chart responsiveness */
+    .chart-container,
+    .homepage-chart-container {
+        height: 250px !important;
+        min-height: 250px;
+    }
+    
+    .homepage-preview-container {
+        height: 200px !important;
+    }
+    
+    /* Better card spacing */
+    .card {
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: 1rem;
+    }
+    
+    /* Improved stats cards for mobile */
+    .stats-grid {
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.25rem 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .stat-sublabel,
+    .stat-detail {
+        font-size: 0.7rem;
+    }
+    
+    /* Page header mobile optimization */
+    .page-header {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .page-header .display-4 {
+        font-size: 1.75rem;
+    }
+    
+    .page-header small {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    /* Better form controls */
+    input[type="checkbox"],
+    input[type="radio"] {
+        transform: scale(1.2);
+    }
+    
+    /* Improved footer for mobile */
+    .footer {
+        padding: 1.5rem 0;
+        font-size: 0.8rem;
+    }
+    
+    .footer > div > div {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center !important;
+    }
+    
+    .footer > div > div > div {
+        text-align: center !important;
+    }
+    
+    /* Export and control buttons */
+    .export-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .export-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Insight cards mobile layout */
+    .insight-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .insight-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Better viz card headers */
+    .viz-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    /* Improved homepage sections */
+    .homepage-chart-section,
+    .homepage-preview-section {
+        padding: 0;
+    }
+    
+    .homepage-chart-card {
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .homepage-chart-header,
+    .homepage-chart-body {
+        padding: 1rem;
+    }
+    
+    .homepage-chart-title {
+        font-size: 1.1rem;
+    }
+    
+    .homepage-chart-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    /* Mobile table scroll indicator */
+    .table-container::after {
+        content: '← Scroll to view more →';
+        display: block;
+        text-align: center;
+        padding: 0.5rem;
+        background: var(--color-bg-secondary);
+        color: var(--color-text-secondary);
+        font-size: 0.75rem;
+        border-top: 1px solid var(--color-border);
+    }
+}
+
+/* Extra small devices (320px - 480px) */
+@media (max-width: 480px) {
+    /* Even more compact layouts */
+    body {
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 0 0.75rem;
+    }
+    
+    /* Single column year grid */
+    .year-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Smaller headings */
+    h1, .display-4 {
+        font-size: 1.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.25rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+    
+    /* Ultra-compact stats */
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+    }
+    
+    /* Smaller charts */
+    .chart-container,
+    .homepage-chart-container {
+        height: 200px !important;
+    }
+    
+    .homepage-preview-container {
+        height: 180px !important;
+    }
+    
+    /* Stack button groups vertically */
+    .quick-select-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Compact cards */
+    .card {
+        padding: 0.75rem;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    /* Smaller navigation */
+    .nav-container {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .logo {
+        font-size: 1rem;
+    }
+    
+    /* Better logo and text layout */
+    .page-header .btn {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Landscape mobile devices */
+@media (max-width: 900px) and (orientation: landscape) {
+    .chart-container,
+    .homepage-chart-container {
+        height: 200px !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .page-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Tablet devices (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .year-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .container {
+        padding: 0 1.5rem;
+    }
+    
+    .chart-container {
+        height: 350px;
+    }
+}
+
+/* Mobile table scroll shadows */
+.table-container {
+    position: relative;
+}
+
+.table-container.scrolled-left::before,
+.table-container.scrolled-right::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.table-container.scrolled-left::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+}
+
+.table-container.scrolled-right::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+}
+
+/* Mobile viewport height fix for iOS */
+@supports (-webkit-touch-callout: none) {
+    .chart-container,
+    .homepage-chart-container {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Improved touch scrolling for all mobile devices */
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent zoom on input focus (mobile Safari) */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="search"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Mobile-friendly hover states (disable on touch devices) */
+@media (hover: none) and (pointer: coarse) {
+    .card:hover,
+    .stat-card:hover,
+    .viz-card:hover {
+        transform: none;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .nav-menu a:hover {
+        background-color: transparent;
+    }
+}
+
+/* Safe area insets for notched devices (iPhone X+) */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+    
+    .header {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+    
+    .footer {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+}
+
+/* Print styles */
+@media print {
+    .header,
+    .footer,
+    .nav-toggle,
+    .quick-select-buttons,
+    .export-buttons,
+    .btn {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    body {
+        background: white;
+    }
+}
