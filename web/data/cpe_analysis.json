@@ -1,10 +1,10 @@
 {
-  "generated_at": "2025-10-21T18:26:30.852948",
-  "total_unique_cpes": 359425,
-  "total_cpe_entries": 2337969,
-  "total_cves_with_cpes": 271466,
+  "generated_at": "2025-10-22T00:43:21.642377",
+  "total_unique_cpes": 359454,
+  "total_cpe_entries": 2339923,
+  "total_cves_with_cpes": 271533,
   "total_unique_vendors": 35082,
-  "total_unique_products": 108905,
+  "total_unique_products": 108909,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -238,18 +238,18 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:f5:big-ip_access_policy_manager:*:*:*:*:*:*:*:*",
+      "count": 1651,
+      "vendor": "f5",
+      "product": "big-ip_access_policy_manager",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:apple:watchos:*:*:*:*:*:*:*:*",
       "count": 1618,
       "vendor": "apple",
       "product": "watchos",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:f5:big-ip_access_policy_manager:*:*:*:*:*:*:*:*",
-      "count": 1552,
-      "vendor": "f5",
-      "product": "big-ip_access_policy_manager",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:a:apple:safari:*:*:*:*:*:*:*:*",
@@ -280,6 +280,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:f5:big-ip_application_security_manager:*:*:*:*:*:*:*:*",
+      "count": 1489,
+      "vendor": "f5",
+      "product": "big-ip_application_security_manager",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_7:-:sp1:*:*:*:*:*:*",
       "count": 1464,
       "vendor": "microsoft",
@@ -301,10 +308,17 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:a:f5:big-ip_application_security_manager:*:*:*:*:*:*:*:*",
-      "count": 1402,
+      "cpe": "cpe:2.3:a:f5:big-ip_advanced_firewall_manager:*:*:*:*:*:*:*:*",
+      "count": 1419,
       "vendor": "f5",
-      "product": "big-ip_application_security_manager",
+      "product": "big-ip_advanced_firewall_manager",
+      "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:a:f5:big-ip_local_traffic_manager:*:*:*:*:*:*:*:*",
+      "count": 1403,
+      "vendor": "f5",
+      "product": "big-ip_local_traffic_manager",
       "type": "Application"
     },
     {
@@ -322,39 +336,25 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:a:f5:big-ip_advanced_firewall_manager:*:*:*:*:*:*:*:*",
-      "count": 1337,
+      "cpe": "cpe:2.3:a:f5:big-ip_policy_enforcement_manager:*:*:*:*:*:*:*:*",
+      "count": 1371,
       "vendor": "f5",
-      "product": "big-ip_advanced_firewall_manager",
+      "product": "big-ip_policy_enforcement_manager",
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_22h2:*:*:*:*:*:*:*:*",
-      "count": 1323,
-      "vendor": "microsoft",
-      "product": "windows_11_22h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:f5:big-ip_local_traffic_manager:*:*:*:*:*:*:*:*",
-      "count": 1321,
+      "cpe": "cpe:2.3:a:f5:big-ip_link_controller:*:*:*:*:*:*:*:*",
+      "count": 1354,
       "vendor": "f5",
-      "product": "big-ip_local_traffic_manager",
+      "product": "big-ip_link_controller",
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:debian:debian_linux:11.0:*:*:*:*:*:*:*",
-      "count": 1305,
-      "vendor": "debian",
-      "product": "debian_linux",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
-      "count": 1292,
-      "vendor": "microsoft",
-      "product": "windows_10_21h2",
-      "type": "Operating System"
+      "cpe": "cpe:2.3:a:f5:big-ip_application_acceleration_manager:*:*:*:*:*:*:*:*",
+      "count": 1350,
+      "vendor": "f5",
+      "product": "big-ip_application_acceleration_manager",
+      "type": "Application"
     }
   ],
   "top_vendors": [
@@ -411,12 +411,12 @@
       "count": 56588
     },
     {
-      "vendor": "redhat",
-      "count": 32515
+      "vendor": "f5",
+      "count": 34387
     },
     {
-      "vendor": "f5",
-      "count": 32501
+      "vendor": "redhat",
+      "count": 32515
     },
     {
       "vendor": "hp",
@@ -524,12 +524,12 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 1246669,
-      "percentage": 53.3
+      "count": 1248609,
+      "percentage": 53.4
     },
     {
       "type": "Operating System",
-      "count": 1036234,
+      "count": 1036248,
       "percentage": 44.3
     },
     {
