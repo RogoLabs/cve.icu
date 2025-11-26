@@ -194,6 +194,52 @@
         <small class="text-muted">All CVE Numbering Authorities with assignment statistics - Click column headers to sort</small>
     </div>
     <div class="card-body py-3">
+        <!-- Filter Controls -->
+        <div class="filter-bar mb-3" id="filterBar">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <div class="filter-group">
+                    <label class="filter-label">Type:</label>
+                    <select id="filterType" class="filter-select" onchange="applyFilters()">
+                        <option value="">All Types</option>
+                        <option value="Vendor">Vendor</option>
+                        <option value="CERT">CERT</option>
+                        <option value="Security Researcher">Security Researcher</option>
+                        <option value="Open Source">Open Source</option>
+                        <option value="Government">Government</option>
+                        <option value="Program">Program</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status:</label>
+                    <select id="filterStatus" class="filter-select" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <input type="checkbox" id="filterKev" onchange="applyFilters()">
+                        Has KEV CVEs
+                    </label>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <input type="checkbox" id="filterHighVolume" onchange="applyFilters()">
+                        High Volume (1000+)
+                    </label>
+                </div>
+                <div class="filter-group ms-auto">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetFilters()">Reset Filters</button>
+                </div>
+            </div>
+            <div class="filter-summary mt-2" id="filterSummary" style="display: none;">
+                <small class="text-muted"><span id="filteredCount">0</span> CNAs match current filters</small>
+            </div>
+        </div>
+        
         <div class="table-responsive">
             <table class="table table-hover" id="cnaTable">
                 <thead>
@@ -338,6 +384,50 @@
 .scorecard-link:hover {
     opacity: 1;
     transform: scale(1.1);
+}
+
+.filter-bar {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-surface);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    white-space: nowrap;
+}
+
+.filter-select {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.filter-label input[type="checkbox"] {
+    margin-right: 0.25rem;
+    cursor: pointer;
+}
+
+.filter-summary {
+    font-size: 0.85rem;
 }
 </style>
 
@@ -1348,6 +1438,104 @@ let currentPage = 1;
 let itemsPerPage = 25;
 let currentSort = { field: 'last_cve_date', direction: 'desc' };
 let sortedData = [];
+let unfilteredData = []; // Original data before filters
+
+// Filter state
+let activeFilters = {
+    type: '',
+    status: '',
+    hasKev: false,
+    highVolume: false
+};
+
+// Apply filters to the CNA data
+function applyFilters() {
+    activeFilters = {
+        type: document.getElementById('filterType').value,
+        status: document.getElementById('filterStatus').value,
+        hasKev: document.getElementById('filterKev').checked,
+        highVolume: document.getElementById('filterHighVolume').checked
+    };
+    
+    // Filter the unfiltered data
+    let filtered = unfilteredData.filter(cna => {
+        // Type filter
+        if (activeFilters.type && (!cna.cna_types || !cna.cna_types.includes(activeFilters.type))) {
+            return false;
+        }
+        // Status filter
+        if (activeFilters.status && cna.activity_status !== activeFilters.status) {
+            return false;
+        }
+        // KEV filter
+        if (activeFilters.hasKev && (!cna.kev_count || cna.kev_count === 0)) {
+            return false;
+        }
+        // High volume filter
+        if (activeFilters.highVolume && cna.count < 1000) {
+            return false;
+        }
+        return true;
+    });
+    
+    // Apply current sort to filtered data
+    sortedData = [...filtered].sort((a, b) => {
+        let aVal, bVal;
+        
+        // Handle rank specially - use the rank property
+        if (currentSort.field === 'rank') {
+            aVal = a.rank || 999;
+            bVal = b.rank || 999;
+            return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        aVal = a[currentSort.field];
+        bVal = b[currentSort.field];
+        
+        if (currentSort.field === 'last_cve_date') {
+            const aDate = new Date(aVal);
+            const bDate = new Date(bVal);
+            return currentSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+        
+        if (currentSort.field === 'name') {
+            aVal = (aVal || '').toLowerCase();
+            bVal = (bVal || '').toLowerCase();
+        }
+        
+        if (typeof aVal === 'string') {
+            return currentSort.direction === 'asc' 
+                ? aVal.localeCompare(bVal) 
+                : bVal.localeCompare(aVal);
+        }
+        
+        return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+    
+    // Reset to first page when filters change
+    currentPage = 1;
+    
+    // Update filter summary
+    const hasActiveFilters = activeFilters.type || activeFilters.status || activeFilters.hasKev || activeFilters.highVolume;
+    const filterSummary = document.getElementById('filterSummary');
+    if (hasActiveFilters) {
+        filterSummary.style.display = 'block';
+        document.getElementById('filteredCount').textContent = sortedData.length;
+    } else {
+        filterSummary.style.display = 'none';
+    }
+    
+    renderTable();
+}
+
+// Reset all filters
+function resetFilters() {
+    document.getElementById('filterType').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterKev').checked = false;
+    document.getElementById('filterHighVolume').checked = false;
+    applyFilters();
+}
 
 // Populate CNA table with pagination and sorting
 function populateTable() {
@@ -1382,18 +1570,18 @@ function populateTable() {
         console.log('populateTable: dataToSort length (current year):', dataToSort.length);
     }
     
-    // Initialize sorted data (default sort by rank, ascending)
-    sortedData = [...dataToSort].sort((a, b) => {
-        return (a.rank || 0) - (b.rank || 0); // Ascending order by rank
-    });
+    // Store unfiltered data for filter operations
+    unfilteredData = [...dataToSort];
     
-    // Set initial sort state to match default
+    // Set initial sort state to match default (rank ascending)
     currentSort = {
         field: 'rank',
         direction: 'asc'
     };
     
-    renderTable();
+    // Apply filters (this also handles sorting and rendering)
+    applyFilters();
+    
     setupSortingHandlers();
     updateSortIndicators(); // Show correct default sort indicator
 }
@@ -1560,9 +1748,8 @@ function setupSortingHandlers() {
                 currentSort.direction = sortField === 'last_cve_date' ? 'desc' : 'asc';
             }
             
-            sortData();
-            currentPage = 1; // Reset to first page after sorting
-            renderTable();
+            // Use applyFilters which handles both filtering and sorting
+            applyFilters();
             updateSortIndicators();
         });
     });

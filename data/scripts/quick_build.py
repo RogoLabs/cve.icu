@@ -86,6 +86,7 @@ class CVEQuickBuilder:
             ('scoring.html', 'Scoring Hub - CVE.ICU'),
             ('epss.html', 'EPSS Analysis - CVE.ICU'),
             ('kev.html', 'KEV Dashboard - CVE.ICU'),
+            ('data-quality.html', 'Data Quality - CVE.ICU'),
         ]
         
         for template_name, title in pages:

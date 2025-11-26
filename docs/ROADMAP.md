@@ -138,11 +138,13 @@
 
 ### 4.2. Time Navigation & Brush/Zoom
 
+**Status:** Deferred - The existing "All Years" vs "Current Year" toggle covers primary use cases.
+
 **Tasks**
-- [ ] **Timeline filter component** (initially simple):
-  - Implement a year range slider (e.g., 1999–current) controlling which years are loaded/considered.
-  - Use this to filter existing charts without introducing heavy dependencies yet.
-- [ ] **Roadmap for richer interaction (D3-based)**
+- [x] ~~**Timeline filter component**~~ ❌ Deferred - Binary toggle sufficient for most use cases
+  - ~~Implement a year range slider (e.g., 1999–current) controlling which years are loaded/considered.~~
+  - ~~Use this to filter existing charts without introducing heavy dependencies yet.~~
+- [ ] **Roadmap for richer interaction (D3-based)** (future)
   - Plan a D3 brush/zoom timeline view that, when implemented, will:
     - Allow selecting a time window.
     - Broadcast the selection to linked charts (CNA, CWE, calendar).
@@ -165,21 +167,22 @@
   - Added "Top CNAs by KEV Count" chart (uses KEV top_vendors data)
   - Added "CNA Growth Leaders" chart (most active CNAs in current year)
   - Replaced hidden placeholder cards with functional visualizations
-- [ ] **Additional CNA filters** (deferred)
-  - CNA type (vendor vs researcher), KEV presence, EPSS bucket emphasis.
-- [ ] **Link to cnascorecard.org**
-  - Where relevant, add outbound links based on CNA identifiers.
+- [x] **Additional CNA filters** ✅
+  - Added filter bar with CNA type, activity status, KEV presence, and high-volume toggles
+- [x] **Link to cnascorecard.org** ✅
+  - Added Scorecard column to CNA table with external links to `cnascorecard.org/cna/cna-detail.html?shortName={name}`
 
 ### 4.4. Data Quality & Dark Matter View
 
 **Backend tasks**
-- [ ] **Surface unmatched CNA and unofficial mappings**
-  - Use `unmatched_cnas_analysis.json` and related outputs to generate a dedicated `web/data/data_quality.json`.
+- [x] **Surface unmatched CNA and unofficial mappings** ✅
+  - Created `rebuild_data_quality.py` script to generate `web/data/data_quality.json`
+  - Combines `unmatched_cnas_analysis.json` and `unofficial_cna_analysis.json`
 
 **Frontend tasks**
-- [ ] **New `data-quality.html` page**
-  - List unmatched CNAs, unofficial CNAs, and any anomalies.
-  - Include explanations about why this matters (governance, attribution, ecosystem gaps).
+- [x] **New `data-quality.html` page** ✅
+  - Lists unmatched CNAs, unofficial CNAs, and anomalies
+  - Includes category breakdown charts and explanation of data quality issues
 
 ---
 

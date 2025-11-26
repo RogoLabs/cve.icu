@@ -586,6 +586,7 @@ class CVESiteBuilder:
             {'template': 'scoring.html', 'output': 'scoring.html', 'title': 'Scoring Hub'},
             {'template': 'epss.html', 'output': 'epss.html', 'title': 'EPSS Analysis'},
             {'template': 'kev.html', 'output': 'kev.html', 'title': 'KEV Analysis'},
+            {'template': 'data-quality.html', 'output': 'data-quality.html', 'title': 'Data Quality'},
             {'template': 'about.html', 'output': 'about.html', 'title': 'About CVE.ICU'}
         ]
         
