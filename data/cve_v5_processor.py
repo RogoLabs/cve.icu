@@ -27,8 +27,11 @@ class CVEV5Processor:
         self.v5_cache_dir = self.cache_dir / 'cvelistV5'
         # Optional EPSS enrichment mapping, keyed by CVE ID
         self.epss_mapping = {}
-        # Load EPSS mapping once in the V5 processor using the downloader cache
+        # KEV CVE set for threat intelligence tracking
+        self.kev_cve_set = set()
+        # Load threat intelligence data
         self._load_epss_mapping()
+        self._load_kev_set()
 
     def _load_epss_mapping(self):
         """Load EPSS mapping from cache if available.
@@ -57,6 +60,25 @@ class CVEV5Processor:
             if not self.quiet:
                 print(f"  ⚠️  Could not load EPSS mapping: {e}")
             self.epss_mapping = {}
+
+    def _load_kev_set(self):
+        """Load KEV CVE IDs into a set for fast lookup"""
+        kev_file = self.cache_dir / 'known_exploited_vulnerabilities_parsed.json'
+        if kev_file.exists():
+            try:
+                with open(kev_file, 'r') as f:
+                    kev_data = json.load(f)
+                self.kev_cve_set = set(kev_data.keys())
+                if not self.quiet:
+                    print(f"  ✅ Loaded KEV set with {len(self.kev_cve_set):,} CVEs")
+            except Exception as e:
+                if not self.quiet:
+                    print(f"  ⚠️  Could not load KEV data: {e}")
+                self.kev_cve_set = set()
+        else:
+            if not self.quiet:
+                print("  ⚠️  KEV data not available; proceeding without KEV enrichment")
+
         # CNA type classification patterns
         self.cna_type_patterns = {
             'Vendor': [
@@ -466,7 +488,12 @@ class CVEV5Processor:
             'last_year': None,
             'assigner_org_id': '',
             'assigner_short_name': '',
-            'cves_by_year': defaultdict(int)
+            'cves_by_year': defaultdict(int),
+            # Threat intelligence tracking
+            'kev_count': 0,
+            'epss_high_count': 0,      # EPSS > 0.5
+            'epss_elevated_count': 0,  # EPSS > 0.1
+            'cwe_counts': defaultdict(int)
         })
         # Process each year
         for year in repo_stats['years_available']:
@@ -522,6 +549,24 @@ class CVEV5Processor:
 
             # Classify CNA type
             cna_types = self.classify_cna_type(org_id, stats['assigner_short_name'])
+
+            # Compute threat intelligence metrics from CVE IDs
+            kev_count = 0
+            epss_high_count = 0    # EPSS > 0.5
+            epss_elevated_count = 0  # EPSS > 0.1
+            
+            for cve_id in stats['cves']:
+                # Track KEV membership
+                if cve_id in self.kev_cve_set:
+                    kev_count += 1
+                
+                # Track EPSS scores
+                if cve_id in self.epss_mapping:
+                    epss_score = self.epss_mapping[cve_id].get('epss_score', 0)
+                    if epss_score > 0.5:
+                        epss_high_count += 1
+                    if epss_score > 0.1:
+                        epss_elevated_count += 1
 
             # Aggregate severity and CWE types
             severity_counts = defaultdict(int)
@@ -584,7 +629,12 @@ class CVEV5Processor:
                 'years_active_list': [first_pub_year, last_pub_year] if first_pub_year and last_pub_year else [],
                 # Add placeholder fields for compatibility
                 'severity_distribution': severity_distribution,
-                'top_cwe_types': top_cwe_types
+                'top_cwe_types': top_cwe_types,
+                # Threat intelligence metrics
+                'kev_count': kev_count,
+                'epss_high_count': epss_high_count,
+                'epss_elevated_count': epss_elevated_count,
+                'top_cwes': list(top_cwe_types.items())[:5]  # For template compatibility
             }
             cna_list.append(cna_entry)
         
@@ -800,6 +850,22 @@ class CVEV5Processor:
                         pass
             top_cwe_types = dict(sorted(cwe_counts.items(), key=lambda x: x[1], reverse=True)[:5])
             severity_distribution = dict(severity_counts)
+            
+            # Compute threat intelligence metrics from CVE IDs
+            kev_count = 0
+            epss_high_count = 0
+            epss_elevated_count = 0
+            
+            for cve_id in stats['cves']:
+                if cve_id in self.kev_cve_set:
+                    kev_count += 1
+                if cve_id in self.epss_mapping:
+                    epss_score = self.epss_mapping[cve_id].get('epss_score', 0)
+                    if epss_score > 0.5:
+                        epss_high_count += 1
+                    if epss_score > 0.1:
+                        epss_elevated_count += 1
+            
             cna_entry = {
                 'name': stats['assigner_short_name'] or org_id,
                 'assigner_org_id': org_id,
@@ -814,7 +880,12 @@ class CVEV5Processor:
                 'activity_status': 'Active',  # All current year CNAs are active
                 'cna_types': cna_types,  # Add CNA type classification
                 'severity_distribution': severity_distribution,
-                'top_cwe_types': top_cwe_types
+                'top_cwe_types': top_cwe_types,
+                # Threat intelligence metrics
+                'kev_count': kev_count,
+                'epss_high_count': epss_high_count,
+                'epss_elevated_count': epss_elevated_count,
+                'top_cwes': list(top_cwe_types.items())[:5]
             }
             current_year_cnas.append(cna_entry)
         

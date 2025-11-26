@@ -174,16 +174,15 @@
         </div>
     </div>
     
-    <div class="col-lg-6 mb-4" style="display: none;">
+    <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header py-2">
-                <h3 class="card-title" style="font-size: 1.1rem;">REMOVE_THIS_CARD</h3>
-                <small class="text-muted">This chart has been temporarily removed</small>
+                <h3 class="card-title" style="font-size: 1.1rem;">🎯 Top CNAs by KEV Count</h3>
+                <small class="text-muted">CNAs with most known exploited vulnerabilities</small>
             </div>
             <div class="card-body py-3">
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-tools mb-2"></i><br>
-                    Chart temporarily unavailable
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cnaKevChart"></canvas>
                 </div>
             </div>
         </div>
@@ -206,16 +205,15 @@
         </div>
     </div>
     
-    <div class="col-lg-6 mb-4" style="display: none;">
+    <div class="col-lg-6 mb-4">
         <div class="card">
             <div class="card-header py-2">
-                <h3 class="card-title" style="font-size: 1.1rem;">REMOVE_THIS_CARD</h3>
-                <small class="text-muted">This chart has been temporarily removed</small>
+                <h3 class="card-title" style="font-size: 1.1rem;">📈 CNA Growth Leaders</h3>
+                <small class="text-muted">Most active CNAs in the current year</small>
             </div>
             <div class="card-body py-3">
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-tools mb-2"></i><br>
-                    Chart temporarily unavailable
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="cnaGrowthChart"></canvas>
                 </div>
             </div>
         </div>
@@ -1000,6 +998,8 @@ function createCharts() {
     // createRecencyChart(); // Temporarily disabled
     createTypeChart();
     createVolumeChart();
+    createKevChart();
+    createGrowthChart();
 }
 
 // Top CNAs horizontal bar chart
@@ -1492,6 +1492,170 @@ function createVolumeChart() {
             }
         }
     });
+}
+
+// CNA KEV Chart - Top CNAs by Known Exploited Vulnerabilities
+function createKevChart() {
+    const ctx = document.getElementById('cnaKevChart');
+    if (!ctx) return;
+    
+    // Use the CNA analysis data which now has kev_count per CNA
+    fetch('data/cna_analysis.json')
+        .then(r => r.json())
+        .then(data => {
+            const cnaList = data.cna_list || [];
+            
+            // Filter CNAs with KEV CVEs and sort by kev_count
+            const cnasWithKev = cnaList
+                .filter(cna => cna.kev_count > 0)
+                .sort((a, b) => b.kev_count - a.kev_count);
+            
+            if (cnasWithKev.length === 0) {
+                ctx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><small>No KEV data available</small></div>';
+                return;
+            }
+            
+            const top10 = cnasWithKev.slice(0, 10);
+            const labels = top10.map(cna => {
+                return cna.name.length > 15 ? cna.name.substring(0, 15) + '...' : cna.name;
+            });
+            const dataValues = top10.map(cna => cna.kev_count);
+            
+            // Blue gradient matching site design
+            const colors = ['#1e40af', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', 
+                           '#a8c8ec', '#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2'];
+            
+            charts.kev = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'KEV CVEs',
+                        data: dataValues,
+                        backgroundColor: colors,
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const idx = context[0].dataIndex;
+                                    return top10[idx].name;
+                                },
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    const cna = top10[idx];
+                                    const kevRate = ((cna.kev_count / cna.count) * 100).toFixed(2);
+                                    return [
+                                        `${context.parsed.x} known exploited CVEs`,
+                                        `${kevRate}% of ${cna.count.toLocaleString()} total CVEs`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'KEV CVE Count'
+                            }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('KEV chart error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><small>Chart unavailable</small></div>';
+        });
+}
+
+// CNA Growth Leaders - Most active CNAs in current year
+function createGrowthChart() {
+    const ctx = document.getElementById('cnaGrowthChart');
+    if (!ctx) return;
+    
+    // Load current year CNA data
+    fetch('data/cna_analysis_current_year.json')
+        .then(r => r.json())
+        .then(data => {
+            const cnaList = data.cna_list || [];
+            
+            if (cnaList.length === 0) {
+                ctx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><small>No current year data available</small></div>';
+                return;
+            }
+            
+            // Sort by count and get top 10
+            const top10 = cnaList.slice(0, 10);
+            const labels = top10.map(cna => cna.name.length > 15 ? cna.name.substring(0, 15) + '...' : cna.name);
+            const dataValues = top10.map(cna => cna.count);
+            
+            // Blue gradient matching site design
+            const colors = ['#1e40af', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', 
+                           '#a8c8ec', '#9bc7e1', '#8cbfdc', '#7db7d7', '#6eafd2'];
+            
+            charts.growth = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CVEs in ' + new Date().getFullYear(),
+                        data: dataValues,
+                        backgroundColor: colors,
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const idx = context[0].dataIndex;
+                                    return top10[idx].name;
+                                },
+                                label: function(context) {
+                                    return `${context.parsed.x.toLocaleString()} CVEs in ${new Date().getFullYear()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: `CVEs (${new Date().getFullYear()})`
+                            }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Growth chart error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><small>Chart unavailable</small></div>';
+        });
 }
 
 // Generate smart insights

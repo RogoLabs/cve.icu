@@ -125,13 +125,16 @@
 
 **Tasks**
 - [x] **KEV stats card** on `index.html` ✅ - shows total KEV CVEs
-- [ ] **Threat context cards** on `index.html` (enhance existing):
-  - "CVEs with EPSS > 0.1 / > 0.5" (counts, trend sparkline).
-  - "Daily volume vs KEV additions" small chart (counts precomputed in Python).
-- [ ] **Risk vs volume chart**
-  - Dual-axis chart using pre-aggregated stats:
-    - Bars: total CVEs per year.
-    - Line: KEV CVEs per year (or KEV+high EPSS).
+- [x] **Threat context cards** on `index.html` ✅
+  - EPSS high risk (>0.5) and elevated risk (>0.1) counts
+  - EPSS coverage (CVEs with scores)
+  - KEV recent additions (last 30 days)
+- [x] **Risk vs volume chart** ✅
+  - Dual-axis chart in Scoring & Risk preview section:
+    - Bars: total CVEs per year (2010+)
+    - Line: KEV CVEs per year
+  - Includes tooltip showing KEV rate percentage
+- [x] **Preview cards reorganized** ✅ - now match navigation order (CNA → CPE → CWE → Scoring → Growth → Calendar)
 
 ### 4.2. Time Navigation & Brush/Zoom
 
@@ -148,18 +151,22 @@
 ### 4.3. CNA Intelligence & Scorecards
 
 **Backend tasks**
-- [ ] **Extend CNA metrics in `cve_v5_processor.py` / `cna_analysis.py`**
+- [x] **Extend CNA metrics in `cve_v5_processor.py` / `cna_analysis.py`** ✅
   - Capture per-CNA:
-    - Total CVEs, KEV CVEs, EPSS distribution buckets.
+    - Total CVEs, KEV CVEs, EPSS distribution buckets (high >0.5, elevated >0.1).
     - Top CWEs per CNA.
-    - Basic timeliness metrics (if timestamps are available): assignment → publication intervals.
-- [ ] **Data quality classification**
+    - ~~Basic timeliness metrics~~ Deferred - timestamp data insufficient
+  - Added `kev_count`, `epss_high_count`, `epss_elevated_count`, `top_cwes` to each CNA entry
+- [ ] **Data quality classification** (deferred)
   - Tag CNAs with potential severity bias (e.g., "90% of scored CVEs are High/Critical").
 
 **Frontend tasks**
-- [ ] **CNA dashboard refinements in `cna.html`**
-  - Add filters: CNA type (vendor vs researcher), KEV presence, EPSS bucket emphasis.
-  - Add a simple "scorecard" panel for a selected CNA summarizing the above metrics.
+- [x] **CNA dashboard refinements in `cna.html`** ✅ (partial)
+  - Added "Top CNAs by KEV Count" chart (uses KEV top_vendors data)
+  - Added "CNA Growth Leaders" chart (most active CNAs in current year)
+  - Replaced hidden placeholder cards with functional visualizations
+- [ ] **Additional CNA filters** (deferred)
+  - CNA type (vendor vs researcher), KEV presence, EPSS bucket emphasis.
 - [ ] **Link to cnascorecard.org**
   - Where relevant, add outbound links based on CNA identifiers.
 
@@ -350,10 +357,17 @@ A pragmatic sequence that balances value and effort:
    - Created `yearly_summary.json` (123KB) replacing 27 individual file loads (~450KB)
    - Updated `years.html` to use single-file loading
    - Reduced HTTP requests from 27 to 1 for yearly analysis page
-4. **Dashboard & CNA Enhancements (Phase 4 partial)** ⬅️ **NEXT**
-   - Additional threat context cards on index
-   - CNA scorecard basics
-5. **Tests & CI Hardening (Phase 5)**
+4. **Dashboard & CNA Enhancements (Phase 4)** 🔶 Partially Complete
+   - ✅ Added threat context cards on index (EPSS high/elevated risk, coverage, KEV recent)
+   - ✅ Added Risk vs Volume dual-axis chart (CVE volume bars + KEV line)
+   - ✅ Reorganized index preview cards to match navigation order
+   - ✅ Added CNA scorecard charts (KEV by vendor, CNA growth leaders)
+   - ✅ Fixed stat card spacing with CSS auto-fit
+   - ✅ Fixed quick_build.py paths for faster development iteration
+   - ⬜ Time navigation (timeline filter, D3 brush/zoom) - Deferred
+   - ⬜ Extended CNA backend metrics (per-CNA KEV/EPSS) - Deferred
+   - ⬜ Data quality page - Deferred
+5. **Tests & CI Hardening (Phase 5)** ⬅️ **NEXT**
    - Introduce tests and validation; wire into GitHub Actions
 6. **Exploratory Features (Phase 6)**
    - Query workbench and advanced visualizations, time permitting

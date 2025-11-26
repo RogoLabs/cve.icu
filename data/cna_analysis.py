@@ -17,6 +17,34 @@ class CNAAnalyzer:
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
         self.current_year = datetime.now().year
+        self.quiet = False
+        
+        # Pre-load threat intelligence data for per-CNA metrics
+        self.kev_cve_set = self._load_kev_set()
+        self.epss_data = self._load_epss_data()
+    
+    def _load_kev_set(self):
+        """Load KEV CVE IDs into a set for fast lookup"""
+        kev_file = self.cache_dir / 'known_exploited_vulnerabilities_parsed.json'
+        if kev_file.exists():
+            try:
+                with open(kev_file, 'r') as f:
+                    kev_data = json.load(f)
+                return set(kev_data.keys())
+            except Exception as e:
+                print(f"    ⚠️ Error loading KEV data: {e}")
+        return set()
+    
+    def _load_epss_data(self):
+        """Load EPSS scores for CVE lookup"""
+        epss_file = self.cache_dir / 'epss_scores-current.json'
+        if epss_file.exists():
+            try:
+                with open(epss_file, 'r') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"    ⚠️ Error loading EPSS data: {e}")
+        return {}
         
     def load_cna_name_mappings(self):
         """Load CNA name mappings for UUID resolution"""
@@ -191,10 +219,35 @@ class CNAAnalyzer:
                                     'last_cve_date': cve_section.get('published', ''),
                                     'first_cve_year': None,
                                     'last_cve_year': None,
-                                    'source_identifier': source_identifier
+                                    'source_identifier': source_identifier,
+                                    # Threat intelligence per CNA
+                                    'kev_count': 0,
+                                    'epss_high_count': 0,      # EPSS > 0.5
+                                    'epss_elevated_count': 0,  # EPSS > 0.1
+                                    'cwe_counts': {}           # CWE tracking
                                 }
                             
                             cna_stats[cna_name]['count'] += 1
+                            
+                            # Track KEV membership
+                            if cve_id in self.kev_cve_set:
+                                cna_stats[cna_name]['kev_count'] += 1
+                            
+                            # Track EPSS scores
+                            if cve_id in self.epss_data:
+                                epss_score = self.epss_data[cve_id].get('epss_score', 0)
+                                if epss_score > 0.5:
+                                    cna_stats[cna_name]['epss_high_count'] += 1
+                                if epss_score > 0.1:
+                                    cna_stats[cna_name]['epss_elevated_count'] += 1
+                            
+                            # Track CWEs for this CNA
+                            weaknesses = cve_section.get('weaknesses', [])
+                            for weakness in weaknesses:
+                                for desc in weakness.get('description', []):
+                                    cwe_val = desc.get('value', '')
+                                    if cwe_val and cwe_val.startswith('CWE-') and cwe_val != 'CWE-Other':
+                                        cna_stats[cna_name]['cwe_counts'][cwe_val] = cna_stats[cna_name]['cwe_counts'].get(cwe_val, 0) + 1
                             
                             # Update date tracking
                             pub_date = cve_section.get('published', '')
@@ -286,7 +339,12 @@ class CNAAnalyzer:
                 'activity_status': activity_status,
                 'official_info': official_info,
                 'is_official': cna_name in official_cna_names,
-                'cna_types': official_info.get('CNA', {}).get('type', ['Unknown']) if official_info else ['Unknown']
+                'cna_types': official_info.get('CNA', {}).get('type', ['Unknown']) if official_info else ['Unknown'],
+                # Threat intelligence metrics
+                'kev_count': stats.get('kev_count', 0),
+                'epss_high_count': stats.get('epss_high_count', 0),
+                'epss_elevated_count': stats.get('epss_elevated_count', 0),
+                'top_cwes': sorted(stats.get('cwe_counts', {}).items(), key=lambda x: x[1], reverse=True)[:5]
             }
             cna_list.append(cna_entry)
         
@@ -306,7 +364,12 @@ class CNAAnalyzer:
                     'activity_status': 'Never Published',
                     'official_info': cna,
                     'is_official': True,
-                    'cna_types': cna.get('CNA', {}).get('type', ['Unknown'])
+                    'cna_types': cna.get('CNA', {}).get('type', ['Unknown']),
+                    # Threat intelligence metrics (zeros for CNAs with no CVEs)
+                    'kev_count': 0,
+                    'epss_high_count': 0,
+                    'epss_elevated_count': 0,
+                    'top_cwes': []
                 }
                 cna_list.append(cna_entry)
         
@@ -381,7 +444,12 @@ class CNAAnalyzer:
                     'top_cwe_types': cna.get('top_cwe_types', {}),
                     'official_info': cna.get('official_info'),
                     'is_official': cna.get('is_official', True),
-                    'cna_types': cna.get('cna_types', ['Unknown'])
+                    'cna_types': cna.get('cna_types', ['Unknown']),
+                    # Threat intelligence metrics - inherited from comprehensive analysis
+                    'kev_count': cna.get('kev_count', 0),
+                    'epss_high_count': cna.get('epss_high_count', 0),
+                    'epss_elevated_count': cna.get('epss_elevated_count', 0),
+                    'top_cwes': cna.get('top_cwes', [])
                 }
                 current_year_cnas.append(current_year_cna)
                 cna_counts[cna_name] = current_year_cna['count']

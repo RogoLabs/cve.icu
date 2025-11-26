@@ -216,11 +216,15 @@
     <!-- Scoring / Threat Intelligence Preview -->
     <div class="homepage-chart-card">
         <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">🎯 Scoring & Threat Intelligence</h4>
-            <small class="homepage-chart-subtitle">CVSS severity, EPSS exploitation probability, and KEV tracking</small>
+            <h4 class="homepage-chart-title">🎯 Scoring & Risk</h4>
+            <small class="homepage-chart-subtitle">CVE volume compared to Known Exploited Vulnerabilities (KEV) by year</small>
         </div>
         <div class="homepage-chart-body">
-            <div class="stats-grid" style="margin-bottom: 1rem;">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="riskVolumeChart"></canvas>
+            </div>
+            <!-- Threat Intelligence Stats -->
+            <div class="stats-grid mt-3">
                 <div class="stat-card">
                     <div class="stat-number" id="epss-high-risk">Loading...</div>
                     <div class="stat-label">High Risk CVEs</div>
@@ -923,6 +927,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('KEV analysis error:', error);
         });
+    
+    // Initialize Risk vs Volume chart
+    initializeRiskVolumeChart();
 });
 
 // Simplified preview charts initialization to eliminate JavaScript syntax errors
@@ -1249,6 +1256,126 @@ function initializeCpePreview() {
             console.error('CPE preview error:', error);
             ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
         });
+}
+
+// Risk vs Volume dual-axis chart
+function initializeRiskVolumeChart() {
+    const ctx = document.getElementById('riskVolumeChart');
+    if (!ctx) return;
+    
+    // Load both yearly CVE data and KEV analysis
+    Promise.all([
+        fetch('data/yearly_summary.json').then(r => r.json()),
+        fetch('data/kev_analysis.json').then(r => r.json())
+    ])
+    .then(([yearlyData, kevData]) => {
+        const kevByYear = kevData.by_year_cve || {};
+        const yearlySummary = yearlyData.years || {};
+        
+        // Get years from 2010 onwards (KEV data starts around 2002 but meaningful from 2010+)
+        const years = Object.keys(yearlySummary)
+            .map(y => parseInt(y))
+            .filter(y => y >= 2010)
+            .sort((a, b) => a - b);
+        
+        const labels = years.map(y => y.toString());
+        const cveVolume = years.map(y => yearlySummary[y]?.total_cves || 0);
+        const kevCount = years.map(y => kevByYear[y.toString()] || 0);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total CVEs',
+                        data: cveVolume,
+                        backgroundColor: 'rgba(168, 200, 236, 0.7)',
+                        borderColor: '#9bc7e1',
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'KEV CVEs',
+                        data: kevCount,
+                        type: 'line',
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#dc3545',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                const idx = context[0].dataIndex;
+                                const volume = cveVolume[idx];
+                                const kev = kevCount[idx];
+                                if (volume > 0 && kev > 0) {
+                                    const pct = ((kev / volume) * 100).toFixed(2);
+                                    return `KEV Rate: ${pct}%`;
+                                }
+                                return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Total CVEs',
+                            font: { size: 11 }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'KEV CVEs',
+                            color: '#dc3545',
+                            font: { size: 11 }
+                        },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#dc3545' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Risk vs Volume chart error:', error);
+        ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Chart unavailable</small></div>';
+    });
 }
 
 // CVSS functionality is handled inline in the initializeCvssPreview function above
