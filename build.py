@@ -413,6 +413,24 @@ class CVESiteBuilder:
             traceback.print_exc()
             print("  ⚠️  Growth analysis will be missing")
         
+        # Generate scoring analysis (EPSS, KEV, Risk Matrix)
+        try:
+            from scoring_analysis import ScoringAnalyzer
+            print("  🎯 Generating scoring analysis (EPSS, KEV, Risk Matrix)...")
+            scoring_analyzer = ScoringAnalyzer(self.base_dir, self.cache_dir, self.data_dir)
+            scoring_results = scoring_analyzer.generate_all_scoring_analysis()
+            
+            if scoring_results:
+                print(f"  ✅ Scoring analysis generated: {', '.join(scoring_results.keys())}")
+            else:
+                print("  ❌ Scoring analysis failed")
+                
+        except Exception as e:
+            print(f"  ❌ Error generating scoring analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            print("  ⚠️  Scoring analysis will be missing")
+        
         # Generate cve_all.json from year data
         self.generate_cve_all_json(all_year_data)
         
@@ -482,6 +500,63 @@ class CVESiteBuilder:
             json.dump(cve_all_data, f, indent=2)
         
         print(f"  ✅ Generated cve_all.json with {total_cves:,} total CVEs")
+        
+        # Also generate yearly_summary.json for efficient loading
+        self.generate_yearly_summary_json(all_year_data)
+    
+    def generate_yearly_summary_json(self, all_year_data):
+        """Generate consolidated yearly summary for efficient single-file loading.
+        
+        This file contains all the data needed by years.html in one request,
+        avoiding 27 separate HTTP requests for individual year files.
+        """
+        print("  📊 Generating yearly_summary.json...")
+        
+        if not all_year_data:
+            print("  ⚠️  No year data available for summary")
+            return
+        
+        # Build summary structure with everything years.html needs
+        summary = {
+            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'years': {}
+        }
+        
+        for year_data in sorted(all_year_data, key=lambda x: x.get('year', 0)):
+            year = year_data.get('year')
+            if not year:
+                continue
+            
+            # Extract just the aggregates needed for charts (skip daily_counts)
+            year_summary = {
+                'year': year,
+                'total_cves': year_data.get('total_cves', 0),
+                'date_data': {
+                    'monthly_distribution': year_data.get('date_data', {}).get('monthly_distribution', {}),
+                    'daily_analysis': {
+                        'total_days': year_data.get('date_data', {}).get('daily_analysis', {}).get('total_days', 0),
+                        'avg_per_day': year_data.get('date_data', {}).get('daily_analysis', {}).get('avg_per_day', 0),
+                        'highest_day': year_data.get('date_data', {}).get('daily_analysis', {}).get('highest_day', {}),
+                        'lowest_day': year_data.get('date_data', {}).get('daily_analysis', {}).get('lowest_day', {})
+                        # Note: daily_counts omitted to save ~300KB
+                    }
+                },
+                'cvss': year_data.get('cvss', {}),
+                'kev': year_data.get('kev', {}),
+                'vendors': year_data.get('vendors', {}),
+                'cwe': year_data.get('cwe', {}),
+                'metadata': year_data.get('metadata', {})
+            }
+            
+            summary['years'][year] = year_summary
+        
+        output_file = self.data_dir / 'yearly_summary.json'
+        with open(output_file, 'w') as f:
+            json.dump(summary, f)  # No indent for smaller file size
+        
+        # Calculate file size
+        file_size = output_file.stat().st_size / 1024
+        print(f"  ✅ Generated yearly_summary.json ({file_size:.1f}KB, {len(summary['years'])} years)")
     
     def generate_current_year_analysis_json(self, all_year_data):
         """Generate current year specific analysis files"""
@@ -508,6 +583,9 @@ class CVESiteBuilder:
             {'template': 'cwe.html', 'output': 'cwe.html', 'title': 'CWE Analysis'},
             {'template': 'calendar.html', 'output': 'calendar.html', 'title': 'Calendar View'},
             {'template': 'growth.html', 'output': 'growth.html', 'title': 'Growth Analysis'},
+            {'template': 'scoring.html', 'output': 'scoring.html', 'title': 'Scoring Hub'},
+            {'template': 'epss.html', 'output': 'epss.html', 'title': 'EPSS Analysis'},
+            {'template': 'kev.html', 'output': 'kev.html', 'title': 'KEV Analysis'},
             {'template': 'about.html', 'output': 'about.html', 'title': 'About CVE.ICU'}
         ]
         

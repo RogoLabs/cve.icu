@@ -177,7 +177,7 @@
     "shortName": "Alias",
     "cnaID": "CNA-2020-0004",
     "organizationName": "Alias Robotics S.L.",
-    "scope": "All Alias Robotics products, as well as vulnerabilities in third-party robots and robot components (software and hardware), as well as machine tool and machine tool components, discovered by Alias Robotics that are not in another CNA\u2019s scope.",
+    "scope": "All Alias Robotics products, as well as vulnerabilities discovered by Alias Robotics that are not within another CNA\u2019s scope.",
     "contact": [
       {
         "email": [
@@ -1844,63 +1844,6 @@
       "type": [
         "Vendor",
         "Open Source"
-      ],
-      "TLR": {
-        "shortName": "mitre",
-        "organizationName": "MITRE Corporation"
-      },
-      "roles": [
-        {
-          "helpText": "",
-          "role": "CNA"
-        }
-      ]
-    },
-    "country": "USA"
-  },
-  {
-    "shortName": "DeepSurface",
-    "cnaID": "CNA-2021-0010",
-    "organizationName": "DeepSurface Security, Inc.",
-    "scope": "All DeepSurface products, as well as vulnerabilities in third-party software discovered by DeepSurface that are not in another CNA\u2019s scope.",
-    "contact": [
-      {
-        "email": [
-          {
-            "label": "Email",
-            "emailAddr": "security@deepsurface.com"
-          }
-        ],
-        "contact": [],
-        "form": []
-      }
-    ],
-    "disclosurePolicy": [
-      {
-        "label": "Policy",
-        "language": "",
-        "url": "https://deepsurface.com/vulnerability-disclosure-policy/"
-      }
-    ],
-    "securityAdvisories": {
-      "alerts": [],
-      "advisories": [
-        {
-          "label": "Advisories",
-          "url": "https://deepsurface.com/tag/blog/"
-        }
-      ]
-    },
-    "resources": [],
-    "CNA": {
-      "isRoot": false,
-      "root": {
-        "shortName": "n/a",
-        "organizationName": "n/a"
-      },
-      "type": [
-        "Vendor",
-        "Researcher"
       ],
       "TLR": {
         "shortName": "mitre",
@@ -3729,7 +3672,7 @@
       {
         "label": "Policy",
         "language": "",
-        "url": "https://support.hp.com/us-en/document/c06144280"
+        "url": "https://support.hp.com/us-en/document/ish_12775610-12775642-16"
       }
     ],
     "securityAdvisories": {
@@ -6266,8 +6209,8 @@
   {
     "shortName": "Opera",
     "cnaID": "CNA-2019-0017",
-    "organizationName": "Opera",
-    "scope": "Opera issues only.",
+    "organizationName": "Opera Norway AS",
+    "scope": "All Opera group products.",
     "contact": [
       {
         "email": [],
@@ -12007,7 +11950,7 @@
         "email": [
           {
             "label": "Email",
-            "emailAddr": "GEV.PSIRT@ge.com"
+            "emailAddr": "GEV.PSIRT@gevernova.com"
           }
         ],
         "contact": [],
@@ -18126,7 +18069,7 @@
         "email": [
           {
             "label": "Email",
-            "emailAddr": "security@keepersecurity.com"
+            "emailAddr": "cve@keepersecurity.com"
           }
         ],
         "contact": [],
@@ -19789,7 +19732,7 @@
     "shortName": "ENISA",
     "cnaID": "CNA-2024-0008",
     "organizationName": "EU Agency for Cybersecurity (ENISA)",
-    "scope": "Vulnerabilities in information technology (IT) products discovered by European Union (EU) Computer Security Incident Response Teams (CSIRTs) or reported to EU CSIRTs for coordinated disclosure, as long as they do not fall under a CNA with a more specific scope.",
+    "scope": "<strong>Root Scope:</strong> European Union (EU) member states/EU authorities, EU CSIRTs network members, and cooperative partners under ENISA\u2019s mandate as well as other CNAs who choose ENISA as their Root<br/><br/><strong>CNA Scope:</strong> Vulnerabilities in information technology (IT) products discovered by European Union (EU) Computer Security Incident Response Teams (CSIRTs) or reported to EU CSIRTs for coordinated disclosure, as long as they do not fall under a CNA with a more specific scope.",
     "contact": [
       {
         "email": [],
@@ -19826,6 +19769,10 @@
         "organizationName": "n/a"
       },
       "roles": [
+        {
+          "helpText": "",
+          "role": "Root"
+        },
         {
           "helpText": "",
           "role": "CNA"
@@ -20120,69 +20067,6 @@
           "helpText": "",
           "role": "CNA"
         }
-      ]
-    },
-    "country": "USA"
-  },
-  {
-    "shortName": "teleport",
-    "cnaID": "CNA-2024-0014",
-    "organizationName": "Teleport",
-    "scope": "All Teleport (Gravitational, Inc.) products (supported products and end-of-life/end-of-service products), as well as vulnerabilities in third-party software discovered by Teleport that are not in another CNA\u2019s scope.",
-    "contact": [
-      {
-        "email": [],
-        "contact": [
-          {
-            "label": "Teleport HackerOne contact page",
-            "url": "https://hackerone.com/security"
-          }
-        ],
-        "form": []
-      }
-    ],
-    "disclosurePolicy": [
-      {
-        "label": "Teleport Disclosure Policy",
-        "language": "",
-        "url": "https://goteleport.com/security"
-      },
-      {
-        "label": "Teleport HackerOne Policy",
-        "language": "",
-        "url": "https://hackerone.com/teleport"
-      }
-    ],
-    "securityAdvisories": {
-      "alerts": [],
-      "advisories": [
-        {
-          "label": "Advisories",
-          "url": "https://github.com/gravitational/teleport/security/advisories"
-        }
-      ]
-    },
-    "resources": [],
-    "CNA": {
-      "isRoot": false,
-      "root": {
-        "shortName": "n/a",
-        "organizationName": "n/a"
-      },
-      "roles": [
-        {
-          "helpText": "",
-          "role": "CNA"
-        }
-      ],
-      "TLR": {
-        "shortName": "mitre",
-        "organizationName": "MITRE Corporation"
-      },
-      "type": [
-        "Vendor",
-        "Open Source",
-        "Researcher"
       ]
     },
     "country": "USA"
@@ -24284,7 +24168,7 @@
         "email": [
           {
             "label": "Email",
-            "emailAddr": "cve-coordination@s21sec.com"
+            "emailAddr": "es.dis.s21sec.cve.coordination@thalesgroup.com"
           }
         ],
         "contact": [],
@@ -25636,7 +25520,7 @@
     "shortName": "EEF",
     "cnaID": "CNA-2025-0023",
     "organizationName": "Erlang Ecosystem Foundation",
-    "scope": "Vulnerabilities in active packages hosted on <a href='https://hex.pm/' target='_blank'>Hex.pm</a>, and in active projects hosted under the GitHub organizations <a href='https://github.com/elixir-lang' target='_blank'>@elixir-lang</a>, <a href='https://github.com/erlang' target='_blank'>@erlang</a>, <a href='https://github.com/erlef-cna' target='_blank'>@erlef-cna</a>, <a href='https://github.com/erlef' target='_blank'>@erlef</a>, <a href='https://github.com/gleam-lang' target='_blank'>@gleam-lang</a>, and <a href='https://github.com/hexpm' target='_blank'>@hexpm</a>, unless covered by the scope of another CNA.",
+    "scope": "Vulnerabilities in active packages hosted on <a href='https://hex.pm/' target='_blank'>Hex.pm</a>, and in active projects hosted under the GitHub organizations <a href='https://github.com/elixir-lang' target='_blank'>@elixir-lang</a>, <a href='https://github.com/erlang' target='_blank'>@erlang</a>, <a href='https://github.com/erlef-cna' target='_blank'>@erlef-cna</a>, <a href='https://github.com/erlef' target='_blank'>@erlef</a>, <a href='https://github.com/gleam-lang' target='_blank'>@gleam-lang</a>, <a href='https://github.com/hexpm' target='_blank'>@hexpm</a>, <a href='https://github.com/nerves-hub'>@nerves-hub</a>, <a href='https://github.com/nerves-project'>@nerves-project</a>, and <a href='https://github.com/OpenRiak'>@OpenRiak</a> unless covered by the scope of another CNA.",
     "contact": [
       {
         "email": [
@@ -27386,5 +27270,515 @@
       ]
     },
     "country": "Italy"
+  },
+  {
+    "shortName": "XONA",
+    "cnaID": "CNA-2025-0053",
+    "organizationName": "Xona Systems",
+    "scope": "All software produced as part of the Xona Platform including the CSG (Critical System Gateway) and XCM (Xona Central Manager) and vulnerabilities discovered by or reported to Xona Systems for Xona software or its underlying Operating System or Firmware not covered by the scope of another CNA.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "product-security@xonasystems.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.xonasystems.com/product-security/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.xonasystems.com/advisories/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "icscert",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA) Industrial Control Systems (ICS)"
+      },
+      "type": [
+        "Vendor"
+      ],
+      "TLR": {
+        "shortName": "CISA",
+        "organizationName": "Cybersecurity and Infrastructure Security Agency (CISA)"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "BCNY",
+    "cnaID": "CNA-2025-0054",
+    "organizationName": "The Browser Company of New York",
+    "scope": "The Browser Company of New York branded products and technologies only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@thebrowser.company"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.thebrowser.company/security/cve-policy"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Arc Security Bulletins",
+          "url": "https://arc.net/security/bulletins"
+        },
+        {
+          "label": "Dia Security Bulletins",
+          "url": "https://diabrowser.com/security/bulletins"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Bug Bounty Provider"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "Foxit",
+    "cnaID": "CNA-2025-0055",
+    "organizationName": "Foxit Software Incorporated",
+    "scope": "Foxit issues only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security-ml@foxit.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.foxit.com/support/responsible-disclosure-policy.html"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.foxit.com/support/security.html"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "Nutanix",
+    "cnaID": "CNA-2025-0056",
+    "organizationName": "Nutanix",
+    "scope": "Nutanix issues only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@nutanix.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://portal.nutanix.com/page/security/security-contact"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://portal.nutanix.com/page/security/security-advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "DSF",
+    "cnaID": "CNA-2025-0057",
+    "organizationName": "Django Software Foundation",
+    "scope": "Only supported and end-of-life Django versions available at <a href='https://www.djangoproject.com/download/' target='_blank'>https://www.djangoproject.com/download/</a> and projects listed at <a href='https://github.com/django' target='_blank'>https://github.com/django</a> (such as Django, channels, and daphne), excluding distributions maintained by third-party redistributors.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "cna@djangoproject.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.djangoproject.com/foundation/cve-numbering-authority/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://docs.djangoproject.com/en/stable/releases/security/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Open Source"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "Altera",
+    "cnaID": "CNA-2025-0058",
+    "organizationName": "Altera",
+    "scope": "Altera products only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "psirt@altera.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.altera.com/security/psirt"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.altera.com/security/psirt"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "Tanium",
+    "cnaID": "CNA-2025-0059",
+    "organizationName": "Tanium Inc.",
+    "scope": "Vulnerabilities found in Tanium products and vulnerabilities in third-party software discovered by Tanium that are not in another CNA\u2019s scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "security@tanium.org"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.tanium.com/vulnerability-reporting-terms/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://security.tanium.com/"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "2N",
+    "cnaID": "CNA-2025-0060",
+    "organizationName": "2N Telekomunikace a.s.",
+    "scope": "All products of 2N Telekomunikace a.s. including end-of-life/end-of-service products.",
+    "contact": [
+      {
+        "email": [],
+        "contact": [
+          {
+            "label": "Report a security vulnerability",
+            "url": "https://www.2n.com/en-GB/about-2n/cybersecurity/form/"
+          }
+        ],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.2n.com/en-GB/about-2n/cybersecurity/vulnerability-management"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.2n.com/en-GB/about-2n/cybersecurity/security-advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "Czech Republic"
+  },
+  {
+    "shortName": "NetScaler",
+    "cnaID": "CNA-2025-0061",
+    "organizationName": "NetScaler",
+    "scope": "NetScaler issues only.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "secure@cloud.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.cloud.com/trust-center/product-security/vulnerability-response"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://support.citrix.com/support-home/topic-article-list?trendingCategory=20&trendingTopicName=Security%20Bulletin"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor"
+      ]
+    },
+    "country": "USA"
   }
 ]

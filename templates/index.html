@@ -66,6 +66,11 @@
         <div class="stat-number" id="total-cves">Loading...</div>
         <div class="stat-label">Total CVEs</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-number" id="kev-global-count">Loading...</div>
+        <div class="stat-label">Known Exploited CVEs</div>
+        <div class="stat-detail" id="kev-global-detail">CISA KEV catalog</div>
+    </div>
 </div>
 
 <!-- Main Chart Section -->
@@ -203,7 +208,8 @@
                     <div class="col-md-6">
                         <ul class="list-unstyled small">
                             <li class="mb-2">✓ <strong>{{ total_cves|default('287,800+') }} CVE entries</strong> across {{ available_years|length if available_years else '27' }} years (1999-{{ current_year if current_year else '2025' }})</li>
-                            <li class="mb-2">✓ <strong>{{ cvss_coverage|default('284,181') }} CVSS scored</strong> vulnerabilities</li>
+                            <li class="mb-2"> <strong>{{ cvss_coverage|default('284,181') }} CVSS scored</strong> vulnerabilities</li>
+                            <li class="mb-2"> <strong>{{ kev_coverage|default('1,463') }} known exploited CVEs</strong> in the CISA KEV catalog</li>
                         </ul>
                     </div>
                     <div class="col-md-6">
@@ -423,6 +429,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize preview charts with simplified, error-free approach
     initializeSimplePreviewCharts();
+
+    // Initialize KEV global stats using cvss_analysis.json
+    fetch('data/cvss_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const kevGlobal = data.kev_global_count || 0;
+            const el = document.getElementById('kev-global-count');
+            const detail = document.getElementById('kev-global-detail');
+            if (el) el.textContent = kevGlobal.toLocaleString();
+            if (detail) detail.textContent = 'CISA KEV catalog across all years';
+        })
+        .catch(error => {
+            console.error('KEV global stats error:', error);
+        });
 });
 
 // Simplified preview charts initialization to eliminate JavaScript syntax errors

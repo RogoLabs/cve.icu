@@ -51,7 +51,14 @@
                     <li><a href="cna.html">CNA</a></li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
-                    <li><a href="cvss.html">CVSS</a></li>
+                    <li class="nav-dropdown">
+                        <a href="scoring.html" class="dropdown-toggle">Scoring</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cvss.html">CVSS</a></li>
+                            <li><a href="epss.html">EPSS</a></li>
+                            <li><a href="kev.html">KEV</a></li>
+                        </ul>
+                    </li>
                     <li><a href="growth.html">Growth</a></li>
                     <li><a href="calendar.html">Calendar</a></li>
                 </ul>
@@ -205,6 +212,8 @@
                             <ul class="list-unstyled">
                                 <li class="mb-2"><strong>Primary:</strong> NIST National Vulnerability Database (NVD)</li>
                                 <li class="mb-2"><strong>Secondary:</strong> CVE Project V5 Repository</li>
+                                <li class="mb-2"><strong>Risk Signals:</strong> CISA Known Exploited Vulnerabilities (KEV) catalog</li>
+                                <li class="mb-2"><strong>Likelihood:</strong> FIRST Exploit Prediction Scoring System (EPSS)</li>
                                 <li class="mb-2"><strong>Coverage:</strong> 287,800+ CVEs across 27 years</li>
                                 <li class="mb-0"><strong>Validation:</strong> Multi-source cross-verification</li>
                             </ul>
@@ -264,6 +273,7 @@
                 <div class="col-md-6">
                     <ul class="list-unstyled">
                         <li class="mb-2">✓ <strong>206,053 CWE classified</strong> weaknesses</li>
+                        <li class="mb-2">✓ <strong>1,463 known exploited CVEs</strong> in the CISA KEV catalog</li>
                         <li class="mb-2">✓ <strong>290 active CNAs</strong> with attribution data</li>
                     </ul>
                 </div>

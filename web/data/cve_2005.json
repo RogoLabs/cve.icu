@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 4868,
       "severity_distribution": {
-        "MEDIUM": 2407,
-        "HIGH": 2022,
-        "LOW": 439
+        "UNKNOWN": 4868
       },
       "score_distribution": {
         "4.3": 685,
@@ -478,37 +476,97 @@
         "6.3": 1,
         "7.1": 1
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 520,
+      "epss_gt_0_5": 140,
+      "epss_gt_0_9": 4
     }
+  },
+  "kev": {
+    "kev_count": 1
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 4495
+        "name": "Microsoft",
+        "count": 172
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 257
+        "name": "Apple",
+        "count": 150
       },
       {
-        "name": "Debian Project",
-        "count": 107
+        "name": "Linux",
+        "count": 134
       },
       {
-        "name": "Microsoft Corporation",
+        "name": "Redhat",
+        "count": 101
+      },
+      {
+        "name": "Mozilla",
+        "count": 93
+      },
+      {
+        "name": "Debian",
+        "count": 82
+      },
+      {
+        "name": "Suse",
+        "count": 82
+      },
+      {
+        "name": "Ibm",
+        "count": 81
+      },
+      {
+        "name": "Oracle",
+        "count": 80
+      },
+      {
+        "name": "Gentoo",
+        "count": 79
+      },
+      {
+        "name": "Sun",
+        "count": 75
+      },
+      {
+        "name": "Cisco",
+        "count": 54
+      },
+      {
+        "name": "Ethereal Group",
         "count": 49
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 17
+        "name": "Gnu",
+        "count": 46
       },
       {
-        "name": "freebsd.org",
-        "count": 6
+        "name": "Ubuntu",
+        "count": 43
       },
       {
-        "name": "bc94ec7e-8909-4cbb-83df-d2fc9330fa88",
-        "count": 1
+        "name": "Hp",
+        "count": 36
+      },
+      {
+        "name": "Mandrakesoft",
+        "count": 34
+      },
+      {
+        "name": "Novell",
+        "count": 34
+      },
+      {
+        "name": "Trustix",
+        "count": 33
+      },
+      {
+        "name": "Phpbb Group",
+        "count": 32
       }
     ],
     "cpe_vendors": [
@@ -758,7 +816,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-24T12:16:00.229744",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-25T18:32:39.756881",
+    "data_source": "data/cache/nvd.json"
   }
 }

@@ -12,6 +12,8 @@ from datetime import datetime
 from collections import defaultdict
 import os
 
+from download_cve_data import CVEDataDownloader
+
 
 class CVEV5Processor:
     """Processes CVE V5 list data for authoritative CNA analysis"""
@@ -23,7 +25,38 @@ class CVEV5Processor:
         self.data_dir = Path(data_dir)
         self.current_year = datetime.now().year
         self.v5_cache_dir = self.cache_dir / 'cvelistV5'
-        
+        # Optional EPSS enrichment mapping, keyed by CVE ID
+        self.epss_mapping = {}
+        # Load EPSS mapping once in the V5 processor using the downloader cache
+        self._load_epss_mapping()
+
+    def _load_epss_mapping(self):
+        """Load EPSS mapping from cache if available.
+
+        Uses the same cache directory as CVEDataDownloader to avoid
+        duplicate downloads. If EPSS data is unavailable or parsing
+        fails, this method leaves epss_mapping empty and continues
+        silently so that CNA analysis is not blocked.
+        """
+        try:
+            downloader = CVEDataDownloader(cache_dir=self.cache_dir, quiet=True)
+            epss_json_path = downloader.epss_parsed_file
+            # If parsed file does not exist yet, attempt to parse from CSV
+            if not epss_json_path.exists():
+                epss_json_path = downloader.parse_epss_csv()
+
+            if epss_json_path and Path(epss_json_path).exists():
+                with open(epss_json_path, 'r', encoding='utf-8') as f:
+                    self.epss_mapping = json.load(f)
+                if not self.quiet:
+                    print(f"  ✅ Loaded EPSS mapping for {len(self.epss_mapping):,} CVEs")
+            else:
+                if not self.quiet:
+                    print("  ⚠️  EPSS mapping not available; proceeding without enrichment")
+        except Exception as e:
+            if not self.quiet:
+                print(f"  ⚠️  Could not load EPSS mapping: {e}")
+            self.epss_mapping = {}
         # CNA type classification patterns
         self.cna_type_patterns = {
             'Vendor': [
@@ -325,7 +358,7 @@ class CVEV5Processor:
             # (date_updated reflects record modifications, not actual CVE assignment)
             pub_date = date_published if date_published else date_updated
             
-            return {
+            record = {
                 'cve_id': cve_id,
                 'assigner_org_id': assigner_org_id,
                 'assigner_short_name': assigner_short_name,
@@ -334,6 +367,15 @@ class CVEV5Processor:
                 'publication_date': pub_date,
                 'year': int(cve_id.split('-')[1]) if cve_id.startswith('CVE-') else None
             }
+
+            # Attach EPSS enrichment if available
+            if cve_id and self.epss_mapping:
+                epss = self.epss_mapping.get(cve_id)
+                if epss:
+                    record['epss_score'] = epss.get('epss_score')
+                    record['epss_percentile'] = epss.get('epss_percentile')
+
+            return record
             
         except Exception as e:
             print(f"    ⚠️ Error parsing {cve_file_path}: {e}")
@@ -570,7 +612,8 @@ class CVEV5Processor:
             'market_concentration': enhanced_stats.get('market_concentration', 0),
             'median_years_active': enhanced_stats.get('median_years_active', 0),
             'type_distribution': enhanced_stats.get('type_distribution', []),
-            'cna_list': cna_list
+            'cna_list': cna_list,
+            'cna_assigners': cna_list  # For backward compatibility
         }
         
         # Save comprehensive analysis
@@ -790,7 +833,8 @@ class CVEV5Processor:
             'inactive_cnas': 0,
             'official_cnas': len(current_year_cnas),  # All are official
             'unofficial_cnas': 0,  # None are unofficial
-            'cna_list': current_year_cnas
+            'cna_list': current_year_cnas,
+            'cna_assigners': current_year_cnas  # For backward compatibility
         }
         
         # Save current year analysis

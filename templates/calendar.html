@@ -546,6 +546,30 @@ function updateStatsCards() {
         });
         document.getElementById('peakDayDate').textContent = `🔥 ${formattedDate}`;
     }
+
+    // Best-effort KEV count for this year using per-year CVE summary
+    const kevCountEl = document.getElementById('kevCount');
+    const kevSubtextEl = document.getElementById('kevSubtext');
+    if (kevCountEl && kevSubtextEl) {
+        kevCountEl.textContent = '…';
+        kevSubtextEl.textContent = '⚠️ Loading KEV data…';
+        fetch(`data/cve_${currentYear}.json`)
+            .then(r => r.json())
+            .then(yearData => {
+                const kevCount = yearData.kev && typeof yearData.kev.kev_count === 'number'
+                    ? yearData.kev.kev_count
+                    : 0;
+                kevCountEl.textContent = kevCount.toLocaleString();
+                kevSubtextEl.textContent = kevCount > 0
+                    ? `⚠️ Known exploited CVEs in ${currentYear}`
+                    : `⚠️ No KEV-listed CVEs in ${currentYear}`;
+            })
+            .catch(err => {
+                console.error('Failed to load KEV year data for calendar view:', err);
+                kevCountEl.textContent = 'N/A';
+                kevSubtextEl.textContent = '⚠️ KEV data unavailable';
+            });
+    }
 }
 
 function updateInsights() {

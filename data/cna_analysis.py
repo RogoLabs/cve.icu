@@ -162,7 +162,7 @@ class CNAAnalyzer:
         cna_stats = {}
         
         # Load CVE data from cache
-        nvd_file = self.cache_dir / 'nvd.jsonl'
+        nvd_file = self.cache_dir / 'nvd.json'
         if nvd_file.exists():
             if not self.quiet:
                 print(f"    📂 Loading CVE data from {nvd_file}...")
@@ -387,7 +387,7 @@ class CNAAnalyzer:
                 cna_counts[cna_name] = current_year_cna['count']
         
         # If we have access to raw CVE data for current year, get actual counts
-        nvd_file = self.cache_dir / 'nvd.jsonl'
+        nvd_file = self.cache_dir / 'nvd.json'
         if nvd_file.exists() and len(current_year_cnas) > 0:
             print(f"    📊 Calculating actual CVE counts for {self.current_year}...")
             try:
@@ -446,6 +446,7 @@ class CNAAnalyzer:
             'official_cnas': len([c for c in current_year_cnas if c.get('is_official', True)]),
             'unofficial_cnas': len([c for c in current_year_cnas if not c.get('is_official', True)]),
             'cna_list': current_year_cnas,  # For consistency with all-time data
+            'cna_assigners': current_year_cnas,  # For JavaScript compatibility
             'type_distribution': type_distribution
         }
         
@@ -457,13 +458,13 @@ class CNAAnalyzer:
         print(f"    📄 Generated enhanced cna_analysis_current_year.json with {len(current_year_cnas)} CNAs")
         return current_year_cna_data
     
-    def _calculate_type_distribution_for_current_year(self, current_year_cnas):
+    def _calculate_type_distribution_for_current_year(self, cna_assigners):
         """Calculate CNA type distribution for current year data"""
         type_counts = {}
         type_percentages = {}
         
         # Count types from current year CNAs
-        for cna in current_year_cnas:
+        for cna in cna_assigners:
             cna_types = cna.get('cna_types', ['Unknown'])
             if not isinstance(cna_types, list):
                 cna_types = [cna_types] if cna_types else ['Unknown']
@@ -473,7 +474,7 @@ class CNAAnalyzer:
                     type_counts[cna_type] = type_counts.get(cna_type, 0) + 1
         
         # Calculate percentages
-        total_cnas = len(current_year_cnas)
+        total_cnas = len(cna_assigners)
         if total_cnas > 0:
             for cna_type, count in type_counts.items():
                 type_percentages[cna_type] = round((count / total_cnas) * 100, 1)

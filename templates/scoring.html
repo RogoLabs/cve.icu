@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% block title %}Scoring Intelligence Hub - CVE.ICU{% endblock %}
+
+{% block content %}
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.scoring-card {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+}
+
+.scoring-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.scoring-card h3 {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 0;
+    color: var(--color-text-primary);
+}
+
+.scoring-card .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: var(--font-weight-medium);
+}
+
+.scoring-card .big-number {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    line-height: 1.2;
+    margin: 0.5rem 0 0.25rem 0;
+}
+
+.scoring-card .stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.scoring-card .description {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+    line-height: 1.5;
+}
+
+.scoring-card .question {
+    font-style: italic;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    background: var(--color-bg-secondary);
+    border-radius: var(--border-radius);
+    margin-top: auto;
+}
+
+.nav-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-card:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.matrix-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.matrix-cell:hover {
+    transform: scale(1.05);
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.comparison-table th {
+    background: var(--color-bg-secondary);
+    font-weight: var(--font-weight-semibold);
+}
+</style>
+
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">Scoring Intelligence Hub</h1>
+    <p class="text-muted">
+        Compare and understand vulnerability scoring systems: CVSS, EPSS, and KEV
+    </p>
+</div>
+
+<!-- Main Scoring Systems Cards -->
+<div class="stats-grid mb-5">
+    <!-- CVSS Card -->
+    <a href="cvss.html" class="nav-card">
+        <div class="scoring-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3>CVSS</h3>
+                <span class="badge bg-primary">Severity</span>
+            </div>
+            <div class="big-number" id="cvssCount">-</div>
+            <div class="stat-label">Scored CVEs</div>
+            <p class="description">
+                Common Vulnerability Scoring System measures the <strong>severity and impact</strong> of vulnerabilities on a 0-10 scale.
+            </p>
+            <div class="question">
+                💡 "How bad is this vulnerability?"
+            </div>
+        </div>
+    </a>
+    
+    <!-- EPSS Card -->
+    <a href="epss.html" class="nav-card">
+        <div class="scoring-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3>EPSS</h3>
+                <span class="badge bg-warning text-dark">Probability</span>
+            </div>
+            <div class="big-number" id="epssCount">-</div>
+            <div class="stat-label">Scored CVEs</div>
+            <p class="description">
+                Exploit Prediction Scoring System predicts the <strong>likelihood of exploitation</strong> within 30 days.
+            </p>
+            <div class="question">
+                💡 "Will this vulnerability be exploited?"
+            </div>
+        </div>
+    </a>
+    
+    <!-- KEV Card -->
+    <a href="kev.html" class="nav-card">
+        <div class="scoring-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3>KEV</h3>
+                <span class="badge bg-danger">Exploited</span>
+            </div>
+            <div class="big-number" id="kevCount">-</div>
+            <div class="stat-label">Known Exploited</div>
+            <p class="description">
+                CISA's Known Exploited Vulnerabilities catalog lists CVEs <strong>confirmed to be actively exploited</strong>.
+            </p>
+            <div class="question">
+                💡 "Is this vulnerability being exploited now?"
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- Risk Matrix Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Risk Matrix: CVSS × EPSS</h3>
+        <small class="text-muted">Combining severity (CVSS) with exploitation likelihood (EPSS)</small>
+    </div>
+    <div class="card-body">
+        <div id="riskMatrixContainer" style="position: relative; height: 400px;">
+            <canvas id="riskMatrixChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Table -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title mb-0">System Comparison</h3>
+    </div>
+    <div class="card-body">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Aspect</th>
+                    <th>CVSS</th>
+                    <th>EPSS</th>
+                    <th>KEV</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>Measure severity/impact</td>
+                    <td>Predict exploitation probability</td>
+                    <td>Confirm active exploitation</td>
+                </tr>
+                <tr>
+                    <td><strong>Scale</strong></td>
+                    <td>0.0 - 10.0</td>
+                    <td>0.0 - 1.0 (probability)</td>
+                    <td>Yes / No (binary)</td>
+                </tr>
+                <tr>
+                    <td><strong>Source</strong></td>
+                    <td>NVD / Vendors</td>
+                    <td>FIRST.org</td>
+                    <td>CISA</td>
+                </tr>
+                <tr>
+                    <td><strong>Update Frequency</strong></td>
+                    <td>Per CVE publication</td>
+                    <td>Daily</td>
+                    <td>As exploits confirmed</td>
+                </tr>
+                <tr>
+                    <td><strong>Coverage</strong></td>
+                    <td id="cvssTableCount">-</td>
+                    <td id="epssTableCount">-</td>
+                    <td id="kevTableCount">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Overlap Insights -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <div class="stat-number" id="epssKevOverlap">-</div>
+            <div class="stat-label">EPSS &amp; KEV</div>
+            <small class="text-muted">KEV CVEs with EPSS scores</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <div class="stat-number" id="highEpssNotKev">-</div>
+            <div class="stat-label">High EPSS, Not KEV</div>
+            <small class="text-muted">EPSS > 0.5 but not in KEV</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <div class="stat-number" id="kevLowEpss">-</div>
+            <div class="stat-label">KEV with Low EPSS</div>
+            <small class="text-muted">In KEV but EPSS < 0.1</small>
+        </div>
+    </div>
+</div>
+
+<script src="static/js/chart.min.js"></script>
+<script>
+// Load scoring comparison data
+Promise.all([
+    fetch('data/scoring_comparison.json').then(r => r.json()),
+    fetch('data/risk_matrix.json').then(r => r.json()),
+    fetch('data/epss_analysis.json').then(r => r.json())
+]).then(([comparison, matrix, epss]) => {
+    // Update system cards
+    document.getElementById('cvssCount').textContent = 
+        (comparison.systems.cvss.total_scored || 0).toLocaleString();
+    document.getElementById('epssCount').textContent = 
+        (comparison.systems.epss.total_scored || 0).toLocaleString();
+    document.getElementById('kevCount').textContent = 
+        (comparison.systems.kev.total_scored || 0).toLocaleString();
+    
+    // Update comparison table
+    document.getElementById('cvssTableCount').textContent = 
+        (comparison.systems.cvss.total_scored || 0).toLocaleString() + ' CVEs';
+    document.getElementById('epssTableCount').textContent = 
+        (comparison.systems.epss.total_scored || 0).toLocaleString() + ' CVEs';
+    document.getElementById('kevTableCount').textContent = 
+        (comparison.systems.kev.total_scored || 0).toLocaleString() + ' CVEs';
+    
+    // Update overlap insights
+    document.getElementById('epssKevOverlap').textContent = 
+        (comparison.overlaps.epss_and_kev || 0).toLocaleString();
+    document.getElementById('highEpssNotKev').textContent = 
+        (comparison.insights.epss_gt_05_not_kev || 0).toLocaleString();
+    document.getElementById('kevLowEpss').textContent = 
+        (comparison.insights.kev_with_low_epss || 0).toLocaleString();
+    
+    // Render Risk Matrix as bubble chart
+    renderRiskMatrix(matrix);
+    
+}).catch(err => {
+    console.error('Failed to load scoring data:', err);
+});
+
+function renderRiskMatrix(matrix) {
+    const ctx = document.getElementById('riskMatrixChart').getContext('2d');
+    
+    // Map severity to x position
+    const severityMap = { 'NONE': 0, 'LOW': 1, 'MEDIUM': 2, 'HIGH': 3, 'CRITICAL': 4 };
+    const epssMap = { '0-0.1': 0, '0.1-0.3': 1, '0.3-0.5': 2, '0.5-0.7': 3, '0.7+': 4 };
+    
+    // Prepare data points
+    const dataPoints = [];
+    const kevPoints = [];
+    let maxCount = 0;
+    
+    matrix.matrix.forEach(cell => {
+        if (cell.count > 0) {
+            maxCount = Math.max(maxCount, cell.count);
+            dataPoints.push({
+                x: severityMap[cell.severity],
+                y: epssMap[cell.epss_bucket],
+                r: Math.sqrt(cell.count) / 10,  // Scale radius
+                count: cell.count,
+                kev_count: cell.kev_count,
+                label: `${cell.severity} / ${cell.epss_bucket}`
+            });
+        }
+    });
+    
+    new Chart(ctx, {
+        type: 'bubble',
+        data: {
+            datasets: [{
+                label: 'CVE Concentration',
+                data: dataPoints.map(p => ({
+                    x: p.x,
+                    y: p.y,
+                    r: Math.max(5, Math.min(40, p.r)),
+                    count: p.count,
+                    kev_count: p.kev_count
+                })),
+                backgroundColor: dataPoints.map(p => {
+                    // Color based on risk using blues and greys
+                    const risk = (p.x + p.y) / 8;
+                    if (risk > 0.7) return 'rgba(13, 110, 253, 0.85)';   // Primary blue (highest risk)
+                    if (risk > 0.5) return 'rgba(33, 150, 243, 0.75)';   // Medium blue
+                    if (risk > 0.3) return 'rgba(100, 181, 246, 0.65)';  // Light blue
+                    return 'rgba(158, 158, 158, 0.5)';                    // Grey (lowest risk)
+                }),
+                borderColor: dataPoints.map(p => {
+                    const risk = (p.x + p.y) / 8;
+                    if (risk > 0.7) return 'rgba(13, 110, 253, 1)';
+                    if (risk > 0.5) return 'rgba(33, 150, 243, 1)';
+                    if (risk > 0.3) return 'rgba(100, 181, 246, 1)';
+                    return 'rgba(117, 117, 117, 1)';
+                }),
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 20,
+                    top: 10,
+                    bottom: 10
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    min: -0.5,
+                    max: 4.5,
+                    title: {
+                        display: true,
+                        text: 'CVSS Score',
+                        font: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        padding: { top: 8 }
+                    },
+                    afterBuildTicks: function(axis) {
+                        axis.ticks = [
+                            { value: 0, label: 'NONE' },
+                            { value: 1, label: 'LOW' },
+                            { value: 2, label: 'MEDIUM' },
+                            { value: 3, label: 'HIGH' },
+                            { value: 4, label: 'CRITICAL' }
+                        ];
+                    },
+                    ticks: {
+                        callback: function(value, index, ticks) {
+                            const labels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+                            return labels[value] || '';
+                        },
+                        font: { size: 10 },
+                        maxRotation: 0
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.08)',
+                        drawTicks: true
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    min: -0.5,
+                    max: 4.5,
+                    title: {
+                        display: true,
+                        text: 'EPSS Score',
+                        font: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        padding: { bottom: 8 }
+                    },
+                    afterBuildTicks: function(axis) {
+                        axis.ticks = [
+                            { value: 0, label: '0-0.1' },
+                            { value: 1, label: '0.1-0.3' },
+                            { value: 2, label: '0.3-0.5' },
+                            { value: 3, label: '0.5-0.7' },
+                            { value: 4, label: '0.7+' }
+                        ];
+                    },
+                    ticks: {
+                        callback: function(value, index, ticks) {
+                            const labels = ['0-0.1', '0.1-0.3', '0.3-0.5', '0.5-0.7', '0.7+'];
+                            return labels[value] || '';
+                        },
+                        font: { size: 10 }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.08)',
+                        drawTicks: true
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const data = context.raw;
+                            return [
+                                `CVEs: ${data.count.toLocaleString()}`,
+                                `KEV: ${data.kev_count.toLocaleString()}`
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</script>
+
+{% endblock %}

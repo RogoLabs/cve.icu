@@ -39,7 +39,20 @@ Located in `scripts/` subdirectory for development and maintenance:
 ## Data Files
 
 - **`*.json`** - Generated analysis data files (consumed by website)
-- **`cache/`** - Cached CVE data from NVD (nvd.jsonl, etc.)
+- **`cache/`** - Cached CVE data from NVD (nvd.json, etc.)
+
+### EPSS-Enriched CVE Records
+
+Some generated JSON files now include additional fields per CVE where
+Exploit Prediction Scoring System (EPSS) data is available:
+
+- `epss_score` *(float, optional)* – Probability of exploitation.
+- `epss_percentile` *(float, optional)* – Percentile rank of the EPSS score.
+
+These fields are populated from the cached EPSS feed
+(`epss_scores-current.csv.gz` → `epss_scores-current.json`) via
+`download_cve_data.py` and are used by analysis modules for risk-focused
+views.
 
 ## Usage
 

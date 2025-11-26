@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 6560,
       "severity_distribution": {
-        "HIGH": 2741,
-        "MEDIUM": 3310,
-        "LOW": 509
+        "UNKNOWN": 6560
       },
       "score_distribution": {
         "7.5": 2031,
@@ -489,45 +487,97 @@
         "7.2": 1,
         "6.5": 3
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 1046,
+      "epss_gt_0_5": 200,
+      "epss_gt_0_9": 7
     }
+  },
+  "kev": {
+    "kev_count": 2
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 6096
+        "name": "Microsoft",
+        "count": 272
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 252
+        "name": "Oracle",
+        "count": 164
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 124
+        "name": "Apple",
+        "count": 140
       },
       {
-        "name": "Debian Project",
-        "count": 51
+        "name": "Mozilla",
+        "count": 122
       },
       {
-        "name": "flexerasoftware.com",
-        "count": 47
+        "name": "Linux",
+        "count": 91
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 17
+        "name": "Ibm",
+        "count": 90
       },
       {
-        "name": "freebsd.org",
-        "count": 13
+        "name": "Sun",
+        "count": 86
       },
       {
-        "name": "bc94ec7e-8909-4cbb-83df-d2fc9330fa88",
-        "count": 7
+        "name": "Cisco",
+        "count": 69
       },
       {
-        "name": "Canonical Ltd.",
-        "count": 1
+        "name": "Joomla",
+        "count": 53
+      },
+      {
+        "name": "Novell",
+        "count": 46
+      },
+      {
+        "name": "Php",
+        "count": 42
+      },
+      {
+        "name": "Mybulletinboard",
+        "count": 42
+      },
+      {
+        "name": "Symantec",
+        "count": 41
+      },
+      {
+        "name": "Hp",
+        "count": 39
+      },
+      {
+        "name": "Drupal",
+        "count": 37
+      },
+      {
+        "name": "Adobe",
+        "count": 32
+      },
+      {
+        "name": "Debian",
+        "count": 31
+      },
+      {
+        "name": "Xerox",
+        "count": 31
+      },
+      {
+        "name": "Mambo",
+        "count": 29
+      },
+      {
+        "name": "Phpbb Group",
+        "count": 28
       }
     ],
     "cpe_vendors": [
@@ -773,7 +823,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-24T12:16:15.373846",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-25T18:32:50.039954",
+    "data_source": "data/cache/nvd.json"
   }
 }

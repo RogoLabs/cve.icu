@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 6457,
       "severity_distribution": {
-        "MEDIUM": 3088,
-        "HIGH": 3137,
-        "LOW": 232
+        "UNKNOWN": 6457
       },
       "score_distribution": {
         "6.8": 790,
@@ -491,49 +489,97 @@
         "4.6": 1,
         "8.1": 2
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 1166,
+      "epss_gt_0_5": 291,
+      "epss_gt_0_9": 5
     }
+  },
+  "kev": {
+    "kev_count": 2
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 6057
+        "name": "Microsoft",
+        "count": 343
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 235
+        "name": "Apple",
+        "count": 238
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 107
+        "name": "Ibm",
+        "count": 148
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 54
+        "name": "Oracle",
+        "count": 141
       },
       {
-        "name": "flexerasoftware.com",
-        "count": 39
+        "name": "Sun",
+        "count": 136
       },
       {
-        "name": "Canonical Ltd.",
-        "count": 12
+        "name": "Php",
+        "count": 116
       },
       {
-        "name": "freebsd.org",
-        "count": 5
+        "name": "Cisco",
+        "count": 113
       },
       {
-        "name": "Cisco Systems, Inc.",
-        "count": 5
+        "name": "Linux",
+        "count": 105
       },
       {
-        "name": "bc94ec7e-8909-4cbb-83df-d2fc9330fa88",
-        "count": 1
+        "name": "Mozilla",
+        "count": 89
       },
       {
-        "name": "Debian Project",
-        "count": 1
+        "name": "Hp",
+        "count": 85
+      },
+      {
+        "name": "Debian",
+        "count": 68
+      },
+      {
+        "name": "Joomla",
+        "count": 59
+      },
+      {
+        "name": "Redhat",
+        "count": 58
+      },
+      {
+        "name": "Canonical",
+        "count": 49
+      },
+      {
+        "name": "Wordpress",
+        "count": 48
+      },
+      {
+        "name": "Broadcom",
+        "count": 47
+      },
+      {
+        "name": "Symantec",
+        "count": 46
+      },
+      {
+        "name": "Apache",
+        "count": 45
+      },
+      {
+        "name": "Bea",
+        "count": 40
+      },
+      {
+        "name": "Hitachi",
+        "count": 37
       }
     ],
     "cpe_vendors": [
@@ -779,7 +825,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-24T12:16:30.552774",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-25T18:32:59.639387",
+    "data_source": "data/cache/nvd.json"
   }
 }

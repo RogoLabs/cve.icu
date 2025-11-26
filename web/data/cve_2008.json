@@ -401,9 +401,7 @@
     "v2.0": {
       "total": 5548,
       "severity_distribution": {
-        "HIGH": 2802,
-        "MEDIUM": 2561,
-        "LOW": 185
+        "UNKNOWN": 5548
       },
       "score_distribution": {
         "10.0": 420,
@@ -488,45 +486,97 @@
         "5.9": 1,
         "7.0": 1
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 799,
+      "epss_gt_0_5": 246,
+      "epss_gt_0_9": 6
     }
+  },
+  "kev": {
+    "kev_count": 4
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 4998
+        "name": "Microsoft",
+        "count": 337
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 272
+        "name": "Apple",
+        "count": 228
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 145
+        "name": "Sun",
+        "count": 160
       },
       {
-        "name": "Cisco Systems, Inc.",
+        "name": "Ibm",
+        "count": 148
+      },
+      {
+        "name": "Oracle",
+        "count": 130
+      },
+      {
+        "name": "Joomla",
+        "count": 119
+      },
+      {
+        "name": "Debian",
+        "count": 114
+      },
+      {
+        "name": "Mozilla",
+        "count": 102
+      },
+      {
+        "name": "Linux",
+        "count": 98
+      },
+      {
+        "name": "Cisco",
+        "count": 94
+      },
+      {
+        "name": "Redhat",
+        "count": 81
+      },
+      {
+        "name": "Canonical",
+        "count": 77
+      },
+      {
+        "name": "Drupal",
         "count": 73
       },
       {
-        "name": "flexerasoftware.com",
-        "count": 55
+        "name": "Hp",
+        "count": 72
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 47
+        "name": "Adobe",
+        "count": 65
       },
       {
-        "name": "Oracle Corporation",
-        "count": 32
+        "name": "Typo3",
+        "count": 53
       },
       {
-        "name": "Canonical Ltd.",
-        "count": 6
+        "name": "Wordpress",
+        "count": 52
       },
       {
-        "name": "freebsd.org",
-        "count": 4
+        "name": "Novell",
+        "count": 50
+      },
+      {
+        "name": "Mambo",
+        "count": 48
+      },
+      {
+        "name": "Opera",
+        "count": 35
       }
     ],
     "cpe_vendors": [
@@ -784,7 +834,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-24T12:16:46.478016",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-25T18:33:09.368309",
+    "data_source": "data/cache/nvd.json"
   }
 }

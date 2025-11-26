@@ -20,7 +20,7 @@ class CalendarAnalyzer:
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
-        self.nvd_file = self.cache_dir / 'nvd.jsonl'
+        self.nvd_file = self.cache_dir / 'nvd.json'
         
     def load_nvd_data(self):
         """Load and parse NVD data from JSONL file"""
