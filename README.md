@@ -9,10 +9,16 @@ CVE.ICU is a powerful, automated platform that provides comprehensive analysis a
 
 ### 📊 Comprehensive CVE Analysis
 - **Multi-Year Data Processing** - Analyzes CVE data from 1999 to present
-- **CVSS Scoring Analysis** - Both v2 and v3 vulnerability scoring metrics
+- **CVSS Scoring Analysis** - Both v2, v3, and v4 vulnerability scoring metrics
 - **CWE Classification** - Common Weakness Enumeration categorization
 - **CPE Analysis** - Common Platform Enumeration vendor and product insights
 - **CNA Tracking** - CVE Numbering Authority analysis and statistics
+
+### 🎯 Scoring Intelligence Hub (NEW)
+- **CVSS Analysis** - Severity-based scoring across all CVE versions
+- **EPSS Integration** - Exploit Prediction Scoring System (probability of exploitation)
+- **KEV Dashboard** - CISA Known Exploited Vulnerabilities catalog
+- **Risk Matrix** - Interactive CVSS × EPSS visualization for risk prioritization
 
 ### 📈 Advanced Visualizations
 - **Yearly Trends** - CVE publication patterns over time
@@ -39,6 +45,8 @@ CVE.ICU is a powerful, automated platform that provides comprehensive analysis a
 - **NVD (National Vulnerability Database)** - Primary CVE data source
 - **CVE List V5** - Modern CVE format support
 - **Official CNA Registry** - CVE Numbering Authority information
+- **FIRST.org EPSS** - Exploit Prediction Scoring System data (daily updates)
+- **CISA KEV** - Known Exploited Vulnerabilities catalog
 
 ## 🚀 Quick Start
 
@@ -103,10 +111,15 @@ cve.icu/
 │   ├── cve_years.py         # Multi-year CVE processing
 │   ├── cve_v5_processor.py  # CVE v5 format support
 │   ├── cwe_analysis.py      # CWE classification analysis
-│   ├── download_cve_data.py # NVD data fetching
+│   ├── download_cve_data.py # NVD data fetching (+ EPSS, KEV)
+│   ├── scoring_analysis.py  # EPSS/KEV/Risk Matrix analysis
 │   ├── yearly_analysis.py   # Year-over-year trends
 │   └── cache/               # Data caching directory
+├── templates/               # Jinja2 HTML templates
 ├── web/                     # Generated website files
+│   └── data/                # JSON data files for frontend
+├── docs/                    # Documentation
+│   └── ROADMAP.md           # Strategic development roadmap
 ├── .github/workflows/       # GitHub Actions CI/CD
 └── requirements.txt         # Python dependencies
 ```
