@@ -387,31 +387,23 @@ main {
     padding: 0;
 }
 
-/* Grid Layouts */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-}
-
 /* Professional Stats Cards Design System */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 /* Responsive grid for smaller screens */
-@media (max-width: 1200px) {
+@media (max-width: 992px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 1rem;

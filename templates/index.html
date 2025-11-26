@@ -94,63 +94,6 @@
 <!-- Preview Charts Section -->
 <section class="homepage-preview-section">
     
-    <!-- Growth Preview -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">📈 Growth</h4>
-            <small class="homepage-chart-subtitle">Year-over-year CVE publication trends and growth analysis</small>
-        </div>
-        <div class="homepage-chart-body">
-            <div class="homepage-chart-container homepage-preview-container">
-                <canvas id="growthPreviewChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer">
-                <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- CVSS Interactive Analysis -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">🎯 CVSS Analysis</h4>
-            <small class="homepage-chart-subtitle">Score distribution for <span id="homepageCvssVersionLabel">CVSS v3.1</span></small>
-            
-            <!-- Version Selection Buttons -->
-            <div class="text-center mt-3">
-                <button class="quick-select-btn cvss-version-btn" data-version="v2.0">v2.0</button>
-                <button class="quick-select-btn cvss-version-btn" data-version="v3.0">v3.0</button>
-                <button class="quick-select-btn active cvss-version-btn" data-version="v3.1">v3.1</button>
-                <button class="quick-select-btn cvss-version-btn" data-version="v4.0">v4.0</button>
-            </div>
-        </div>
-        <div class="homepage-chart-body">
-            <!-- Score Distribution Only -->
-            <div class="chart-container" style="height: 300px;">
-                <canvas id="homepageScoreChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer mt-3">
-                <a href="cvss.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- CWE Preview -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">🔍 CWE</h4>
-            <small class="homepage-chart-subtitle">Common Weakness Enumeration patterns and vulnerability types</small>
-        </div>
-        <div class="homepage-chart-body">
-            <div class="homepage-chart-container homepage-preview-container">
-                <canvas id="cwePreviewChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer">
-                <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
-    
     <!-- CNA Preview -->
     <div class="homepage-chart-card">
         <div class="homepage-chart-header">
@@ -179,6 +122,89 @@
             </div>
             <div class="homepage-chart-footer">
                 <a href="cpe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CWE Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🔍 CWE</h4>
+            <small class="homepage-chart-subtitle">Common Weakness Enumeration patterns and vulnerability types</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="cwePreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scoring / Threat Intelligence Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🎯 Scoring & Threat Intelligence</h4>
+            <small class="homepage-chart-subtitle">CVSS severity, EPSS exploitation probability, and KEV tracking</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="stats-grid" style="margin-bottom: 1rem;">
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-high-risk">Loading...</div>
+                    <div class="stat-label">High Risk CVEs</div>
+                    <div class="stat-detail">EPSS &gt; 0.5</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-elevated-risk">Loading...</div>
+                    <div class="stat-label">Elevated Risk</div>
+                    <div class="stat-detail">EPSS &gt; 0.1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-coverage">Loading...</div>
+                    <div class="stat-label">EPSS Coverage</div>
+                    <div class="stat-detail" id="epss-coverage-detail">CVEs scored</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="kev-recent">Loading...</div>
+                    <div class="stat-label">KEV Recent</div>
+                    <div class="stat-detail">Last 30 days</div>
+                </div>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="scoring.html" class="btn btn-primary btn-sm">View Scoring Hub →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Growth Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📈 Growth</h4>
+            <small class="homepage-chart-subtitle">Year-over-year CVE publication trends and growth analysis</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="growthPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Calendar Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📅 Calendar</h4>
+            <small class="homepage-chart-subtitle">Daily and monthly CVE publication patterns</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="calendarPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="calendar.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
             </div>
         </div>
     </div>
@@ -443,24 +469,62 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('KEV global stats error:', error);
         });
+
+    // Initialize Threat Intelligence cards
+    // Load EPSS analysis data
+    fetch('data/epss_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const stats = data.statistics || {};
+            const totalWithEpss = data.total_cves_with_epss || 0;
+            
+            // High risk (EPSS > 0.5)
+            const highRiskEl = document.getElementById('epss-high-risk');
+            if (highRiskEl) highRiskEl.textContent = (stats.gt_0_5 || 0).toLocaleString();
+            
+            // Elevated risk (EPSS > 0.1)
+            const elevatedEl = document.getElementById('epss-elevated-risk');
+            if (elevatedEl) elevatedEl.textContent = (stats.gt_0_1 || 0).toLocaleString();
+            
+            // EPSS coverage
+            const coverageEl = document.getElementById('epss-coverage');
+            const coverageDetailEl = document.getElementById('epss-coverage-detail');
+            if (coverageEl) coverageEl.textContent = totalWithEpss.toLocaleString();
+            if (coverageDetailEl) coverageDetailEl.textContent = 'CVEs with EPSS scores';
+        })
+        .catch(error => {
+            console.error('EPSS analysis error:', error);
+        });
+    
+    // Load KEV analysis for recent additions
+    fetch('data/kev_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const stats = data.statistics || {};
+            const recentEl = document.getElementById('kev-recent');
+            if (recentEl) recentEl.textContent = (stats.added_last_30_days || 0).toLocaleString();
+        })
+        .catch(error => {
+            console.error('KEV analysis error:', error);
+        });
 });
 
 // Simplified preview charts initialization to eliminate JavaScript syntax errors
 function initializeSimplePreviewCharts() {
-    // Growth Preview Chart
-    initializeGrowthPreview();
-    
-    // CVSS Preview Chart (temporarily disabled)
-    initializeCvssPreview();
-    
-    // CWE Preview Chart
-    initializeCwePreview();
-    
     // CNA Preview Chart
     initializeCnaPreview();
     
     // CPE Preview Chart
     initializeCpePreview();
+    
+    // CWE Preview Chart
+    initializeCwePreview();
+    
+    // Growth Preview Chart
+    initializeGrowthPreview();
+    
+    // Calendar Preview Chart
+    initializeCalendarPreview();
 }
 
 function initializeGrowthPreview() {
@@ -772,6 +836,64 @@ function initializeCpePreview() {
 }
 
 // CVSS functionality is handled inline in the initializeCvssPreview function above
+
+function initializeCalendarPreview() {
+    const ctx = document.getElementById('calendarPreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/calendar_analysis_current_year.json')
+        .then(response => response.json())
+        .then(data => {
+            // Aggregate daily_data into monthly totals
+            const dailyData = data.daily_data || [];
+            const monthlyTotals = {};
+            
+            dailyData.forEach(day => {
+                const month = day.date.substring(5, 7); // Extract MM from YYYY-MM-DD
+                monthlyTotals[month] = (monthlyTotals[month] || 0) + day.value;
+            });
+            
+            const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Filter to only months with data
+            const months = [];
+            const values = [];
+            allMonths.forEach((m, i) => {
+                const key = String(i + 1).padStart(2, '0');
+                const value = monthlyTotals[key] || 0;
+                if (value > 0) {
+                    months.push(m);
+                    values.push(value);
+                }
+            });
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: '#a8c8ec',
+                        borderColor: '#9bc7e1',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Calendar preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
 
 </script>
 {% endblock %}
