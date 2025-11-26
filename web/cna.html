@@ -270,11 +270,12 @@
                 <thead>
                     <tr>
                         <th class="sortable" data-sort="rank" style="width: 80px;">Rank <span class="sort-indicator">▼</span></th>
-                        <th class="sortable" data-sort="name" style="width: 320px;">CNA Name <span class="sort-indicator"></span></th>
-                        <th class="sortable" data-sort="count" style="width: 140px;">CVEs Assigned <span class="sort-indicator"></span></th>
-                        <th class="sortable" data-sort="years_active" style="width: 140px;">Years Active <span class="sort-indicator"></span></th>
-                        <th class="sortable" data-sort="last_cve_date" style="width: 160px;">Last CVE Date <span class="sort-indicator"></span></th>
-                        <th class="sortable" data-sort="activity_status" style="width: 120px;">Status <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="name" style="width: 280px;">CNA Name <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="count" style="width: 130px;">CVEs Assigned <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="years_active" style="width: 120px;">Years Active <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="last_cve_date" style="width: 140px;">Last CVE Date <span class="sort-indicator"></span></th>
+                        <th class="sortable" data-sort="activity_status" style="width: 100px;">Status <span class="sort-indicator"></span></th>
+                        <th style="width: 80px;">Scorecard</th>
                     </tr>
                 </thead>
                 <tbody id="cnaTableBody">
@@ -738,6 +739,21 @@
 .pagination .page-item:last-child .page-link {
     border-top-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
+}
+
+.scorecard-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.1rem;
+    opacity: 0.7;
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.scorecard-link:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 </style>
 
@@ -1824,6 +1840,8 @@ function renderTable() {
         const statusIcon = cna.activity_status === 'Active' ? '✅' : '❌';
         // Use rank from JSON data, not recalculated
         let displayRank = cna.rank || (index + 1);
+        // Generate CNAScorecard link
+        const scorecardUrl = `https://cnascorecard.org/cna/cna-detail.html?shortName=${encodeURIComponent(cna.name)}`;
         return `
             <tr>
                 <td><strong>#${displayRank}</strong></td>
@@ -1832,6 +1850,7 @@ function renderTable() {
                 <td>${cna.years_active} years</td>
                 <td>${formattedDate}</td>
                 <td><span style="color: ${statusColor}; font-weight: bold;">${statusIcon} ${cna.activity_status}</span></td>
+                <td><a href="${scorecardUrl}" target="_blank" rel="noopener noreferrer" title="View on CNAScorecard" class="scorecard-link">📊</a></td>
             </tr>
         `;
     }).join('');
