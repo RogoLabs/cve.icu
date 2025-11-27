@@ -265,7 +265,7 @@ class CNAAnalyzer:
                                     if cna_stats[cna_name]['last_cve_year'] is None or year > cna_stats[cna_name]['last_cve_year']:
                                         cna_stats[cna_name]['last_cve_year'] = year
                                         
-                except Exception as e:
+                except Exception:
                     continue
             
             if not self.quiet:

@@ -10,7 +10,6 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
-import os
 
 from download_cve_data import CVEDataDownloader
 
@@ -176,8 +175,6 @@ class CVEV5Processor:
                     return True
         else:
             return self._clone_fresh_repo()
-        
-        return True
     
     def _clone_fresh_repo(self):
         """Clone fresh CVE V5 repository"""
@@ -367,6 +364,11 @@ class CVEV5Processor:
             # Extract CVE metadata
             cve_metadata = cve_data.get('cveMetadata', {})
             cve_id = cve_metadata.get('cveId', '')
+            state = cve_metadata.get('state', '')
+            
+            # Skip REJECTED CVEs - they don't represent valid vulnerabilities
+            if state == 'REJECTED':
+                return None
             
             # Extract CNA information from V5 format
             assigner_org_id = cve_metadata.get('assignerOrgId', '')
@@ -648,6 +650,12 @@ class CVEV5Processor:
         # Calculate enhanced statistics
         enhanced_stats = self.calculate_enhanced_statistics(cna_list)
         
+        # Calculate actual published CVE count (sum of all CNA counts, excludes REJECTED)
+        total_published_cves = sum(cna['count'] for cna in cna_list)
+        
+        # Update repo_stats with published count (not raw file count)
+        repo_stats['total_cves'] = total_published_cves
+        
         # Create comprehensive analysis data structure
         comprehensive_data = {
             'generated_at': datetime.now().isoformat(),
@@ -739,7 +747,7 @@ class CVEV5Processor:
                                 
                                 year_current_cves += 1
                                 current_year_cves += 1
-                        except Exception as e:
+                        except Exception:
                             # Skip CVEs with invalid dates
                             pass
                 

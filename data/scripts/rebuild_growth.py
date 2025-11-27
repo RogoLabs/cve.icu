@@ -4,33 +4,33 @@ Growth Analysis Rebuild Script
 Standalone script to rebuild growth analysis data and regenerate the Growth Intelligence Dashboard
 """
 
+import json
 import sys
-import os
 from pathlib import Path
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from yearly_analysis import YearlyAnalyzer
+from scripts.utils import setup_paths, print_header
 
 
 def main():
     """Main function to rebuild growth analysis"""
-    print("🚀 Growth Analysis Rebuild Script")
-    print("=" * 50)
+    print_header("Growth Analysis Rebuild", "🚀")
     
     try:
-        # Import required modules
-        from yearly_analysis import YearlyAnalyzer
-        
         # Initialize paths
-        base_dir = Path(__file__).parent.parent
-        cache_dir = base_dir / 'data' / 'cache'
-        data_dir = base_dir / 'data'
+        project_root, cache_dir, _ = setup_paths()
+        data_dir = project_root / 'data'  # Growth analysis uses data/ not web/data/
         
-        print(f"📁 Base directory: {base_dir}")
+        print(f"📁 Base directory: {project_root}")
         print(f"💾 Cache directory: {cache_dir}")
         print(f"📊 Data directory: {data_dir}")
         
         # Initialize analyzer
         print("\n🔧 Initializing Growth Analyzer...")
-        analyzer = YearlyAnalyzer(base_dir, cache_dir, data_dir)
+        analyzer = YearlyAnalyzer(project_root, cache_dir, data_dir)
         
         # Generate year data first (required for growth analysis)
         print("\n📅 Generating year data...")
@@ -81,9 +81,6 @@ def main():
                 }
                 
                 # Save current year analysis
-                import json
-                from datetime import datetime
-                
                 current_year_file = data_dir / 'growth_analysis_current_year.json'
                 with open(current_year_file, 'w') as f:
                     json.dump(current_year_growth, f, indent=2)

@@ -4,13 +4,13 @@ CVE.ICU Static Site Generator
 Fixed build system that works with existing code structure
 """
 
+import argparse
+import json
 import os
 import shutil
-import json
-from datetime import datetime
-from pathlib import Path
 import sys
-import argparse
+from datetime import datetime, timezone
+from pathlib import Path
 
 # Add data folder to path for imports
 sys.path.append('data')
@@ -483,7 +483,7 @@ class CVESiteBuilder:
             })
         
         cve_all_data = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'total_cves': total_cves,
             'years_covered': years_with_data,
             'current_year': self.current_year,
@@ -518,7 +518,7 @@ class CVESiteBuilder:
         
         # Build summary structure with everything years.html needs
         summary = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'years': {}
         }
         
@@ -569,6 +569,36 @@ class CVESiteBuilder:
             'cna_current': 'handled_in_combined_analysis'
         }
     
+    def generate_data_quality_json(self):
+        """Generate data quality analysis JSON using CNAScorecard-style name matching"""
+        print("🔍 Generating data quality analysis...")
+        
+        try:
+            # Import and run the rebuild_data_quality script
+            import sys
+            script_dir = self.base_dir / 'data' / 'scripts'
+            if str(script_dir) not in sys.path:
+                sys.path.insert(0, str(script_dir))
+            
+            # Import the module
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(
+                "rebuild_data_quality", 
+                script_dir / "rebuild_data_quality.py"
+            )
+            rebuild_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rebuild_module)
+            
+            # Run the main function (it handles its own output)
+            rebuild_module.main()
+            
+            print("  ✅ Data quality analysis generated")
+            
+        except FileNotFoundError:
+            print("  ⚠️  rebuild_data_quality.py not found, skipping data quality analysis")
+        except Exception as e:
+            print(f"  ⚠️  Error generating data quality: {e}")
+    
     def generate_html_pages(self):
         """Generate HTML pages from templates"""
         self.print_verbose("📄 Generating HTML pages...")
@@ -577,6 +607,7 @@ class CVESiteBuilder:
         pages = [
             {'template': 'index.html', 'output': 'index.html', 'title': 'CVE Intelligence Dashboard'},
             {'template': 'years.html', 'output': 'years.html', 'title': 'Yearly Analysis'},
+            {'template': 'cna-hub.html', 'output': 'cna-hub.html', 'title': 'CNA Intelligence Hub'},
             {'template': 'cna.html', 'output': 'cna.html', 'title': 'CNA Intelligence Dashboard'},
             {'template': 'cpe.html', 'output': 'cpe.html', 'title': 'CPE Analysis'},
             {'template': 'cvss.html', 'output': 'cvss.html', 'title': 'CVSS Analysis'},
@@ -586,7 +617,7 @@ class CVESiteBuilder:
             {'template': 'scoring.html', 'output': 'scoring.html', 'title': 'Scoring Hub'},
             {'template': 'epss.html', 'output': 'epss.html', 'title': 'EPSS Analysis'},
             {'template': 'kev.html', 'output': 'kev.html', 'title': 'KEV Analysis'},
-            {'template': 'data-quality.html', 'output': 'data-quality.html', 'title': 'Data Quality'},
+            {'template': 'data-quality.html', 'output': 'data-quality.html', 'title': 'CNA Name Matching'},
             {'template': 'about.html', 'output': 'about.html', 'title': 'About CVE.ICU'}
         ]
         
@@ -639,7 +670,10 @@ class CVESiteBuilder:
             # Step 5: Generate current year analysis files
             current_year_analysis = self.generate_current_year_analysis_json(all_year_data)
             
-            # Step 6: Generate HTML pages
+            # Step 6: Generate data quality analysis
+            self.generate_data_quality_json()
+            
+            # Step 7: Generate HTML pages
             self.generate_html_pages()
             
             if not self.quiet:
@@ -676,6 +710,7 @@ Environment Variables:
 Examples:
   python build.py              # Normal verbose output
   python build.py --quiet      # Minimal output for CI/CD
+  python build.py --validate   # Validate data counting consistency
   CVE_BUILD_QUIET=1 python build.py  # Quiet mode via environment variable
 '''
     )
@@ -686,11 +721,111 @@ Examples:
         help='Minimal output mode - reduces verbosity for CI/CD environments'
     )
     
+    parser.add_argument(
+        '--validate',
+        action='store_true',
+        help='Validate data counting consistency after build'
+    )
+    
     args = parser.parse_args()
     
     builder = CVESiteBuilder(quiet=args.quiet)
     success = builder.build_site()
+    
+    if success and args.validate:
+        print("\n🔍 Running data validation...")
+        if not validate_data_counts(builder):
+            print("❌ Validation failed")
+            sys.exit(1)
+        print("✅ Validation passed")
+    
     sys.exit(0 if success else 1)
+
+
+def validate_data_counts(builder):
+    """Validate that data counting is consistent across output files.
+    
+    See COUNTING.md for detailed documentation of expected behavior.
+    """
+    import json
+    from pathlib import Path
+    
+    data_dir = builder.data_dir
+    errors = []
+    warnings = []
+    
+    print("  📊 Checking year file totals...")
+    
+    # 1. Sum of year files should equal cve_all.json total
+    year_sum = 0
+    for year in range(1999, builder.current_year + 1):
+        year_file = data_dir / f'cve_{year}.json'
+        if year_file.exists():
+            with open(year_file) as f:
+                data = json.load(f)
+            year_sum += data.get('total_cves', 0)
+    
+    cve_all_file = data_dir / 'cve_all.json'
+    if cve_all_file.exists():
+        with open(cve_all_file) as f:
+            cve_all = json.load(f)
+        cve_all_total = cve_all.get('total_cves', 0)
+        
+        if year_sum != cve_all_total:
+            errors.append(f"Year files sum ({year_sum:,}) != cve_all.json total ({cve_all_total:,})")
+        else:
+            print(f"    ✅ Year files sum matches cve_all.json: {year_sum:,}")
+    else:
+        errors.append("cve_all.json not found")
+    
+    # 2. CNA analysis should have repository_stats.total_cves matching CNA list sum
+    print("  🏢 Checking CNA analysis totals...")
+    cna_file = data_dir / 'cna_analysis.json'
+    if cna_file.exists():
+        with open(cna_file) as f:
+            cna_data = json.load(f)
+        
+        repo_total = cna_data.get('repository_stats', {}).get('total_cves', 0)
+        cna_list = cna_data.get('cna_list', [])
+        cna_sum = sum(cna.get('count', 0) for cna in cna_list)
+        
+        if repo_total != cna_sum:
+            errors.append(f"CNA repo_stats ({repo_total:,}) != sum of CNA counts ({cna_sum:,})")
+        else:
+            print(f"    ✅ CNA counts consistent: {cna_sum:,}")
+        
+        # CNA and cve_all should now be close (both exclude REJECTED)
+        # Small difference expected due to pre-1999 CVEs (~700) and source variance
+        diff = abs(repo_total - cve_all_total) if cve_all_file.exists() else 0
+        if diff <= 1000:
+            print(f"    ✅ CNA total ({repo_total:,}) ≈ cve_all ({cve_all_total:,}) [diff: {diff}]")
+        else:
+            errors.append(f"CNA vs cve_all difference ({diff:,}) too large (expected <1000)")
+    else:
+        warnings.append("cna_analysis.json not found")
+    
+    # 3. Yearly trend in cve_all.json should match year files
+    print("  📈 Checking yearly trend consistency...")
+    if cve_all_file.exists():
+        yearly_trend = cve_all.get('yearly_trend', [])
+        trend_sum = sum(y.get('count', 0) for y in yearly_trend)
+        if trend_sum != cve_all_total:
+            errors.append(f"yearly_trend sum ({trend_sum:,}) != total_cves ({cve_all_total:,})")
+        else:
+            print(f"    ✅ Yearly trend sum matches total: {trend_sum:,}")
+    
+    # Report results
+    if errors:
+        print("\n  ❌ Validation errors:")
+        for error in errors:
+            print(f"     - {error}")
+    
+    if warnings:
+        print("\n  ⚠️  Validation warnings:")
+        for warning in warnings:
+            print(f"     - {warning}")
+    
+    return len(errors) == 0
 
 
 if __name__ == '__main__':

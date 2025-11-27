@@ -5,48 +5,25 @@ Quick rebuild script for CWE analysis only - much faster than full site rebuild
 """
 
 import sys
-from pathlib import Path
-import json
 from datetime import datetime
+from pathlib import Path
 
-
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from cwe_analysis import CWEAnalyzer
-
-
-def load_all_year_data(data_dir):
-    """Load all existing year data files"""
-    all_year_data = []
-    current_year = datetime.now().year
-    
-    for year in range(1999, current_year + 1):
-        year_file = data_dir / f'cve_{year}.json'
-        if year_file.exists():
-            try:
-                with open(year_file, 'r') as f:
-                    year_data = json.load(f)
-                all_year_data.append(year_data)
-            except Exception as e:
-                print(f"  ⚠️  Error loading {year_file}: {e}")
-    
-    return all_year_data
+from scripts.utils import setup_paths, load_all_year_data, print_header
 
 
 def main():
     """Rebuild CWE analysis only"""
-    print("🔍 CVE.ICU CWE Analysis Quick Rebuild")
-    print("=" * 40)
+    print_header("CWE Analysis Quick Rebuild", "🔍")
     
     # Set up paths
-    base_dir = Path(__file__).parent.parent
-    cache_dir = base_dir / 'data' / 'cache'
-    data_dir = base_dir / 'web' / 'data'
-    
-    # Ensure data directory exists
-    data_dir.mkdir(parents=True, exist_ok=True)
+    project_root, cache_dir, data_dir = setup_paths()
     
     # Initialize CWE analyzer
-    cwe_analyzer = CWEAnalyzer(base_dir, cache_dir, data_dir)
+    cwe_analyzer = CWEAnalyzer(project_root, cache_dir, data_dir)
     
     try:
         # Load existing year data

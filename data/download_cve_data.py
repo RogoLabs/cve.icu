@@ -5,14 +5,12 @@ Downloads and caches CVE data from NVD source for processing
 Replaces the wget step from GitHub Actions with proper Python error handling
 """
 
-import os
 import requests
 import json
 import gzip
 from pathlib import Path
 from datetime import datetime, timedelta
 import hashlib
-import time
 import csv
 
 class CVEDataDownloader:

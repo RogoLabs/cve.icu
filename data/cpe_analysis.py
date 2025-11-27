@@ -7,7 +7,7 @@ Handles all CPE (Common Platform Enumeration) related data processing and analys
 import json
 from pathlib import Path
 from datetime import datetime
-from collections import defaultdict, Counter
+from collections import Counter
 
 
 class CPEAnalyzer:
@@ -280,7 +280,7 @@ class CPEAnalyzer:
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception as e:
+                    except Exception:
                         continue
         
         except Exception as e:
@@ -373,7 +373,7 @@ class CPEAnalyzer:
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception as e:
+                    except Exception:
                         continue
         
         except Exception as e:

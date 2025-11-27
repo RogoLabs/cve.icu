@@ -6,10 +6,9 @@ Handles historical data (1999-2016) and individual years (2017-present)
 """
 
 import json
-import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from collections import defaultdict, Counter
+from collections import Counter
 from urllib.parse import urlparse
 from download_cve_data import CVEDataDownloader
 

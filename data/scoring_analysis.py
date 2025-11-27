@@ -5,9 +5,9 @@ Generates analysis files for the Scoring Hub: EPSS, KEV, and Risk Matrix data
 """
 
 import json
-from pathlib import Path
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
 
 
 class ScoringAnalyzer:
@@ -155,7 +155,7 @@ class ScoringAnalyzer:
         gt_09 = sum(1 for s in all_scores if s > 0.9)
         
         analysis = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'total_cves_with_epss': len(epss_data),
             'statistics': {
                 'average_score': round(avg_score, 6),
@@ -202,7 +202,7 @@ class ScoringAnalyzer:
         
         recent_30_days = []
         recent_90_days = []
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         
         timeline = defaultdict(int)  # Monthly additions
         
@@ -224,7 +224,7 @@ class ScoringAnalyzer:
             # Year added to KEV
             if date_added:
                 try:
-                    added_date = datetime.strptime(date_added, '%Y-%m-%d')
+                    added_date = datetime.strptime(date_added, '%Y-%m-%d').replace(tzinfo=timezone.utc)
                     by_year_added[str(added_date.year)] += 1
                     
                     # Monthly timeline
@@ -274,7 +274,7 @@ class ScoringAnalyzer:
         recent_90_days.sort(key=lambda x: x['date_added'], reverse=True)
         
         analysis = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'catalog_version': kev_data.get('catalogVersion', ''),
             'total_kev_cves': len(vulnerabilities),
             'statistics': {
@@ -306,7 +306,7 @@ class ScoringAnalyzer:
         print("📊 Generating risk matrix...")
         
         epss_data = self.load_epss_data()
-        cvss_data = self.load_cvss_data()
+        self.load_cvss_data()
         kev_data = self.load_kev_data()
         
         # Build KEV set for quick lookup
@@ -414,7 +414,7 @@ class ScoringAnalyzer:
         total_kev_in_matrix = sum(m['kev_count'] for m in matrix_list)
         
         analysis = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'severity_bands': severity_bands,
             'epss_buckets': epss_buckets,
             'matrix': matrix_list,
@@ -455,7 +455,7 @@ class ScoringAnalyzer:
         )
         
         comparison = {
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'systems': {
                 'cvss': {
                     'name': 'CVSS',

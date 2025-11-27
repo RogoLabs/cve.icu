@@ -4,12 +4,9 @@ CVE.ICU Quick Template Builder
 Fast template-only rebuild for development - skips data processing
 """
 
-import os
 import shutil
-import json
 from datetime import datetime
 from pathlib import Path
-import sys
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -76,6 +73,7 @@ class CVEQuickBuilder:
         pages = [
             ('index.html', 'CVE.ICU - Vulnerability Intelligence Platform'),
             ('years.html', 'Yearly Analysis - CVE.ICU'),
+            ('cna-hub.html', 'CNA Intelligence Hub - CVE.ICU'),
             ('cna.html', 'CNA Analysis - CVE.ICU'),
             ('cpe.html', 'CPE Analysis - CVE.ICU'),
             ('cvss.html', 'CVSS Analysis - CVE.ICU'),
@@ -86,7 +84,7 @@ class CVEQuickBuilder:
             ('scoring.html', 'Scoring Hub - CVE.ICU'),
             ('epss.html', 'EPSS Analysis - CVE.ICU'),
             ('kev.html', 'KEV Dashboard - CVE.ICU'),
-            ('data-quality.html', 'Data Quality - CVE.ICU'),
+            ('data-quality.html', 'CNA Name Matching - CVE.ICU'),
         ]
         
         for template_name, title in pages:

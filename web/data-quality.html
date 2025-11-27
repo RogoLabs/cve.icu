@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    <title>Data Quality - CVE.ICU</title>
+    <title>CNA Name Matching Quality - CVE.ICU</title>
     
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +48,13 @@
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="years.html">Yearly Analysis</a></li>
-                    <li><a href="cna.html">CNA</a></li>
+                    <li class="nav-dropdown">
+                        <a href="cna-hub.html" class="dropdown-toggle">CNA</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cna.html">CNA Intelligence</a></li>
+                            <li><a href="data-quality.html">Name Matching</a></li>
+                        </ul>
+                    </li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
                     <li class="nav-dropdown">
@@ -76,171 +82,218 @@
         
 <!-- Hero Section -->
 <div class="page-header mb-4 text-center">
-    <h1 class="display-4 mb-2">Data Quality Dashboard</h1>
+    <h1 class="display-4 mb-2">CNA Name Matching Quality</h1>
     <small class="text-muted d-block mb-3">
-        Transparency into CVE data attribution gaps and anomalies
+        How well CVE assigner names match the official CNA registry
     </small>
 </div>
 
 <!-- Summary Stats -->
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-number" id="officialCnas">Loading...</div>
-        <div class="stat-label">Official CNAs</div>
-        <small class="text-muted" style="font-size: 0.75rem;">✅ Verified in CNA registry</small>
+        <div class="stat-number" id="exactMatches" style="color: #1e3a5f;">Loading...</div>
+        <div class="stat-label">Exact Matches</div>
+        <small class="text-muted" style="font-size: 0.75rem;">Perfect shortName match</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="unmatchedCnas">Loading...</div>
-        <div class="stat-label">Unmatched CNAs</div>
-        <small class="text-muted" style="font-size: 0.75rem;">⚠️ Not in official registry</small>
+        <div class="stat-number" id="fuzzyMatches" style="color: #3b82f6;">Loading...</div>
+        <div class="stat-label">Fuzzy Matches</div>
+        <small class="text-muted" style="font-size: 0.75rem;">Matched via normalization</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="unmatchedCves">Loading...</div>
-        <div class="stat-label">Unmatched CVEs</div>
-        <small class="text-muted" style="font-size: 0.75rem;">📊 CVEs from unmatched sources</small>
+        <div class="stat-number" id="unmatchedCount" style="color: #94a3b8;">Loading...</div>
+        <div class="stat-label">Unmatched</div>
+        <small class="text-muted" style="font-size: 0.75rem;">No registry match found</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="anomalyCount">Loading...</div>
-        <div class="stat-label">Anomalies</div>
-        <small class="text-muted" style="font-size: 0.75rem;">🔍 Unusual patterns detected</small>
+        <div class="stat-number" id="matchRate">Loading...</div>
+        <div class="stat-label">Match Rate</div>
+        <small class="text-muted" style="font-size: 0.75rem;">Overall matching success</small>
     </div>
 </div>
 
 <!-- Explanation Card -->
 <div class="card mb-4">
     <div class="card-header py-2">
-        <h3 class="card-title" style="font-size: 1.1rem;">ℹ️ About This Dashboard</h3>
+        <h3 class="card-title" style="font-size: 1.1rem;">How Name Matching Works</h3>
     </div>
     <div class="card-body py-3">
         <p class="mb-2">
-            This dashboard provides transparency into data quality issues within the CVE ecosystem. 
-            It highlights cases where CVE assigner names don't match the official CNA registry, 
-            helping identify:
+            This analysis uses <strong>CNAScorecard-style name matching</strong> to reconcile CVE assigner names 
+            with the official CNA registry. The matching process uses progressively relaxed strategies:
         </p>
-        <ul class="mb-2" style="font-size: 0.9rem;">
-            <li><strong>Name variations:</strong> Official CNAs using different name formats (e.g., "Samsung Electronics Co., Ltd." vs official registry entry)</li>
-            <li><strong>Unofficial assigners:</strong> Organizations publishing CVEs outside the CNA program</li>
-            <li><strong>Individual researchers:</strong> Security researchers assigned CVEs directly</li>
-            <li><strong>Anomalies:</strong> Unusual patterns like high-volume inactive CNAs</li>
-        </ul>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="mb-2" style="font-size: 0.9rem;">
+                    <li><strong>Exact Match:</strong> Direct shortName comparison</li>
+                    <li><strong>Case-Insensitive:</strong> Ignore letter casing differences</li>
+                    <li><strong>Organization Name:</strong> Match via full organization name</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="mb-2" style="font-size: 0.9rem;">
+                    <li><strong>Normalized:</strong> Remove spaces, hyphens, underscores</li>
+                    <li><strong>Partial:</strong> Substring containment check</li>
+                </ul>
+            </div>
+        </div>
         <p class="mb-0 text-muted" style="font-size: 0.85rem;">
-            <em>Note: These are data quality observations, not security concerns. Many "unmatched" CNAs are legitimate organizations with name format differences.</em>
+            <em>Unmatched CNAs may be historical assigners, deprecated organizations, or name variations not yet mapped.</em>
         </p>
     </div>
 </div>
 
-<!-- Unmatched CNAs Table -->
+<!-- Match Quality Breakdown -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Match Quality Distribution</h3>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="matchQualityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">CVEs by Match Type</h3>
+                <small class="text-muted">Excluding exact matches for scale</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="cveMatchChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Case Mismatches -->
 <div class="card mb-4">
     <div class="card-header py-2">
-        <h3 class="card-title" style="font-size: 1.1rem;">⚠️ Top Unmatched CNAs</h3>
-        <small class="text-muted">CVE assigners not found in official CNA registry (by CVE count)</small>
+        <h3 class="card-title" style="font-size: 1.1rem;">Case Mismatches</h3>
+        <small class="text-muted">CNAs using different letter casing than official registry</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="caseMismatchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Name Used</th>
+                        <th style="width: 200px;">Official Name</th>
+                        <th style="width: 100px;">CVEs</th>
+                        <th style="width: 80px;">KEVs</th>
+                    </tr>
+                </thead>
+                <tbody id="caseMismatchBody">
+                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Organization Name Matches -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">Organization Name Matches</h3>
+        <small class="text-muted">CNAs matched via organization name instead of shortName</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="orgMatchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Name Used</th>
+                        <th style="width: 200px;">Official ShortName</th>
+                        <th style="width: 100px;">CVEs</th>
+                        <th style="width: 80px;">KEVs</th>
+                    </tr>
+                </thead>
+                <tbody id="orgMatchBody">
+                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Normalized Matches -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">Normalized Matches</h3>
+        <small class="text-muted">CNAs matched after removing spaces, hyphens, and underscores</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="normalizedMatchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Name Used</th>
+                        <th style="width: 200px;">Official Name</th>
+                        <th style="width: 100px;">CVEs</th>
+                        <th style="width: 80px;">KEVs</th>
+                    </tr>
+                </thead>
+                <tbody id="normalizedMatchBody">
+                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Partial Matches -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">Partial Matches</h3>
+        <small class="text-muted">CNAs matched via substring containment (lower confidence)</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="partialMatchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Name Used</th>
+                        <th style="width: 200px;">Possible Match</th>
+                        <th style="width: 100px;">CVEs</th>
+                        <th style="width: 100px;">Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="partialMatchBody">
+                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Truly Unmatched -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">Unmatched CNAs</h3>
+        <small class="text-muted">CVE assigners with no match found in official CNA registry</small>
     </div>
     <div class="card-body py-3">
         <div class="table-responsive">
             <table class="table table-hover" id="unmatchedTable">
                 <thead>
                     <tr>
-                        <th style="width: 300px;">Assigner Name</th>
-                        <th style="width: 120px;">CVE Count</th>
-                        <th style="width: 150px;">Category</th>
-                        <th>Possible Matches</th>
-                    </tr>
-                </thead>
-                <tbody id="unmatchedTableBody">
-                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Unofficial CNAs -->
-<div class="card mb-4">
-    <div class="card-header py-2">
-        <h3 class="card-title" style="font-size: 1.1rem;">🔍 Unofficial CVE Sources</h3>
-        <small class="text-muted">Organizations publishing CVEs outside the official CNA program</small>
-    </div>
-    <div class="card-body py-3">
-        <div class="table-responsive">
-            <table class="table table-hover" id="unofficialTable">
-                <thead>
-                    <tr>
-                        <th style="width: 300px;">Organization</th>
-                        <th style="width: 120px;">CVE Count</th>
-                        <th style="width: 120px;">Years Active</th>
+                        <th style="width: 200px;">Name</th>
+                        <th style="width: 100px;">CVEs</th>
+                        <th style="width: 80px;">KEVs</th>
+                        <th style="width: 100px;">EPSS High</th>
                         <th>Notes</th>
                     </tr>
                 </thead>
-                <tbody id="unofficialTableBody">
-                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                <tbody id="unmatchedBody">
+                    <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
-
-<!-- Likely Official (Mismatched Names) -->
-<div class="card mb-4">
-    <div class="card-header py-2">
-        <h3 class="card-title" style="font-size: 1.1rem;">✅ Likely Official CNAs (Name Variations)</h3>
-        <small class="text-muted">CNAs that appear official but use different name formats</small>
-    </div>
-    <div class="card-body py-3">
-        <div class="table-responsive">
-            <table class="table table-hover" id="likelyOfficialTable">
-                <thead>
-                    <tr>
-                        <th style="width: 300px;">Name Used</th>
-                        <th style="width: 120px;">CVE Count</th>
-                        <th style="width: 120px;">Confidence</th>
-                        <th>Reasoning</th>
-                    </tr>
-                </thead>
-                <tbody id="likelyOfficialTableBody">
-                    <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Anomalies -->
-<div class="card mb-4">
-    <div class="card-header py-2">
-        <h3 class="card-title" style="font-size: 1.1rem;">🚨 Detected Anomalies</h3>
-        <small class="text-muted">Unusual patterns in CVE data</small>
-    </div>
-    <div class="card-body py-3">
-        <div id="anomaliesList">
-            <p class="text-center text-muted">Loading...</p>
-        </div>
-    </div>
-</div>
-
-<!-- Category Breakdown -->
-<div class="row mb-4">
-    <div class="col-lg-6 mb-4">
-        <div class="card">
-            <div class="card-header py-2">
-                <h3 class="card-title" style="font-size: 1.1rem;">📊 Unmatched by Category</h3>
-            </div>
-            <div class="card-body py-3">
-                <div class="chart-container" style="height: 250px;">
-                    <canvas id="categoryChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 mb-4">
-        <div class="card">
-            <div class="card-header py-2">
-                <h3 class="card-title" style="font-size: 1.1rem;">📈 Official vs Unofficial</h3>
-            </div>
-            <div class="card-body py-3">
-                <div class="chart-container" style="height: 250px;">
-                    <canvas id="officialChart"></canvas>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -595,155 +648,143 @@
     
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
-.anomaly-item {
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    background: var(--color-surface);
-    border-radius: var(--border-radius);
-    border-left: 3px solid #f59e0b;
-}
-.anomaly-type {
-    font-weight: 600;
-    color: var(--color-text-primary);
-    font-size: 0.9rem;
-}
-.anomaly-desc {
-    color: var(--color-text-secondary);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-.category-badge {
+.confidence-high { color: #1e3a5f; font-weight: 600; }
+.confidence-medium { color: #3b82f6; font-weight: 600; }
+.confidence-low { color: #94a3b8; font-weight: 600; }
+.match-badge {
     display: inline-block;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 500;
 }
-.category-name_variation { background: #dbeafe; color: #1e40af; }
-.category-individual_researcher { background: #d1fae5; color: #065f46; }
-.category-unknown { background: #f3f4f6; color: #374151; }
+.match-exact { background: #1e3a5f; color: #fff; }
+.match-case { background: #2563eb; color: #fff; }
+.match-org { background: #3b82f6; color: #fff; }
+.match-normalized { background: #60a5fa; color: #1e3a5f; }
+.match-partial { background: #93c5fd; color: #1e3a5f; }
 </style>
 
 <script>
 let dataQuality = null;
 let charts = {};
 
-// Load data and initialize page
 async function loadDataQuality() {
     try {
         const response = await fetch('data/data_quality.json');
         dataQuality = await response.json();
         
         updateSummaryStats();
-        populateUnmatchedTable();
-        populateUnofficialTable();
-        populateLikelyOfficialTable();
-        populateAnomalies();
+        populateTables();
         createCharts();
         
     } catch (error) {
         console.error('Error loading data quality:', error);
-        document.getElementById('unmatchedTableBody').innerHTML = 
-            '<tr><td colspan="4" class="text-center text-danger">Error loading data</td></tr>';
+        document.querySelectorAll('tbody').forEach(tbody => {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>';
+        });
     }
 }
 
 function updateSummaryStats() {
-    const summary = dataQuality.summary;
-    document.getElementById('officialCnas').textContent = summary.total_official_cnas.toLocaleString();
-    document.getElementById('unmatchedCnas').textContent = summary.unmatched_cna_count.toLocaleString();
-    document.getElementById('unmatchedCves').textContent = summary.unmatched_cve_total.toLocaleString();
-    document.getElementById('anomalyCount').textContent = dataQuality.anomalies.length.toLocaleString();
+    const stats = dataQuality.stats;
+    
+    document.getElementById('exactMatches').textContent = stats.exact_matches.toLocaleString();
+    
+    // Fuzzy = case + org + normalized + partial
+    const fuzzy = stats.case_mismatches + stats.org_name_matches + stats.normalized_matches + stats.partial_matches;
+    document.getElementById('fuzzyMatches').textContent = fuzzy.toLocaleString();
+    
+    document.getElementById('unmatchedCount').textContent = stats.unmatched.toLocaleString();
+    
+    // Match rate
+    const total = stats.total_cnas_in_analysis;
+    const matched = total - stats.unmatched;
+    const rate = total > 0 ? ((matched / total) * 100).toFixed(1) : 0;
+    document.getElementById('matchRate').textContent = rate + '%';
 }
 
-function populateUnmatchedTable() {
-    const tbody = document.getElementById('unmatchedTableBody');
-    const cnas = dataQuality.unmatched_cnas.slice(0, 20);
-    
-    if (cnas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No unmatched CNAs found</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = cnas.map(cna => `
+function populateTables() {
+    // Case mismatches
+    populateTable('caseMismatchBody', dataQuality.case_mismatches, (item) => `
         <tr>
-            <td><strong>${escapeHtml(cna.name)}</strong></td>
-            <td>${cna.cve_count.toLocaleString()}</td>
-            <td><span class="category-badge category-${cna.category}">${formatCategory(cna.category)}</span></td>
-            <td>${cna.closest_matches.length > 0 ? cna.closest_matches.map(m => escapeHtml(m)).join(', ') : '<span class="text-muted">None found</span>'}</td>
+            <td><strong>${escapeHtml(item.cna_name)}</strong></td>
+            <td><code>${escapeHtml(item.official_short_name)}</code></td>
+            <td>${item.cve_count.toLocaleString()}</td>
+            <td>${item.kev_count || 0}</td>
         </tr>
-    `).join('');
-}
-
-function populateUnofficialTable() {
-    const tbody = document.getElementById('unofficialTableBody');
-    const cnas = dataQuality.unofficial_cnas.slice(0, 15);
+    `);
     
-    if (cnas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No unofficial CNAs found</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = cnas.map(cna => `
+    // Organization name matches
+    populateTable('orgMatchBody', dataQuality.org_name_matches, (item) => `
         <tr>
-            <td><strong>${escapeHtml(cna.name)}</strong></td>
-            <td>${cna.cve_count.toLocaleString()}</td>
-            <td>${cna.years_active} years</td>
-            <td class="text-muted" style="font-size: 0.85rem;">${cna.reasoning.length > 0 ? escapeHtml(cna.reasoning[0].substring(0, 80)) + '...' : '-'}</td>
+            <td><strong>${escapeHtml(item.cna_name)}</strong></td>
+            <td><code>${escapeHtml(item.official_short_name)}</code></td>
+            <td>${item.cve_count.toLocaleString()}</td>
+            <td>${item.kev_count || 0}</td>
         </tr>
-    `).join('');
-}
-
-function populateLikelyOfficialTable() {
-    const tbody = document.getElementById('likelyOfficialTableBody');
-    const cnas = dataQuality.likely_official_cnas || [];
+    `);
     
-    if (cnas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No likely official CNAs identified</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = cnas.map(cna => `
+    // Normalized matches
+    populateTable('normalizedMatchBody', dataQuality.normalized_matches, (item) => `
         <tr>
-            <td><strong>${escapeHtml(cna.name)}</strong></td>
-            <td>${cna.cve_count.toLocaleString()}</td>
-            <td><span class="badge bg-success">${cna.confidence}</span></td>
-            <td class="text-muted" style="font-size: 0.85rem;">${cna.reasoning.length > 0 ? escapeHtml(cna.reasoning[0].substring(0, 100)) : '-'}</td>
+            <td><strong>${escapeHtml(item.cna_name)}</strong></td>
+            <td><code>${escapeHtml(item.official_short_name)}</code></td>
+            <td>${item.cve_count.toLocaleString()}</td>
+            <td>${item.kev_count || 0}</td>
         </tr>
-    `).join('');
+    `);
+    
+    // Partial matches
+    populateTable('partialMatchBody', dataQuality.partial_matches, (item) => `
+        <tr>
+            <td><strong>${escapeHtml(item.cna_name)}</strong></td>
+            <td><code>${escapeHtml(item.official_short_name)}</code></td>
+            <td>${item.cve_count.toLocaleString()}</td>
+            <td><span class="confidence-low">Low</span></td>
+        </tr>
+    `);
+    
+    // Unmatched
+    populateTable('unmatchedBody', dataQuality.unmatched, (item) => `
+        <tr>
+            <td><strong>${escapeHtml(item.cna_name)}</strong></td>
+            <td>${item.cve_count.toLocaleString()}</td>
+            <td>${item.kev_count || 0}</td>
+            <td>${item.epss_high_count || 0}</td>
+            <td class="text-muted" style="font-size: 0.85rem;">Not found in official registry</td>
+        </tr>
+    `);
 }
 
-function populateAnomalies() {
-    const container = document.getElementById('anomaliesList');
-    const anomalies = dataQuality.anomalies;
-    
-    if (anomalies.length === 0) {
-        container.innerHTML = '<p class="text-center text-muted">No anomalies detected</p>';
+function populateTable(bodyId, data, rowFn) {
+    const tbody = document.getElementById(bodyId);
+    if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">None found</td></tr>';
         return;
     }
-    
-    container.innerHTML = anomalies.map(anomaly => `
-        <div class="anomaly-item">
-            <div class="anomaly-type">${formatAnomalyType(anomaly.type)}: ${escapeHtml(anomaly.cna_name || 'Unknown')}</div>
-            <div class="anomaly-desc">${escapeHtml(anomaly.description)}</div>
-        </div>
-    `).join('');
+    tbody.innerHTML = data.map(rowFn).join('');
 }
 
 function createCharts() {
-    // Category breakdown chart
-    const categoryData = dataQuality.summary.unmatched_by_category || {};
-    const categoryLabels = Object.keys(categoryData).map(formatCategory);
-    const categoryValues = Object.values(categoryData);
+    const stats = dataQuality.stats;
     
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    charts.category = new Chart(categoryCtx, {
+    // Match quality distribution (CNA count)
+    const qualityCtx = document.getElementById('matchQualityChart').getContext('2d');
+    charts.quality = new Chart(qualityCtx, {
         type: 'doughnut',
         data: {
-            labels: categoryLabels,
+            labels: ['Exact', 'Case', 'Org Name', 'Normalized', 'Partial', 'Unmatched'],
             datasets: [{
-                data: categoryValues,
-                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+                data: [
+                    stats.exact_matches,
+                    stats.case_mismatches,
+                    stats.org_name_matches,
+                    stats.normalized_matches,
+                    stats.partial_matches,
+                    stats.unmatched
+                ],
+                backgroundColor: ['#1e3a5f', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#cbd5e1'],
                 borderWidth: 0
             }]
         },
@@ -753,22 +794,33 @@ function createCharts() {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: '#64748b', font: { size: 11 } }
+                    labels: { color: '#64748b', font: { size: 10 } }
+                },
+                title: {
+                    display: true,
+                    text: 'CNAs by Match Type',
+                    color: '#64748b'
                 }
             }
         }
     });
     
-    // Official vs unofficial chart
-    const summary = dataQuality.summary;
-    const officialCtx = document.getElementById('officialChart').getContext('2d');
-    charts.official = new Chart(officialCtx, {
+    // CVE distribution by match type (excluding exact for scale)
+    const cveCtx = document.getElementById('cveMatchChart').getContext('2d');
+    charts.cve = new Chart(cveCtx, {
         type: 'bar',
         data: {
-            labels: ['Official CNAs', 'Likely Official', 'Truly Unofficial'],
+            labels: ['Case', 'Org Name', 'Normalized', 'Partial', 'Unmatched'],
             datasets: [{
-                data: [summary.total_official_cnas, summary.likely_official, summary.truly_unofficial],
-                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b'],
+                label: 'CVEs',
+                data: [
+                    stats.case_mismatch_cves,
+                    stats.org_name_match_cves,
+                    stats.normalized_match_cves,
+                    stats.partial_match_cves,
+                    stats.unmatched_cves
+                ],
+                backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#cbd5e1'],
                 borderWidth: 0,
                 borderRadius: 4
             }]
@@ -787,14 +839,13 @@ function createCharts() {
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { color: '#64748b', font: { size: 10 } }
+                    ticks: { color: '#64748b', font: { size: 9 } }
                 }
             }
         }
     });
 }
 
-// Utility functions
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -802,24 +853,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function formatCategory(category) {
-    const formats = {
-        'name_variation': 'Name Variation',
-        'individual_researcher': 'Individual Researcher',
-        'unknown': 'Unknown'
-    };
-    return formats[category] || category;
-}
-
-function formatAnomalyType(type) {
-    const formats = {
-        'high_volume_inactive': '📊 High-Volume Inactive CNA',
-        'major_vendor_unmatched': '⚠️ Major Vendor Unmatched'
-    };
-    return formats[type] || type;
-}
-
-// Initialize on load
 document.addEventListener('DOMContentLoaded', loadDataQuality);
 </script>
 
