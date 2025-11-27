@@ -1,5 +1,9 @@
 name: CI Tests
 
+# Restrict permissions to minimum required
+permissions:
+  contents: read
+
 on:
   # Run on pull requests
   pull_request:
