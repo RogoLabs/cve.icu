@@ -48,10 +48,23 @@
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="years.html">Yearly Analysis</a></li>
-                    <li><a href="cna.html">CNA</a></li>
+                    <li class="nav-dropdown">
+                        <a href="cna-hub.html" class="dropdown-toggle">CNA</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cna.html">CNA Intelligence</a></li>
+                            <li><a href="data-quality.html">Name Matching</a></li>
+                        </ul>
+                    </li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
-                    <li><a href="cvss.html">CVSS</a></li>
+                    <li class="nav-dropdown">
+                        <a href="scoring.html" class="dropdown-toggle">Scoring</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cvss.html">CVSS</a></li>
+                            <li><a href="epss.html">EPSS</a></li>
+                            <li><a href="kev.html">KEV</a></li>
+                        </ul>
+                    </li>
                     <li><a href="growth.html">Growth</a></li>
                     <li><a href="calendar.html">Calendar</a></li>
                 </ul>
@@ -852,41 +865,52 @@ function ensureDefaultYearSelection() {
 
 document.addEventListener('DOMContentLoaded', initializePage);
 
-// Load year data from JSON
+// Load year data from consolidated JSON (single request instead of 27)
 async function loadYearData() {
     try {
-        debugLog('Loading summary data...');
-        const summaryResponse = await fetch('data/cve_all.json');
-        if (!summaryResponse.ok) {
-            throw new Error(`Failed to load summary data: ${summaryResponse.status}`);
+        debugLog('Loading yearly summary data...');
+        const response = await fetch('data/yearly_summary.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load yearly summary: ${response.status}`);
         }
-        const summaryData = await summaryResponse.json();
-        debugLog('Summary data loaded successfully');
+        const summary = await response.json();
+        debugLog('Yearly summary loaded successfully');
         
-        // Create year data structure from available years (1999-2025)
-        const availableYears = [];
-        for (let year = 1999; year <= 2025; year++) {
-            availableYears.push(year);
-        }
-        
-        debugLog(`Loading data for ${availableYears.length} years...`);
-        // Load individual year data
-        for (const year of availableYears) {
-            try {
-                const response = await fetch(`data/cve_${year}.json`);
-                if (response.ok) {
-                    const data = await response.json();
-                    yearData[year] = data;
-                }
-            } catch (error) {
-                console.warn(`Could not load data for ${year}:`, error);
+        // Extract year data from the consolidated file
+        if (summary.years) {
+            for (const [year, data] of Object.entries(summary.years)) {
+                yearData[parseInt(year)] = data;
             }
         }
         
-        console.log('Year data loaded:', Object.keys(yearData).length, 'years');
+        console.log('Year data loaded:', Object.keys(yearData).length, 'years (from single file)');
     } catch (error) {
         console.error('Error loading year data:', error);
+        // Fallback to individual files if summary not available
+        await loadYearDataLegacy();
     }
+}
+
+// Legacy loader for backwards compatibility
+async function loadYearDataLegacy() {
+    console.log('Falling back to individual year files...');
+    const availableYears = [];
+    for (let year = 1999; year <= 2025; year++) {
+        availableYears.push(year);
+    }
+    
+    for (const year of availableYears) {
+        try {
+            const response = await fetch(`data/cve_${year}.json`);
+            if (response.ok) {
+                const data = await response.json();
+                yearData[year] = data;
+            }
+        } catch (error) {
+            console.warn(`Could not load data for ${year}:`, error);
+        }
+    }
+    console.log('Legacy year data loaded:', Object.keys(yearData).length, 'years');
 }
 
 // Initialize year selector

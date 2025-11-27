@@ -48,10 +48,23 @@
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="years.html">Yearly Analysis</a></li>
-                    <li><a href="cna.html">CNA</a></li>
+                    <li class="nav-dropdown">
+                        <a href="cna-hub.html" class="dropdown-toggle">CNA</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cna.html">CNA Intelligence</a></li>
+                            <li><a href="data-quality.html">Name Matching</a></li>
+                        </ul>
+                    </li>
                     <li><a href="cpe.html">CPE</a></li>
                     <li><a href="cwe.html">CWE</a></li>
-                    <li><a href="cvss.html">CVSS</a></li>
+                    <li class="nav-dropdown">
+                        <a href="scoring.html" class="dropdown-toggle">Scoring</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cvss.html">CVSS</a></li>
+                            <li><a href="epss.html">EPSS</a></li>
+                            <li><a href="kev.html">KEV</a></li>
+                        </ul>
+                    </li>
                     <li><a href="growth.html">Growth</a></li>
                     <li><a href="calendar.html">Calendar</a></li>
                 </ul>
@@ -130,6 +143,11 @@
         <div class="stat-number" id="total-cves">Loading...</div>
         <div class="stat-label">Total CVEs</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-number" id="kev-global-count">Loading...</div>
+        <div class="stat-label">Known Exploited CVEs</div>
+        <div class="stat-detail" id="kev-global-detail">CISA KEV catalog</div>
+    </div>
 </div>
 
 <!-- Main Chart Section -->
@@ -152,63 +170,6 @@
 
 <!-- Preview Charts Section -->
 <section class="homepage-preview-section">
-    
-    <!-- Growth Preview -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">📈 Growth</h4>
-            <small class="homepage-chart-subtitle">Year-over-year CVE publication trends and growth analysis</small>
-        </div>
-        <div class="homepage-chart-body">
-            <div class="homepage-chart-container homepage-preview-container">
-                <canvas id="growthPreviewChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer">
-                <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- CVSS Interactive Analysis -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">🎯 CVSS Analysis</h4>
-            <small class="homepage-chart-subtitle">Score distribution for <span id="homepageCvssVersionLabel">CVSS v3.1</span></small>
-            
-            <!-- Version Selection Buttons -->
-            <div class="text-center mt-3">
-                <button class="quick-select-btn cvss-version-btn" data-version="v2.0">v2.0</button>
-                <button class="quick-select-btn cvss-version-btn" data-version="v3.0">v3.0</button>
-                <button class="quick-select-btn active cvss-version-btn" data-version="v3.1">v3.1</button>
-                <button class="quick-select-btn cvss-version-btn" data-version="v4.0">v4.0</button>
-            </div>
-        </div>
-        <div class="homepage-chart-body">
-            <!-- Score Distribution Only -->
-            <div class="chart-container" style="height: 300px;">
-                <canvas id="homepageScoreChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer mt-3">
-                <a href="cvss.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- CWE Preview -->
-    <div class="homepage-chart-card">
-        <div class="homepage-chart-header">
-            <h4 class="homepage-chart-title">🔍 CWE</h4>
-            <small class="homepage-chart-subtitle">Common Weakness Enumeration patterns and vulnerability types</small>
-        </div>
-        <div class="homepage-chart-body">
-            <div class="homepage-chart-container homepage-preview-container">
-                <canvas id="cwePreviewChart"></canvas>
-            </div>
-            <div class="homepage-chart-footer">
-                <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
-            </div>
-        </div>
-    </div>
     
     <!-- CNA Preview -->
     <div class="homepage-chart-card">
@@ -242,6 +203,93 @@
         </div>
     </div>
     
+    <!-- CWE Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🔍 CWE</h4>
+            <small class="homepage-chart-subtitle">Common Weakness Enumeration patterns and vulnerability types</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="cwePreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="cwe.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scoring / Threat Intelligence Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">🎯 Scoring & Risk</h4>
+            <small class="homepage-chart-subtitle">CVE volume compared to Known Exploited Vulnerabilities (KEV) by year</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="riskVolumeChart"></canvas>
+            </div>
+            <!-- Threat Intelligence Stats -->
+            <div class="stats-grid mt-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-high-risk">Loading...</div>
+                    <div class="stat-label">High Risk CVEs</div>
+                    <div class="stat-detail">EPSS &gt; 0.5</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-elevated-risk">Loading...</div>
+                    <div class="stat-label">Elevated Risk</div>
+                    <div class="stat-detail">EPSS &gt; 0.1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="epss-coverage">Loading...</div>
+                    <div class="stat-label">EPSS Coverage</div>
+                    <div class="stat-detail" id="epss-coverage-detail">CVEs scored</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="kev-recent">Loading...</div>
+                    <div class="stat-label">KEV Recent</div>
+                    <div class="stat-detail">Last 30 days</div>
+                </div>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="scoring.html" class="btn btn-primary btn-sm">View Scoring Hub →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Growth Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📈 Growth</h4>
+            <small class="homepage-chart-subtitle">Year-over-year CVE publication trends and growth analysis</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="growthPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="growth.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Calendar Preview -->
+    <div class="homepage-chart-card">
+        <div class="homepage-chart-header">
+            <h4 class="homepage-chart-title">📅 Calendar</h4>
+            <small class="homepage-chart-subtitle">Daily and monthly CVE publication patterns</small>
+        </div>
+        <div class="homepage-chart-body">
+            <div class="homepage-chart-container homepage-preview-container">
+                <canvas id="calendarPreviewChart"></canvas>
+            </div>
+            <div class="homepage-chart-footer">
+                <a href="calendar.html" class="btn btn-primary btn-sm">View Full Dashboard →</a>
+            </div>
+        </div>
+    </div>
+    
 </section>
 
 <!-- About Section -->
@@ -267,7 +315,8 @@
                     <div class="col-md-6">
                         <ul class="list-unstyled small">
                             <li class="mb-2">✓ <strong>287,800+ CVE entries</strong> across 27 years (1999-2025)</li>
-                            <li class="mb-2">✓ <strong>284,181 CVSS scored</strong> vulnerabilities</li>
+                            <li class="mb-2"> <strong>284,181 CVSS scored</strong> vulnerabilities</li>
+                            <li class="mb-2"> <strong>1,463 known exploited CVEs</strong> in the CISA KEV catalog</li>
                         </ul>
                     </div>
                     <div class="col-md-6">
@@ -832,24 +881,79 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize preview charts with simplified, error-free approach
     initializeSimplePreviewCharts();
+
+    // Initialize KEV global stats using cvss_analysis.json
+    fetch('data/cvss_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const kevGlobal = data.kev_global_count || 0;
+            const el = document.getElementById('kev-global-count');
+            const detail = document.getElementById('kev-global-detail');
+            if (el) el.textContent = kevGlobal.toLocaleString();
+            if (detail) detail.textContent = 'CISA KEV catalog across all years';
+        })
+        .catch(error => {
+            console.error('KEV global stats error:', error);
+        });
+
+    // Initialize Threat Intelligence cards
+    // Load EPSS analysis data
+    fetch('data/epss_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const stats = data.statistics || {};
+            const totalWithEpss = data.total_cves_with_epss || 0;
+            
+            // High risk (EPSS > 0.5)
+            const highRiskEl = document.getElementById('epss-high-risk');
+            if (highRiskEl) highRiskEl.textContent = (stats.gt_0_5 || 0).toLocaleString();
+            
+            // Elevated risk (EPSS > 0.1)
+            const elevatedEl = document.getElementById('epss-elevated-risk');
+            if (elevatedEl) elevatedEl.textContent = (stats.gt_0_1 || 0).toLocaleString();
+            
+            // EPSS coverage
+            const coverageEl = document.getElementById('epss-coverage');
+            const coverageDetailEl = document.getElementById('epss-coverage-detail');
+            if (coverageEl) coverageEl.textContent = totalWithEpss.toLocaleString();
+            if (coverageDetailEl) coverageDetailEl.textContent = 'CVEs with EPSS scores';
+        })
+        .catch(error => {
+            console.error('EPSS analysis error:', error);
+        });
+    
+    // Load KEV analysis for recent additions
+    fetch('data/kev_analysis.json')
+        .then(response => response.json())
+        .then(data => {
+            const stats = data.statistics || {};
+            const recentEl = document.getElementById('kev-recent');
+            if (recentEl) recentEl.textContent = (stats.added_last_30_days || 0).toLocaleString();
+        })
+        .catch(error => {
+            console.error('KEV analysis error:', error);
+        });
+    
+    // Initialize Risk vs Volume chart
+    initializeRiskVolumeChart();
 });
 
 // Simplified preview charts initialization to eliminate JavaScript syntax errors
 function initializeSimplePreviewCharts() {
-    // Growth Preview Chart
-    initializeGrowthPreview();
-    
-    // CVSS Preview Chart (temporarily disabled)
-    initializeCvssPreview();
-    
-    // CWE Preview Chart
-    initializeCwePreview();
-    
     // CNA Preview Chart
     initializeCnaPreview();
     
     // CPE Preview Chart
     initializeCpePreview();
+    
+    // CWE Preview Chart
+    initializeCwePreview();
+    
+    // Growth Preview Chart
+    initializeGrowthPreview();
+    
+    // Calendar Preview Chart
+    initializeCalendarPreview();
 }
 
 function initializeGrowthPreview() {
@@ -1160,7 +1264,185 @@ function initializeCpePreview() {
         });
 }
 
+// Risk vs Volume dual-axis chart
+function initializeRiskVolumeChart() {
+    const ctx = document.getElementById('riskVolumeChart');
+    if (!ctx) return;
+    
+    // Load both yearly CVE data and KEV analysis
+    Promise.all([
+        fetch('data/yearly_summary.json').then(r => r.json()),
+        fetch('data/kev_analysis.json').then(r => r.json())
+    ])
+    .then(([yearlyData, kevData]) => {
+        const kevByYear = kevData.by_year_cve || {};
+        const yearlySummary = yearlyData.years || {};
+        
+        // Get years from 2010 onwards (KEV data starts around 2002 but meaningful from 2010+)
+        const years = Object.keys(yearlySummary)
+            .map(y => parseInt(y))
+            .filter(y => y >= 2010)
+            .sort((a, b) => a - b);
+        
+        const labels = years.map(y => y.toString());
+        const cveVolume = years.map(y => yearlySummary[y]?.total_cves || 0);
+        const kevCount = years.map(y => kevByYear[y.toString()] || 0);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total CVEs',
+                        data: cveVolume,
+                        backgroundColor: 'rgba(168, 200, 236, 0.7)',
+                        borderColor: '#9bc7e1',
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'KEV CVEs',
+                        data: kevCount,
+                        type: 'line',
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#dc3545',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                const idx = context[0].dataIndex;
+                                const volume = cveVolume[idx];
+                                const kev = kevCount[idx];
+                                if (volume > 0 && kev > 0) {
+                                    const pct = ((kev / volume) * 100).toFixed(2);
+                                    return `KEV Rate: ${pct}%`;
+                                }
+                                return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Total CVEs',
+                            font: { size: 11 }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'KEV CVEs',
+                            color: '#dc3545',
+                            font: { size: 11 }
+                        },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#dc3545' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Risk vs Volume chart error:', error);
+        ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Chart unavailable</small></div>';
+    });
+}
+
 // CVSS functionality is handled inline in the initializeCvssPreview function above
+
+function initializeCalendarPreview() {
+    const ctx = document.getElementById('calendarPreviewChart');
+    if (!ctx) return;
+    
+    fetch('data/calendar_analysis_current_year.json')
+        .then(response => response.json())
+        .then(data => {
+            // Aggregate daily_data into monthly totals
+            const dailyData = data.daily_data || [];
+            const monthlyTotals = {};
+            
+            dailyData.forEach(day => {
+                const month = day.date.substring(5, 7); // Extract MM from YYYY-MM-DD
+                monthlyTotals[month] = (monthlyTotals[month] || 0) + day.value;
+            });
+            
+            const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Filter to only months with data
+            const months = [];
+            const values = [];
+            allMonths.forEach((m, i) => {
+                const key = String(i + 1).padStart(2, '0');
+                const value = monthlyTotals[key] || 0;
+                if (value > 0) {
+                    months.push(m);
+                    values.push(value);
+                }
+            });
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: '#a8c8ec',
+                        borderColor: '#9bc7e1',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { display: true, grid: { color: 'rgba(0,0,0,0.1)' } }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Calendar preview error:', error);
+            ctx.parentElement.innerHTML = '<div class="text-center text-muted py-4"><small>Preview unavailable</small></div>';
+        });
+}
 
 </script>
 

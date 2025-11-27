@@ -7,26 +7,22 @@ Quick rebuild script for CNA analysis only - much faster than full site rebuild
 import sys
 from pathlib import Path
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from cve_v5_processor import CVEV5Processor
-import json
-from datetime import datetime
+from scripts.utils import setup_paths, print_header
 
 
 def main():
     """Rebuild CNA analysis only"""
-    print("🏢 CVE.ICU CNA Analysis Quick Rebuild")
-    print("=" * 40)
+    print_header("CNA Analysis Quick Rebuild", "🏢")
     
     # Set up paths
-    base_dir = Path(__file__).parent.parent
-    cache_dir = base_dir / 'data' / 'cache'
-    data_dir = base_dir / 'web' / 'data'
-    
-    # Ensure data directory exists
-    data_dir.mkdir(parents=True, exist_ok=True)
+    project_root, cache_dir, data_dir = setup_paths()
     
     # Initialize CVE V5 processor
-    v5_processor = CVEV5Processor(base_dir, cache_dir, data_dir)
+    v5_processor = CVEV5Processor(project_root, cache_dir, data_dir)
     
     try:
         # Generate comprehensive CNA analysis using CVE V5 data

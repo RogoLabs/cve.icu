@@ -34,6 +34,18 @@ class CVSSAnalyzer:
         
         # Initialize temporal data for line chart
         temporal_data = {}
+
+        # EPSS-aware aggregates (summary only, no per-CVE payloads)
+        epss_global_buckets = {
+            'epss_gt_0_1': 0,
+            'epss_gt_0_5': 0,
+            'epss_gt_0_9': 0,
+        }
+        epss_by_year = {}
+
+        # CISA KEV aggregates (summary only)
+        kev_global_count = 0
+        kev_by_year = {}
         
         total_cves_with_cvss = 0
         
@@ -79,6 +91,30 @@ class CVSSAnalyzer:
                                 if score not in combined_cvss[version]['scores']:
                                     combined_cvss[version]['scores'][score] = 0
                                 combined_cvss[version]['scores'][score] += count
+
+                # EPSS-aware metrics, if present at year summary level
+                # Expected optional structure on year_data['cvss']:
+                #   'epss_summary': {
+                #       'epss_gt_0_1': int,
+                #       'epss_gt_0_5': int,
+                #       'epss_gt_0_9': int
+                #   }
+                epss_summary = cvss_data.get('epss_summary')
+                if epss_summary:
+                    year_epss = {
+                        'epss_gt_0_1': int(epss_summary.get('epss_gt_0_1', 0)),
+                        'epss_gt_0_5': int(epss_summary.get('epss_gt_0_5', 0)),
+                        'epss_gt_0_9': int(epss_summary.get('epss_gt_0_9', 0)),
+                    }
+                    epss_by_year[year] = year_epss
+                    for k, v in year_epss.items():
+                        epss_global_buckets[k] += v
+
+            # KEV-aware metrics, if present at year level
+            kev_info = year_data.get('kev') or {}
+            kev_count = int(kev_info.get('kev_count', 0))
+            kev_by_year[year] = kev_count
+            kev_global_count += kev_count
         
         # Create binned score distributions (0-0.99, 1-1.99, etc.)
         binned_scores = {}
@@ -124,7 +160,13 @@ class CVSSAnalyzer:
             'severity_distribution': {version: data['severity'] for version, data in combined_cvss.items()},
             'score_distribution': {version: data['scores'] for version, data in combined_cvss.items()},
             'binned_score_distribution': binned_scores,
-            'temporal_data': sorted_temporal_data
+            'temporal_data': sorted_temporal_data,
+            # EPSS-only aggregate metrics for risk-focused visualizations
+            'epss_global_buckets': epss_global_buckets,
+            'epss_by_year': epss_by_year,
+            # KEV aggregate metrics
+            'kev_global_count': kev_global_count,
+            'kev_by_year': kev_by_year,
         }
         
         # Save to file

@@ -4,21 +4,20 @@ Quick template rebuild script - regenerates HTML pages without reprocessing data
 """
 
 import sys
+from datetime import datetime
 from pathlib import Path
+
 from jinja2 import Environment, FileSystemLoader
 
-# Add data directory to path
-sys.path.insert(0, str(Path(__file__).parent / 'data'))
-
-base_dir = Path(__file__).parent
-template_dir = base_dir / 'templates'
-web_dir = base_dir / 'web'
+# Get project root (scripts -> data -> project root)
+project_root = Path(__file__).parent.parent.parent
+template_dir = project_root / 'templates'
+web_dir = project_root / 'web'
 
 # Initialize Jinja2 environment
 env = Environment(loader=FileSystemLoader(str(template_dir)))
 
 # Get current year
-from datetime import datetime
 current_year = datetime.now().year
 
 print("🔨 Rebuilding HTML templates...")

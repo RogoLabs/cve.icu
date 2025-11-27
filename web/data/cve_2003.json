@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 1510,
       "severity_distribution": {
-        "HIGH": 668,
-        "MEDIUM": 745,
-        "LOW": 97
+        "UNKNOWN": 1510
       },
       "score_distribution": {
         "7.5": 402,
@@ -460,17 +458,97 @@
         "7.1": 1,
         "6.5": 1
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 231,
+      "epss_gt_0_5": 59,
+      "epss_gt_0_9": 2
     }
+  },
+  "kev": {
+    "kev_count": 0
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 1523
+        "name": "Microsoft",
+        "count": 118
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 4
+        "name": "Sun",
+        "count": 64
+      },
+      {
+        "name": "Apple",
+        "count": 48
+      },
+      {
+        "name": "Hp",
+        "count": 43
+      },
+      {
+        "name": "Redhat",
+        "count": 38
+      },
+      {
+        "name": "Ibm",
+        "count": 34
+      },
+      {
+        "name": "Linux",
+        "count": 28
+      },
+      {
+        "name": "Cisco",
+        "count": 27
+      },
+      {
+        "name": "Apache",
+        "count": 25
+      },
+      {
+        "name": "Sgi",
+        "count": 24
+      },
+      {
+        "name": "Oracle",
+        "count": 21
+      },
+      {
+        "name": "Bea",
+        "count": 20
+      },
+      {
+        "name": "Openbsd",
+        "count": 18
+      },
+      {
+        "name": "Novell",
+        "count": 16
+      },
+      {
+        "name": "Netbsd",
+        "count": 14
+      },
+      {
+        "name": "Freebsd",
+        "count": 14
+      },
+      {
+        "name": "Gnu",
+        "count": 14
+      },
+      {
+        "name": "Debian",
+        "count": 13
+      },
+      {
+        "name": "Mozilla",
+        "count": 13
+      },
+      {
+        "name": "Sap",
+        "count": 12
       }
     ],
     "cpe_vendors": [
@@ -708,7 +786,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-27T12:15:49.742514",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-27T08:08:30.692648",
+    "data_source": "data/cache/nvd.json"
   }
 }

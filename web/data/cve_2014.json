@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 7820,
       "severity_distribution": {
-        "MEDIUM": 5286,
-        "LOW": 656,
-        "HIGH": 1878
+        "UNKNOWN": 7820
       },
       "score_distribution": {
         "5.8": 141,
@@ -522,89 +520,97 @@
         "3.4": 1,
         "3.3": 1
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 912,
+      "epss_gt_0_5": 216,
+      "epss_gt_0_9": 30
     }
+  },
+  "kev": {
+    "kev_count": 34
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 2655
+        "name": "Microsoft",
+        "count": 524
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 1536
+        "name": "Oracle",
+        "count": 508
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 950
+        "name": "Ibm",
+        "count": 465
       },
       {
-        "name": "IBM Corporation",
-        "count": 448
+        "name": "Apple",
+        "count": 434
       },
       {
-        "name": "Oracle Corporation",
-        "count": 447
+        "name": "Cisco",
+        "count": 368
       },
       {
-        "name": "Cisco Systems, Inc.",
-        "count": 365
+        "name": "Redhat",
+        "count": 300
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 342
+        "name": "Canonical",
+        "count": 256
       },
       {
-        "name": "Apple Inc.",
-        "count": 253
+        "name": "Debian",
+        "count": 248
       },
       {
-        "name": "JPCERT/CC",
-        "count": 132
+        "name": "Linux",
+        "count": 234
       },
       {
-        "name": "Adobe Inc.",
-        "count": 130
+        "name": "Opensuse",
+        "count": 225
       },
       {
-        "name": "Mozilla Foundation",
-        "count": 117
+        "name": "Google",
+        "count": 199
       },
       {
-        "name": "Google LLC",
-        "count": 116
+        "name": "Adobe",
+        "count": 141
       },
       {
-        "name": "US Department of Homeland Security",
+        "name": "Suse",
+        "count": 135
+      },
+      {
+        "name": "Mozilla",
+        "count": 122
+      },
+      {
+        "name": "Hp",
         "count": 104
       },
       {
-        "name": "HP Inc.",
-        "count": 91
+        "name": "Fedoraproject",
+        "count": 97
       },
       {
-        "name": "Debian Project",
-        "count": 71
+        "name": "Apache",
+        "count": 92
       },
       {
-        "name": "Dell EMC",
-        "count": 59
+        "name": "Sap",
+        "count": 83
       },
       {
-        "name": "flexerasoftware.com",
-        "count": 57
+        "name": "Owncloud",
+        "count": 58
       },
       {
-        "name": "NortonLifeLock Inc.",
-        "count": 29
-      },
-      {
-        "name": "Canonical Ltd.",
-        "count": 23
-      },
-      {
-        "name": "OpenText Corporation",
-        "count": 3
+        "name": "Wordpress",
+        "count": 56
       }
     ],
     "cpe_vendors": [
@@ -858,7 +864,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-27T12:18:17.233921",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-27T08:10:15.739720",
+    "data_source": "data/cache/nvd.json"
   }
 }

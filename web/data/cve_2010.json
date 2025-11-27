@@ -400,9 +400,7 @@
     "v2.0": {
       "total": 4517,
       "severity_distribution": {
-        "MEDIUM": 2222,
-        "HIGH": 2020,
-        "LOW": 275
+        "UNKNOWN": 4517
       },
       "score_distribution": {
         "4.3": 800,
@@ -496,69 +494,97 @@
         "7.1": 1,
         "4.3": 1
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 614,
+      "epss_gt_0_5": 245,
+      "epss_gt_0_9": 22
     }
+  },
+  "kev": {
+    "kev_count": 21
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 2831
+        "name": "Microsoft",
+        "count": 597
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 464
+        "name": "Apple",
+        "count": 442
       },
       {
-        "name": "Apple Inc.",
-        "count": 265
+        "name": "Oracle",
+        "count": 216
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 264
+        "name": "Joomla",
+        "count": 211
       },
       {
-        "name": "Oracle Corporation",
-        "count": 250
+        "name": "Ibm",
+        "count": 208
       },
       {
-        "name": "Adobe Inc.",
-        "count": 180
+        "name": "Adobe",
+        "count": 207
       },
       {
-        "name": "HP Inc.",
-        "count": 115
+        "name": "Linux",
+        "count": 193
       },
       {
-        "name": "Cisco Systems, Inc.",
-        "count": 111
+        "name": "Google",
+        "count": 178
       },
       {
-        "name": "flexerasoftware.com",
-        "count": 77
+        "name": "Cisco",
+        "count": 155
       },
       {
-        "name": "CERT Coordination Center",
-        "count": 27
+        "name": "Mozilla",
+        "count": 129
       },
       {
-        "name": "Canonical Ltd.",
-        "count": 22
+        "name": "Hp",
+        "count": 122
       },
       {
-        "name": "JPCERT/CC",
-        "count": 21
+        "name": "Canonical",
+        "count": 103
       },
       {
-        "name": "Dell EMC",
-        "count": 9
+        "name": "Sun",
+        "count": 102
       },
       {
-        "name": "freebsd.org",
-        "count": 2
+        "name": "Typo3",
+        "count": 98
       },
       {
-        "name": "bc94ec7e-8909-4cbb-83df-d2fc9330fa88",
-        "count": 1
+        "name": "Debian",
+        "count": 90
+      },
+      {
+        "name": "Opensuse",
+        "count": 72
+      },
+      {
+        "name": "Suse",
+        "count": 72
+      },
+      {
+        "name": "Redhat",
+        "count": 57
+      },
+      {
+        "name": "Realnetworks",
+        "count": 55
+      },
+      {
+        "name": "Apache",
+        "count": 51
       }
     ],
     "cpe_vendors": [
@@ -812,7 +838,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-27T12:17:24.005588",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-27T08:09:38.611453",
+    "data_source": "data/cache/nvd.json"
   }
 }

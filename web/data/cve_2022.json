@@ -400,8 +400,7 @@
     "v2.0": {
       "total": 10,
       "severity_distribution": {
-        "LOW": 6,
-        "MEDIUM": 4
+        "UNKNOWN": 10
       },
       "score_distribution": {
         "3.5": 6,
@@ -547,89 +546,97 @@
       "score_distribution": {
         "0.0": 2
       }
+    },
+    "epss_summary": {
+      "epss_gt_0_1": 1356,
+      "epss_gt_0_5": 452,
+      "epss_gt_0_9": 127
     }
+  },
+  "kev": {
+    "kev_count": 127
   },
   "vendors": {
     "cna_assigners": [
       {
-        "name": "MITRE Corporation",
-        "count": 7677
+        "name": "Google",
+        "count": 1808
       },
       {
-        "name": "GitHub, Inc.",
-        "count": 1303
+        "name": "Microsoft",
+        "count": 1757
       },
       {
-        "name": "wpscan.com",
-        "count": 1144
+        "name": "Debian",
+        "count": 967
       },
       {
-        "name": "Google LLC",
-        "count": 1109
+        "name": "Fedoraproject",
+        "count": 954
       },
       {
-        "name": "Microsoft Corporation",
-        "count": 931
+        "name": "Apple",
+        "count": 875
       },
       {
-        "name": "vuldb.com",
-        "count": 854
+        "name": "Linux",
+        "count": 592
       },
       {
-        "name": "huntr.dev",
-        "count": 850
+        "name": "Oracle",
+        "count": 551
       },
       {
-        "name": "Cisco Systems, Inc.",
-        "count": 724
+        "name": "Netapp",
+        "count": 502
       },
       {
-        "name": "Red Hat, Inc.",
-        "count": 630
+        "name": "Adobe",
+        "count": 461
       },
       {
-        "name": "US Department of Homeland Security",
-        "count": 492
+        "name": "Ibm",
+        "count": 421
       },
       {
-        "name": "Adobe Inc.",
-        "count": 460
+        "name": "Jenkins",
+        "count": 393
       },
       {
-        "name": "Oracle Corporation",
-        "count": 416
+        "name": "Tenda",
+        "count": 390
       },
       {
-        "name": "IBM Corporation",
-        "count": 411
+        "name": "Siemens",
+        "count": 341
       },
       {
-        "name": "googlegroups.com",
-        "count": 391
+        "name": "Redhat",
+        "count": 333
       },
       {
-        "name": "patchstack.com",
-        "count": 381
+        "name": "Cisco",
+        "count": 317
       },
       {
-        "name": "Apple Inc.",
-        "count": 370
+        "name": "Huawei",
+        "count": 316
       },
       {
-        "name": "trendmicro.com",
-        "count": 358
+        "name": "Intel",
+        "count": 249
       },
       {
-        "name": "Samsung Electronics Co., Ltd.",
-        "count": 356
+        "name": "Qualcomm",
+        "count": 247
       },
       {
-        "name": "Huawei Technologies Co., Ltd.",
-        "count": 315
+        "name": "Mediatek",
+        "count": 240
       },
       {
-        "name": "Siemens AG",
-        "count": 297
+        "name": "Apache",
+        "count": 223
       }
     ],
     "cpe_vendors": [
@@ -887,7 +894,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2025-11-27T12:20:05.707397",
-    "data_source": "data/cache/nvd.jsonl"
+    "processed_at": "2025-11-27T08:11:33.017556",
+    "data_source": "data/cache/nvd.json"
   }
 }

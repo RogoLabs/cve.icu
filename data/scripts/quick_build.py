@@ -4,12 +4,9 @@ CVE.ICU Quick Template Builder
 Fast template-only rebuild for development - skips data processing
 """
 
-import os
 import shutil
-import json
 from datetime import datetime
 from pathlib import Path
-import sys
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -19,9 +16,10 @@ class CVEQuickBuilder:
     def __init__(self):
         self.current_year = datetime.now().year
         self.available_years = list(range(1999, self.current_year + 1))
-        self.base_dir = Path(__file__).parent.parent
-        self.templates_dir = self.base_dir / 'templates'
-        self.web_dir = self.base_dir / 'web'
+        # Go up two levels: scripts -> data -> project root
+        self.project_root = Path(__file__).parent.parent.parent
+        self.templates_dir = self.project_root / 'templates'
+        self.web_dir = self.project_root / 'web'
         self.static_dir = self.web_dir / 'static'
         self.data_dir = self.web_dir / 'data'
         
@@ -38,6 +36,7 @@ class CVEQuickBuilder:
         
         print(f"⚡ CVE.ICU Quick Template Builder")
         print(f"📅 Current Year: {self.current_year}")
+        print(f"📂 Templates: {self.templates_dir}")
         print(f"🌐 Web output: {self.web_dir}")
     
     def format_number(self, num):
@@ -54,8 +53,8 @@ class CVEQuickBuilder:
         if not self.static_dir.exists() or not any(self.static_dir.iterdir()):
             print("  📁 Copying static assets...")
             
-            # Copy from templates static if it exists
-            template_static = self.base_dir / 'static'
+            # Copy from project root static if it exists
+            template_static = self.project_root / 'static'
             if template_static.exists():
                 if self.static_dir.exists():
                     shutil.rmtree(self.static_dir)
@@ -74,6 +73,7 @@ class CVEQuickBuilder:
         pages = [
             ('index.html', 'CVE.ICU - Vulnerability Intelligence Platform'),
             ('years.html', 'Yearly Analysis - CVE.ICU'),
+            ('cna-hub.html', 'CNA Intelligence Hub - CVE.ICU'),
             ('cna.html', 'CNA Analysis - CVE.ICU'),
             ('cpe.html', 'CPE Analysis - CVE.ICU'),
             ('cvss.html', 'CVSS Analysis - CVE.ICU'),
@@ -81,6 +81,10 @@ class CVEQuickBuilder:
             ('calendar.html', 'Calendar View - CVE.ICU'),
             ('growth.html', 'Growth Trends - CVE.ICU'),
             ('about.html', 'About CVE.ICU - Vulnerability Intelligence Platform'),
+            ('scoring.html', 'Scoring Hub - CVE.ICU'),
+            ('epss.html', 'EPSS Analysis - CVE.ICU'),
+            ('kev.html', 'KEV Dashboard - CVE.ICU'),
+            ('data-quality.html', 'CNA Name Matching - CVE.ICU'),
         ]
         
         for template_name, title in pages:

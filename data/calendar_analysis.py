@@ -5,8 +5,7 @@ Generates daily CVE publication data for calendar heatmap visualization
 """
 
 import json
-import pandas as pd
-from datetime import datetime, date
+from datetime import datetime
 from pathlib import Path
 import numpy as np
 from collections import defaultdict
@@ -20,7 +19,7 @@ class CalendarAnalyzer:
         self.base_dir = Path(base_dir)
         self.cache_dir = Path(cache_dir)
         self.data_dir = Path(data_dir)
-        self.nvd_file = self.cache_dir / 'nvd.jsonl'
+        self.nvd_file = self.cache_dir / 'nvd.json'
         
     def load_nvd_data(self):
         """Load and parse NVD data from JSONL file"""
@@ -67,7 +66,7 @@ class CalendarAnalyzer:
                             'cvss_score': cvss_score
                         })
                         
-                except Exception as e:
+                except Exception:
                     continue  # Skip malformed entries
                     
             if not self.quiet:
@@ -97,7 +96,7 @@ class CalendarAnalyzer:
                 if record['cvss_score'] is not None:
                     daily_scores[date_key].append(record['cvss_score'])
                     
-            except Exception as e:
+            except Exception:
                 continue  # Skip invalid dates
         
         # Calculate daily averages

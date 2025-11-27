@@ -6,9 +6,21 @@
 <style>
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
     margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .chart-container {
@@ -132,6 +144,9 @@
         <div class="chart-container" style="height: 400px;">
             <canvas id="temporalChart"></canvas>
         </div>
+        <p class="mt-3 text-muted" id="kevTimelineInsight" style="font-size: 0.85rem;">
+            Loading KEV timeline insight...
+        </p>
     </div>
 </div>
 
@@ -253,6 +268,20 @@ function updateStatsCards(data) {
         if (avgElement) avgElement.textContent = avgScore;
         if (countElement) countElement.textContent = `${count.toLocaleString()} CVEs`;
     });
+
+    // KEV stats
+    const kevGlobalEl = document.getElementById('kevGlobal');
+    const kevLabelEl = document.getElementById('kevLabel');
+    if (kevGlobalEl && kevLabelEl) {
+        if (data.kev_global_count !== undefined) {
+            kevGlobalEl.textContent = (data.kev_global_count || 0).toLocaleString();
+            kevLabelEl.textContent = 'CISA KEV catalog (all years)';
+        } else if (data.kev_by_year && data.year) {
+            const yearKev = data.kev_by_year[data.year] || 0;
+            kevGlobalEl.textContent = yearKev.toLocaleString();
+            kevLabelEl.textContent = `Known exploited CVEs in ${data.year}`;
+        }
+    }
 }
 
 // Update charts
@@ -261,6 +290,36 @@ function updateCharts(data) {
     updateScoreChart(data);
     updateTemporalChart(data);
     updateVersionChart(data);
+    updateKevTimelineInsight();
+}
+
+// KEV timeline insight under temporal chart
+function updateKevTimelineInsight() {
+    const insightEl = document.getElementById('kevTimelineInsight');
+    if (!insightEl || !cvssData || !cvssData.kev_by_year) {
+        return;
+    }
+
+    const kevEntries = Object.entries(cvssData.kev_by_year)
+        .map(([year, count]) => ({ year: parseInt(year, 10), count: Number(count) || 0 }))
+        .filter(entry => !isNaN(entry.year) && entry.count > 0)
+        .sort((a, b) => a.year - b.year);
+
+    if (!kevEntries.length) {
+        insightEl.textContent = 'No known exploited CVEs are currently recorded in the CISA KEV catalog for the years in view.';
+        return;
+    }
+
+    const totalKev = kevEntries.reduce((sum, e) => sum + e.count, 0);
+    const first = kevEntries[0];
+    const peak = kevEntries.reduce((max, e) => (e.count > max.count ? e : max), kevEntries[0]);
+
+    const spanText = kevEntries.length === 1
+        ? `${first.year}`
+        : `${first.year}-${kevEntries[kevEntries.length - 1].year}`;
+
+    insightEl.textContent = `${totalKev.toLocaleString()} known exploited CVEs appear in the KEV catalog across ${spanText}, ` +
+        `with a hotspot in ${peak.year} (${peak.count.toLocaleString()} KEV CVEs).`;
 }
 
 // Update severity distribution chart

@@ -5,7 +5,6 @@ Processes all CVE data to generate complete CNA statistics including ALL active 
 """
 
 import json
-import re
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict, Counter
@@ -401,7 +400,7 @@ class ComprehensiveCNAAnalyzer:
                 if entry_num % 10000 == 0 and entry_num > 0 and not self.quiet:
                     print(f"  📊 Processed {entry_num:,} entries, found {len(cna_stats)} unique CNAs so far...")
             
-            except (KeyError, ValueError, TypeError) as e:
+            except (KeyError, ValueError, TypeError):
                 continue
         
         print(f"✅ Processing complete!")

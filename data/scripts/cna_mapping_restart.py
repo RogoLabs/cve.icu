@@ -45,7 +45,7 @@ def extract_designation_year(cna_id):
 
 # Load all reference data
 cache_dir = Path(__file__).parent / 'cache'
-with open(cache_dir / 'nvd.jsonl', 'r') as f:
+with open(cache_dir / 'nvd.json', 'r') as f:
     cve_data = [json.loads(line) for line in f if line.strip()]
 with open(cache_dir / 'cna_name_map.json', 'r') as f:
     uuid_map = json.load(f)  # uuid: org_name

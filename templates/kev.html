@@ -1,0 +1,425 @@
+{% extends "base.html" %}
+
+{% block title %}KEV Analysis - CVE.ICU{% endblock %}
+
+{% block content %}
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-container {
+    position: relative;
+    height: 350px;
+}
+
+.recent-table {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.recent-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.recent-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.recent-table th {
+    background: var(--color-bg-content, #ffffff);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.ransomware-badge {
+    background: var(--color-primary);
+    color: white;
+}
+
+.top-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.top-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.top-list-item:last-child {
+    border-bottom: none;
+}
+
+.count-badge {
+    background: var(--color-accent);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+</style>
+
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">KEV Analysis</h1>
+    <p class="text-muted">
+        CISA Known Exploited Vulnerabilities Catalog - Actively exploited CVEs
+    </p>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-number" id="totalKev">-</div>
+        <div class="stat-label">Total KEV CVEs</div>
+        <small class="text-muted">All time</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="last30Days">-</div>
+        <div class="stat-label">Added Last 30 Days</div>
+        <small class="text-muted">Recent additions</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="last90Days">-</div>
+        <div class="stat-label">Added Last 90 Days</div>
+        <small class="text-muted">Quarter trend</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="ransomwareCount">-</div>
+        <div class="stat-label">Ransomware Associated</div>
+        <small class="text-muted">Known campaign use</small>
+    </div>
+</div>
+
+<!-- Timeline and Top Vendors Row -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="card-title mb-0">KEV Additions Timeline</h3>
+                <small class="text-muted">Monthly additions to the KEV catalog</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Top Vendors</h3>
+                <small class="text-muted">By KEV CVE count</small>
+            </div>
+            <div class="card-body">
+                <div class="top-list" id="topVendorsList">
+                    <div class="text-center text-muted">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CVE Year and CWE Analysis -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="card-title mb-0">KEV by CVE Publication Year</h3>
+                <small class="text-muted">When were exploited CVEs originally published?</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Top CWEs in KEV</h3>
+                <small class="text-muted">Most common weakness types being exploited</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="cweChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Additions Table -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="card-title mb-0">Recent KEV Additions</h3>
+            <small class="text-muted">Latest vulnerabilities added to the catalog</small>
+        </div>
+        <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="btn btn-outline-primary btn-sm">
+            View Full Catalog →
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="recent-table">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>CVE ID</th>
+                        <th>Vendor / Product</th>
+                        <th>Date Added</th>
+                        <th>Due Date</th>
+                        <th>Ransomware</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTable">
+                    <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Top Products -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Top Vendor/Products</h3>
+        <small class="text-muted">Products with the most exploited vulnerabilities</small>
+    </div>
+    <div class="card-body">
+        <div class="chart-container">
+            <canvas id="productsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- About KEV -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">About CISA KEV</h3>
+    </div>
+    <div class="card-body">
+        <p>
+            The <strong>Known Exploited Vulnerabilities (KEV) Catalog</strong> is maintained by 
+            CISA (Cybersecurity and Infrastructure Security Agency) and contains vulnerabilities 
+            that have been <strong>confirmed to be actively exploited in the wild</strong>.
+        </p>
+        <ul>
+            <li><strong>Authority:</strong> U.S. federal agencies are required to remediate KEV vulnerabilities within specified timeframes (BOD 22-01)</li>
+            <li><strong>Criteria:</strong> CVE must have assigned CVE ID, evidence of active exploitation, and clear remediation guidance</li>
+            <li><strong>Source:</strong> <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank">CISA KEV Catalog</a></li>
+        </ul>
+        <p class="text-muted mb-0">
+            If a vulnerability is in KEV, it should be treated as high priority regardless of its CVSS or EPSS scores.
+        </p>
+    </div>
+</div>
+
+<script src="static/js/chart.min.js"></script>
+<script>
+fetch('data/kev_analysis.json')
+    .then(r => r.json())
+    .then(data => {
+        // Update stats cards
+        document.getElementById('totalKev').textContent = 
+            data.total_kev_cves.toLocaleString();
+        document.getElementById('last30Days').textContent = 
+            data.statistics.added_last_30_days.toLocaleString();
+        document.getElementById('last90Days').textContent = 
+            data.statistics.added_last_90_days.toLocaleString();
+        document.getElementById('ransomwareCount').textContent = 
+            data.statistics.ransomware_associated.toLocaleString();
+        
+        // Timeline Chart
+        const timelineLabels = Object.keys(data.timeline).slice(-24); // Last 24 months
+        const timelineData = timelineLabels.map(k => data.timeline[k]);
+        
+        new Chart(document.getElementById('timelineChart'), {
+            type: 'bar',
+            data: {
+                labels: timelineLabels,
+                datasets: [{
+                    label: 'CVEs Added',
+                    data: timelineData,
+                    backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Top Vendors List
+        const vendorsList = document.getElementById('topVendorsList');
+        vendorsList.innerHTML = data.top_vendors.slice(0, 15).map(([vendor, count]) => `
+            <div class="top-list-item">
+                <span>${vendor}</span>
+                <span class="count-badge">${count}</span>
+            </div>
+        `).join('');
+        
+        // CVE Year Chart
+        const yearLabels = Object.keys(data.by_year_cve).filter(y => parseInt(y) >= 2010);
+        const yearData = yearLabels.map(y => data.by_year_cve[y] || 0);
+        
+        new Chart(document.getElementById('yearChart'), {
+            type: 'bar',
+            data: {
+                labels: yearLabels,
+                datasets: [{
+                    label: 'KEV CVEs',
+                    data: yearData,
+                    backgroundColor: 'rgba(33, 150, 243, 0.8)',
+                    borderColor: 'rgba(33, 150, 243, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // CWE Chart
+        const cweLabels = data.top_cwes.slice(0, 10).map(([cwe]) => cwe);
+        const cweData = data.top_cwes.slice(0, 10).map(([, count]) => count);
+        
+        new Chart(document.getElementById('cweChart'), {
+            type: 'bar',
+            data: {
+                labels: cweLabels,
+                datasets: [{
+                    label: 'Count',
+                    data: cweData,
+                    backgroundColor: 'rgba(100, 181, 246, 0.8)',
+                    borderColor: 'rgba(100, 181, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Products Chart
+        const productLabels = data.top_products.slice(0, 10).map(([p]) => 
+            p.length > 30 ? p.substring(0, 30) + '...' : p
+        );
+        const productData = data.top_products.slice(0, 10).map(([, count]) => count);
+        
+        new Chart(document.getElementById('productsChart'), {
+            type: 'bar',
+            data: {
+                labels: productLabels,
+                datasets: [{
+                    label: 'KEV CVEs',
+                    data: productData,
+                    backgroundColor: 'rgba(66, 165, 245, 0.8)',
+                    borderColor: 'rgba(66, 165, 245, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Recent Additions Table
+        const tbody = document.getElementById('recentTable');
+        tbody.innerHTML = data.recent_additions.map(item => `
+            <tr>
+                <td>
+                    <a href="https://nvd.nist.gov/vuln/detail/${item.cve_id}" target="_blank">
+                        ${item.cve_id}
+                    </a>
+                </td>
+                <td>${item.vendor} - ${item.product}</td>
+                <td>${item.date_added}</td>
+                <td>${item.due_date || 'N/A'}</td>
+                <td>
+                    ${item.ransomware && item.ransomware.toLowerCase() !== 'unknown' && item.ransomware.toLowerCase() !== 'no' 
+                        ? '<span class="badge ransomware-badge">Yes</span>' 
+                        : '<span class="text-muted">-</span>'}
+                </td>
+            </tr>
+        `).join('');
+    })
+    .catch(err => {
+        console.error('Failed to load KEV data:', err);
+    });
+</script>
+
+{% endblock %}

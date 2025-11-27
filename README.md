@@ -2,207 +2,224 @@
 
 > **Comprehensive CVE Analysis & Visualization Platform**
 
-CVE.ICU is a powerful, automated platform that provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data. Built with Python and deployed via GitHub Actions, it delivers fresh insights into the cybersecurity landscape through interactive web visualizations.
+CVE.ICU is an automated platform that provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data. Built with Python and deployed via GitHub Actions, it delivers fresh insights into the cybersecurity landscape through interactive web visualizations.
 
+**🌐 Live Site:** [https://cve.icu](https://cve.icu)
 
-## 🌟 Features
+[![Build and Deploy](https://github.com/RogoLabs/cve.icu/actions/workflows/deploy.yml/badge.svg)](https://github.com/RogoLabs/cve.icu/actions/workflows/deploy.yml)
+[![Tests](https://github.com/RogoLabs/cve.icu/actions/workflows/ci.yml/badge.svg)](https://github.com/RogoLabs/cve.icu/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## ✨ Features
 
 ### 📊 Comprehensive CVE Analysis
-- **Multi-Year Data Processing** - Analyzes CVE data from 1999 to present
-- **CVSS Scoring Analysis** - Both v2 and v3 vulnerability scoring metrics
+- **Multi-Year Data** - Analyzes CVE data from 1999 to present (~303,000+ CVEs)
+- **CVSS Scoring** - Severity analysis across CVSS v2, v3.0, v3.1, and v4.0
 - **CWE Classification** - Common Weakness Enumeration categorization
-- **CPE Analysis** - Common Platform Enumeration vendor and product insights
-- **CNA Tracking** - CVE Numbering Authority analysis and statistics
+- **CPE Analysis** - Vendor and product vulnerability insights
+- **CNA Tracking** - CVE Numbering Authority statistics and activity
 
-### 📈 Advanced Visualizations
+### 🎯 Scoring Intelligence Hub
+- **CVSS Analysis** - Severity-based scoring distribution and trends
+- **EPSS Integration** - Exploit Prediction Scoring System (probability of exploitation)
+- **KEV Dashboard** - CISA Known Exploited Vulnerabilities catalog
+- **Risk Matrix** - Interactive CVSS × EPSS visualization for risk prioritization
+
+### �� Interactive Visualizations
 - **Yearly Trends** - CVE publication patterns over time
 - **Calendar Heatmaps** - Daily and monthly vulnerability disclosure patterns
-- **Severity Distributions** - CVSS score breakdowns and trends
-- **Vendor Analysis** - Top affected vendors and products
 - **Growth Metrics** - Year-over-year vulnerability growth analysis
+- **Vendor Rankings** - Top affected vendors and products
 
 ### 🚀 Automated Infrastructure
 - **GitHub Actions CI/CD** - Automated builds every 6 hours
 - **Fresh Data** - Always up-to-date with latest NVD releases
 - **GitHub Pages Deployment** - Automatic web deployment
-- **Quiet Mode** - Clean, professional build logs optimized for CI/CD
+- **39 Automated Tests** - Comprehensive test coverage
 
-## 🛠️ Technical Architecture
+## 🏗️ Architecture
 
-### Core Components
-- **`build.py`** - Main build orchestrator with quiet mode support
-- **Data Analysis Modules** - Specialized analyzers for different CVE aspects
-- **Web Generation** - Static site generation with interactive visualizations
-- **Caching System** - Efficient data processing and storage
-
-### Data Sources
-- **NVD (National Vulnerability Database)** - Primary CVE data source
-- **CVE List V5** - Modern CVE format support
-- **Official CNA Registry** - CVE Numbering Authority information
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          Data Sources                                │
+├─────────────────────────────────────────────────────────────────────┤
+│     NVD API    │   CVE V5 Repo   │   EPSS API   │   CISA KEV        │
+└────────┬───────┴────────┬────────┴───────┬──────┴────────┬──────────┘
+         │                │                │               │
+         ▼                ▼                ▼               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     Download & Cache Layer                           │
+│                   (download_cve_data.py)                            │
+└─────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                       Analysis Layer                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│  yearly    │   cna    │   cvss   │   cwe    │   cpe    │  scoring   │
+│  analysis  │ analysis │ analysis │ analysis │ analysis │  analysis  │
+└─────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Build Layer                                   │
+│                       (build.py)                                     │
+│    Template Rendering  │  JSON Generation  │  Data Validation       │
+└─────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                       Output (web/)                                  │
+│          HTML Pages  │  JSON Data  │  Static Assets                 │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Python 3.11+
-- pip package manager
 - Git
 
 ### Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/jgamblin/cve.icu.git
+git clone https://github.com/RogoLabs/cve.icu.git
 cd cve.icu
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the build (verbose mode)
+# Run the build
+python build.py
+```
+
+### Build Options
+
+```bash
+# Standard build (verbose output)
 python build.py
 
-# Run the build (quiet mode - recommended for CI/CD)
+# Quiet mode for CI/CD
 python build.py --quiet
+
+# Validate data consistency after build
+python build.py --validate
+
+# Environment variable for quiet mode
+CVE_BUILD_QUIET=1 python build.py
 ```
 
-### Environment Variables
+### Serve Locally
+
 ```bash
-# Enable quiet mode via environment variable
-export CVE_BUILD_QUIET=1
-python build.py
+cd web
+python -m http.server 8000
+# Open http://localhost:8000
 ```
 
-## 📋 Build Modes
-
-### Standard Mode
-```bash
-python build.py
-```
-- Full verbose output with detailed progress information
-- Ideal for development and debugging
-- Shows all processing steps and statistics
-
-### Quiet Mode 🔇
-```bash
-python build.py --quiet
-```
-- Clean, minimal output optimized for CI/CD environments
-- Suppresses verbose progress messages
-- Shows only essential information (errors, completion status)
-- **80%+ reduction** in log verbosity
-- Perfect for GitHub Actions and automated builds
-
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 cve.icu/
 ├── build.py                 # Main build orchestrator
-├── data/                    # Data processing modules
-│   ├── calendar_analysis.py # Calendar heatmap generation
-│   ├── cna_analysis.py      # CNA statistics and tracking
-│   ├── cpe_analysis.py      # CPE vendor/product analysis
-│   ├── cvss_analysis.py     # CVSS scoring analysis
-│   ├── cve_years.py         # Multi-year CVE processing
-│   ├── cve_v5_processor.py  # CVE v5 format support
-│   ├── cwe_analysis.py      # CWE classification analysis
-│   ├── download_cve_data.py # NVD data fetching
-│   ├── yearly_analysis.py   # Year-over-year trends
-│   └── cache/               # Data caching directory
-├── web/                     # Generated website files
-├── .github/workflows/       # GitHub Actions CI/CD
-└── requirements.txt         # Python dependencies
+├── requirements.txt         # Python dependencies
+├── data/
+│   ├── cache/               # Downloaded data (gitignored)
+│   │   ├── nvd.jsonl        # NVD vulnerability data
+│   │   ├── cvelistV5/       # CVE V5 Git repository
+│   │   └── *.json           # EPSS, KEV, CNA data
+│   ├── *_analysis.py        # Analysis modules
+│   ├── download_cve_data.py # Data downloader
+│   ├── cve_v5_processor.py  # CVE V5 processor
+│   └── scripts/             # Utility scripts
+├── docs/
+│   ├── ARCHITECTURE.md      # System architecture
+│   ├── SCHEMAS.md           # JSON output schemas
+│   ├── COUNTING.md          # CVE counting methodology
+│   └── ROADMAP.md           # Development roadmap
+├── templates/               # Jinja2 HTML templates
+├── tests/                   # pytest test suite
+└── web/                     # Generated output
+    ├── *.html               # HTML pages
+    ├── data/                # JSON data files
+    └── static/              # CSS, JS, images
 ```
 
-## 🤖 Automated Deployment
+## 📊 Data Sources
 
-CVE.ICU uses GitHub Actions for fully automated builds and deployments:
+| Source | Description | Update Frequency |
+|--------|-------------|------------------|
+| [NVD](https://nvd.nist.gov/) | National Vulnerability Database | Daily |
+| [CVE List V5](https://github.com/CVEProject/cvelistV5) | Official CVE records | Real-time |
+| [EPSS](https://www.first.org/epss/) | Exploit Prediction Scoring | Daily |
+| [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | Known Exploited Vulnerabilities | As needed |
 
-- **Triggers**: Push to main, every 6 hours, manual dispatch
-- **Fresh Data**: Downloads latest CVE data on each run
-- **Quiet Builds**: Optimized logging for clean CI/CD output
-- **GitHub Pages**: Automatic deployment to production
-- **Data Commits**: Automated updates to data files
+## 🧪 Testing
 
-## 📊 Data Processing Pipeline
-
-1. **Data Acquisition** - Fetch latest CVE data from NVD
-2. **Multi-Format Support** - Process both legacy and CVE v5 formats
-3. **Comprehensive Analysis** - Run all analysis modules in parallel
-4. **Visualization Generation** - Create interactive charts and graphs
-5. **Web Assembly** - Build complete static website
-6. **Deployment** - Publish to GitHub Pages
-
-## 🎯 Use Cases
-
-### Security Researchers
-- Track vulnerability trends and patterns
-- Analyze vendor security postures
-- Research CWE and CVSS distributions
-
-### Security Teams
-- Monitor emerging threats
-- Assess organizational risk exposure
-- Track vulnerability disclosure timelines
-
-### Developers
-- Understand common vulnerability patterns
-- Learn from historical security data
-- Integrate CVE insights into development processes
-
-## 🔧 Configuration
-
-### Quiet Mode Options
 ```bash
-# Command line flag
-python build.py --quiet
+# Run all tests
+pytest tests/ -v
 
-# Environment variable
-CVE_BUILD_QUIET=1 python build.py
+# Run with coverage
+pytest tests/ --cov=data --cov-report=html
 
-# GitHub Actions (automatic)
-# Uses --quiet flag by default for clean logs
+# Validate data consistency
+python build.py --validate
 ```
 
-### Customization
-- Modify analysis parameters in individual modules
-- Adjust caching strategies in `download_cve_data.py`
-- Customize web output in visualization modules
+## 📈 Output Files
 
-## 📈 Performance
+### Analysis JSON Files
+| File | Description |
+|------|-------------|
+| `cve_YYYY.json` | Per-year CVE data |
+| `cve_all.json` | Aggregated CVE summary |
+| `yearly_summary.json` | Year-over-year statistics |
+| `cna_analysis.json` | CNA assignment statistics |
+| `cvss_analysis.json` | CVSS score distributions |
+| `cwe_analysis.json` | CWE classification data |
+| `cpe_analysis.json` | Vendor/product analysis |
+| `calendar_analysis.json` | Publication timing patterns |
+| `growth_analysis.json` | CVE growth trends |
+| `scoring_analysis.json` | EPSS and KEV data |
 
-### Build Optimization
-- **Intelligent Caching** - Efficient data reuse
-- **Parallel Processing** - Multi-threaded analysis where possible
-- **Memory Management** - Optimized for large datasets
-- **Clean Logging** - Quiet mode reduces output by 80%+
+### HTML Pages
+| Page | Description |
+|------|-------------|
+| `index.html` | Dashboard overview |
+| `years.html` | Year-by-year analysis |
+| `cna.html` | CNA statistics |
+| `cvss.html` | CVSS scoring analysis |
+| `cwe.html` | CWE classification |
+| `cpe.html` | Vendor/product analysis |
+| `calendar.html` | Publication calendar |
+| `growth.html` | Growth trends |
+| `scoring.html` | EPSS/KEV/Risk Matrix |
 
-### Data Freshness
-- **6-Hour Updates** - Automated refresh cycle
-- **NVD Synchronization** - Always current with official data
-- **Incremental Processing** - Efficient handling of updates
+## 🔄 CI/CD
+
+The project uses GitHub Actions for automation:
+
+- **Scheduled Builds**: Every 6 hours (0:00, 6:00, 12:00, 18:00 UTC)
+- **On Push**: Builds triggered on commits to main branch
+- **Deployment**: Automatic deployment to GitHub Pages
+
+## 📖 Documentation
+
+- [Architecture Guide](docs/ARCHITECTURE.md) - System design and data flow
+- [JSON Schemas](docs/SCHEMAS.md) - Output file format specifications
+- [Development Roadmap](docs/ROADMAP.md) - Project history and future plans
+- [Counting Methodology](docs/COUNTING.md) - How CVEs are counted
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our contributing guidelines:
-
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-### Development Setup
-```bash
-# Clone your fork
-git clone https://github.com/yourusername/cve.icu.git
-
-# Install development dependencies
-pip install -r requirements.txt
-
-# Run tests
-python -m pytest tests/
-
-# Test quiet mode
-python build.py --quiet
-```
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Run tests (`pytest tests/ -v`)
+4. Commit changes (`git commit -m 'Add amazing feature'`)
+5. Push to branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## 📄 License
 
@@ -210,22 +227,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **National Vulnerability Database (NVD)** - Primary data source
-- **MITRE Corporation** - CVE program and CWE classification
-- **CVE Numbering Authorities** - Vulnerability discovery and disclosure
-- **Open Source Community** - Tools and libraries that make this possible
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/jgamblin/cve.icu/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/jgamblin/cve.icu/discussions)
-- **Website**: [https://cve.icu](https://cve.icu)
+- [NIST NVD](https://nvd.nist.gov/) for vulnerability data
+- [CVE Program](https://www.cve.org/) for CVE identifiers
+- [FIRST.org](https://www.first.org/) for EPSS scoring
+- [CISA](https://www.cisa.gov/) for KEV catalog
+- [Chart.js](https://www.chartjs.org/) for visualizations
 
 ---
 
-**Built with ❤️ for the cybersecurity community**
+<p align="center">
+  <a href="https://rogolabs.net/"><img src="https://img.shields.io/badge/A_Project_From-RogoLabs-blue?style=for-the-badge" alt="RogoLabs"></a>
+</p>
 
-*CVE.ICU - Making vulnerability data accessible, understandable, and actionable.*
-
-[![Build and Deploy](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml/badge.svg)](https://github.com/jgamblin/cve.icu/actions/workflows/deploy.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  Built by <a href="https://github.com/jgamblin">Jerry Gamblin</a> at <a href="https://rogolabs.net/">RogoLabs</a>
+</p>

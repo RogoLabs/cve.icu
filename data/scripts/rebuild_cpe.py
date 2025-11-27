@@ -5,52 +5,35 @@ Quick rebuild script for CPE analysis only - much faster than full site rebuild
 """
 
 import sys
-from pathlib import Path
-import json
 from datetime import datetime
+from pathlib import Path
 
-
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from cpe_analysis import CPEAnalyzer
+from scripts.utils import setup_paths, load_all_year_data, print_header
+
 
 def main():
     """Main rebuild function"""
-    print("🔍 CPE Analysis Quick Rebuild")
-    print("=" * 50)
+    print_header("CPE Analysis Quick Rebuild", "🔍")
     
     # Setup paths
-    base_dir = Path(__file__).parent.parent
-    cache_dir = base_dir / 'data' / 'cache'
-    data_dir = base_dir / 'web' / 'data'
-    
-    # Ensure data directory exists
-    data_dir.mkdir(parents=True, exist_ok=True)
+    project_root, cache_dir, data_dir = setup_paths()
     
     # Initialize CPE analyzer
     print("📊 Initializing CPE analyzer...")
-    cpe_analyzer = CPEAnalyzer(base_dir, cache_dir, data_dir)
+    cpe_analyzer = CPEAnalyzer(project_root, cache_dir, data_dir)
     
     # Load existing year data for context (if available)
     print("📂 Loading existing year data...")
-    all_year_data = []
+    all_year_data = load_all_year_data(data_dir)
     
-    try:
-        # Try to load existing year data files
-        for year in range(1999, datetime.now().year + 1):
-            year_file = data_dir / f'cve_{year}.json'
-            if year_file.exists():
-                with open(year_file, 'r') as f:
-                    year_data = json.load(f)
-                    all_year_data.append(year_data)
-        
-        if all_year_data:
-            print(f"  ✅ Loaded {len(all_year_data)} existing year data files")
-        else:
-            print("  ⚠️  No existing year data found - CPE analysis will use raw data only")
-    
-    except Exception as e:
-        print(f"  ⚠️  Error loading year data: {e}")
-        print("  📝 Proceeding with raw data analysis...")
+    if all_year_data:
+        print(f"  ✅ Loaded {len(all_year_data)} existing year data files")
+    else:
+        print("  ⚠️  No existing year data found - CPE analysis will use raw data only")
     
     # Generate comprehensive CPE analysis
     print("\n🔍 Generating comprehensive CPE analysis...")
@@ -97,7 +80,7 @@ def main():
         from jinja2 import Environment, FileSystemLoader
         
         # Setup Jinja2 environment
-        template_dir = base_dir / 'templates'
+        template_dir = project_root / 'templates'
         env = Environment(loader=FileSystemLoader(template_dir))
         
         # Load CPE template
@@ -110,7 +93,7 @@ def main():
         )
         
         # Save CPE page
-        output_file = base_dir / 'web' / 'cpe.html'
+        output_file = project_root / 'web' / 'cpe.html'
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(html_content)
         
@@ -127,7 +110,7 @@ def main():
     print("\nFiles generated:")
     print(f"  📊 {data_dir}/cpe_analysis.json")
     print(f"  📅 {data_dir}/cpe_analysis_current_year.json")
-    print(f"  🌐 {base_dir}/web/cpe.html")
+    print(f"  🌐 {project_root}/web/cpe.html")
     print("\nYou can now view the CPE analysis page in your browser.")
     
     return 0

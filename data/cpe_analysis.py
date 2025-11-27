@@ -7,7 +7,7 @@ Handles all CPE (Common Platform Enumeration) related data processing and analys
 import json
 from pathlib import Path
 from datetime import datetime
-from collections import defaultdict, Counter
+from collections import Counter
 
 
 class CPEAnalyzer:
@@ -211,8 +211,8 @@ class CPEAnalyzer:
         return current_year_cpe_analysis
     
     def _process_cpe_data_from_cache(self):
-        """Process CPE data from cached nvd.jsonl file"""
-        nvd_file = self.cache_dir / 'nvd.jsonl'
+        """Process CPE data from cached nvd.json file"""
+        nvd_file = self.cache_dir / 'nvd.json'
         
         if not nvd_file.exists():
             print(f"    ⚠️  NVD cache file not found: {nvd_file}")
@@ -280,7 +280,7 @@ class CPEAnalyzer:
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception as e:
+                    except Exception:
                         continue
         
         except Exception as e:
@@ -300,7 +300,7 @@ class CPEAnalyzer:
     
     def _process_current_year_cpe_data(self):
         """Process CPE data for current year only"""
-        nvd_file = self.cache_dir / 'nvd.jsonl'
+        nvd_file = self.cache_dir / 'nvd.json'
         
         if not nvd_file.exists():
             print(f"    ⚠️  NVD cache file not found: {nvd_file}")
@@ -373,7 +373,7 @@ class CPEAnalyzer:
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception as e:
+                    except Exception:
                         continue
         
         except Exception as e:

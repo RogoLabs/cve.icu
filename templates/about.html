@@ -141,6 +141,8 @@
                             <ul class="list-unstyled">
                                 <li class="mb-2"><strong>Primary:</strong> NIST National Vulnerability Database (NVD)</li>
                                 <li class="mb-2"><strong>Secondary:</strong> CVE Project V5 Repository</li>
+                                <li class="mb-2"><strong>Risk Signals:</strong> CISA Known Exploited Vulnerabilities (KEV) catalog</li>
+                                <li class="mb-2"><strong>Likelihood:</strong> FIRST Exploit Prediction Scoring System (EPSS)</li>
                                 <li class="mb-2"><strong>Coverage:</strong> 287,800+ CVEs across 27 years</li>
                                 <li class="mb-0"><strong>Validation:</strong> Multi-source cross-verification</li>
                             </ul>
@@ -200,6 +202,7 @@
                 <div class="col-md-6">
                     <ul class="list-unstyled">
                         <li class="mb-2">✓ <strong>{{ cwe_coverage|default('206,053') }} CWE classified</strong> weaknesses</li>
+                        <li class="mb-2">✓ <strong>{{ kev_coverage|default('1,463') }} known exploited CVEs</strong> in the CISA KEV catalog</li>
                         <li class="mb-2">✓ <strong>{{ total_cnas|default('290') }} active CNAs</strong> with attribution data</li>
                     </ul>
                 </div>

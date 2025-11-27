@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}CNA Intelligence Hub - CVE.ICU{% endblock %}
+
+{% block content %}
+<style>
+.cna-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .cna-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cna-card {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cna-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.cna-card h3 {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 0;
+    color: var(--color-text-primary);
+}
+
+.cna-card .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: var(--font-weight-medium);
+}
+
+.cna-card .big-number {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    line-height: 1.2;
+    margin: 0.5rem 0 0.25rem 0;
+}
+
+.cna-card .stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.cna-card .description {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.cna-card .question {
+    font-style: italic;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    background: var(--color-bg-secondary);
+    border-radius: var(--border-radius);
+    margin-top: auto;
+}
+
+.nav-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-card:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.cna-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+    .cna-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .cna-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.summary-stat {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-stat .number {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.summary-stat .label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+</style>
+
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CNA Intelligence Hub</h1>
+    <p class="text-muted">
+        Analyze CVE Numbering Authorities: activity metrics, quality insights, and attribution data
+    </p>
+</div>
+
+<!-- Quick Stats -->
+<div class="cna-summary-grid">
+    <div class="summary-stat">
+        <div class="number" id="totalCnas">-</div>
+        <div class="label">Total CNAs</div>
+    </div>
+    <div class="summary-stat">
+        <div class="number" id="activeCnas">-</div>
+        <div class="label">Active CNAs</div>
+    </div>
+    <div class="summary-stat">
+        <div class="number" id="matchRate">-</div>
+        <div class="label">Name Match Rate</div>
+    </div>
+    <div class="summary-stat">
+        <div class="number" id="totalCves">-</div>
+        <div class="label">Total CVEs</div>
+    </div>
+</div>
+
+<!-- Main CNA Analysis Cards -->
+<div class="cna-stats-grid">
+    <!-- CNA Intelligence Card -->
+    <a href="cna.html" class="nav-card">
+        <div class="cna-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3>CNA Intelligence</h3>
+                <span class="badge bg-primary">Analytics</span>
+            </div>
+            <div class="big-number" id="cnaCount">-</div>
+            <div class="stat-label">Active CVE Assigners</div>
+            <p class="description">
+                Comprehensive analysis of all CVE Numbering Authorities including <strong>activity metrics, 
+                KEV/EPSS correlations, volume trends</strong>, and links to CNAScorecard.
+            </p>
+            <div class="question">
+                💡 "Which CNAs are most active? Which have the most exploited CVEs?"
+            </div>
+        </div>
+    </a>
+    
+    <!-- Name Matching Quality Card -->
+    <a href="data-quality.html" class="nav-card">
+        <div class="cna-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3>Name Matching</h3>
+                <span class="badge bg-secondary">Quality</span>
+            </div>
+            <div class="big-number" id="unmatchedCount">-</div>
+            <div class="stat-label">Unmatched CNAs</div>
+            <p class="description">
+                CNAScorecard-style name matching analysis showing how CVE assigner names 
+                <strong>align with the official CNA registry</strong>. Identifies naming inconsistencies.
+            </p>
+            <div class="question">
+                💡 "Are CVE attributions accurate? Which names don't match the registry?"
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- About CNAs Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title mb-0">What is a CNA?</h3>
+    </div>
+    <div class="card-body">
+        <p>
+            <strong>CVE Numbering Authorities (CNAs)</strong> are organizations authorized by the CVE Program 
+            to assign CVE IDs to vulnerabilities in their scope. CNAs include:
+        </p>
+        <div class="row mt-3">
+            <div class="col-md-4 mb-3">
+                <h5>Vendors</h5>
+                <p class="text-muted small">
+                    Software companies assigning CVEs for their own products (Microsoft, Google, Apple, etc.)
+                </p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Researchers</h5>
+                <p class="text-muted small">
+                    Security research organizations and bug bounty programs (HackerOne, Bugcrowd, etc.)
+                </p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Coordinators</h5>
+                <p class="text-muted small">
+                    National CERTs and coordination centers (MITRE, CISA, CERT/CC, etc.)
+                </p>
+            </div>
+        </div>
+        <p class="text-muted small mb-0">
+            <a href="https://www.cve.org/PartnerInformation/ListofPartners" target="_blank" rel="noopener">
+                View the official CNA list on CVE.org →
+            </a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadCnaHubData() {
+    try {
+        // Load CNA analysis
+        const cnaResponse = await fetch('data/cna_analysis.json');
+        const cnaData = await cnaResponse.json();
+        
+        document.getElementById('totalCnas').textContent = cnaData.total_cnas?.toLocaleString() || '-';
+        document.getElementById('activeCnas').textContent = cnaData.active_cnas?.toLocaleString() || '-';
+        document.getElementById('cnaCount').textContent = cnaData.active_cnas?.toLocaleString() || '-';
+        
+        // Calculate total CVEs from repository_stats
+        const totalCves = cnaData.repository_stats?.total_cves || 0;
+        document.getElementById('totalCves').textContent = totalCves.toLocaleString();
+        
+    } catch (error) {
+        console.error('Error loading CNA data:', error);
+    }
+    
+    try {
+        // Load data quality
+        const qualityResponse = await fetch('data/data_quality.json');
+        const qualityData = await qualityResponse.json();
+        
+        const stats = qualityData.stats;
+        document.getElementById('unmatchedCount').textContent = stats.unmatched?.toLocaleString() || '-';
+        
+        // Calculate match rate
+        const total = stats.total_cnas_in_analysis || 0;
+        const matched = total - (stats.unmatched || 0);
+        const rate = total > 0 ? ((matched / total) * 100).toFixed(1) + '%' : '-';
+        document.getElementById('matchRate').textContent = rate;
+        
+    } catch (error) {
+        console.error('Error loading quality data:', error);
+        document.getElementById('unmatchedCount').textContent = '-';
+        document.getElementById('matchRate').textContent = '-';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadCnaHubData);
+</script>
+{% endblock %}
