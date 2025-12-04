@@ -1,15 +1,15 @@
 {
-  "generated_at": "2025-12-03T18:28:39.548765",
+  "generated_at": "2025-12-04T00:45:26.918766",
   "year": 2025,
-  "total_unique_cpes": 18435,
-  "total_cpe_entries": 141537,
-  "total_cves_with_cpes": 24610,
-  "total_unique_vendors": 3102,
-  "total_unique_products": 7103,
+  "total_unique_cpes": 18489,
+  "total_cpe_entries": 142122,
+  "total_cves_with_cpes": 24771,
+  "total_unique_vendors": 3114,
+  "total_unique_products": 7122,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 11157,
+      "count": 11366,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -197,6 +197,13 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:o:google:android:15.0:*:*:*:*:*:*:*",
+      "count": 238,
+      "vendor": "google",
+      "product": "android",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2008:-:sp2:*:*:*:*:x86:*",
       "count": 238,
       "vendor": "microsoft",
@@ -204,18 +211,11 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2008:-:sp2:*:*:*:*:x64:*",
+      "cpe": "cpe:2.3:a:mattermost:mattermost_server:*:*:*:*:*:*:*:*",
       "count": 237,
-      "vendor": "microsoft",
-      "product": "windows_server_2008",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.14:rc1:*:*:*:*:*:*",
-      "count": 236,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
+      "vendor": "mattermost",
+      "product": "mattermost_server",
+      "type": "Application"
     }
   ],
   "top_vendors": [
@@ -229,7 +229,7 @@
     },
     {
       "vendor": "linux",
-      "count": 17643
+      "count": 17886
     },
     {
       "vendor": "microsoft",
@@ -264,16 +264,16 @@
       "count": 1317
     },
     {
+      "vendor": "checkmk",
+      "count": 1267
+    },
+    {
       "vendor": "ivanti",
       "count": 1216
     },
     {
-      "vendor": "checkmk",
-      "count": 1214
-    },
-    {
       "vendor": "google",
-      "count": 1144
+      "count": 1191
     },
     {
       "vendor": "liferay",
@@ -283,7 +283,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 17643
+      "count": 17886
     },
     {
       "product": "ios",
@@ -291,7 +291,7 @@
     },
     {
       "product": "android",
-      "count": 7602
+      "count": 7649
     },
     {
       "product": "ios_xe",
@@ -323,7 +323,7 @@
     },
     {
       "product": "checkmk",
-      "count": 1214
+      "count": 1267
     },
     {
       "product": "windows_10_1809",
@@ -345,12 +345,12 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 89240,
-      "percentage": 63.1
+      "count": 89570,
+      "percentage": 63.0
     },
     {
       "type": "Application",
-      "count": 52240,
+      "count": 52495,
       "percentage": 36.9
     },
     {
@@ -441,5 +441,5 @@
       "cpe_count": 349
     }
   ],
-  "average_cpes_per_cve": 5.8
+  "average_cpes_per_cve": 5.7
 }
