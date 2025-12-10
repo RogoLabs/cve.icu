@@ -405,6 +405,100 @@ class CVEV5Processor:
             print(f"    ⚠️ Error parsing {cve_file_path}: {e}")
             return None
     
+    def process_all_cves_single_pass(self):
+        """Process ALL CVE records in a single pass, tracking by publication year.
+        
+        This is more efficient than processing year-by-year since:
+        1. CVE folder year (e.g., cves/2024/) is the CVE ID year, not publication year
+        2. A CVE-2024-XXXX might be published in 2025
+        3. Single pass = read each file once instead of multiple times
+        """
+        print(f"  📊 Processing all CVE files in single pass...")
+        
+        # Initialize CNA stats with publication year tracking
+        all_cna_stats = defaultdict(lambda: {
+            'count': 0,
+            'cves': [],
+            'first_date': None,
+            'last_date': None,
+            'first_year': None,
+            'last_year': None,
+            'assigner_org_id': '',
+            'assigner_short_name': '',
+            'cves_by_pub_year': defaultdict(int),  # Keyed by PUBLICATION year
+            'kev_count': 0,
+            'epss_high_count': 0,
+            'epss_elevated_count': 0,
+            'cwe_counts': defaultdict(int)
+        })
+        
+        # Collect all CVE files from all year directories
+        cves_dir = self.v5_cache_dir / 'cves'
+        all_cve_files = []
+        
+        for year_dir in sorted(cves_dir.iterdir()):
+            if year_dir.is_dir() and year_dir.name.isdigit():
+                for subdir in year_dir.iterdir():
+                    if subdir.is_dir():
+                        all_cve_files.extend(subdir.glob('CVE-*.json'))
+        
+        total_files = len(all_cve_files)
+        print(f"  📊 Found {total_files} total CVE files to process")
+        
+        processed = 0
+        for cve_file in all_cve_files:
+            cve_record = self.parse_cve_v5_record(cve_file)
+            if cve_record and cve_record['assigner_org_id']:
+                org_id = cve_record['assigner_org_id']
+                cve_id = cve_record['cve_id']
+                pub_date = cve_record['publication_date']
+                
+                # Extract publication year from the date
+                pub_year = None
+                if pub_date:
+                    try:
+                        pub_year = datetime.fromisoformat(pub_date.replace('Z', '+00:00')).year
+                    except:
+                        pass
+                
+                # Update CNA statistics
+                all_cna_stats[org_id]['count'] += 1
+                all_cna_stats[org_id]['cves'].append(cve_id)
+                all_cna_stats[org_id]['assigner_org_id'] = org_id
+                all_cna_stats[org_id]['assigner_short_name'] = cve_record['assigner_short_name']
+                
+                # Track by PUBLICATION year (not CVE ID year)
+                if pub_year:
+                    all_cna_stats[org_id]['cves_by_pub_year'][pub_year] += 1
+                
+                # Track date ranges
+                if pub_date:
+                    if not all_cna_stats[org_id]['first_date'] or pub_date < all_cna_stats[org_id]['first_date']:
+                        all_cna_stats[org_id]['first_date'] = pub_date
+                        all_cna_stats[org_id]['first_year'] = pub_year
+                    if not all_cna_stats[org_id]['last_date'] or pub_date > all_cna_stats[org_id]['last_date']:
+                        all_cna_stats[org_id]['last_date'] = pub_date
+                        all_cna_stats[org_id]['last_year'] = pub_year
+                
+                # Track KEV membership inline
+                if cve_id in self.kev_cve_set:
+                    all_cna_stats[org_id]['kev_count'] += 1
+                
+                # Track EPSS scores inline
+                if cve_id in self.epss_mapping:
+                    epss_score = self.epss_mapping[cve_id].get('epss_score', 0)
+                    if epss_score > 0.5:
+                        all_cna_stats[org_id]['epss_high_count'] += 1
+                    if epss_score > 0.1:
+                        all_cna_stats[org_id]['epss_elevated_count'] += 1
+            
+            processed += 1
+            if processed % 10000 == 0:
+                print(f"    📈 Processed {processed}/{total_files} files...")
+        
+        print(f"  ✅ Processed {processed} CVE files, found {len(all_cna_stats)} unique CNAs")
+        return dict(all_cna_stats)
+
     def process_year_data(self, year):
         """Process all CVE records for a specific year"""
         print(f"    📅 Processing CVE data for year {year}...")
@@ -478,48 +572,19 @@ class CVEV5Processor:
             return None
             
         print(f"  📊 Repository contains {repo_stats['total_cves']} CVEs across {repo_stats['total_years']} years")
-        print(f"  📅 Years available: {repo_stats['years_available']}")
         
-        # Process all years to build comprehensive CNA statistics
-        all_cna_stats = defaultdict(lambda: {
-            'count': 0,
-            'cves': [],  # <-- Add this line to ensure 'cves' is always present
-            'first_date': None,
-            'last_date': None,
-            'first_year': None,
-            'last_year': None,
-            'assigner_org_id': '',
-            'assigner_short_name': '',
-            'cves_by_year': defaultdict(int),
-            # Threat intelligence tracking
-            'kev_count': 0,
-            'epss_high_count': 0,      # EPSS > 0.5
-            'epss_elevated_count': 0,  # EPSS > 0.1
-            'cwe_counts': defaultdict(int)
-        })
-        # Process each year
-        for year in repo_stats['years_available']:
-            year_data = self.process_year_data(year)
-            for org_id, stats in year_data.items():
-                # Aggregate statistics across all years
-                all_cna_stats[org_id]['count'] += stats['count']
-                all_cna_stats[org_id]['assigner_org_id'] = stats['assigner_org_id']
-                all_cna_stats[org_id]['assigner_short_name'] = stats['assigner_short_name']
-                # Update date ranges
-                if stats['first_date']:
-                    if not all_cna_stats[org_id]['first_date'] or stats['first_date'] < all_cna_stats[org_id]['first_date']:
-                        all_cna_stats[org_id]['first_date'] = stats['first_date']
-                        all_cna_stats[org_id]['first_year'] = year
-                if stats['last_date']:
-                    if not all_cna_stats[org_id]['last_date'] or stats['last_date'] > all_cna_stats[org_id]['last_date']:
-                        all_cna_stats[org_id]['last_date'] = stats['last_date']
-                        all_cna_stats[org_id]['last_year'] = year
-                # Ensure CVE IDs are aggregated
-                if 'cves' in stats:
-                    all_cna_stats[org_id]['cves'].extend(stats['cves'])
+        # Use single-pass processing (reads each file once, tracks by publication year)
+        all_cna_stats = self.process_all_cves_single_pass()
+        
         # Convert to final format
         cna_list = []
+        total_cnas = len(all_cna_stats)
+        print(f"  📊 Building CNA list from {total_cnas} CNAs...")
+        processed_cnas = 0
         for org_id, stats in all_cna_stats.items():
+            processed_cnas += 1
+            if processed_cnas % 50 == 0:
+                print(f"    📈 Processing CNA {processed_cnas}/{total_cnas}...")
             # Calculate years active using publication dates
             years_active_count = 1
             first_pub_year = None
@@ -552,67 +617,14 @@ class CVEV5Processor:
             # Classify CNA type
             cna_types = self.classify_cna_type(org_id, stats['assigner_short_name'])
 
-            # Compute threat intelligence metrics from CVE IDs
-            kev_count = 0
-            epss_high_count = 0    # EPSS > 0.5
-            epss_elevated_count = 0  # EPSS > 0.1
-            
-            for cve_id in stats['cves']:
-                # Track KEV membership
-                if cve_id in self.kev_cve_set:
-                    kev_count += 1
-                
-                # Track EPSS scores
-                if cve_id in self.epss_mapping:
-                    epss_score = self.epss_mapping[cve_id].get('epss_score', 0)
-                    if epss_score > 0.5:
-                        epss_high_count += 1
-                    if epss_score > 0.1:
-                        epss_elevated_count += 1
+            # KEV and EPSS are already tracked inline during single-pass processing
+            kev_count = stats.get('kev_count', 0)
+            epss_high_count = stats.get('epss_high_count', 0)
+            epss_elevated_count = stats.get('epss_elevated_count', 0)
 
-            # Aggregate severity and CWE types
-            severity_counts = defaultdict(int)
-            cwe_counts = defaultdict(int)
-            for year_str in stats['cves_by_year']:
-                year = int(year_str)
-                # Find CVEs for this year
-                year_dir = self.v5_cache_dir / 'cves' / str(year)
-                for subdir in year_dir.iterdir():
-                    if subdir.is_dir():
-                        for cve_id in stats['cves']:
-                            cve_file = subdir / f"{cve_id}.json"
-                            if cve_file.exists():
-                                try:
-                                    with open(cve_file, 'r', encoding='utf-8') as f:
-                                        cve_data = json.load(f)
-                                    # Severity extraction (CVSS)
-                                    metrics = cve_data.get('metrics', {})
-                                    cvss = metrics.get('cvssMetricV31', metrics.get('cvssMetricV30', []))
-                                    if cvss and isinstance(cvss, list):
-                                        for metric in cvss:
-                                            base_score = metric.get('cvssData', {}).get('baseScore')
-                                            if base_score is not None:
-                                                if base_score >= 9:
-                                                    severity_counts['Critical'] += 1
-                                                elif base_score >= 7:
-                                                    severity_counts['High'] += 1
-                                                elif base_score >= 4:
-                                                    severity_counts['Medium'] += 1
-                                                else:
-                                                    severity_counts['Low'] += 1
-                                    # CWE extraction
-                                    weaknesses = cve_data.get('weaknesses', [])
-                                    for weakness in weaknesses:
-                                        for desc in weakness.get('description', []):
-                                            cwe_id = desc.get('value')
-                                            if cwe_id and cwe_id.startswith('CWE-'):
-                                                cwe_counts[cwe_id] += 1
-                                except Exception:
-                                    pass
-            # Prepare top CWE types
-            top_cwe_types = dict(sorted(cwe_counts.items(), key=lambda x: x[1], reverse=True)[:5])
-            # Prepare severity distribution
-            severity_distribution = dict(severity_counts)
+            # Severity and CWE aggregation is expensive - use simpler approach
+            severity_distribution = {}
+            top_cwe_types = {}
             
             cna_entry = {
                 'name': stats['assigner_short_name'] or org_id,
@@ -627,7 +639,7 @@ class CVEV5Processor:
                 'activity_status': activity_status,
                 'is_official': True,  # All CVE V5 records are from official CNAs
                 'cna_types': cna_types,  # Add CNA type classification
-                'cves_by_year': dict(stats['cves_by_year']),
+                'cves_by_year': dict(stats.get('cves_by_pub_year', {})),  # Use publication year
                 'years_active_list': [first_pub_year, last_pub_year] if first_pub_year and last_pub_year else [],
                 # Add placeholder fields for compatibility
                 'severity_distribution': severity_distribution,

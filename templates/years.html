@@ -225,6 +225,7 @@
 
 // Global variables
 let yearData = {};
+let cnaAnalysisData = null;  // CNA data from cna_analysis.json
 let selectedYears = [];
 let selectedCvesTotal = 0;
 let totalDays = 0;
@@ -246,7 +247,10 @@ async function initializePage() {
     debugLog('Starting page initialization...');
     
     try {
-        await loadYearData();
+        await Promise.all([
+            loadYearData(),
+            loadCnaAnalysisData()
+        ]);
     
     // Initialize year selector event listeners
     initializeYearSelector();
@@ -359,6 +363,22 @@ async function loadYearDataLegacy() {
         }
     }
     console.log('Legacy year data loaded:', Object.keys(yearData).length, 'years');
+}
+
+// Load CNA analysis data from CVE V5 processor
+async function loadCnaAnalysisData() {
+    try {
+        debugLog('Loading CNA analysis data...');
+        const response = await fetch('data/cna_analysis.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load CNA analysis: ${response.status}`);
+        }
+        cnaAnalysisData = await response.json();
+        debugLog('CNA analysis loaded successfully', { totalCnas: cnaAnalysisData.cna_list?.length });
+    } catch (error) {
+        console.error('Error loading CNA analysis data:', error);
+        cnaAnalysisData = null;
+    }
 }
 
 // Initialize year selector
@@ -871,17 +891,24 @@ function updateVendorChart() {
         vendorChart.destroy();
     }
     
-    // Aggregate CNA data from selected years
+    // Use CNA analysis data (from CVE V5) which has proper per-year breakdown
     const cnaData = {};
     
-    selectedYears.forEach(year => {
-        const yearVendorData = yearData[year]?.vendors?.cna_assigners || [];
-        yearVendorData.forEach(cna => {
-            if (cna.name && cna.count) {
-                cnaData[cna.name] = (cnaData[cna.name] || 0) + cna.count;
+    if (cnaAnalysisData && cnaAnalysisData.cna_list) {
+        // Aggregate CNA counts for selected years from cves_by_year
+        cnaAnalysisData.cna_list.forEach(cna => {
+            if (cna.cves_by_year) {
+                let totalForSelectedYears = 0;
+                selectedYears.forEach(year => {
+                    // Keys in JSON are strings, so convert year to string
+                    totalForSelectedYears += cna.cves_by_year[String(year)] || 0;
+                });
+                if (totalForSelectedYears > 0) {
+                    cnaData[cna.name] = totalForSelectedYears;
+                }
             }
         });
-    });
+    }
     
     // Sort CNAs by count and take top 15
     const sortedCnas = Object.entries(cnaData)
