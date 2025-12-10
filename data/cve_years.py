@@ -586,11 +586,10 @@ class CVEYearsAnalyzer:
             return []
 
     def extract_vendor_info(self, cve_data):
-        """Extract vendor / CNA information for this CVE.
+        """Extract CNA (CVE Numbering Authority) information for this CVE.
 
-        This focuses on the CNA/container metadata and assigner fields, and
-        lightly supplements with CPE vendors so that yearly aggregates have a
-        reasonable view of who is associated with the CVE.
+        This extracts only the actual CNA that assigned the CVE ID, not the
+        affected vendors/products (which are in CPE data).
         """
         vendors = set()
 
@@ -611,9 +610,9 @@ class CVEYearsAnalyzer:
                 if isinstance(name, str) and name.strip():
                     vendors.add(name.strip())
 
-            # As a supplement, fold in CPE vendors (already normalized)
-            for v in self.extract_cpe_vendor_info(cve_data):
-                vendors.add(v)
+            # NOTE: Do NOT include CPE vendors here - those are affected products,
+            # not the CNA that assigned the CVE. CPE vendors are tracked separately
+            # in extract_cpe_vendor_info() and cpe_vendors field.
 
         except Exception:
             # Best-effort only
