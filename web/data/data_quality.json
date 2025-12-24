@@ -8,7 +8,7 @@
     "normalized_matches": 7,
     "partial_matches": 4,
     "unmatched": 24,
-    "exact_match_cves": 304535,
+    "exact_match_cves": 304823,
     "case_mismatch_cves": 113,
     "org_name_match_cves": 599,
     "normalized_match_cves": 1464,
@@ -20,7 +20,7 @@
   "exact_matches": [
     {
       "cna_name": "mitre",
-      "cve_count": 111726,
+      "cve_count": 111730,
       "kev_count": 294,
       "epss_high_count": 2974,
       "official_short_name": "mitre",
@@ -31,7 +31,7 @@
     },
     {
       "cna_name": "Patchstack",
-      "cve_count": 13802,
+      "cve_count": 13889,
       "kev_count": 0,
       "epss_high_count": 42,
       "official_short_name": "Patchstack",
@@ -64,12 +64,23 @@
     },
     {
       "cna_name": "redhat",
-      "cve_count": 10694,
+      "cve_count": 10695,
       "kev_count": 28,
       "epss_high_count": 262,
       "official_short_name": "redhat",
       "official_org_name": "Red Hat, Inc.",
       "official_id": "CNA-2005-0006",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "Linux",
+      "cve_count": 9745,
+      "kev_count": 6,
+      "epss_high_count": 0,
+      "official_short_name": "Linux",
+      "official_org_name": "kernel.org",
+      "official_id": "CNA-2024-0016",
       "match_type": "exact_short",
       "confidence": "high"
     },
@@ -81,17 +92,6 @@
       "official_short_name": "GitHub_M",
       "official_org_name": "GitHub, Inc.",
       "official_id": "CNA-2019-0009",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "Linux",
-      "cve_count": 9553,
-      "kev_count": 6,
-      "epss_high_count": 0,
-      "official_short_name": "Linux",
-      "official_org_name": "kernel.org",
-      "official_id": "CNA-2024-0016",
       "match_type": "exact_short",
       "confidence": "high"
     },
