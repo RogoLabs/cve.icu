@@ -46,7 +46,7 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CVSS Intelligence Dashboard</h1>
     <small class="text-muted d-block mb-3" id="pageSubtitle">
-        Showing comprehensive analysis across all years (1999-2025)
+        Showing comprehensive analysis across all years (1999-{{ current_year }})
     </small>
     
     <!-- Data Mode Toggle -->
@@ -62,7 +62,7 @@
             cursor: pointer;
             font-size: inherit;
         " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
-            <span id="toggleText">Switch to 2025 Only</span>
+            <span id="toggleText">Switch to {{ current_year }} Only</span>
         </button>
     </div>
 </div>
@@ -626,15 +626,16 @@ function updateToggleUI() {
     const temporalChartContainer = document.getElementById('temporalChartContainer');
     
     if (currentDataMode === 'all') {
-        toggleText.textContent = 'Switch to 2025 Only';
-        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2025)';
+        toggleText.textContent = 'Switch to {{ current_year }} Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-{{ current_year }})';
         // Show temporal chart for all years view
         if (temporalChartContainer) {
             temporalChartContainer.style.display = 'block';
         }
     } else {
         toggleText.textContent = 'Switch to All-Time';
-        pageSubtitle.textContent = 'Showing analysis for 2025 data only';
+        const currentYearNum = currentYearCvssData && currentYearCvssData.year ? currentYearCvssData.year : new Date().getFullYear();
+        pageSubtitle.textContent = `Showing analysis for ${currentYearNum} data only`;
         // Hide temporal chart for current year view
         if (temporalChartContainer) {
             temporalChartContainer.style.display = 'none';
@@ -685,7 +686,7 @@ function exportCvssCSV() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `cvss-analysis-${currentDataMode === 'current' ? '2025' : 'all-years'}.csv`;
+    a.download = `cvss-analysis-${currentDataMode === 'current' ? (currentYearCvssData && currentYearCvssData.year ? currentYearCvssData.year : new Date().getFullYear()) : 'all-years'}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -699,8 +700,9 @@ function exportCvssJSON() {
     }
     
     const data = currentDataMode === 'current' ? currentYearCvssData : cvssData;
+    const currentYearNum = currentYearCvssData && currentYearCvssData.year ? currentYearCvssData.year : new Date().getFullYear();
     const jsonStr = JSON.stringify(data, null, 2);
-    downloadFile(jsonStr, `cvss-analysis-${currentDataMode === 'current' ? '2025' : 'all-years'}.json`, 'application/json');
+    downloadFile(jsonStr, `cvss-analysis-${currentDataMode === 'current' ? currentYearNum : 'all-years'}.json`, 'application/json');
 }
 
 function downloadFile(content, filename, contentType) {

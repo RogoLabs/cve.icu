@@ -312,8 +312,9 @@ class CNAAnalyzer:
             if cna_designation_year is None and stats['first_cve_year'] and stats['last_cve_year']:
                 calculated_years = max(1, stats['last_cve_year'] - stats['first_cve_year'] + 1)
                 # Validate: No CNA can be older than the CNA program (started 2005)
-                # Maximum possible years active = 2025 - 2005 + 1 = 21 years
-                years_active = min(calculated_years, 21)
+                # Maximum possible years active = current_year - 2005 + 1
+                max_possible_years = self.current_year - 2005 + 1
+                years_active = min(calculated_years, max_possible_years)
             
             # Calculate days since last CVE
             days_since_last = 0

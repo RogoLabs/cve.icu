@@ -16,6 +16,7 @@ import json
 import re
 from pathlib import Path
 from collections import defaultdict
+from datetime import datetime
 
 # Utility: Normalize CNA names for fuzzy matching
 
@@ -158,10 +159,11 @@ for cve in cve_data:
 
 # Output summary
 summary = []
+current_year = datetime.now().year
 for name, stats in cna_stats.items():
     years_active = None
     if stats['designation_year']:
-        years_active = 2025 - stats['designation_year']
+        years_active = current_year - stats['designation_year']
     summary.append({
         'name': name,
         'count': stats['count'],
