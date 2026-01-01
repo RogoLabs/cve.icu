@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-01-01T12:29:01.530739Z",
-  "catalog_version": "2025.11.21",
-  "total_kev_cves": 1463,
+  "generated_at": "2026-01-01T16:25:23.049798Z",
+  "catalog_version": "2025.12.29",
+  "total_kev_cves": 1484,
   "statistics": {
-    "added_last_30_days": 0,
-    "added_last_90_days": 36,
-    "ransomware_associated": 302
+    "added_last_30_days": 20,
+    "added_last_90_days": 57,
+    "ransomware_associated": 304
   },
   "by_year_added": {
     "2021": 311,
     "2022": 555,
     "2023": 187,
     "2024": 186,
-    "2025": 224
+    "2025": 245
   },
   "by_year_cve": {
     "2002": 1,
@@ -30,14 +30,14 @@
     "2015": 44,
     "2016": 59,
     "2017": 85,
-    "2018": 87,
+    "2018": 88,
     "2019": 117,
     "2020": 144,
-    "2021": 206,
-    "2022": 128,
-    "2023": 157,
+    "2021": 208,
+    "2022": 129,
+    "2023": 158,
     "2024": 155,
-    "2025": 135
+    "2025": 151
   },
   "timeline": {
     "2021-11": 291,
@@ -88,20 +88,21 @@
     "2025-08": 15,
     "2025-09": 16,
     "2025-10": 31,
-    "2025-11": 10
+    "2025-11": 11,
+    "2025-12": 20
   },
   "top_vendors": [
     [
       "Microsoft",
-      349
+      350
     ],
     [
       "Apple",
-      85
+      86
     ],
     [
       "Cisco",
-      81
+      82
     ],
     [
       "Adobe",
@@ -109,7 +110,7 @@
     ],
     [
       "Google",
-      66
+      67
     ],
     [
       "Oracle",
@@ -129,19 +130,27 @@
     ],
     [
       "D-Link",
-      24
+      25
+    ],
+    [
+      "Fortinet",
+      23
     ],
     [
       "Linux",
       23
     ],
     [
-      "Fortinet",
-      22
-    ],
-    [
       "Citrix",
       21
+    ],
+    [
+      "Android",
+      16
+    ],
+    [
+      "SonicWall",
+      15
     ],
     [
       "Samsung",
@@ -152,15 +161,7 @@
       14
     ],
     [
-      "Android",
-      14
-    ],
-    [
       "SAP",
-      14
-    ],
-    [
-      "SonicWall",
       14
     ],
     [
@@ -175,11 +176,11 @@
   "top_products": [
     [
       "Microsoft - Windows",
-      158
+      159
     ],
     [
       "Apple - Multiple Products",
-      46
+      47
     ],
     [
       "Google - Chromium V8",
@@ -257,19 +258,19 @@
   "top_cwes": [
     [
       "CWE-20",
-      112
+      113
     ],
     [
       "CWE-78",
-      96
+      97
     ],
     [
       "CWE-787",
-      95
+      96
     ],
     [
       "CWE-416",
-      84
+      86
     ],
     [
       "CWE-119",
@@ -277,7 +278,7 @@
     ],
     [
       "CWE-22",
-      67
+      68
     ],
     [
       "CWE-502",
@@ -308,12 +309,12 @@
       30
     ],
     [
-      "CWE-284",
+      "CWE-79",
       29
     ],
     [
-      "CWE-79",
-      28
+      "CWE-284",
+      29
     ],
     [
       "CWE-77",
@@ -332,9 +333,170 @@
       17
     ],
     [
-      "CWE-863",
+      "CWE-434",
       16
     ]
   ],
-  "recent_additions": []
+  "recent_additions": [
+    {
+      "cve_id": "CVE-2025-14847",
+      "vendor": "MongoDB",
+      "product": "MongoDB and MongoDB Server",
+      "date_added": "2025-12-29",
+      "due_date": "2026-01-19",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2023-52163",
+      "vendor": "Digiever",
+      "product": "DS-2105 Pro",
+      "date_added": "2025-12-22",
+      "due_date": "2026-01-12",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-14733",
+      "vendor": "WatchGuard",
+      "product": "Firebox",
+      "date_added": "2025-12-19",
+      "due_date": "2025-12-26",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-59374",
+      "vendor": "ASUS",
+      "product": "Live Update",
+      "date_added": "2025-12-17",
+      "due_date": "2026-01-07",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-40602",
+      "vendor": "SonicWall",
+      "product": "SMA1000 appliance",
+      "date_added": "2025-12-17",
+      "due_date": "2025-12-24",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-20393",
+      "vendor": "Cisco",
+      "product": "Multiple Products",
+      "date_added": "2025-12-17",
+      "due_date": "2025-12-24",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-59718",
+      "vendor": "Fortinet",
+      "product": "Multiple Products",
+      "date_added": "2025-12-16",
+      "due_date": "2025-12-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-14611",
+      "vendor": "Gladinet",
+      "product": "CentreStack and Triofox",
+      "date_added": "2025-12-15",
+      "due_date": "2026-01-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-43529",
+      "vendor": "Apple",
+      "product": "Multiple Products",
+      "date_added": "2025-12-15",
+      "due_date": "2026-01-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2018-4063",
+      "vendor": "Sierra Wireless",
+      "product": "AirLink ALEOS",
+      "date_added": "2025-12-12",
+      "due_date": "2026-01-02",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-14174",
+      "vendor": "Google",
+      "product": "Chromium",
+      "date_added": "2025-12-12",
+      "due_date": "2026-01-02",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-58360",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "date_added": "2025-12-11",
+      "due_date": "2026-01-01",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-6218",
+      "vendor": "RARLAB",
+      "product": "WinRAR",
+      "date_added": "2025-12-09",
+      "due_date": "2025-12-30",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-62221",
+      "vendor": "Microsoft",
+      "product": "Windows",
+      "date_added": "2025-12-09",
+      "due_date": "2025-12-30",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2022-37055",
+      "vendor": "D-Link",
+      "product": "Routers",
+      "date_added": "2025-12-08",
+      "due_date": "2025-12-29",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-66644",
+      "vendor": "Array Networks ",
+      "product": "ArrayOS AG",
+      "date_added": "2025-12-08",
+      "due_date": "2025-12-29",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-55182",
+      "vendor": "Meta",
+      "product": "React Server Components",
+      "date_added": "2025-12-05",
+      "due_date": "2025-12-12",
+      "ransomware": "Known"
+    },
+    {
+      "cve_id": "CVE-2021-26828",
+      "vendor": "OpenPLC",
+      "product": "ScadaBR",
+      "date_added": "2025-12-03",
+      "due_date": "2025-12-24",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-48633",
+      "vendor": "Android",
+      "product": "Framework",
+      "date_added": "2025-12-02",
+      "due_date": "2025-12-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-48572",
+      "vendor": "Android",
+      "product": "Framework",
+      "date_added": "2025-12-02",
+      "due_date": "2025-12-23",
+      "ransomware": "Unknown"
+    }
+  ]
 }

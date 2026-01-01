@@ -50,6 +50,17 @@ jobs:
       run: |
         python -m pytest tests/ -v --tb=short
         
+    - name: Download fresh KEV and EPSS data
+      run: |
+        cd data && python -c "
+        from download_cve_data import CVEDataDownloader
+        d = CVEDataDownloader()
+        d.download_kev_data(force=True)
+        d.parse_kev_json()
+        d.download_epss_data(force=True)
+        d.parse_epss_csv()
+        "
+        
     - name: Build site
       run: |
         python build.py --quiet
