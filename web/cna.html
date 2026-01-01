@@ -94,7 +94,7 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CNA Intelligence Dashboard</h1>
     <small class="text-muted d-block mb-3" id="pageSubtitle">
-        Showing comprehensive analysis across all years (1999-2025)
+        Showing comprehensive analysis across all years (1999-2026)
     </small>
     
     <!-- Data Mode Toggle -->
@@ -110,7 +110,7 @@
             cursor: pointer;
             font-size: inherit;
         " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
-            <span id="toggleText">Switch to 2025 Only</span>
+            <span id="toggleText">Switch to 2026 Only</span>
         </button>
     </div>
 </div>
@@ -1033,11 +1033,12 @@ function updateToggleUI() {
     const pageSubtitle = document.getElementById('pageSubtitle');
     
     if (currentDataMode === 'all') {
-        toggleText.textContent = 'Switch to 2025 Only';
-        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2025)';
+        toggleText.textContent = 'Switch to 2026 Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2026)';
     } else {
         toggleText.textContent = 'Switch to All-Time';
-        pageSubtitle.textContent = 'Showing analysis for 2025 data only';
+        const currentYearNum = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
+        pageSubtitle.textContent = `Showing analysis for ${currentYearNum} data only`;
     }
 }
 
@@ -1154,7 +1155,8 @@ function createTopCnasChart() {
         if (currentDataMode === 'all') {
             subtitle.textContent = 'Showing top 15 CNAs by total CVE assignments (All-Time Data)';
         } else {
-            subtitle.textContent = 'Showing top 15 CNAs by CVE assignments in 2025 only';
+            const currentYearNum = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
+            subtitle.textContent = `Showing top 15 CNAs by CVE assignments in ${currentYearNum} only`;
         }
     }
     
@@ -1817,16 +1819,16 @@ function generateInsights() {
     const topCna = cnas[0];
     
     if (currentDataMode === 'current') {
-        // Current year specific insights (2025)
-        const currentYear = new Date().getFullYear();
+        // Current year specific insights
+        const currentYear = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
         const topCnaShare = ((topCna.count / totalCves) * 100).toFixed(1);
         
-        // Top 2025 CNA insight
+        // Top current year CNA insight
         document.getElementById('marketLeaderInsight').innerHTML = `
             <strong>${topCna.name}</strong> leads ${currentYear} with <strong>${topCna.count.toLocaleString()}</strong> CVEs published (<strong>${topCnaShare}%</strong> of ${currentYear} volume)
         `;
         
-        // 2025 publication volume insight
+        // Current year publication volume insight
         document.getElementById('activityInsight').innerHTML = `
             <strong>${totalCves.toLocaleString()}</strong> CVEs published in ${currentYear} by <strong>${cnas.length}</strong> active CNAs (averaging <strong>${Math.round(totalCves/cnas.length)}</strong> CVEs per CNA)
         `;

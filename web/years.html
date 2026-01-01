@@ -6,13 +6,13 @@
     <title>CVE Year Analysis - CVE.ICU</title>
     
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DSHJ2DJFJZ"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-DSHJ2DJFJZ');
+      gtag('config', 'G-W0CE61HN2F');
     </script>
     
     <!-- Google Fonts - Inter -->
@@ -849,14 +849,14 @@ async function initializePage() {
 function ensureDefaultYearSelection() {
     debugLog(`Current selectedYears: ${selectedYears}`);
     
-    // ALWAYS reset to just 2025, regardless of what's currently selected
-    const defaultYear = 2025;
+    // ALWAYS reset to just current year, regardless of what's currently selected
+    const defaultYear = 2026;
     debugLog(`Forcing selection to only year: ${defaultYear}`);
     
     const yearCheckbox = document.querySelector(`#yearSelector input[value="${defaultYear}"]`);
     
     if (yearCheckbox) {
-        debugLog('Found 2025 checkbox, clearing all and selecting only 2025...');
+        debugLog(`Found ${defaultYear} checkbox, clearing all and selecting only ${defaultYear}...`);
         
         // Clear ALL selections first
         const allCheckboxes = document.querySelectorAll('#yearSelector input[type="checkbox"]');
@@ -867,7 +867,7 @@ function ensureDefaultYearSelection() {
         // Clear the selectedYears array
         selectedYears = [];
         
-        // Select ONLY 2025
+        // Select ONLY current year
         yearCheckbox.checked = true;
         
         // Update the UI
@@ -914,7 +914,7 @@ async function loadYearData() {
 async function loadYearDataLegacy() {
     console.log('Falling back to individual year files...');
     const availableYears = [];
-    for (let year = 1999; year <= 2025; year++) {
+    for (let year = 1999; year <= 2026; year++) {
         availableYears.push(year);
     }
     

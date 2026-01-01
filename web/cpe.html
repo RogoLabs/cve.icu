@@ -94,7 +94,7 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CPE Analysis Dashboard</h1>
     <small class="text-muted d-block mb-3" id="pageSubtitle">
-        Showing comprehensive analysis across all years (1999-2025)
+        Showing comprehensive analysis across all years (1999-2026)
     </small>
     
     <!-- Data Mode Toggle -->
@@ -110,7 +110,7 @@
             cursor: pointer;
             font-size: inherit;
         " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
-            <span id="toggleText">Switch to 2025 Only</span>
+            <span id="toggleText">Switch to 2026 Only</span>
         </button>
     </div>
 </div>
@@ -1010,8 +1010,8 @@ function toggleDataMode() {
         toggleText.textContent = 'Switch to All Years';
         pageSubtitle.textContent = `Showing analysis for ${currentYearCpeData.year} only`;
     } else {
-        toggleText.textContent = 'Switch to 2025 Only';
-        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2025)';
+        toggleText.textContent = 'Switch to 2026 Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2026)';
     }
     
     // Reset pagination

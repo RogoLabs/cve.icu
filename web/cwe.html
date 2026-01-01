@@ -94,7 +94,7 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CWE Intelligence Dashboard</h1>
     <small class="text-muted d-block mb-3" id="pageSubtitle">
-        Showing comprehensive analysis across all years (1999-2025)
+        Showing comprehensive analysis across all years (1999-2026)
     </small>
     
     <!-- Data Mode Toggle -->
@@ -110,7 +110,7 @@
             cursor: pointer;
             font-size: inherit;
         " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
-            <span id="toggleText">Switch to 2025 Only</span>
+            <span id="toggleText">Switch to 2026 Only</span>
         </button>
     </div>
 </div>
@@ -591,12 +591,14 @@ function updateInsights(data) {
                 const changeText = change > 0 ? `increased <strong>+${change.toFixed(1)}%</strong>` : 
                                  change < -0.5 ? `decreased <strong>${change.toFixed(1)}%</strong>` : 'remained stable';
                 
+                const currentYearNum = currentYearCweData.year || new Date().getFullYear();
                 document.getElementById('temporalInsight').innerHTML = 
-                    `CWE-${currentYearTopCwe.id} ${changeText} in 2025, ${change > 1 ? 'indicating growing threat patterns' : change < -1 ? 'showing improved security focus' : 'maintaining consistent threat levels'}.`;
+                    `CWE-${currentYearTopCwe.id} ${changeText} in ${currentYearNum}, ${change > 1 ? 'indicating growing threat patterns' : change < -1 ? 'showing improved security focus' : 'maintaining consistent threat levels'}.`;
             } else if (currentYearTopCwe) {
                 // Different top CWE in current year
+                const currentYearNum = currentYearCweData.year || new Date().getFullYear();
                 document.getElementById('temporalInsight').innerHTML = 
-                    `<strong>CWE-${currentYearTopCwe.id}</strong> emerged as 2025's dominant threat, representing a shift in vulnerability patterns.`;
+                    `<strong>CWE-${currentYearTopCwe.id}</strong> emerged as ${currentYearNum}'s dominant threat, representing a shift in vulnerability patterns.`;
             } else {
                 document.getElementById('temporalInsight').innerHTML = 'Insufficient data for temporal analysis.';
             }
@@ -802,10 +804,11 @@ function toggleDataMode() {
     
     if (isCurrentYearMode) {
         toggleText.textContent = 'Switch to All Data';
-        pageSubtitle.textContent = 'Showing analysis for current year (2025)';
+        const currentYearNum = currentYearCweData && currentYearCweData.year ? currentYearCweData.year : new Date().getFullYear();
+        pageSubtitle.textContent = `Showing analysis for current year (${currentYearNum})`;
     } else {
-        toggleText.textContent = 'Switch to 2025 Only';
-        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2025)';
+        toggleText.textContent = 'Switch to 2026 Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2026)';
     }
     
     // Get the appropriate data
@@ -829,7 +832,8 @@ function exportData(format) {
     const data = isCurrentYearMode ? currentYearCweData : cweData;
     if (!data || !data.top_cwes) return;
     
-    const filename = `cwe_analysis_${isCurrentYearMode ? '2025' : 'all'}.${format}`;
+    const currentYearNum = currentYearCweData && currentYearCweData.year ? currentYearCweData.year : new Date().getFullYear();
+    const filename = `cwe_analysis_${isCurrentYearMode ? currentYearNum : 'all'}.${format}`;
     
     if (format === 'csv') {
         const csvContent = [
@@ -927,7 +931,7 @@ function printReport() {
         <body>
             <h1>CWE Analysis Report</h1>
             <p>Generated on ${new Date().toLocaleString()}</p>
-            <p>${isCurrentYearMode ? 'Current Year (2025) Analysis' : 'Comprehensive Analysis (1999-2025)'}</p>
+            <p>${isCurrentYearMode ? `Current Year (${currentYearCweData && currentYearCweData.year ? currentYearCweData.year : new Date().getFullYear()}) Analysis` : `Comprehensive Analysis (1999-${new Date().getFullYear()})`}</p>
             
             <div class="stats">
                 <div class="stat-card">
