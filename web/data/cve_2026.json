@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 0,
+  "total_cves": 2,
   "date_data": {
     "monthly_distribution": {
-      "1": 0,
+      "1": 2,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -17,22 +17,33 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 0,
-      "avg_per_day": 0,
+      "total_days": 1,
+      "avg_per_day": 2.0,
       "highest_day": {
-        "date": "",
-        "count": 0
+        "date": "2026-01-01",
+        "count": 2
       },
       "lowest_day": {
-        "date": "",
-        "count": 0
+        "date": "2026-01-01",
+        "count": 2
       },
       "daily_counts": {
-        "2026-01-01": 0
+        "2026-01-01": 2
       }
     }
   },
   "cvss": {
+    "v3.1": {
+      "total": 2,
+      "severity_distribution": {
+        "LOW": 1,
+        "MEDIUM": 1
+      },
+      "score_distribution": {
+        "3.4": 1,
+        "5.3": 1
+      }
+    },
     "epss_summary": {
       "epss_gt_0_1": 0,
       "epss_gt_0_5": 0,
@@ -47,15 +58,29 @@
     "cpe_vendors": []
   },
   "cwe": {
-    "top_cwes": []
+    "top_cwes": [
+      {
+        "cwe": "CWE-295",
+        "count": 1
+      },
+      {
+        "cwe": "CWE-204",
+        "count": 1
+      }
+    ]
   },
   "metadata": {
-    "vulnerability_status": [],
+    "vulnerability_status": [
+      {
+        "status": "Received",
+        "count": 2
+      }
+    ],
     "cve_tags": [],
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-01T00:41:20.655584",
+    "processed_at": "2026-01-01T06:21:10.857994",
     "data_source": "data/cache/nvd.json"
   }
 }
