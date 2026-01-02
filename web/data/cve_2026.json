@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 48,
+  "total_cves": 62,
   "date_data": {
     "monthly_distribution": {
-      "1": 48,
+      "1": 62,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -18,18 +18,18 @@
     },
     "daily_analysis": {
       "total_days": 2,
-      "avg_per_day": 24.0,
+      "avg_per_day": 31.0,
       "highest_day": {
         "date": "2026-01-01",
         "count": 35
       },
       "lowest_day": {
         "date": "2026-01-02",
-        "count": 13
+        "count": 27
       },
       "daily_counts": {
         "2026-01-01": 35,
-        "2026-01-02": 13
+        "2026-01-02": 27
       }
     }
   },
@@ -64,32 +64,32 @@
       }
     },
     "v4.0": {
-      "total": 31,
+      "total": 41,
       "severity_distribution": {
-        "MEDIUM": 27,
-        "HIGH": 3,
+        "MEDIUM": 34,
+        "HIGH": 6,
         "LOW": 1
       },
       "score_distribution": {
-        "6.9": 12,
-        "5.3": 4,
+        "6.9": 16,
+        "5.3": 5,
         "7.7": 1,
         "5.8": 1,
         "2.0": 1,
         "7.3": 1,
         "4.8": 7,
-        "5.1": 2,
-        "5.5": 1,
-        "7.4": 1
+        "5.1": 3,
+        "5.5": 2,
+        "7.4": 4
       }
     },
     "unknown": {
-      "total": 4,
+      "total": 8,
       "severity_distribution": {
-        "UNKNOWN": 4
+        "UNKNOWN": 8
       },
       "score_distribution": {
-        "0.0": 4
+        "0.0": 8
       }
     },
     "epss_summary": {
@@ -109,27 +109,35 @@
     "top_cwes": [
       {
         "cwe": "CWE-89",
-        "count": 11
+        "count": 15
       },
       {
         "cwe": "CWE-74",
-        "count": 10
+        "count": 14
+      },
+      {
+        "cwe": "CWE-119",
+        "count": 7
       },
       {
         "cwe": "CWE-284",
-        "count": 4
+        "count": 5
       },
       {
         "cwe": "CWE-434",
-        "count": 4
+        "count": 5
       },
       {
         "cwe": "CWE-862",
         "count": 4
       },
       {
-        "cwe": "CWE-119",
+        "cwe": "CWE-120",
         "count": 4
+      },
+      {
+        "cwe": "CWE-94",
+        "count": 3
       },
       {
         "cwe": "CWE-404",
@@ -144,7 +152,7 @@
         "count": 2
       },
       {
-        "cwe": "CWE-94",
+        "cwe": "CWE-79",
         "count": 2
       },
       {
@@ -178,14 +186,6 @@
       {
         "cwe": "CWE-78",
         "count": 1
-      },
-      {
-        "cwe": "CWE-913",
-        "count": 1
-      },
-      {
-        "cwe": "CWE-400",
-        "count": 1
       }
     ]
   },
@@ -193,14 +193,14 @@
     "vulnerability_status": [
       {
         "status": "Received",
-        "count": 48
+        "count": 62
       }
     ],
     "cve_tags": [],
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-02T06:22:16.153618",
+    "processed_at": "2026-01-02T12:22:22.354029",
     "data_source": "data/cache/nvd.json"
   }
 }
