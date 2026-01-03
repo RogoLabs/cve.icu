@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 140,
+  "total_cves": 143,
   "date_data": {
     "monthly_distribution": {
-      "1": 140,
+      "1": 143,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -17,20 +17,20 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 2,
-      "avg_per_day": 70.0,
+      "total_days": 3,
+      "avg_per_day": 47.67,
       "highest_day": {
         "date": "2026-01-02",
         "count": 105
       },
       "lowest_day": {
-        "date": "2026-01-01",
-        "count": 35
+        "date": "2026-01-03",
+        "count": 3
       },
       "daily_counts": {
         "2026-01-01": 35,
         "2026-01-02": 105,
-        "2026-01-03": 0
+        "2026-01-03": 3
       }
     }
   },
@@ -45,16 +45,16 @@
       }
     },
     "v3.1": {
-      "total": 25,
+      "total": 26,
       "severity_distribution": {
         "LOW": 1,
-        "MEDIUM": 14,
+        "MEDIUM": 15,
         "CRITICAL": 3,
         "HIGH": 7
       },
       "score_distribution": {
         "3.4": 1,
-        "5.3": 4,
+        "5.3": 5,
         "4.3": 2,
         "6.4": 1,
         "9.6": 1,
@@ -72,10 +72,10 @@
       }
     },
     "v4.0": {
-      "total": 102,
+      "total": 104,
       "severity_distribution": {
         "MEDIUM": 55,
-        "HIGH": 19,
+        "HIGH": 21,
         "LOW": 23,
         "CRITICAL": 5
       },
@@ -108,7 +108,9 @@
         "9.3": 1,
         "9.4": 2,
         "10.0": 1,
-        "7.2": 1
+        "7.2": 1,
+        "7.9": 1,
+        "8.7": 1
       }
     },
     "unknown": {
@@ -196,6 +198,10 @@
         "count": 3
       },
       {
+        "cwe": "CWE-78",
+        "count": 3
+      },
+      {
         "cwe": "CWE-770",
         "count": 3
       },
@@ -208,11 +214,7 @@
         "count": 3
       },
       {
-        "cwe": "CWE-502",
-        "count": 2
-      },
-      {
-        "cwe": "CWE-352",
+        "cwe": "CWE-204",
         "count": 2
       }
     ]
@@ -225,7 +227,7 @@
       },
       {
         "status": "Received",
-        "count": 35
+        "count": 38
       },
       {
         "status": "Undergoing Analysis",
@@ -236,7 +238,7 @@
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-03T00:36:33.756646",
+    "processed_at": "2026-01-03T06:19:50.314001",
     "data_source": "data/cache/nvd.json"
   }
 }
