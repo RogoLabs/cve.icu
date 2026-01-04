@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 151,
+  "total_cves": 156,
   "date_data": {
     "monthly_distribution": {
-      "1": 151,
+      "1": 156,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -18,7 +18,7 @@
     },
     "daily_analysis": {
       "total_days": 4,
-      "avg_per_day": 37.75,
+      "avg_per_day": 39.0,
       "highest_day": {
         "date": "2026-01-02",
         "count": 106
@@ -31,7 +31,7 @@
         "2026-01-01": 35,
         "2026-01-02": 106,
         "2026-01-03": 3,
-        "2026-01-04": 7
+        "2026-01-04": 12
       }
     }
   },
@@ -46,10 +46,10 @@
       }
     },
     "v3.1": {
-      "total": 26,
+      "total": 27,
       "severity_distribution": {
         "LOW": 1,
-        "MEDIUM": 15,
+        "MEDIUM": 16,
         "CRITICAL": 3,
         "HIGH": 7
       },
@@ -69,26 +69,27 @@
         "7.1": 2,
         "5.0": 2,
         "7.7": 1,
-        "5.5": 1
+        "5.5": 1,
+        "4.9": 1
       }
     },
     "v4.0": {
-      "total": 112,
+      "total": 116,
       "severity_distribution": {
-        "MEDIUM": 63,
+        "MEDIUM": 67,
         "HIGH": 21,
         "LOW": 23,
         "CRITICAL": 5
       },
       "score_distribution": {
-        "6.9": 28,
-        "5.3": 8,
+        "6.9": 30,
+        "5.3": 9,
         "7.7": 1,
         "5.8": 1,
         "2.0": 2,
         "7.3": 2,
         "4.8": 7,
-        "5.1": 6,
+        "5.1": 7,
         "5.5": 2,
         "7.4": 5,
         "1.3": 6,
@@ -140,11 +141,11 @@
     "top_cwes": [
       {
         "cwe": "CWE-89",
-        "count": 23
+        "count": 26
       },
       {
         "cwe": "CWE-74",
-        "count": 20
+        "count": 23
       },
       {
         "cwe": "CWE-476",
@@ -152,15 +153,19 @@
       },
       {
         "cwe": "CWE-284",
-        "count": 8
+        "count": 9
       },
       {
         "cwe": "CWE-79",
-        "count": 8
+        "count": 9
       },
       {
         "cwe": "CWE-120",
         "count": 8
+      },
+      {
+        "cwe": "CWE-434",
+        "count": 7
       },
       {
         "cwe": "CWE-862",
@@ -173,10 +178,6 @@
       {
         "cwe": "CWE-22",
         "count": 7
-      },
-      {
-        "cwe": "CWE-434",
-        "count": 6
       },
       {
         "cwe": "CWE-125",
@@ -228,7 +229,7 @@
       },
       {
         "status": "Received",
-        "count": 46
+        "count": 51
       },
       {
         "status": "Undergoing Analysis",
@@ -239,7 +240,7 @@
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-04T06:20:08.587559",
+    "processed_at": "2026-01-04T12:21:00.762191",
     "data_source": "data/cache/nvd.json"
   }
 }
