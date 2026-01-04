@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 144,
+  "total_cves": 151,
   "date_data": {
     "monthly_distribution": {
-      "1": 144,
+      "1": 151,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -17,8 +17,8 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 3,
-      "avg_per_day": 48.0,
+      "total_days": 4,
+      "avg_per_day": 37.75,
       "highest_day": {
         "date": "2026-01-02",
         "count": 106
@@ -31,7 +31,7 @@
         "2026-01-01": 35,
         "2026-01-02": 106,
         "2026-01-03": 3,
-        "2026-01-04": 0
+        "2026-01-04": 7
       }
     }
   },
@@ -73,16 +73,16 @@
       }
     },
     "v4.0": {
-      "total": 105,
+      "total": 112,
       "severity_distribution": {
-        "MEDIUM": 56,
+        "MEDIUM": 63,
         "HIGH": 21,
         "LOW": 23,
         "CRITICAL": 5
       },
       "score_distribution": {
-        "6.9": 22,
-        "5.3": 7,
+        "6.9": 28,
+        "5.3": 8,
         "7.7": 1,
         "5.8": 1,
         "2.0": 2,
@@ -163,6 +163,10 @@
         "count": 8
       },
       {
+        "cwe": "CWE-862",
+        "count": 7
+      },
+      {
         "cwe": "CWE-119",
         "count": 7
       },
@@ -172,10 +176,6 @@
       },
       {
         "cwe": "CWE-434",
-        "count": 6
-      },
-      {
-        "cwe": "CWE-862",
         "count": 6
       },
       {
@@ -207,16 +207,16 @@
         "count": 3
       },
       {
+        "cwe": "CWE-288",
+        "count": 3
+      },
+      {
         "cwe": "CWE-404",
         "count": 3
       },
       {
-        "cwe": "CWE-1336",
+        "cwe": "CWE-306",
         "count": 3
-      },
-      {
-        "cwe": "CWE-204",
-        "count": 2
       }
     ]
   },
@@ -228,7 +228,7 @@
       },
       {
         "status": "Received",
-        "count": 39
+        "count": 46
       },
       {
         "status": "Undergoing Analysis",
@@ -239,7 +239,7 @@
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-04T00:42:48.784446",
+    "processed_at": "2026-01-04T06:20:08.587559",
     "data_source": "data/cache/nvd.json"
   }
 }
