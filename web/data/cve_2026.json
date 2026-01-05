@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 160,
+  "total_cves": 173,
   "date_data": {
     "monthly_distribution": {
-      "1": 160,
+      "1": 173,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -17,8 +17,8 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 4,
-      "avg_per_day": 40.0,
+      "total_days": 5,
+      "avg_per_day": 34.6,
       "highest_day": {
         "date": "2026-01-02",
         "count": 106
@@ -32,7 +32,7 @@
         "2026-01-02": 106,
         "2026-01-03": 3,
         "2026-01-04": 16,
-        "2026-01-05": 0
+        "2026-01-05": 13
       }
     }
   },
@@ -75,21 +75,21 @@
       }
     },
     "v4.0": {
-      "total": 120,
+      "total": 133,
       "severity_distribution": {
-        "MEDIUM": 71,
-        "HIGH": 21,
-        "LOW": 23,
+        "MEDIUM": 82,
+        "HIGH": 22,
+        "LOW": 24,
         "CRITICAL": 5
       },
       "score_distribution": {
-        "6.9": 33,
-        "5.3": 9,
-        "7.7": 1,
+        "6.9": 38,
+        "5.3": 13,
+        "7.7": 2,
         "5.8": 1,
         "2.0": 2,
         "7.3": 2,
-        "4.8": 7,
+        "4.8": 9,
         "5.1": 8,
         "5.5": 2,
         "7.4": 5,
@@ -113,7 +113,8 @@
         "10.0": 1,
         "7.2": 1,
         "7.9": 1,
-        "8.7": 1
+        "8.7": 1,
+        "2.3": 1
       }
     },
     "unknown": {
@@ -142,42 +143,46 @@
     "top_cwes": [
       {
         "cwe": "CWE-89",
-        "count": 30
+        "count": 32
       },
       {
         "cwe": "CWE-74",
-        "count": 27
+        "count": 29
+      },
+      {
+        "cwe": "CWE-79",
+        "count": 13
+      },
+      {
+        "cwe": "CWE-284",
+        "count": 10
       },
       {
         "cwe": "CWE-476",
         "count": 10
       },
       {
-        "cwe": "CWE-284",
-        "count": 9
-      },
-      {
-        "cwe": "CWE-79",
-        "count": 9
+        "cwe": "CWE-434",
+        "count": 8
       },
       {
         "cwe": "CWE-120",
         "count": 8
       },
       {
-        "cwe": "CWE-434",
-        "count": 7
+        "cwe": "CWE-22",
+        "count": 8
       },
       {
         "cwe": "CWE-862",
         "count": 7
       },
       {
-        "cwe": "CWE-119",
+        "cwe": "CWE-94",
         "count": 7
       },
       {
-        "cwe": "CWE-22",
+        "cwe": "CWE-119",
         "count": 7
       },
       {
@@ -189,12 +194,16 @@
         "count": 4
       },
       {
-        "cwe": "CWE-94",
+        "cwe": "CWE-121",
         "count": 4
       },
       {
-        "cwe": "CWE-121",
+        "cwe": "CWE-287",
         "count": 4
+      },
+      {
+        "cwe": "CWE-502",
+        "count": 3
       },
       {
         "cwe": "CWE-918",
@@ -211,14 +220,6 @@
       {
         "cwe": "CWE-288",
         "count": 3
-      },
-      {
-        "cwe": "CWE-404",
-        "count": 3
-      },
-      {
-        "cwe": "CWE-306",
-        "count": 3
       }
     ]
   },
@@ -230,7 +231,7 @@
       },
       {
         "status": "Received",
-        "count": 55
+        "count": 68
       },
       {
         "status": "Undergoing Analysis",
@@ -241,7 +242,7 @@
     "reference_tags": []
   },
   "processing_stats": {
-    "processed_at": "2026-01-05T00:41:14.454077",
+    "processed_at": "2026-01-05T06:23:33.632280",
     "data_source": "data/cache/nvd.json"
   }
 }
