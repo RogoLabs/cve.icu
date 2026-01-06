@@ -605,7 +605,7 @@ function updateToggleUI() {
         pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-{{ current_year }})';
     } else {
         toggleText.textContent = 'Switch to All-Time';
-        const currentYearNum = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
+        const currentYearNum = currentYearData && currentYearData.year ? currentYearData.year : new Date().getFullYear();
         pageSubtitle.textContent = `Showing analysis for ${currentYearNum} data only`;
     }
 }
@@ -723,7 +723,7 @@ function createTopCnasChart() {
         if (currentDataMode === 'all') {
             subtitle.textContent = 'Showing top 15 CNAs by total CVE assignments (All-Time Data)';
         } else {
-            const currentYearNum = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
+            const currentYearNum = currentYearData && currentYearData.year ? currentYearData.year : new Date().getFullYear();
             subtitle.textContent = `Showing top 15 CNAs by CVE assignments in ${currentYearNum} only`;
         }
     }
@@ -1388,7 +1388,7 @@ function generateInsights() {
     
     if (currentDataMode === 'current') {
         // Current year specific insights
-        const currentYear = currentYearCnaData && currentYearCnaData.year ? currentYearCnaData.year : new Date().getFullYear();
+        const currentYear = currentYearData && currentYearData.year ? currentYearData.year : new Date().getFullYear();
         const topCnaShare = ((topCna.count / totalCves) * 100).toFixed(1);
         
         // Top current year CNA insight

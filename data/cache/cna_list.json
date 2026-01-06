@@ -871,7 +871,7 @@
         "email": [
           {
             "label": "Email",
-            "emailAddr": "cybersecurity@bd.com"
+            "emailAddr": "SMB-BD-CNA@bd.com"
           }
         ],
         "contact": [],
@@ -1918,7 +1918,7 @@
     "shortName": "DEVOLUTIONS",
     "cnaID": "CNA-2021-0031",
     "organizationName": "Devolutions Inc.",
-    "scope": "Remote Desktop Manager and Devolutions Server products.",
+    "scope": "All Devolutions products only.",
     "contact": [
       {
         "email": [
@@ -19732,13 +19732,18 @@
     "shortName": "ENISA",
     "cnaID": "CNA-2024-0008",
     "organizationName": "EU Agency for Cybersecurity (ENISA)",
-    "scope": "<strong>Root Scope:</strong> European Union (EU) member states/EU authorities, EU CSIRTs network members, and cooperative partners under ENISA\u2019s mandate as well as other CNAs who choose ENISA as their Root<br/><br/><strong>CNA Scope:</strong> Vulnerabilities in information technology (IT) products discovered by European Union (EU) Computer Security Incident Response Teams (CSIRTs) or reported to EU CSIRTs for coordinated disclosure, as long as they do not fall under a CNA with a more specific scope.",
+    "scope": "<strong>Root Scope:</strong> European Union (EU) member states/EU authorities, EU CSIRTs network members, and cooperative partners under ENISA\u2019s mandate as well as other CNAs who choose ENISA as their Root.<br/><br/><strong>CNA Scope:</strong> Vulnerabilities in information technology (IT) products discovered by European Union (EU) Computer Security Incident Response Teams (CSIRTs) or reported to EU CSIRTs for coordinated disclosure, as long as they do not fall under a CNA with a more specific scope.",
     "contact": [
       {
-        "email": [],
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "vuln@enisa.europa.eu"
+          }
+        ],
         "contact": [
           {
-            "label": "Contact Pages",
+            "label": "EU CSIRTs network contacts",
             "url": "https://github.com/enisaeu/CNW/tree/main#vulnerability-disclosure-policies"
           }
         ],
@@ -19758,6 +19763,10 @@
         {
           "label": "Advisories",
           "url": "https://github.com/enisaeu/CNW/tree/main/advisories"
+        },
+        {
+          "label": "Vulnerability List",
+          "url": "https://euvd.enisa.europa.eu/search?assigner=ENISA"
         }
       ]
     },
@@ -27777,6 +27786,65 @@
       },
       "type": [
         "Vendor"
+      ]
+    },
+    "country": "USA"
+  },
+  {
+    "shortName": "runZero",
+    "cnaID": "CNA-2025-0062",
+    "organizationName": "runZero, Inc.",
+    "scope": "Vulnerabilities in runZero products, as well as vulnerabilities discovered by, or reported to, runZero that are not in another CNA\u2019s scope.",
+    "contact": [
+      {
+        "email": [
+          {
+            "label": "Email",
+            "emailAddr": "todb@runzero.com"
+          }
+        ],
+        "contact": [],
+        "form": []
+      }
+    ],
+    "disclosurePolicy": [
+      {
+        "label": "Policy",
+        "language": "",
+        "url": "https://www.runzero.com/legal/disclosure/"
+      }
+    ],
+    "securityAdvisories": {
+      "alerts": [],
+      "advisories": [
+        {
+          "label": "Advisories",
+          "url": "https://www.runzero.com/advisories"
+        }
+      ]
+    },
+    "resources": [],
+    "CNA": {
+      "isRoot": false,
+      "root": {
+        "shortName": "n/a",
+        "organizationName": "n/a"
+      },
+      "roles": [
+        {
+          "helpText": "",
+          "role": "CNA"
+        }
+      ],
+      "TLR": {
+        "shortName": "mitre",
+        "organizationName": "MITRE Corporation"
+      },
+      "type": [
+        "Vendor",
+        "Researcher",
+        "Hosted Service",
+        "Open Source"
       ]
     },
     "country": "USA"
