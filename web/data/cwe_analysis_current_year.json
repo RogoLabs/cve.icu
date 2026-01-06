@@ -1,33 +1,33 @@
 {
-  "generated_at": "2026-01-06T00:40:24.117416",
+  "generated_at": "2026-01-06T06:24:12.588926",
   "year": 2026,
-  "total_cves_with_cwe": 266,
+  "total_cves_with_cwe": 304,
   "total_unique_cwes": 20,
   "top_cwes": [
     {
       "cwe": "CWE-89",
-      "count": 49,
+      "count": 53,
       "id": "89",
       "description": "SQL Injection",
       "name": "CWE-89: SQL Injection"
     },
     {
       "cwe": "CWE-74",
-      "count": 40,
+      "count": 41,
       "id": "74",
       "description": "CWE-74",
       "name": "CWE-74"
     },
     {
       "cwe": "CWE-79",
-      "count": 32,
+      "count": 34,
       "id": "79",
       "description": "Cross-site Scripting (XSS)",
       "name": "CWE-79: Cross-site Scripting (XSS)"
     },
     {
       "cwe": "CWE-862",
-      "count": 14,
+      "count": 17,
       "id": "862",
       "description": "Missing Authorization",
       "name": "CWE-862: Missing Authorization"
@@ -38,6 +38,13 @@
       "id": "120",
       "description": "CWE-120",
       "name": "CWE-120"
+    },
+    {
+      "cwe": "CWE-416",
+      "count": 13,
+      "id": "416",
+      "description": "Use After Free",
+      "name": "CWE-416: Use After Free"
     },
     {
       "cwe": "CWE-94",
@@ -54,6 +61,20 @@
       "name": "CWE-119: Buffer Overflow"
     },
     {
+      "cwe": "CWE-22",
+      "count": 12,
+      "id": "22",
+      "description": "Path Traversal",
+      "name": "CWE-22: Path Traversal"
+    },
+    {
+      "cwe": "CWE-476",
+      "count": 12,
+      "id": "476",
+      "description": "NULL Pointer Dereference",
+      "name": "CWE-476: NULL Pointer Dereference"
+    },
+    {
       "cwe": "CWE-434",
       "count": 11,
       "id": "434",
@@ -68,25 +89,46 @@
       "name": "CWE-284"
     },
     {
-      "cwe": "CWE-22",
+      "cwe": "CWE-787",
       "count": 10,
-      "id": "22",
-      "description": "Path Traversal",
-      "name": "CWE-22: Path Traversal"
-    },
-    {
-      "cwe": "CWE-476",
-      "count": 10,
-      "id": "476",
-      "description": "NULL Pointer Dereference",
-      "name": "CWE-476: NULL Pointer Dereference"
+      "id": "787",
+      "description": "Out-of-bounds Write",
+      "name": "CWE-787: Out-of-bounds Write"
     },
     {
       "cwe": "CWE-287",
-      "count": 8,
+      "count": 9,
       "id": "287",
       "description": "Improper Authentication",
       "name": "CWE-287: Improper Authentication"
+    },
+    {
+      "cwe": "CWE-770",
+      "count": 8,
+      "id": "770",
+      "description": "CWE-770",
+      "name": "CWE-770"
+    },
+    {
+      "cwe": "CWE-125",
+      "count": 8,
+      "id": "125",
+      "description": "Out-of-bounds Read",
+      "name": "CWE-125: Out-of-bounds Read"
+    },
+    {
+      "cwe": "CWE-20",
+      "count": 8,
+      "id": "20",
+      "description": "Improper Input Validation",
+      "name": "CWE-20: Improper Input Validation"
+    },
+    {
+      "cwe": "CWE-918",
+      "count": 7,
+      "id": "918",
+      "description": "CWE-918",
+      "name": "CWE-918"
     },
     {
       "cwe": "CWE-78",
@@ -96,80 +138,38 @@
       "name": "CWE-78: OS Command Injection"
     },
     {
-      "cwe": "CWE-918",
+      "cwe": "CWE-121",
       "count": 6,
-      "id": "918",
-      "description": "CWE-918",
-      "name": "CWE-918"
-    },
-    {
-      "cwe": "CWE-770",
-      "count": 6,
-      "id": "770",
-      "description": "CWE-770",
-      "name": "CWE-770"
-    },
-    {
-      "cwe": "CWE-125",
-      "count": 6,
-      "id": "125",
-      "description": "Out-of-bounds Read",
-      "name": "CWE-125: Out-of-bounds Read"
-    },
-    {
-      "cwe": "CWE-352",
-      "count": 5,
-      "id": "352",
-      "description": "Cross-Site Request Forgery (CSRF)",
-      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
-    },
-    {
-      "cwe": "CWE-863",
-      "count": 5,
-      "id": "863",
-      "description": "Incorrect Authorization",
-      "name": "CWE-863: Incorrect Authorization"
-    },
-    {
-      "cwe": "CWE-306",
-      "count": 5,
-      "id": "306",
-      "description": "CWE-306",
-      "name": "CWE-306"
-    },
-    {
-      "cwe": "CWE-502",
-      "count": 4,
-      "id": "502",
-      "description": "CWE-502",
-      "name": "CWE-502"
+      "id": "121",
+      "description": "CWE-121",
+      "name": "CWE-121"
     }
   ],
   "top_cwes_limited": [
     {
       "cwe": "CWE-89",
-      "count": 49,
+      "count": 53,
       "id": "89",
       "description": "SQL Injection",
       "name": "CWE-89: SQL Injection"
     },
     {
       "cwe": "CWE-74",
-      "count": 40,
+      "count": 41,
       "id": "74",
       "description": "CWE-74",
       "name": "CWE-74"
     },
     {
       "cwe": "CWE-79",
-      "count": 32,
+      "count": 34,
       "id": "79",
       "description": "Cross-site Scripting (XSS)",
       "name": "CWE-79: Cross-site Scripting (XSS)"
     },
     {
       "cwe": "CWE-862",
-      "count": 14,
+      "count": 17,
       "id": "862",
       "description": "Missing Authorization",
       "name": "CWE-862: Missing Authorization"
@@ -180,6 +180,13 @@
       "id": "120",
       "description": "CWE-120",
       "name": "CWE-120"
+    },
+    {
+      "cwe": "CWE-416",
+      "count": 13,
+      "id": "416",
+      "description": "Use After Free",
+      "name": "CWE-416: Use After Free"
     },
     {
       "cwe": "CWE-94",
@@ -196,6 +203,20 @@
       "name": "CWE-119: Buffer Overflow"
     },
     {
+      "cwe": "CWE-22",
+      "count": 12,
+      "id": "22",
+      "description": "Path Traversal",
+      "name": "CWE-22: Path Traversal"
+    },
+    {
+      "cwe": "CWE-476",
+      "count": 12,
+      "id": "476",
+      "description": "NULL Pointer Dereference",
+      "name": "CWE-476: NULL Pointer Dereference"
+    },
+    {
       "cwe": "CWE-434",
       "count": 11,
       "id": "434",
@@ -210,25 +231,46 @@
       "name": "CWE-284"
     },
     {
-      "cwe": "CWE-22",
+      "cwe": "CWE-787",
       "count": 10,
-      "id": "22",
-      "description": "Path Traversal",
-      "name": "CWE-22: Path Traversal"
-    },
-    {
-      "cwe": "CWE-476",
-      "count": 10,
-      "id": "476",
-      "description": "NULL Pointer Dereference",
-      "name": "CWE-476: NULL Pointer Dereference"
+      "id": "787",
+      "description": "Out-of-bounds Write",
+      "name": "CWE-787: Out-of-bounds Write"
     },
     {
       "cwe": "CWE-287",
-      "count": 8,
+      "count": 9,
       "id": "287",
       "description": "Improper Authentication",
       "name": "CWE-287: Improper Authentication"
+    },
+    {
+      "cwe": "CWE-770",
+      "count": 8,
+      "id": "770",
+      "description": "CWE-770",
+      "name": "CWE-770"
+    },
+    {
+      "cwe": "CWE-125",
+      "count": 8,
+      "id": "125",
+      "description": "Out-of-bounds Read",
+      "name": "CWE-125: Out-of-bounds Read"
+    },
+    {
+      "cwe": "CWE-20",
+      "count": 8,
+      "id": "20",
+      "description": "Improper Input Validation",
+      "name": "CWE-20: Improper Input Validation"
+    },
+    {
+      "cwe": "CWE-918",
+      "count": 7,
+      "id": "918",
+      "description": "CWE-918",
+      "name": "CWE-918"
     },
     {
       "cwe": "CWE-78",
@@ -238,53 +280,11 @@
       "name": "CWE-78: OS Command Injection"
     },
     {
-      "cwe": "CWE-918",
+      "cwe": "CWE-121",
       "count": 6,
-      "id": "918",
-      "description": "CWE-918",
-      "name": "CWE-918"
-    },
-    {
-      "cwe": "CWE-770",
-      "count": 6,
-      "id": "770",
-      "description": "CWE-770",
-      "name": "CWE-770"
-    },
-    {
-      "cwe": "CWE-125",
-      "count": 6,
-      "id": "125",
-      "description": "Out-of-bounds Read",
-      "name": "CWE-125: Out-of-bounds Read"
-    },
-    {
-      "cwe": "CWE-352",
-      "count": 5,
-      "id": "352",
-      "description": "Cross-Site Request Forgery (CSRF)",
-      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
-    },
-    {
-      "cwe": "CWE-863",
-      "count": 5,
-      "id": "863",
-      "description": "Incorrect Authorization",
-      "name": "CWE-863: Incorrect Authorization"
-    },
-    {
-      "cwe": "CWE-306",
-      "count": 5,
-      "id": "306",
-      "description": "CWE-306",
-      "name": "CWE-306"
-    },
-    {
-      "cwe": "CWE-502",
-      "count": 4,
-      "id": "502",
-      "description": "CWE-502",
-      "name": "CWE-502"
+      "id": "121",
+      "description": "CWE-121",
+      "name": "CWE-121"
     }
   ]
 }
