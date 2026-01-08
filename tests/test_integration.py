@@ -5,6 +5,7 @@ including edge cases, error handling, and CLI functionality.
 """
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,12 @@ import pytest
 
 # Mark all tests in this file as integration tests
 pytestmark = pytest.mark.integration
+
+
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape codes from text."""
+    ansi_pattern = re.compile(r'\x1b\[[0-9;]*m')
+    return ansi_pattern.sub('', text)
 
 
 class TestCLIIntegration:
@@ -44,9 +51,11 @@ class TestCLIIntegration:
             cwd=Path(__file__).parent.parent,
         )
         assert result.returncode == 0
-        assert "--quiet" in result.stdout
-        assert "--refresh-data" in result.stdout
-        assert "--validate" in result.stdout
+        # Strip ANSI codes from Rich/Typer output before checking
+        output = strip_ansi(result.stdout)
+        assert "--quiet" in output
+        assert "--refresh-data" in output
+        assert "--validate" in output
 
     def test_cli_info(self):
         """Test the info command shows expected output."""
@@ -81,8 +90,10 @@ class TestCLIIntegration:
             cwd=Path(__file__).parent.parent,
         )
         assert result.returncode == 0
+        # Strip ANSI codes from Rich/Typer output before checking
+        output = strip_ansi(result.stdout)
         # Should show options that work without subcommand
-        assert "--quiet" in result.stdout
+        assert "--quiet" in output
 
 
 class TestBuildPipelineIntegration:
@@ -247,12 +258,12 @@ class TestAsyncFunctionality:
 
     @pytest.mark.asyncio
     async def test_async_http_session_concept(self):
-        """Test that aiohttp is available and can create sessions."""
-        import aiohttp
+        """Test that httpx is available and can create async clients."""
+        import httpx
         
         # Basic smoke test - module should be importable
-        assert aiohttp is not None
+        assert httpx is not None
         
-        # Test that we can reference session types
-        assert hasattr(aiohttp, 'ClientSession')
-        assert hasattr(aiohttp, 'ClientResponse')
+        # Test that we can reference async client types
+        assert hasattr(httpx, 'AsyncClient')
+        assert hasattr(httpx, 'Response')
