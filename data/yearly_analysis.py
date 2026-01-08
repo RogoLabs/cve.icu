@@ -23,52 +23,47 @@ class YearlyAnalyzer:
     def calculate_actual_ytd_count(self, year, day_of_year):
         """Calculate actual YTD CVE count for a given year up to specific day of year"""
         try:
-            # Import the CVE analyzer
-            from cve_years import CVEYearsAnalyzer
+            # Use the already-generated year data file which contains daily counts
+            year_file = self.data_dir / f'cve_{year}.json'
             
-            # Load the raw CVE data
-            analyzer = CVEYearsAnalyzer(quiet=True)
-            analyzer.ensure_data_loaded()
+            if not year_file.exists():
+                if not self.quiet:
+                    print(f"⚠️  Warning: Year file for {year} not found")
+                return 0
             
-            # Count CVEs published in the specified year up to the given day
-            ytd_count = 0
-            target_date = datetime(self.current_year, 1, 1) + timedelta(days=day_of_year - 1)
-            
-            # Load and process the JSON data
             import json
-            with open(analyzer.data_file, 'r', encoding='utf-8') as f:
-                all_cves = json.load(f)
+            with open(year_file, 'r') as f:
+                year_data = json.load(f)
             
-            for cve_data in all_cves:
-                try:
-                    # Check CVE status and skip rejected CVEs (same as fixed logic)
-                    vuln_status = cve_data.get('cve', {}).get('vulnStatus', '')
-                    if 'Rejected' in vuln_status:
-                        continue
-                    
-                    # Parse the published date (using same logic as cve_years.py)
-                    pub_date = analyzer.parse_cve_date(cve_data)
-                    if not pub_date:
-                        continue
-                    
-                    # Check if this CVE belongs to the target year and is within YTD period
-                    if (pub_date.year == year and 
-                        pub_date.replace(year=self.current_year) <= target_date):
-                        ytd_count += 1
-                        
-                except (KeyError, ValueError, TypeError):
-                    continue
+            # Get daily counts from the pre-processed data
+            daily_counts = year_data.get('date_data', {}).get('daily_analysis', {}).get('daily_counts', {})
+            
+            # Calculate target date (same day of year in the target year)
+            target_date = datetime(year, 1, 1) + timedelta(days=day_of_year - 1)
+            
+            # Sum up CVEs from Jan 1 to the target day of year
+            ytd_count = 0
+            for day_num in range(1, day_of_year + 1):
+                date_key = (datetime(year, 1, 1) + timedelta(days=day_num - 1)).strftime('%Y-%m-%d')
+                ytd_count += daily_counts.get(date_key, 0)
             
             return ytd_count
             
         except Exception as e:
             if not self.quiet:
                 print(f"⚠️  Warning: Could not calculate actual YTD for {year}: {e}")
-            # Fallback to the old flawed method as last resort
-            year_data = next((d for d in self.all_year_data if d.get('year') == year), None)
-            if year_data:
-                days_in_year = 366 if year % 4 == 0 else 365
-                return int((year_data['total_cves'] / days_in_year) * day_of_year)
+            # Fallback: try to use uniform distribution if we have the year data file
+            try:
+                year_file = self.data_dir / f'cve_{year}.json'
+                if year_file.exists():
+                    import json
+                    with open(year_file, 'r') as f:
+                        year_data = json.load(f)
+                    total_cves = year_data.get('total_cves', 0)
+                    days_in_year = 366 if year % 4 == 0 else 365
+                    return int((total_cves / days_in_year) * day_of_year)
+            except:
+                pass
             return 0
     
     def generate_year_data_json(self):
