@@ -3,24 +3,39 @@
 Vendor Analysis Module
 Handles all vendor/CPE (Common Platform Enumeration) related data processing and analysis
 """
+from __future__ import annotations
 
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class VendorAnalyzer:
     """Handles vendor/CPE-specific analysis and data processing"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    current_year: int = field(default_factory=lambda: datetime.now().year)
     
-    def __init__(self, base_dir, cache_dir, data_dir):
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert path arguments to Path objects if needed."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
     
-    def generate_vendor_analysis(self, all_year_data):
+    def generate_vendor_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate CPE vendor analysis across all years"""
-        print(f"  🏢 Generating vendor/CPE analysis...")
+        logger.info(f"  🏢 Generating vendor/CPE analysis...")
         
         # Aggregate vendor data from all years
         combined_vendors = {}
@@ -59,18 +74,18 @@ class VendorAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(vendor_analysis, f, indent=2)
         
-        print(f"  ✅ Generated vendor analysis with {len(combined_vendors):,} unique vendors")
+        logger.info(f"  ✅ Generated vendor analysis with {len(combined_vendors):,} unique vendors")
         return vendor_analysis
     
-    def generate_current_year_vendor_analysis(self, current_year_data):
+    def generate_current_year_vendor_analysis(self, current_year_data: dict[str, Any]) -> dict[str, Any]:
         """Generate current year vendor analysis"""
-        print(f"    🏢 Generating current year vendor analysis...")
+        logger.info(f"    🏢 Generating current year vendor analysis...")
         
         # Extract vendor data from current year
         vendor_data = current_year_data.get('vendors', {})
         
         if not vendor_data or 'cpe_vendors' not in vendor_data:
-            print(f"    ⚠️  No vendor data found for {self.current_year}")
+            logger.warning(f"    ⚠️  No vendor data found for {self.current_year}")
             return {}
         
         # Get current year vendors
@@ -90,5 +105,5 @@ class VendorAnalyzer:
         with open(current_year_file, 'w') as f:
             json.dump(current_year_vendor_analysis, f, indent=2)
         
-        print(f"    ✅ Generated current year vendor analysis with {len(current_year_vendors)} vendors")
+        logger.info(f"    ✅ Generated current year vendor analysis with {len(current_year_vendors)} vendors")
         return current_year_vendor_analysis

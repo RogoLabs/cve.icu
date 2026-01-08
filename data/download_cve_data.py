@@ -4,115 +4,160 @@ CVE Data Download Script
 Downloads and caches CVE data from NVD source for processing
 Replaces the wget step from GitHub Actions with proper Python error handling
 """
+from __future__ import annotations
+
+import csv
+import gzip
+import hashlib
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
 
 import requests
-import json
-import gzip
-from pathlib import Path
-from datetime import datetime, timedelta
-import hashlib
-import csv
+
+from protocols import (
+    HttpClient,
+    DataReader,
+    DataWriter,
+    FileSystemDataReader,
+    FileSystemDataWriter,
+    RequestsHttpClient,
+)
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 class CVEDataDownloader:
-    """Downloads and manages CVE data from NVD source"""
+    """Downloads and manages CVE data from NVD source.
     
-    def __init__(self, cache_dir=None, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(__file__).parent
-        self.cache_dir = cache_dir or (self.base_dir / 'cache')
-        self.cache_dir.mkdir(exist_ok=True)
+    Supports dependency injection for testability:
+    - http_client: HttpClient protocol for HTTP requests
+    - data_reader: DataReader protocol for file reading
+    - data_writer: DataWriter protocol for file writing
+    
+    When dependencies are not provided, uses default implementations
+    (requests for HTTP, filesystem for files).
+    """
+    
+    def __init__(
+        self,
+        cache_dir: Path | str | None = None,
+        quiet: bool = False,
+        *,
+        http_client: HttpClient | None = None,
+        data_reader: DataReader | None = None,
+        data_writer: DataWriter | None = None,
+    ) -> None:
+        self.quiet: bool = quiet
+        self.base_dir: Path = Path(__file__).parent
+        self.cache_dir: Path = Path(cache_dir) if cache_dir else (self.base_dir / 'cache')
+        
+        # Dependency injection with defaults
+        self._http_client = http_client or RequestsHttpClient()
+        self._data_reader = data_reader or FileSystemDataReader()
+        self._data_writer = data_writer or FileSystemDataWriter()
+        
+        # Create cache directory using writer
+        self._data_writer.mkdir(self.cache_dir)
         
         # Data source configuration
-        self.nvd_url = "https://nvd.handsonhacking.org/nvd.json"
-        self.cache_file = self.cache_dir / "nvd.json"
-        self.cache_info_file = self.cache_dir / "cache_info.json"
-        self.cache_duration = timedelta(hours=4)  # Cache for 4 hours to match build schedule
+        self.nvd_url: str = "https://nvd.handsonhacking.org/nvd.json"
+        self.cache_file: Path = self.cache_dir / "nvd.json"
+        self.cache_info_file: Path = self.cache_dir / "cache_info.json"
+        self.cache_duration: timedelta = timedelta(hours=4)  # Cache for 4 hours to match build schedule
         
         # CNA mapping files for proper name resolution
-        self.cna_list_url = "https://raw.githubusercontent.com/CVEProject/cve-website/dev/src/assets/data/CNAsList.json"
-        self.cna_name_map_url = "https://www.cve.org/cve-partner-name-map.json"
-        self.cna_list_file = self.cache_dir / "cna_list.json"
-        self.cna_name_map_file = self.cache_dir / "cna_name_map.json"
+        self.cna_list_url: str = "https://raw.githubusercontent.com/CVEProject/cve-website/dev/src/assets/data/CNAsList.json"
+        self.cna_name_map_url: str = "https://www.cve.org/cve-partner-name-map.json"
+        self.cna_list_file: Path = self.cache_dir / "cna_list.json"
+        self.cna_name_map_file: Path = self.cache_dir / "cna_name_map.json"
 
         # EPSS data (Exploit Prediction Scoring System)
         # Current snapshot feed documented at https://www.first.org/epss/
         # Note: EPSS moved from cyentia.com to empiricalsecurity.com in late 2025
-        self.epss_url = "https://epss.empiricalsecurity.com/epss_scores-current.csv.gz"
-        self.epss_cache_file = self.cache_dir / "epss_scores-current.csv.gz"
-        self.epss_parsed_file = self.cache_dir / "epss_scores-current.json"
+        self.epss_url: str = "https://epss.empiricalsecurity.com/epss_scores-current.csv.gz"
+        self.epss_cache_file: Path = self.cache_dir / "epss_scores-current.csv.gz"
+        self.epss_parsed_file: Path = self.cache_dir / "epss_scores-current.json"
 
         # CISA Known Exploited Vulnerabilities (KEV) catalog
         # Official catalog: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
         # JSON feed: a list of objects with a cveID field.
-        self.kev_url = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
-        self.kev_cache_file = self.cache_dir / "known_exploited_vulnerabilities.json"
-        self.kev_parsed_file = self.cache_dir / "known_exploited_vulnerabilities_parsed.json"
+        self.kev_url: str = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+        self.kev_cache_file: Path = self.cache_dir / "known_exploited_vulnerabilities.json"
+        self.kev_parsed_file: Path = self.cache_dir / "known_exploited_vulnerabilities_parsed.json"
 
         if not self.quiet:
-            print(f"🔽 CVE Data Downloader Initialized")
-            print(f"📁 Cache directory: {self.cache_dir}")
-            print(f"🌐 Data source: {self.nvd_url}")
+            logger.info("🔽 CVE Data Downloader Initialized")
+            logger.info(f"📁 Cache directory: {self.cache_dir}")
+            logger.info(f"🌐 Data source: {self.nvd_url}")
     
-    def is_cache_valid(self):
+    def is_cache_valid(self) -> bool:
         """Check if cached data is still valid"""
-        if not self.cache_file.exists() or not self.cache_info_file.exists():
+        if not self._data_reader.exists(self.cache_file) or not self._data_reader.exists(self.cache_info_file):
             return False
         
         try:
-            with open(self.cache_info_file, 'r') as f:
-                cache_info = json.load(f)
+            cache_info = self._data_reader.read_json(self.cache_info_file)
             
             cache_time = datetime.fromisoformat(cache_info['download_time'])
             if datetime.now() - cache_time > self.cache_duration:
                 if not self.quiet:
-                    print(f"⏰ Cache expired (older than {self.cache_duration})")
+                    logger.info(f"⏰ Cache expired (older than {self.cache_duration})")
                 return False
             
             if not self.quiet:
-                print(f"✅ Cache is valid (downloaded {cache_time.strftime('%Y-%m-%d %H:%M:%S')})")
+                logger.info(f"✅ Cache is valid (downloaded {cache_time.strftime('%Y-%m-%d %H:%M:%S')})")
             return True
             
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             if not self.quiet:
-                print(f"⚠️  Cache info corrupted: {e}")
+                logger.warning(f"⚠️  Cache info corrupted: {e}")
             return False
     
-    def download_data(self, force=False):
+    def download_data(self, force: bool = False) -> Path:
         """Download CVE data from NVD source"""
         if not force and self.is_cache_valid():
             if not self.quiet:
-                print("📋 Using cached data")
+                logger.info("📋 Using cached data")
             return self.cache_file
         
         if not self.quiet:
-            print(f"🔽 Downloading CVE data from {self.nvd_url}")
+            logger.info(f"🔽 Downloading CVE data from {self.nvd_url}")
         
         try:
-            # Start download with progress tracking
-            response = requests.get(self.nvd_url, stream=True)
+            # Start download with progress tracking (use injected HTTP client)
+            response = self._http_client.get(self.nvd_url, stream=True)
             response.raise_for_status()
             
             # Get file size for progress tracking
             total_size = int(response.headers.get('content-length', 0))
             downloaded_size = 0
             
-            # Download with progress updates
-            with open(self.cache_file, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        downloaded_size += len(chunk)
-                        
-                        # Show progress every 10MB
-                        if downloaded_size % (10 * 1024 * 1024) == 0 or downloaded_size == total_size:
-                            if total_size > 0:
-                                progress = (downloaded_size / total_size) * 100
-                                print(f"  📥 Downloaded {downloaded_size // (1024*1024)}MB / {total_size // (1024*1024)}MB ({progress:.1f}%)")
+            # Download with progress updates - collect chunks then write
+            chunks: list[bytes] = []
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    chunks.append(chunk)
+                    downloaded_size += len(chunk)
+                    
+                    # Show progress every 10MB
+                    if downloaded_size % (10 * 1024 * 1024) == 0 or downloaded_size == total_size:
+                        if total_size > 0:
+                            progress = (downloaded_size / total_size) * 100
+                            logger.debug(f"  📥 Downloaded {downloaded_size // (1024*1024)}MB / {total_size // (1024*1024)}MB ({progress:.1f}%)")
+            
+            # Write using data writer
+            self._data_writer.write_bytes(self.cache_file, b''.join(chunks))
             
             # Calculate file hash for integrity check
             file_hash = self.calculate_file_hash(self.cache_file)
             
-            # Save cache info
+            # Save cache info using data writer
             cache_info = {
                 'download_time': datetime.now().isoformat(),
                 'file_size': downloaded_size,
@@ -120,129 +165,123 @@ class CVEDataDownloader:
                 'source_url': self.nvd_url
             }
             
-            with open(self.cache_info_file, 'w') as f:
-                json.dump(cache_info, f, indent=2)
+            self._data_writer.write_json(self.cache_info_file, cache_info)
             
-            print(f"✅ Download completed successfully")
-            print(f"📊 File size: {downloaded_size // (1024*1024)}MB")
-            print(f"🔐 File hash: {file_hash[:16]}...")
+            logger.info("✅ Download completed successfully")
+            logger.info(f"📊 File size: {downloaded_size // (1024*1024)}MB")
+            logger.debug(f"🔐 File hash: {file_hash[:16]}...")
             
             return self.cache_file
             
         except requests.RequestException as e:
-            print(f"❌ Download failed: {e}")
+            logger.error(f"❌ Download failed: {e}")
             # Try to use cached data if available, even if expired
-            if self.cache_file.exists():
-                print("⚠️  Using expired cached data as fallback")
+            if self._data_reader.exists(self.cache_file):
+                logger.warning("⚠️  Using expired cached data as fallback")
                 return self.cache_file
             raise
         
-        except Exception as e:
-            print(f"❌ Unexpected error during download: {e}")
+        except (OSError, json.JSONDecodeError) as e:
+            logger.error(f"❌ File or JSON error during download: {e}")
             raise
     
-    def download_cna_mapping_files(self):
+    def download_cna_mapping_files(self) -> None:
         """Download CNA mapping files for proper name resolution"""
-        print("🔽 Downloading CNA mapping files...")
+        logger.info("🔽 Downloading CNA mapping files...")
         
         try:
-            # Download CNA list
-            print(f"  📥 Downloading CNA list from CVE.org...")
-            response = requests.get(self.cna_list_url, timeout=30)
+            # Download CNA list (use injected HTTP client)
+            logger.debug("  📥 Downloading CNA list from CVE.org...")
+            response = self._http_client.get(self.cna_list_url, timeout=30)
             response.raise_for_status()
             
-            with open(self.cna_list_file, 'w', encoding='utf-8') as f:
-                json.dump(response.json(), f, indent=2)
-            print(f"  ✅ CNA list saved to {self.cna_list_file.name}")
+            self._data_writer.write_json(self.cna_list_file, response.json())
+            logger.debug(f"  ✅ CNA list saved to {self.cna_list_file.name}")
             
-            # Download CNA name mapping
-            print(f"  📥 Downloading CNA name mapping from CVE.org...")
-            response = requests.get(self.cna_name_map_url, timeout=30)
+            # Download CNA name mapping (use injected HTTP client)
+            logger.debug("  📥 Downloading CNA name mapping from CVE.org...")
+            response = self._http_client.get(self.cna_name_map_url, timeout=30)
             response.raise_for_status()
             
-            with open(self.cna_name_map_file, 'w', encoding='utf-8') as f:
-                json.dump(response.json(), f, indent=2)
-            print(f"  ✅ CNA name mapping saved to {self.cna_name_map_file.name}")
+            self._data_writer.write_json(self.cna_name_map_file, response.json())
+            logger.debug(f"  ✅ CNA name mapping saved to {self.cna_name_map_file.name}")
             
-            print("✅ CNA mapping files downloaded successfully")
+            logger.info("✅ CNA mapping files downloaded successfully")
             
         except requests.RequestException as e:
-            print(f"⚠️  Warning: Could not download CNA mapping files: {e}")
-            print("  📝 Will use raw sourceIdentifier values as fallback")
-        except Exception as e:
-            print(f"⚠️  Warning: Unexpected error downloading CNA files: {e}")
+            logger.warning(f"⚠️  Warning: Could not download CNA mapping files: {e}")
+            logger.warning("  📝 Will use raw sourceIdentifier values as fallback")
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"⚠️  Warning: File or JSON error downloading CNA files: {e}")
     
-    def calculate_file_hash(self, file_path):
+    def calculate_file_hash(self, file_path: Path) -> str:
         """Calculate SHA256 hash of file for integrity checking"""
         hash_sha256 = hashlib.sha256()
-        with open(file_path, "rb") as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_sha256.update(chunk)
+        content = self._data_reader.read_bytes(file_path)
+        hash_sha256.update(content)
         return hash_sha256.hexdigest()
     
-    def validate_json_format(self, file_path):
+    def validate_json_format(self, file_path: Path) -> bool:
         """Validate that the downloaded file contains valid CVE data (JSON array format)"""
         try:
-            print("🔍 Validating JSON format...")
+            logger.info("🔍 Validating JSON format...")
             
-            with open(file_path, 'r', encoding='utf-8') as f:
-                try:
-                    # Try to load as JSON array
-                    cve_data = json.load(f)
-                    
-                    if not isinstance(cve_data, list):
-                        raise ValueError("Expected JSON array format")
-                    
-                    total_records = len(cve_data)
-                    valid_cve_count = 0
-                    
-                    print(f"  📊 Found {total_records:,} records in JSON array")
-                    
-                    # Validate a sample of records
-                    sample_size = min(1000, total_records)
-                    for i in range(0, total_records, max(1, total_records // sample_size)):
-                        if i >= total_records:
-                            break
-                            
-                        record = cve_data[i]
-                        if isinstance(record, dict) and 'cve' in record:
-                            cve_id = record.get('cve', {}).get('id', '')
-                            if cve_id.startswith('CVE-'):
-                                valid_cve_count += 1
-                    
-                    print(f"✅ Validation complete:")
-                    print(f"  📊 Total records: {total_records:,}")
-                    print(f"  ✅ Valid CVEs (sampled): {valid_cve_count}/{sample_size}")
-                    print(f"  📈 Success rate: {(valid_cve_count/sample_size)*100:.1f}%")
-                    
-                    if valid_cve_count == 0:
-                        raise ValueError("No valid CVE records found in downloaded data")
-                    
-                    return True
-                    
-                except json.JSONDecodeError as e:
-                    print(f"❌ Failed to parse JSON: {e}")
-                    return False
+            try:
+                # Try to load as JSON array using data reader
+                cve_data = self._data_reader.read_json(file_path)
+                
+                if not isinstance(cve_data, list):
+                    raise ValueError("Expected JSON array format")
+                
+                total_records = len(cve_data)
+                valid_cve_count = 0
+                
+                logger.debug(f"  📊 Found {total_records:,} records in JSON array")
+                
+                # Validate a sample of records
+                sample_size = min(1000, total_records)
+                for i in range(0, total_records, max(1, total_records // sample_size)):
+                    if i >= total_records:
+                        break
+                        
+                    record = cve_data[i]
+                    if isinstance(record, dict) and 'cve' in record:
+                        cve_id = record.get('cve', {}).get('id', '')
+                        if cve_id.startswith('CVE-'):
+                            valid_cve_count += 1
+                
+                logger.info("✅ Validation complete:")
+                logger.info(f"  📊 Total records: {total_records:,}")
+                logger.debug(f"  ✅ Valid CVEs (sampled): {valid_cve_count}/{sample_size}")
+                logger.debug(f"  📈 Success rate: {(valid_cve_count/sample_size)*100:.1f}%")
+                
+                if valid_cve_count == 0:
+                    raise ValueError("No valid CVE records found in downloaded data")
+                
+                return True
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"❌ Failed to parse JSON: {e}")
+                return False
             
-        except Exception as e:
-            print(f"❌ Validation failed: {e}")
+        except (json.JSONDecodeError, KeyError, ValueError, OSError) as e:
+            logger.error(f"❌ Validation failed: {e}")
             return False
     
-    def get_data_stats(self):
+    def get_data_stats(self) -> dict[str, Any] | None:
         """Get statistics about the cached data (JSON array format)"""
-        if not self.cache_file.exists():
+        if not self._data_reader.exists(self.cache_file):
             return None
         
         try:
-            with open(self.cache_info_file, 'r') as f:
-                cache_info = json.load(f)
+            cache_info = self._data_reader.read_json(self.cache_info_file)
             
             # Load and process JSON array
             with open(self.cache_file, 'r', encoding='utf-8') as f:
                 cve_data_array = json.load(f)
             
             # Quick scan for year distribution
-            year_counts = {}
+            year_counts: dict[int, int] = {}
             total_cves = 0
             
             # Sample every 100th record for performance (still gives accurate stats)
@@ -271,14 +310,14 @@ class CVEDataDownloader:
                 'year_counts': dict(sorted(year_counts.items()))
             }
             
-        except Exception as e:
-            print(f"⚠️  Could not get data stats: {e}")
+        except (json.JSONDecodeError, KeyError, ValueError, OSError) as e:
+            logger.warning(f"⚠️  Could not get data stats: {e}")
             return None
     
-    def ensure_data_available(self, force_download=False):
+    def ensure_data_available(self, force_download: bool = False) -> Path:
         """Main method to ensure CVE data is available and valid"""
-        print("\n🔽 Ensuring CVE data is available...")
-        print("=" * 50)
+        logger.info("\n🔽 Ensuring CVE data is available...")
+        logger.info("=" * 50)
         
         try:
             # Download data if needed
@@ -294,27 +333,27 @@ class CVEDataDownloader:
             # Show statistics
             stats = self.get_data_stats()
             if stats:
-                print(f"\n📊 Data Statistics:")
-                print(f"  📅 Downloaded: {stats['cache_info']['download_time']}")
-                print(f"  📊 Total CVEs: {stats['total_cves']:,}")
+                logger.info("\n📊 Data Statistics:")
+                logger.info(f"  📅 Downloaded: {stats['cache_info']['download_time']}")
+                logger.info(f"  📊 Total CVEs: {stats['total_cves']:,}")
                 if stats['year_range'][0]:
-                    print(f"  📅 Year range: {stats['year_range'][0]}-{stats['year_range'][1]}")
-                    print(f"  📈 Years covered: {len(stats['year_counts'])}")
+                    logger.info(f"  📅 Year range: {stats['year_range'][0]}-{stats['year_range'][1]}")
+                    logger.debug(f"  📈 Years covered: {len(stats['year_counts'])}")
             
-            print("\n" + "=" * 50)
-            print("✅ CVE data is ready for processing!")
+            logger.info("\n" + "=" * 50)
+            logger.info("✅ CVE data is ready for processing!")
             
             return data_file
             
-        except Exception as e:
-            print(f"\n❌ Failed to ensure data availability: {e}")
+        except (ValueError, requests.RequestException, OSError) as e:
+            logger.error(f"\n❌ Failed to ensure data availability: {e}")
             raise
 
     # ------------------------------------------------------------------
     # EPSS data helpers
     # ------------------------------------------------------------------
 
-    def download_epss_data(self, force: bool = False):
+    def download_epss_data(self, force: bool = False) -> Path | None:
         """Download and cache the EPSS scores CSV.
 
         Returns the path to the gzipped CSV file, or None on failure.
@@ -327,11 +366,11 @@ class CVEDataDownloader:
             mtime = datetime.fromtimestamp(self.epss_cache_file.stat().st_mtime)
             if datetime.now() - mtime < self.cache_duration:
                 if not self.quiet:
-                    print("✅ Using cached EPSS data")
+                    logger.info("✅ Using cached EPSS data")
                 return self.epss_cache_file
 
         if not self.quiet:
-            print(f"🔽 Downloading EPSS data from {self.epss_url}")
+            logger.info(f"🔽 Downloading EPSS data from {self.epss_url}")
 
         try:
             response = requests.get(self.epss_url, stream=True, timeout=120)
@@ -344,18 +383,18 @@ class CVEDataDownloader:
 
             if not self.quiet:
                 size_mb = self.epss_cache_file.stat().st_size / (1024 * 1024)
-                print(f"✅ EPSS download complete ({size_mb:.2f} MB)")
+                logger.info(f"✅ EPSS download complete ({size_mb:.2f} MB)")
 
             return self.epss_cache_file
 
         except requests.RequestException as e:
-            print(f"⚠️  Warning: EPSS download failed: {e}")
+            logger.warning(f"⚠️  Warning: EPSS download failed: {e}")
             if self.epss_cache_file.exists():
-                print("  📝 Using stale EPSS cache as fallback")
+                logger.warning("  📝 Using stale EPSS cache as fallback")
                 return self.epss_cache_file
             return None
 
-    def parse_epss_csv(self):
+    def parse_epss_csv(self) -> Path | None:
         """Parse the cached EPSS CSV into a compact JSON mapping.
 
         Output format (written to self.epss_parsed_file):
@@ -368,11 +407,11 @@ class CVEDataDownloader:
 
         epss_csv_gz = self.download_epss_data()
         if not epss_csv_gz or not epss_csv_gz.exists():
-            print("⚠️  Warning: No EPSS CSV available to parse")
+            logger.warning("⚠️  Warning: No EPSS CSV available to parse")
             return None
 
         if not self.quiet:
-            print("🔍 Parsing EPSS CSV into JSON mapping...")
+            logger.info("🔍 Parsing EPSS CSV into JSON mapping...")
 
         mapping = {}
         try:
@@ -401,19 +440,19 @@ class CVEDataDownloader:
                 json.dump(mapping, out)
 
             if not self.quiet:
-                print(f"✅ EPSS mapping written to {self.epss_parsed_file.name} ({len(mapping):,} CVEs)")
+                logger.info(f"✅ EPSS mapping written to {self.epss_parsed_file.name} ({len(mapping):,} CVEs)")
 
             return self.epss_parsed_file
 
-        except Exception as e:
-            print(f"⚠️  Warning: Failed to parse EPSS CSV: {e}")
+        except (gzip.BadGzipFile, csv.Error, OSError, json.JSONDecodeError) as e:
+            logger.warning(f"⚠️  Warning: Failed to parse EPSS CSV: {e}")
             return None
 
     # ------------------------------------------------------------------
     # CISA KEV helpers
     # ------------------------------------------------------------------
 
-    def download_kev_data(self, force: bool = False):
+    def download_kev_data(self, force: bool = False) -> Path | None:
         """Download and cache the CISA Known Exploited Vulnerabilities catalog.
 
         Returns the path to the JSON file, or None on failure. Best-effort only:
@@ -425,11 +464,11 @@ class CVEDataDownloader:
             mtime = datetime.fromtimestamp(self.kev_cache_file.stat().st_mtime)
             if datetime.now() - mtime < self.cache_duration:
                 if not self.quiet:
-                    print("✅ Using cached KEV data")
+                    logger.info("✅ Using cached KEV data")
                 return self.kev_cache_file
 
         if not self.quiet:
-            print(f"🔽 Downloading KEV data from {self.kev_url}")
+            logger.info(f"🔽 Downloading KEV data from {self.kev_url}")
 
         try:
             response = requests.get(self.kev_url, timeout=60)
@@ -440,18 +479,18 @@ class CVEDataDownloader:
 
             if not self.quiet:
                 size_kb = self.kev_cache_file.stat().st_size / 1024
-                print(f"✅ KEV download complete ({size_kb:.1f} KB)")
+                logger.info(f"✅ KEV download complete ({size_kb:.1f} KB)")
 
             return self.kev_cache_file
 
         except requests.RequestException as e:
-            print(f"⚠️  Warning: KEV download failed: {e}")
+            logger.warning(f"⚠️  Warning: KEV download failed: {e}")
             if self.kev_cache_file.exists():
-                print("  📝 Using stale KEV cache as fallback")
+                logger.warning("  📝 Using stale KEV cache as fallback")
                 return self.kev_cache_file
             return None
 
-    def parse_kev_json(self):
+    def parse_kev_json(self) -> Path | None:
         """Parse the KEV JSON into a compact mapping.
 
         Expected feed shape (subject to CISA changes):
@@ -473,11 +512,11 @@ class CVEDataDownloader:
 
         kev_json = self.download_kev_data()
         if not kev_json or not kev_json.exists():
-            print("⚠️  Warning: No KEV JSON available to parse")
+            logger.warning("⚠️  Warning: No KEV JSON available to parse")
             return None
 
         if not self.quiet:
-            print("🔍 Parsing KEV JSON into CVE mapping...")
+            logger.info("🔍 Parsing KEV JSON into CVE mapping...")
 
         try:
             with open(kev_json, "r", encoding="utf-8") as f:
@@ -488,35 +527,41 @@ class CVEDataDownloader:
             if vulnerabilities is None and isinstance(raw, list):
                 vulnerabilities = raw
 
-            mapping = {}
-            if isinstance(vulnerabilities, list):
-                for entry in vulnerabilities:
-                    cve_id = entry.get("cveID") or entry.get("cveId") or entry.get("cve")
-                    if isinstance(cve_id, str) and cve_id.startswith("CVE-"):
-                        mapping[cve_id.strip()] = True
+            mapping = {
+                cve_id.strip(): True
+                for entry in (vulnerabilities if isinstance(vulnerabilities, list) else [])
+                if (cve_id := entry.get("cveID") or entry.get("cveId") or entry.get("cve"))
+                and isinstance(cve_id, str)
+                and cve_id.startswith("CVE-")
+            }
 
             with open(self.kev_parsed_file, "w", encoding="utf-8") as out:
                 json.dump(mapping, out)
 
             if not self.quiet:
-                print(f"✅ KEV mapping written to {self.kev_parsed_file.name} ({len(mapping):,} CVEs)")
+                logger.info(f"✅ KEV mapping written to {self.kev_parsed_file.name} ({len(mapping):,} CVEs)")
 
             return self.kev_parsed_file
 
-        except Exception as e:
-            print(f"⚠️  Warning: Failed to parse KEV JSON: {e}")
+        except (json.JSONDecodeError, KeyError, OSError) as e:
+            logger.warning(f"⚠️  Warning: Failed to parse KEV JSON: {e}")
             return None
 
-def main():
+def main() -> None:
     """Main entry point for standalone execution"""
     import argparse
+    from data.logging_config import setup_logging
     
     parser = argparse.ArgumentParser(description="Download and cache CVE data")
     parser.add_argument('--force', action='store_true', help='Force download even if cache is valid')
     parser.add_argument('--stats', action='store_true', help='Show data statistics only')
     parser.add_argument('--cache-dir', help='Custom cache directory')
+    parser.add_argument('--log-level', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'], default='INFO',
+                       help='Logging level')
     
     args = parser.parse_args()
+    
+    setup_logging(level=args.log_level)
     
     downloader = CVEDataDownloader(cache_dir=args.cache_dir)
     
@@ -525,7 +570,7 @@ def main():
         if stats:
             print(json.dumps(stats, indent=2, default=str))
         else:
-            print("No cached data available")
+            logger.warning("No cached data available")
     else:
         downloader.ensure_data_available(force_download=args.force)
 

@@ -3,6 +3,7 @@
 CVSS Analysis Rebuild Script
 Quick rebuild script for CVSS analysis only - much faster than full site rebuild
 """
+from __future__ import annotations
 
 import sys
 from datetime import datetime
@@ -14,8 +15,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from cvss_analysis import CVSSAnalyzer
 from scripts.utils import setup_paths, load_all_year_data, print_header
 
+# Logging setup
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
 
-def main():
+logger = get_logger(__name__)
+
+
+def main() -> bool:
     """Rebuild CVSS analysis only"""
     print_header("CVSS Analysis Quick Rebuild", "📊")
     
@@ -27,16 +36,16 @@ def main():
     
     try:
         # Load existing year data
-        print("📂 Loading existing year data...")
+        logger.info("Loading existing year data...")
         all_year_data = load_all_year_data(data_dir)
-        print(f"✅ Loaded {len(all_year_data)} year data files")
+        logger.info(f"Loaded {len(all_year_data)} year data files")
         
         if not all_year_data:
-            print("❌ No year data found. Run full build first.")
+            logger.error("No year data found. Run full build first.")
             return False
         
         # Generate comprehensive CVSS analysis
-        print("\n🔄 Generating comprehensive CVSS analysis...")
+        logger.info("Generating comprehensive CVSS analysis...")
         cvss_analysis = cvss_analyzer.generate_cvss_analysis(all_year_data)
         
         # Generate current year CVSS analysis
@@ -44,28 +53,28 @@ def main():
         current_year_data = next((year for year in all_year_data if year['year'] == current_year), {})
         
         if current_year_data:
-            print(f"\n🗓️  Generating {current_year} CVSS analysis...")
+            logger.info(f"Generating {current_year} CVSS analysis...")
             current_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_data)
         else:
-            print(f"⚠️  No {current_year} data found for current year analysis")
+            logger.warning(f"No {current_year} data found for current year analysis")
             current_cvss_analysis = {}
         
-        print("\n" + "=" * 40)
-        print("✅ CVSS analysis rebuild completed!")
-        print(f"📊 Total CVEs with CVSS: {cvss_analysis.get('total_cves_with_cvss', 0):,}")
-        print(f"📊 CVSS v2.0: {cvss_analysis.get('total_by_version', {}).get('v2.0', 0):,}")
-        print(f"📊 CVSS v3.0: {cvss_analysis.get('total_by_version', {}).get('v3.0', 0):,}")
-        print(f"📊 CVSS v3.1: {cvss_analysis.get('total_by_version', {}).get('v3.1', 0):,}")
-        print(f"📊 CVSS v4.0: {cvss_analysis.get('total_by_version', {}).get('v4.0', 0):,}")
-        print(f"📁 Files updated:")
-        print(f"   - web/data/cvss_analysis.json")
+        logger.info("=" * 40)
+        logger.info("CVSS analysis rebuild completed!")
+        logger.info(f"Total CVEs with CVSS: {cvss_analysis.get('total_cves_with_cvss', 0):,}")
+        logger.info(f"CVSS v2.0: {cvss_analysis.get('total_by_version', {}).get('v2.0', 0):,}")
+        logger.info(f"CVSS v3.0: {cvss_analysis.get('total_by_version', {}).get('v3.0', 0):,}")
+        logger.info(f"CVSS v3.1: {cvss_analysis.get('total_by_version', {}).get('v3.1', 0):,}")
+        logger.info(f"CVSS v4.0: {cvss_analysis.get('total_by_version', {}).get('v4.0', 0):,}")
+        logger.info("Files updated:")
+        logger.info("   - web/data/cvss_analysis.json")
         if current_cvss_analysis:
-            print(f"   - web/data/cvss_analysis_current_year.json")
+            logger.info("   - web/data/cvss_analysis_current_year.json")
         
         return True
         
-    except Exception as e:
-        print(f"\n❌ CVSS analysis rebuild failed: {e}")
+    except (ImportError, json.JSONDecodeError, OSError) as e:
+        logger.error(f"CVSS analysis rebuild failed: {e}")
         import traceback
         traceback.print_exc()
         return False

@@ -3,6 +3,7 @@
 CWE Analysis Rebuild Script
 Quick rebuild script for CWE analysis only - much faster than full site rebuild
 """
+from __future__ import annotations
 
 import sys
 from datetime import datetime
@@ -14,8 +15,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from cwe_analysis import CWEAnalyzer
 from scripts.utils import setup_paths, load_all_year_data, print_header
 
+# Logging setup
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
 
-def main():
+logger = get_logger(__name__)
+
+
+def main() -> bool:
     """Rebuild CWE analysis only"""
     print_header("CWE Analysis Quick Rebuild", "🔍")
     
@@ -27,16 +36,16 @@ def main():
     
     try:
         # Load existing year data
-        print("📂 Loading existing year data...")
+        logger.info("Loading existing year data...")
         all_year_data = load_all_year_data(data_dir)
-        print(f"✅ Loaded {len(all_year_data)} year data files")
+        logger.info(f"Loaded {len(all_year_data)} year data files")
         
         if not all_year_data:
-            print("❌ No year data found. Run full build first.")
+            logger.error("No year data found. Run full build first.")
             return False
         
         # Generate comprehensive CWE analysis
-        print("\n🔄 Generating comprehensive CWE analysis...")
+        logger.info("Generating comprehensive CWE analysis...")
         cwe_analysis = cwe_analyzer.generate_cwe_analysis(all_year_data)
         
         # Generate current year CWE analysis
@@ -44,26 +53,26 @@ def main():
         current_year_data = next((year for year in all_year_data if year['year'] == current_year), {})
         
         if current_year_data:
-            print(f"\n🗓️  Generating {current_year} CWE analysis...")
+            logger.info(f"Generating {current_year} CWE analysis...")
             current_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_data)
         else:
-            print(f"⚠️  No {current_year} data found for current year analysis")
+            logger.warning(f"No {current_year} data found for current year analysis")
             current_cwe_analysis = {}
         
-        print("\n" + "=" * 40)
-        print("✅ CWE analysis rebuild completed!")
-        print(f"📊 Total CVEs with CWE: {cwe_analysis.get('total_cves_with_cwe', 0):,}")
-        print(f"📊 Unique CWEs: {cwe_analysis.get('total_unique_cwes', 0):,}")
-        print(f"📊 Top CWEs available: {len(cwe_analysis.get('top_cwes', []))}")
-        print(f"📁 Files updated:")
-        print(f"   - web/data/cwe_analysis.json")
+        logger.info("=" * 40)
+        logger.info("CWE analysis rebuild completed!")
+        logger.info(f"Total CVEs with CWE: {cwe_analysis.get('total_cves_with_cwe', 0):,}")
+        logger.info(f"Unique CWEs: {cwe_analysis.get('total_unique_cwes', 0):,}")
+        logger.info(f"Top CWEs available: {len(cwe_analysis.get('top_cwes', []))}")
+        logger.info("Files updated:")
+        logger.info("   - web/data/cwe_analysis.json")
         if current_cwe_analysis:
-            print(f"   - web/data/cwe_analysis_current_year.json")
+            logger.info("   - web/data/cwe_analysis_current_year.json")
         
         return True
         
-    except Exception as e:
-        print(f"\n❌ CWE analysis rebuild failed: {e}")
+    except (ImportError, json.JSONDecodeError, OSError) as e:
+        logger.error(f"CWE analysis rebuild failed: {e}")
         import traceback
         traceback.print_exc()
         return False

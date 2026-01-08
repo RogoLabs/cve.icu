@@ -3,45 +3,74 @@
 Scoring Analysis Module for CVE.ICU
 Generates analysis files for the Scoring Hub: EPSS, KEV, and Risk Matrix data
 """
+from __future__ import annotations
 
 import json
 from collections import defaultdict
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class ScoringAnalyzer:
     """Generates scoring-related analysis files for the Scoring Hub"""
+    base_dir: Path | None = None
+    cache_dir: Path | None = None
+    output_dir: Path | None = None
+    epss_file: Path = field(init=False)
+    kev_file: Path = field(init=False)
+    nvd_file: Path = field(init=False)
     
-    def __init__(self, base_dir=None, cache_dir=None, output_dir=None):
-        self.base_dir = Path(base_dir) if base_dir else Path(__file__).parent.parent
-        self.cache_dir = Path(cache_dir) if cache_dir else self.base_dir / 'data' / 'cache'
-        self.output_dir = Path(output_dir) if output_dir else self.base_dir / 'web' / 'data'
+    def __post_init__(self) -> None:
+        """Set up paths with defaults if not provided."""
+        if self.base_dir is None:
+            self.base_dir = Path(__file__).parent.parent
+        else:
+            self.base_dir = Path(self.base_dir)
+        
+        if self.cache_dir is None:
+            self.cache_dir = self.base_dir / 'data' / 'cache'
+        else:
+            self.cache_dir = Path(self.cache_dir)
+        
+        if self.output_dir is None:
+            self.output_dir = self.base_dir / 'web' / 'data'
+        else:
+            self.output_dir = Path(self.output_dir)
         
         # Source files
         self.epss_file = self.cache_dir / 'epss_scores-current.json'
         self.kev_file = self.cache_dir / 'known_exploited_vulnerabilities.json'
         self.nvd_file = self.cache_dir / 'nvd.json'
         
-    def load_epss_data(self):
+    def load_epss_data(self) -> dict[str, dict[str, float]]:
         """Load EPSS scores from parsed JSON"""
         if not self.epss_file.exists():
-            print(f"⚠️  EPSS file not found: {self.epss_file}")
+            logger.warning(f"⚠️  EPSS file not found: {self.epss_file}")
             return {}
         
         with open(self.epss_file, 'r') as f:
             return json.load(f)
     
-    def load_kev_data(self):
+    def load_kev_data(self) -> dict[str, Any]:
         """Load KEV data from CISA JSON"""
         if not self.kev_file.exists():
-            print(f"⚠️  KEV file not found: {self.kev_file}")
+            logger.warning(f"⚠️  KEV file not found: {self.kev_file}")
             return {'vulnerabilities': []}
         
         with open(self.kev_file, 'r') as f:
             return json.load(f)
     
-    def load_cvss_data(self):
+    def load_cvss_data(self) -> dict[str, Any]:
         """Load CVSS data from existing analysis file or count from NVD"""
         cvss_file = self.output_dir / 'cvss_analysis.json'
         if cvss_file.exists():
@@ -49,8 +78,8 @@ class ScoringAnalyzer:
                 return json.load(f)
         
         # Fallback: count CVSS from NVD data directly
-        print(f"⚠️  CVSS analysis file not found: {cvss_file}")
-        print(f"    📂 Counting CVSS from NVD data directly...")
+        logger.warning(f"⚠️  CVSS analysis file not found: {cvss_file}")
+        logger.info(f"    📂 Counting CVSS from NVD data directly...")
         
         if not self.nvd_file.exists():
             return {'total_cves_with_cvss': 0}
@@ -73,19 +102,19 @@ class ScoringAnalyzer:
                     if cve_data.get('cvss_v3') or cve_data.get('cvss_v2'):
                         count += 1
             
-            print(f"    ✅ Found {count:,} CVEs with CVSS scores")
+            logger.info(f"    ✅ Found {count:,} CVEs with CVSS scores")
             return {'total_cves_with_cvss': count}
-        except Exception as e:
-            print(f"    ❌ Error loading NVD data: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, OSError) as e:
+            logger.error(f"    ❌ Error loading NVD data: {e}")
             return {'total_cves_with_cvss': 0}
     
-    def generate_epss_analysis(self):
+    def generate_epss_analysis(self) -> dict[str, Any] | None:
         """Generate EPSS-focused analysis JSON"""
-        print("📊 Generating EPSS analysis...")
+        logger.info("📊 Generating EPSS analysis...")
         
         epss_data = self.load_epss_data()
         if not epss_data:
-            print("  ⚠️  No EPSS data available")
+            logger.warning("  ⚠️  No EPSS data available")
             return None
         
         # Calculate distributions
@@ -113,19 +142,20 @@ class ScoringAnalyzer:
             except (IndexError, ValueError):
                 pass
             
-            # Score buckets
-            if score < 0.01:
-                buckets['very_low'] += 1
-            elif score < 0.1:
-                buckets['low'] += 1
-            elif score < 0.3:
-                buckets['medium'] += 1
-            elif score < 0.5:
-                buckets['high'] += 1
-            elif score < 0.7:
-                buckets['very_high'] += 1
-            else:
-                buckets['critical'] += 1
+            # Score buckets using match/case with guard patterns
+            match score:
+                case s if s < 0.01:
+                    buckets['very_low'] += 1
+                case s if s < 0.1:
+                    buckets['low'] += 1
+                case s if s < 0.3:
+                    buckets['medium'] += 1
+                case s if s < 0.5:
+                    buckets['high'] += 1
+                case s if s < 0.7:
+                    buckets['very_high'] += 1
+                case _:
+                    buckets['critical'] += 1
             
             # Percentile buckets (for histogram)
             bucket_idx = min(int(percentile * 10), 9)  # 0-9
@@ -175,21 +205,21 @@ class ScoringAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(analysis, f, indent=2)
         
-        print(f"  ✅ Generated {output_file.name}")
-        print(f"     Total CVEs with EPSS: {len(epss_data):,}")
-        print(f"     High risk (>0.5): {gt_05:,}")
+        logger.info(f"  ✅ Generated {output_file.name}")
+        logger.info(f"     Total CVEs with EPSS: {len(epss_data):,}")
+        logger.info(f"     High risk (>0.5): {gt_05:,}")
         
         return analysis
     
-    def generate_kev_analysis(self):
+    def generate_kev_analysis(self) -> dict[str, Any] | None:
         """Generate KEV-focused analysis JSON"""
-        print("📊 Generating KEV analysis...")
+        logger.info("📊 Generating KEV analysis...")
         
         kev_data = self.load_kev_data()
         vulnerabilities = kev_data.get('vulnerabilities', [])
         
         if not vulnerabilities:
-            print("  ⚠️  No KEV data available")
+            logger.warning("  ⚠️  No KEV data available")
             return None
         
         # Aggregations
@@ -295,26 +325,26 @@ class ScoringAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(analysis, f, indent=2)
         
-        print(f"  ✅ Generated {output_file.name}")
-        print(f"     Total KEV CVEs: {len(vulnerabilities):,}")
-        print(f"     Added last 30 days: {len(recent_30_days)}")
+        logger.info(f"  ✅ Generated {output_file.name}")
+        logger.info(f"     Total KEV CVEs: {len(vulnerabilities):,}")
+        logger.info(f"     Added last 30 days: {len(recent_30_days)}")
         
         return analysis
     
-    def generate_risk_matrix(self):
+    def generate_risk_matrix(self) -> dict[str, Any]:
         """Generate bucketed CVSS × EPSS risk matrix data"""
-        print("📊 Generating risk matrix...")
+        logger.info("📊 Generating risk matrix...")
         
         epss_data = self.load_epss_data()
         self.load_cvss_data()
         kev_data = self.load_kev_data()
         
-        # Build KEV set for quick lookup
-        kev_set = set()
-        for vuln in kev_data.get('vulnerabilities', []):
-            cve_id = vuln.get('cveID', '')
-            if cve_id:
-                kev_set.add(cve_id)
+        # Build KEV set for quick lookup using set comprehension with walrus
+        kev_set = {
+            cve_id
+            for vuln in kev_data.get('vulnerabilities', [])
+            if (cve_id := vuln.get('cveID', ''))
+        }
         
         # CVSS severity bands
         severity_bands = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
@@ -323,28 +353,30 @@ class ScoringAnalyzer:
         epss_buckets = ['0-0.1', '0.1-0.3', '0.3-0.5', '0.5-0.7', '0.7+']
         
         def get_epss_bucket(score):
-            if score < 0.1:
-                return '0-0.1'
-            elif score < 0.3:
-                return '0.1-0.3'
-            elif score < 0.5:
-                return '0.3-0.5'
-            elif score < 0.7:
-                return '0.5-0.7'
-            else:
-                return '0.7+'
+            match score:
+                case s if s < 0.1:
+                    return '0-0.1'
+                case s if s < 0.3:
+                    return '0.1-0.3'
+                case s if s < 0.5:
+                    return '0.3-0.5'
+                case s if s < 0.7:
+                    return '0.5-0.7'
+                case _:
+                    return '0.7+'
         
         def get_severity_from_score(score):
-            if score == 0:
-                return 'NONE'
-            elif score < 4.0:
-                return 'LOW'
-            elif score < 7.0:
-                return 'MEDIUM'
-            elif score < 9.0:
-                return 'HIGH'
-            else:
-                return 'CRITICAL'
+            match score:
+                case 0:
+                    return 'NONE'
+                case s if s < 4.0:
+                    return 'LOW'
+                case s if s < 7.0:
+                    return 'MEDIUM'
+                case s if s < 9.0:
+                    return 'HIGH'
+                case _:
+                    return 'CRITICAL'
         
         # Initialize matrix
         matrix = {}
@@ -368,7 +400,7 @@ class ScoringAnalyzer:
         
         # Actually, let's load the NVD data to get proper CVSS scores
         if self.nvd_file.exists():
-            print("  📂 Loading NVD data for CVSS correlation...")
+            logger.info("  📂 Loading NVD data for CVSS correlation...")
             with open(self.nvd_file, 'r') as f:
                 nvd_data = json.load(f)
             
@@ -390,8 +422,7 @@ class ScoringAnalyzer:
                     if version in metrics and metrics[version]:
                         metric = metrics[version][0]
                         cvss_data_inner = metric.get('cvssData', {})
-                        cvss_score = cvss_data_inner.get('baseScore')
-                        if cvss_score:
+                        if cvss_score := cvss_data_inner.get('baseScore'):
                             break
                 
                 if cvss_score is None:
@@ -404,7 +435,7 @@ class ScoringAnalyzer:
                 if cve_id in kev_set:
                     matrix[key]['kev_count'] += 1
         else:
-            print("  ⚠️  NVD file not found, using estimated data")
+            logger.warning("  ⚠️  NVD file not found, using estimated data")
         
         # Convert to list format for easier charting
         matrix_list = list(matrix.values())
@@ -428,15 +459,15 @@ class ScoringAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(analysis, f, indent=2)
         
-        print(f"  ✅ Generated {output_file.name}")
-        print(f"     CVEs in matrix: {total_in_matrix:,}")
-        print(f"     KEV in matrix: {total_kev_in_matrix:,}")
+        logger.info(f"  ✅ Generated {output_file.name}")
+        logger.info(f"     CVEs in matrix: {total_in_matrix:,}")
+        logger.info(f"     KEV in matrix: {total_kev_in_matrix:,}")
         
         return analysis
     
-    def generate_scoring_comparison(self):
+    def generate_scoring_comparison(self) -> dict[str, Any]:
         """Generate comparison data for the Scoring Hub landing page"""
-        print("📊 Generating scoring comparison...")
+        logger.info("📊 Generating scoring comparison...")
         
         epss_data = self.load_epss_data()
         kev_data = self.load_kev_data()
@@ -506,15 +537,15 @@ class ScoringAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(comparison, f, indent=2)
         
-        print(f"  ✅ Generated {output_file.name}")
-        print(f"     EPSS ∩ KEV: {epss_and_kev:,}")
+        logger.info(f"  ✅ Generated {output_file.name}")
+        logger.info(f"     EPSS ∩ KEV: {epss_and_kev:,}")
         
         return comparison
     
-    def generate_all(self):
+    def generate_all(self) -> dict[str, Any]:
         """Generate all scoring analysis files"""
-        print("\n📊 Generating Scoring Hub Analysis Files")
-        print("=" * 50)
+        logger.info("\n📊 Generating Scoring Hub Analysis Files")
+        logger.info("=" * 50)
         
         results = {}
         results['epss'] = self.generate_epss_analysis()
@@ -522,17 +553,17 @@ class ScoringAnalyzer:
         results['risk_matrix'] = self.generate_risk_matrix()
         results['comparison'] = self.generate_scoring_comparison()
         
-        print("=" * 50)
-        print("✅ All scoring analysis files generated!")
+        logger.info("=" * 50)
+        logger.info("✅ All scoring analysis files generated!")
         
         return results
     
-    def generate_all_scoring_analysis(self):
+    def generate_all_scoring_analysis(self) -> dict[str, Any]:
         """Alias for generate_all() - used by build.py"""
         return self.generate_all()
 
 
-def main():
+def main() -> None:
     """Main entry point"""
     analyzer = ScoringAnalyzer()
     analyzer.generate_all()

@@ -3,44 +3,59 @@
 CPE Analysis Module
 Handles all CPE (Common Platform Enumeration) related data processing and analysis
 """
+from __future__ import annotations
 
 import json
-from pathlib import Path
-from datetime import datetime
 from collections import Counter
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class CPEAnalyzer:
     """Handles CPE-specific analysis and data processing"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert path arguments to Path objects if needed."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
     
-    def extract_cpe_vendor(self, cpe_string):
+    def extract_cpe_vendor(self, cpe_string: str) -> str:
         """Extract vendor from CPE string (cpe:2.3:a:vendor:product:...)"""
         try:
             parts = cpe_string.split(':')
             if len(parts) >= 4:
                 return parts[3]  # vendor is at index 3
             return 'unknown'
-        except:
+        except (TypeError, AttributeError, IndexError):
             return 'unknown'
     
-    def extract_cpe_product(self, cpe_string):
+    def extract_cpe_product(self, cpe_string: str) -> str:
         """Extract product from CPE string (cpe:2.3:a:vendor:product:...)"""
         try:
             parts = cpe_string.split(':')
             if len(parts) >= 5:
                 return parts[4]  # product is at index 4
             return 'unknown'
-        except:
+        except (TypeError, AttributeError, IndexError):
             return 'unknown'
     
-    def extract_cpe_type(self, cpe_string):
+    def extract_cpe_type(self, cpe_string: str) -> str:
         """Extract CPE type from CPE string (a=application, o=operating_system, h=hardware)"""
         try:
             parts = cpe_string.split(':')
@@ -53,19 +68,19 @@ class CPEAnalyzer:
                 }
                 return type_map.get(cpe_type, 'Unknown')
             return 'Unknown'
-        except:
+        except (TypeError, AttributeError, IndexError):
             return 'Unknown'
     
-    def generate_cpe_analysis(self, all_year_data):
+    def generate_cpe_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate CPE analysis across all years"""
         if not self.quiet:
-            print(f"  🔍 Generating CPE analysis...")
+            logger.info(f"  🔍 Generating CPE analysis...")
         
         # Process raw CVE data to extract CPE information
         cpe_data = self._process_cpe_data_from_cache()
         
         if not cpe_data:
-            print("  ⚠️  No CPE data found, generating minimal analysis")
+            logger.warning("  ⚠️  No CPE data found, generating minimal analysis")
             return self._generate_minimal_cpe_analysis()
         
         # Analyze CPE patterns
@@ -130,18 +145,18 @@ class CPEAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(cpe_analysis, f, indent=2)
         
-        print(f"  ✅ Generated CPE analysis with {len(cpe_counts):,} unique CPEs")
+        logger.info(f"  ✅ Generated CPE analysis with {len(cpe_counts):,} unique CPEs")
         return cpe_analysis
     
-    def generate_current_year_cpe_analysis(self, current_year_data):
+    def generate_current_year_cpe_analysis(self, current_year_data: dict[str, Any]) -> dict[str, Any]:
         """Generate current year CPE analysis"""
-        print(f"    🔍 Generating current year CPE analysis...")
+        logger.info(f"    🔍 Generating current year CPE analysis...")
         
         # Process current year CPE data from cache
         current_year_cpe_data = self._process_current_year_cpe_data()
         
         if not current_year_cpe_data:
-            print(f"    ⚠️  No CPE data found for {self.current_year}")
+            logger.warning(f"    ⚠️  No CPE data found for {self.current_year}")
             return {}
         
         # Analyze current year CPE patterns
@@ -207,19 +222,19 @@ class CPEAnalyzer:
         with open(current_year_file, 'w') as f:
             json.dump(current_year_cpe_analysis, f, indent=2)
         
-        print(f"    ✅ Generated current year CPE analysis with {len(cpe_counts)} unique CPEs")
+        logger.info(f"    ✅ Generated current year CPE analysis with {len(cpe_counts)} unique CPEs")
         return current_year_cpe_analysis
     
-    def _process_cpe_data_from_cache(self):
+    def _process_cpe_data_from_cache(self) -> dict[str, list[str]] | None:
         """Process CPE data from cached nvd.json file"""
         nvd_file = self.cache_dir / 'nvd.json'
         
         if not nvd_file.exists():
-            print(f"    ⚠️  NVD cache file not found: {nvd_file}")
+            logger.warning(f"    ⚠️  NVD cache file not found: {nvd_file}")
             return None
         
         if not self.quiet:
-            print(f"    📂 Processing CPE data from {nvd_file}")
+            logger.info(f"    📂 Processing CPE data from {nvd_file}")
         
         cpe_list = []
         vendor_list = []
@@ -230,7 +245,7 @@ class CPEAnalyzer:
         try:
             with open(nvd_file, 'r', encoding='utf-8') as f:
                 if not self.quiet:
-                    print(f"    📂 Loading NVD data from {nvd_file}...")
+                    logger.info(f"    📂 Loading NVD data from {nvd_file}...")
                 nvd_data = json.load(f)
                 
                 # Handle different possible data structures
@@ -248,11 +263,11 @@ class CPEAnalyzer:
                         cve_items = [nvd_data]
                 
                 if not self.quiet:
-                    print(f"    📊 Processing {len(cve_items):,} CVE records...")
+                    logger.info(f"    📊 Processing {len(cve_items):,} CVE records...")
                 
                 for idx, cve_item in enumerate(cve_items):
                     if idx % 50000 == 0 and idx > 0 and not self.quiet:
-                        print(f"    📊 Processed {idx:,} CVE records...")
+                        logger.debug(f"    📊 Processed {idx:,} CVE records...")
                     
                     try:
                         # Handle different CVE data structures
@@ -272,23 +287,22 @@ class CPEAnalyzer:
                                 if 'cpeMatch' in node:
                                     for cpe_match in node['cpeMatch']:
                                         if cpe_match.get('vulnerable', False):
-                                            cpe_string = cpe_match.get('criteria', '')
-                                            if cpe_string:
+                                            if cpe_string := cpe_match.get('criteria', ''):
                                                 cpe_list.append(cpe_string)
                                                 cve_list.append(cve_id)
                                                 vendor_list.append(self.extract_cpe_vendor(cpe_string))
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception:
+                    except (KeyError, TypeError, AttributeError):
                         continue
         
-        except Exception as e:
-            print(f"    ❌ Error processing NVD file: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.error(f"    ❌ Error processing NVD file: {e}")
             return None
         
         if not self.quiet:
-            print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs")
+            logger.info(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs")
         
         return {
             'cpe_list': cpe_list,
@@ -298,16 +312,16 @@ class CPEAnalyzer:
             'cve_list': cve_list
         }
     
-    def _process_current_year_cpe_data(self):
+    def _process_current_year_cpe_data(self) -> dict[str, list[str]] | None:
         """Process CPE data for current year only"""
         nvd_file = self.cache_dir / 'nvd.json'
         
         if not nvd_file.exists():
-            print(f"    ⚠️  NVD cache file not found: {nvd_file}")
+            logger.warning(f"    ⚠️  NVD cache file not found: {nvd_file}")
             return None
         
         if not self.quiet:
-            print(f"    📂 Processing current year CPE data from {nvd_file}")
+            logger.info(f"    📂 Processing current year CPE data from {nvd_file}")
         
         cpe_list = []
         vendor_list = []
@@ -318,7 +332,7 @@ class CPEAnalyzer:
         try:
             with open(nvd_file, 'r', encoding='utf-8') as f:
                 if not self.quiet:
-                    print(f"    📂 Loading NVD data for current year from {nvd_file}...")
+                    logger.info(f"    📂 Loading NVD data for current year from {nvd_file}...")
                 nvd_data = json.load(f)
                 
                 # Handle different possible data structures
@@ -336,11 +350,11 @@ class CPEAnalyzer:
                         cve_items = [nvd_data]
                 
                 if not self.quiet:
-                    print(f"    📊 Processing {len(cve_items):,} CVE records for current year...")
+                    logger.info(f"    📊 Processing {len(cve_items):,} CVE records for current year...")
                 
                 for idx, cve_item in enumerate(cve_items):
                     if idx % 50000 == 0 and idx > 0 and not self.quiet:
-                        print(f"    📊 Processed {idx:,} CVE records for current year...")
+                        logger.debug(f"    📊 Processed {idx:,} CVE records for current year...")
                     
                     try:
                         # Handle different CVE data structures
@@ -365,23 +379,22 @@ class CPEAnalyzer:
                                 if 'cpeMatch' in node:
                                     for cpe_match in node['cpeMatch']:
                                         if cpe_match.get('vulnerable', False):
-                                            cpe_string = cpe_match.get('criteria', '')
-                                            if cpe_string:
+                                            if cpe_string := cpe_match.get('criteria', ''):
                                                 cpe_list.append(cpe_string)
                                                 cve_list.append(cve_id)
                                                 vendor_list.append(self.extract_cpe_vendor(cpe_string))
                                                 product_list.append(self.extract_cpe_product(cpe_string))
                                                 type_list.append(self.extract_cpe_type(cpe_string))
                     
-                    except Exception:
+                    except (KeyError, TypeError, AttributeError):
                         continue
         
-        except Exception as e:
-            print(f"    ❌ Error processing NVD file for current year: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.error(f"    ❌ Error processing NVD file for current year: {e}")
             return None
         
         if not self.quiet:
-            print(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs for {self.current_year}")
+            logger.info(f"    ✅ Processed {len(cpe_list):,} CPE entries from {len(set(cve_list)):,} CVEs for {self.current_year}")
         
         return {
             'cpe_list': cpe_list,
@@ -391,7 +404,7 @@ class CPEAnalyzer:
             'cve_list': cve_list
         }
     
-    def _generate_minimal_cpe_analysis(self):
+    def _generate_minimal_cpe_analysis(self) -> dict[str, Any]:
         """Generate minimal CPE analysis when no data is available"""
         return {
             'generated_at': datetime.now().isoformat(),

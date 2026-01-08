@@ -3,6 +3,7 @@
 Growth Analysis Rebuild Script
 Standalone script to rebuild growth analysis data and regenerate the Growth Intelligence Dashboard
 """
+from __future__ import annotations
 
 import json
 import sys
@@ -14,8 +15,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from yearly_analysis import YearlyAnalyzer
 from scripts.utils import setup_paths, print_header
 
+# Logging setup
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
 
-def main():
+logger = get_logger(__name__)
+
+
+def main() -> bool:
     """Main function to rebuild growth analysis"""
     print_header("Growth Analysis Rebuild", "🚀")
     
@@ -24,47 +33,47 @@ def main():
         project_root, cache_dir, _ = setup_paths()
         data_dir = project_root / 'data'  # Growth analysis uses data/ not web/data/
         
-        print(f"📁 Base directory: {project_root}")
-        print(f"💾 Cache directory: {cache_dir}")
-        print(f"📊 Data directory: {data_dir}")
+        logger.info(f"Base directory: {project_root}")
+        logger.info(f"Cache directory: {cache_dir}")
+        logger.info(f"Data directory: {data_dir}")
         
         # Initialize analyzer
-        print("\n🔧 Initializing Growth Analyzer...")
+        logger.info("Initializing Growth Analyzer...")
         analyzer = YearlyAnalyzer(project_root, cache_dir, data_dir)
         
         # Generate year data first (required for growth analysis)
-        print("\n📅 Generating year data...")
+        logger.info("Generating year data...")
         all_year_data = analyzer.generate_year_data_json()
         
         if not all_year_data:
-            print("❌ No year data available for growth analysis")
+            logger.error("No year data available for growth analysis")
             return False
         
-        print(f"✅ Generated data for {len(all_year_data)} years")
+        logger.info(f"Generated data for {len(all_year_data)} years")
         
         # Generate comprehensive growth analysis
-        print("\n📈 Generating comprehensive growth analysis...")
+        logger.info("Generating comprehensive growth analysis...")
         growth_analysis = analyzer.generate_growth_analysis(all_year_data)
         
         if growth_analysis:
-            print("✅ Comprehensive growth analysis generated successfully")
+            logger.info("Comprehensive growth analysis generated successfully")
             
             # Display key statistics
             growth_data = growth_analysis.get('growth_data', [])
             if growth_data:
                 latest_year = growth_data[-1]
-                print(f"📊 Latest year: {latest_year['year']} with {latest_year['cves']:,} CVEs")
-                print(f"📈 Average annual growth: {growth_analysis.get('avg_annual_growth', 0)}%")
+                logger.info(f"Latest year: {latest_year['year']} with {latest_year['cves']:,} CVEs")
+                logger.info(f"Average annual growth: {growth_analysis.get('avg_annual_growth', 0)}%")
                 
                 highest_growth = growth_analysis.get('highest_growth_year')
                 if highest_growth:
-                    print(f"🚀 Peak growth: {highest_growth['year']} ({highest_growth['growth_rate']}%)")
+                    logger.info(f"Peak growth: {highest_growth['year']} ({highest_growth['growth_rate']}%)")
         else:
-            print("❌ Failed to generate comprehensive growth analysis")
+            logger.error("Failed to generate comprehensive growth analysis")
             return False
         
         # Generate current year growth analysis
-        print("\n📅 Generating current year growth analysis...")
+        logger.info("Generating current year growth analysis...")
         try:
             current_year = analyzer.current_year
             current_year_data = next((d for d in all_year_data if d.get('year') == current_year), None)
@@ -85,26 +94,26 @@ def main():
                 with open(current_year_file, 'w') as f:
                     json.dump(current_year_growth, f, indent=2)
                 
-                print(f"✅ Current year ({current_year}) growth analysis generated")
+                logger.info(f"Current year ({current_year}) growth analysis generated")
             else:
-                print(f"⚠️  No data found for current year {current_year}")
+                logger.warning(f"No data found for current year {current_year}")
         
-        except Exception as e:
-            print(f"❌ Error generating current year growth analysis: {e}")
+        except (KeyError, json.JSONDecodeError, OSError) as e:
+            logger.error(f"Error generating current year growth analysis: {e}")
         
-        print("\n🎉 Growth analysis rebuild completed successfully!")
-        print(f"📄 Files generated:")
-        print(f"  • growth_analysis.json (comprehensive)")
-        print(f"  • growth_analysis_current_year.json (current year)")
+        logger.info("Growth analysis rebuild completed successfully!")
+        logger.info("Files generated:")
+        logger.info("  • growth_analysis.json (comprehensive)")
+        logger.info("  • growth_analysis_current_year.json (current year)")
         
         return True
         
     except ImportError as e:
-        print(f"❌ Import error: {e}")
-        print("💡 Make sure all required modules are available")
+        logger.error(f"Import error: {e}")
+        logger.info("Make sure all required modules are available")
         return False
-    except Exception as e:
-        print(f"❌ Unexpected error: {e}")
+    except (OSError, json.JSONDecodeError, KeyError) as e:
+        logger.error(f"File or data error: {e}")
         import traceback
         traceback.print_exc()
         return False

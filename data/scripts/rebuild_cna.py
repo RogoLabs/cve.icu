@@ -3,6 +3,7 @@
 CNA Analysis Rebuild Script
 Quick rebuild script for CNA analysis only - much faster than full site rebuild
 """
+from __future__ import annotations
 
 import sys
 from pathlib import Path
@@ -13,8 +14,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from cve_v5_processor import CVEV5Processor
 from scripts.utils import setup_paths, print_header
 
+# Logging setup
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
 
-def main():
+logger = get_logger(__name__)
+
+
+def main() -> bool:
     """Rebuild CNA analysis only"""
     print_header("CNA Analysis Quick Rebuild", "🏢")
     
@@ -26,26 +35,26 @@ def main():
     
     try:
         # Generate comprehensive CNA analysis using CVE V5 data
-        print("\n🔄 Generating comprehensive CNA analysis (CVE V5 authoritative)...")
+        logger.info("Generating comprehensive CNA analysis (CVE V5 authoritative)...")
         cna_analysis = v5_processor.generate_comprehensive_cna_analysis()
         
         # Generate current year CNA analysis with new publication date logic
-        print(f"\n🗓️  Generating {v5_processor.current_year} CNA analysis (by publication date)...")
+        logger.info(f"Generating {v5_processor.current_year} CNA analysis (by publication date)...")
         current_cna_analysis = v5_processor.generate_current_year_analysis()
         
-        print("\n" + "=" * 40)
-        print("✅ CNA analysis rebuild completed!")
-        print(f"📊 Total CNAs: {cna_analysis.get('total_cnas', 0)}")
-        print(f"📊 Active CNAs: {cna_analysis.get('active_cnas', 0)}")
-        print(f"📊 Current year CNAs: {current_cna_analysis.get('total_cnas', 0)}")
-        print(f"📁 Files updated:")
-        print(f"   - web/data/cna_analysis.json")
-        print(f"   - web/data/cna_analysis_current_year.json")
+        logger.info("=" * 40)
+        logger.info("CNA analysis rebuild completed!")
+        logger.info(f"Total CNAs: {cna_analysis.get('total_cnas', 0)}")
+        logger.info(f"Active CNAs: {cna_analysis.get('active_cnas', 0)}")
+        logger.info(f"Current year CNAs: {current_cna_analysis.get('total_cnas', 0)}")
+        logger.info("Files updated:")
+        logger.info("   - web/data/cna_analysis.json")
+        logger.info("   - web/data/cna_analysis_current_year.json")
         
         return True
         
-    except Exception as e:
-        print(f"\n❌ CNA analysis rebuild failed: {e}")
+    except (ImportError, json.JSONDecodeError, OSError) as e:
+        logger.error(f"CNA analysis rebuild failed: {e}")
         import traceback
         traceback.print_exc()
         return False

@@ -1,0 +1,194 @@
+# pyproject.toml - Python project configuration
+# CVE.ICU Static Site Generator
+
+[project]
+name = "cve-icu"
+version = "1.0.0"
+description = "CVE.ICU - Vulnerability Intelligence Static Site Generator"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+keywords = ["cve", "vulnerability", "security", "nvd", "cna"]
+authors = [
+    {name = "CVE.ICU Team"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+]
+
+dependencies = [
+    "aiofiles>=24.1.0",
+    "aiohttp>=3.11.0",
+    "jinja2>=3.1.4",
+    "requests>=2.32.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
+    "types-requests",
+    "types-aiofiles",
+]
+
+[project.scripts]
+cve-icu = "build:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# ============================================================================
+# Ruff Configuration
+# Fast Python linter and formatter (replaces flake8, black, isort)
+# ============================================================================
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+indent-width = 4
+
+# Exclude directories
+exclude = [
+    ".git",
+    ".github",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "data/cache",
+    "web",
+    "*.json",
+]
+
+[tool.ruff.lint]
+# Enable recommended rules
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+]
+
+# Ignore specific rules
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Do not perform function calls in argument defaults
+    "B905",   # zip without explicit strict parameter
+    "SIM108", # Use ternary operator (not always clearer)
+    "SIM117", # Multiple with statements (sometimes clearer separated)
+    "ARG001", # Unused function argument (needed for callbacks)
+    "ARG002", # Unused method argument
+    "PTH123", # open() should use Path.open()
+]
+
+# Allow autofix for all enabled rules
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use assert and have unused variables
+"tests/**/*.py" = ["S101", "ARG", "PLR2004"]
+# Scripts may have unused imports for side effects
+"data/scripts/**/*.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["data"]
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+# ============================================================================
+# MyPy Configuration
+# Static type checker for Python
+# ============================================================================
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    "data/cache/",
+    "web/",
+    "tests/",
+]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+# ============================================================================
+# Pytest Configuration
+# ============================================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "-ra",  # Show extra test summary
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+# ============================================================================
+# Coverage Configuration
+# ============================================================================
+[tool.coverage.run]
+branch = true
+source = ["."]
+omit = [
+    "tests/*",
+    "data/cache/*",
+    "web/*",
+    ".venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+
+# ============================================================================
+# Bandit Configuration (Security Scanner)
+# ============================================================================
+[tool.bandit]
+exclude_dirs = ["tests", "data/cache", "web", ".venv"]
+skips = ["B101", "B311"]  # Skip assert_used and random warnings

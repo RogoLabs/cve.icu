@@ -13,38 +13,50 @@ Matching strategies (in order):
 3. Normalized match (remove spaces, hyphens, underscores)
 4. Partial match (substring containment)
 """
+from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
-# Get the data directory
+# Logging setup
 SCRIPT_DIR = Path(__file__).parent
 DATA_DIR = SCRIPT_DIR.parent
+sys.path.insert(0, str(DATA_DIR))
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
+
+# Get the data directory
 WEB_DATA_DIR = DATA_DIR.parent / "web" / "data"
 CACHE_DIR = DATA_DIR / "cache"
 
 
-def load_json(filepath):
+def load_json(filepath: Path | str) -> Any:
     """Load JSON file."""
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def save_json(filepath, data):
+def save_json(filepath: Path | str, data: Any) -> None:
     """Save JSON file."""
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
 
-def normalize_name(name):
+def normalize_name(name: str) -> str:
     """Normalize a name by removing spaces, hyphens, underscores and lowercasing."""
     if not name:
         return ""
     return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('.', '')
 
 
-def build_official_cna_lookups(cna_list):
+def build_official_cna_lookups(cna_list: list[dict[str, Any]]) -> tuple[dict[str, dict], dict[str, dict], set[str], dict[str, dict]]:
     """
     Build lookup dictionaries for official CNAs.
     
@@ -88,7 +100,13 @@ def build_official_cna_lookups(cna_list):
     return short_name_map, org_name_map, all_official_names, normalized_map
 
 
-def map_cve_name_to_official(cve_name, short_name_map, org_name_map, normalized_map, cna_list):
+def map_cve_name_to_official(
+    cve_name: str,
+    short_name_map: dict[str, dict],
+    org_name_map: dict[str, dict],
+    normalized_map: dict[str, dict],
+    cna_list: list[dict[str, Any]]
+) -> tuple[dict | None, str | None, str | None]:
     """
     Attempt to match a CVE CNA name to an official CNA entry.
     
@@ -149,7 +167,7 @@ def map_cve_name_to_official(cve_name, short_name_map, org_name_map, normalized_
     return None, None, None
 
 
-def analyze_cna_names(cna_analysis, official_cna_list):
+def analyze_cna_names(cna_analysis: dict[str, Any], official_cna_list: list[dict[str, Any]]) -> dict[str, Any]:
     """
     Analyze all CNA names from our analysis against the official registry.
     
@@ -188,16 +206,17 @@ def analyze_cna_names(cna_analysis, official_cna_list):
             result['match_type'] = match_type
             result['confidence'] = confidence
             
-            if match_type == 'exact_short':
-                exact_matches.append(result)
-            elif match_type == 'case_short':
-                case_matches.append(result)
-            elif match_type in ('exact_org', 'case_org'):
-                org_matches.append(result)
-            elif match_type == 'normalized':
-                normalized_matches.append(result)
-            elif match_type == 'partial':
-                partial_matches.append(result)
+            match match_type:
+                case 'exact_short':
+                    exact_matches.append(result)
+                case 'case_short':
+                    case_matches.append(result)
+                case 'exact_org' | 'case_org':
+                    org_matches.append(result)
+                case 'normalized':
+                    normalized_matches.append(result)
+                case 'partial':
+                    partial_matches.append(result)
         else:
             result['match_type'] = None
             result['confidence'] = None
@@ -220,30 +239,30 @@ def analyze_cna_names(cna_analysis, official_cna_list):
     }
 
 
-def main():
+def main() -> None:
     """Main entry point."""
-    print("Rebuilding data quality analysis with CNAScorecard-style name matching...")
+    logger.info("Rebuilding data quality analysis with CNAScorecard-style name matching...")
     
     # Load official CNA list
     cna_list_path = CACHE_DIR / "cna_list.json"
     if not cna_list_path.exists():
-        print(f"ERROR: Official CNA list not found at {cna_list_path}")
+        logger.error(f"Official CNA list not found at {cna_list_path}")
         sys.exit(1)
     
     official_cna_list = load_json(cna_list_path)
-    print(f"Loaded {len(official_cna_list)} official CNAs from registry")
+    logger.info(f"Loaded {len(official_cna_list)} official CNAs from registry")
     
     # Load our CNA analysis
     cna_analysis_path = WEB_DATA_DIR / "cna_analysis.json"
     if not cna_analysis_path.exists():
-        print(f"ERROR: CNA analysis not found at {cna_analysis_path}")
+        logger.error(f"CNA analysis not found at {cna_analysis_path}")
         sys.exit(1)
     
     cna_analysis = load_json(cna_analysis_path)
     # Convert cna_list array to dict keyed by name for analysis
     cna_list_data = cna_analysis.get('cna_list', [])
     cna_data = {item['name']: item for item in cna_list_data if 'name' in item}
-    print(f"Loaded {len(cna_data)} CNAs from analysis")
+    logger.info(f"Loaded {len(cna_data)} CNAs from analysis")
     
     # Analyze names
     results = analyze_cna_names(cna_data, official_cna_list)
@@ -279,16 +298,16 @@ def main():
         stats['exact_match_pct'] = round(stats['exact_match_cves'] / total_cves * 100, 2)
         stats['issues_pct'] = round((total_cves - stats['exact_match_cves']) / total_cves * 100, 2)
     
-    print(f"\n=== Data Quality Summary ===")
-    print(f"Total CNAs analyzed: {stats['total_cnas_in_analysis']}")
-    print(f"Official registry size: {stats['official_cna_registry_count']}")
-    print(f"\nMatching Results:")
-    print(f"  Exact matches: {stats['exact_matches']} CNAs ({stats['exact_match_cves']:,} CVEs)")
-    print(f"  Case mismatches: {stats['case_mismatches']} CNAs ({stats['case_mismatch_cves']:,} CVEs)")
-    print(f"  Org name matches: {stats['org_name_matches']} CNAs ({stats['org_name_match_cves']:,} CVEs)")
-    print(f"  Normalized matches: {stats['normalized_matches']} CNAs ({stats['normalized_match_cves']:,} CVEs)")
-    print(f"  Partial matches: {stats['partial_matches']} CNAs ({stats['partial_match_cves']:,} CVEs)")
-    print(f"  Unmatched: {stats['unmatched']} CNAs ({stats['unmatched_cves']:,} CVEs)")
+    logger.info("=== Data Quality Summary ===")
+    logger.info(f"Total CNAs analyzed: {stats['total_cnas_in_analysis']}")
+    logger.info(f"Official registry size: {stats['official_cna_registry_count']}")
+    logger.info("Matching Results:")
+    logger.info(f"  Exact matches: {stats['exact_matches']} CNAs ({stats['exact_match_cves']:,} CVEs)")
+    logger.info(f"  Case mismatches: {stats['case_mismatches']} CNAs ({stats['case_mismatch_cves']:,} CVEs)")
+    logger.info(f"  Org name matches: {stats['org_name_matches']} CNAs ({stats['org_name_match_cves']:,} CVEs)")
+    logger.info(f"  Normalized matches: {stats['normalized_matches']} CNAs ({stats['normalized_match_cves']:,} CVEs)")
+    logger.info(f"  Partial matches: {stats['partial_matches']} CNAs ({stats['partial_match_cves']:,} CVEs)")
+    logger.info(f"  Unmatched: {stats['unmatched']} CNAs ({stats['unmatched_cves']:,} CVEs)")
     
     # Build output
     output = {
@@ -304,13 +323,13 @@ def main():
     # Save to web data directory
     output_path = WEB_DATA_DIR / "data_quality.json"
     save_json(output_path, output)
-    print(f"\nSaved data quality analysis to {output_path}")
+    logger.info(f"Saved data quality analysis to {output_path}")
     
     # Also print top unmatched for review
     if results['unmatched']:
-        print(f"\n=== Top 10 Unmatched CNAs ===")
+        logger.info("=== Top 10 Unmatched CNAs ===")
         for item in results['unmatched'][:10]:
-            print(f"  {item['cna_name']}: {item['cve_count']:,} CVEs")
+            logger.info(f"  {item['cna_name']}: {item['cve_count']:,} CVEs")
 
 
 if __name__ == '__main__':

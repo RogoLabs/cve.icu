@@ -3,26 +3,41 @@
 CVSS Analysis Module
 Handles all CVSS (Common Vulnerability Scoring System) related data processing and analysis
 """
+from __future__ import annotations
 
 import json
-from pathlib import Path
+from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class CVSSAnalyzer:
     """Handles CVSS-specific analysis and data processing"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert path arguments to Path objects if needed."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
     
-    def generate_cvss_analysis(self, all_year_data):
+    def generate_cvss_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate comprehensive CVSS analysis from all years data"""
         if not self.quiet:
-            print("  📊 Generating CVSS analysis...")
+            logger.info("  📊 Generating CVSS analysis...")
         
         # Initialize combined CVSS data structure for available versions
         combined_cvss = {
@@ -99,8 +114,7 @@ class CVSSAnalyzer:
                 #       'epss_gt_0_5': int,
                 #       'epss_gt_0_9': int
                 #   }
-                epss_summary = cvss_data.get('epss_summary')
-                if epss_summary:
+                if epss_summary := cvss_data.get('epss_summary'):
                     year_epss = {
                         'epss_gt_0_1': int(epss_summary.get('epss_gt_0_1', 0)),
                         'epss_gt_0_5': int(epss_summary.get('epss_gt_0_5', 0)),
@@ -175,19 +189,19 @@ class CVSSAnalyzer:
             json.dump(cvss_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"  ✅ Generated CVSS analysis with {total_cves_with_cvss:,} CVEs across all versions")
+            logger.info(f"  ✅ Generated CVSS analysis with {total_cves_with_cvss:,} CVEs across all versions")
         return cvss_analysis
     
-    def generate_current_year_cvss_analysis(self, current_year_data):
+    def generate_current_year_cvss_analysis(self, current_year_data: dict[str, Any]) -> dict[str, Any]:
         """Generate current year CVSS analysis"""
         if not self.quiet:
-            print(f"    📊 Generating current year CVSS analysis...")
+            logger.info(f"    📊 Generating current year CVSS analysis...")
         
         # Extract CVSS data from current year
         cvss_data = current_year_data.get('cvss', {})
         
         if not cvss_data:
-            print(f"    ⚠️  No CVSS data found for {self.current_year}")
+            logger.warning(f"    ⚠️  No CVSS data found for {self.current_year}")
             return {}
         
         # Create binned score distributions for current year
@@ -249,5 +263,5 @@ class CVSSAnalyzer:
             json.dump(current_year_cvss_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"    ✅ Generated current year CVSS analysis")
+            logger.info(f"    ✅ Generated current year CVSS analysis")
         return current_year_cvss_analysis

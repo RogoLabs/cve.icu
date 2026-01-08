@@ -3,26 +3,41 @@
 CWE Analysis Module
 Handles all CWE (Common Weakness Enumeration) related data processing and analysis
 """
+from __future__ import annotations
 
 import json
-from pathlib import Path
+from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class CWEAnalyzer:
     """Handles CWE-specific analysis and data processing"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert path arguments to Path objects if needed."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
     
-    def generate_cwe_analysis(self, all_year_data):
+    def generate_cwe_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate CWE analysis across all years"""
         if not self.quiet:
-            print(f"  🔍 Generating CWE analysis...")
+            logger.info(f"  🔍 Generating CWE analysis...")
         
         # Aggregate CWE data from all years
         combined_cwe = {}
@@ -97,19 +112,19 @@ class CWEAnalyzer:
             json.dump(cwe_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"  ✅ Generated CWE analysis with {len(combined_cwe):,} unique CWEs")
+            logger.info(f"  ✅ Generated CWE analysis with {len(combined_cwe):,} unique CWEs")
         return cwe_analysis
     
-    def generate_current_year_cwe_analysis(self, current_year_data):
+    def generate_current_year_cwe_analysis(self, current_year_data: dict[str, Any]) -> dict[str, Any]:
         """Generate current year CWE analysis"""
         if not self.quiet:
-            print(f"    🔍 Generating current year CWE analysis...")
+            logger.info(f"    🔍 Generating current year CWE analysis...")
         
         # Extract CWE data from current year
         cwe_data = current_year_data.get('cwe', {})
         
         if not cwe_data or 'top_cwes' not in cwe_data:
-            print(f"    ⚠️  No CWE data found for {self.current_year}")
+            logger.warning(f"    ⚠️  No CWE data found for {self.current_year}")
             return {}
         
         # Get current year CWEs
@@ -174,5 +189,5 @@ class CWEAnalyzer:
             json.dump(current_year_cwe_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"    ✅ Generated current year CWE analysis with {len(current_year_cwes)} CWEs")
+            logger.info(f"    ✅ Generated current year CWE analysis with {len(current_year_cwes)} CWEs")
         return current_year_cwe_analysis
