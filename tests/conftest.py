@@ -1,12 +1,15 @@
 """
 Pytest configuration and shared fixtures for CVE.ICU tests.
 """
+from __future__ import annotations
 
 import json
 import sys
 import tempfile
+from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,15 +19,24 @@ DATA_DIR = ROOT_DIR / "data"
 sys.path.insert(0, str(DATA_DIR))
 
 
+@pytest.fixture(autouse=True)
+def quiet_logging():
+    """Automatically silence logging during tests to reduce noise."""
+    from logging_config import silence_for_tests, restore_logging
+    silence_for_tests()
+    yield
+    restore_logging()
+
+
 @pytest.fixture
-def temp_dir():
+def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory for test outputs."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)
 
 
 @pytest.fixture
-def sample_cve_record():
+def sample_cve_record() -> dict[str, Any]:
     """Return a sample CVE record in V5 format."""
     return {
         "cveMetadata": {
@@ -84,7 +96,7 @@ def sample_cve_record():
 
 
 @pytest.fixture
-def sample_epss_data():
+def sample_epss_data() -> dict[str, dict[str, float]]:
     """Return sample EPSS data as a dict keyed by CVE ID."""
     return {
         "CVE-2024-12345": {"epss_score": 0.15, "epss_percentile": 0.85},
@@ -94,7 +106,7 @@ def sample_epss_data():
 
 
 @pytest.fixture
-def sample_kev_data():
+def sample_kev_data() -> set[str]:
     """Return sample KEV data as a list of CVE IDs."""
     return {
         "CVE-2024-12346",  # High EPSS, in KEV
@@ -103,7 +115,7 @@ def sample_kev_data():
 
 
 @pytest.fixture
-def sample_cna_analysis():
+def sample_cna_analysis() -> dict[str, Any]:
     """Return a sample CNA analysis structure."""
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -134,7 +146,7 @@ def sample_cna_analysis():
 
 
 @pytest.fixture
-def sample_cvss_analysis():
+def sample_cvss_analysis() -> dict[str, Any]:
     """Return a sample CVSS analysis structure."""
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -157,7 +169,7 @@ def sample_cvss_analysis():
 
 
 @pytest.fixture
-def sample_year_data():
+def sample_year_data() -> dict[str, Any]:
     """Return sample year data structure."""
     return {
         "year": 2024,
@@ -187,7 +199,7 @@ def sample_year_data():
 
 
 @pytest.fixture
-def mock_cve_list_dir(temp_dir):
+def mock_cve_list_dir(temp_dir: Path) -> Generator[Path, None, None]:
     """Create a mock CVE list directory structure with sample data."""
     cves_dir = temp_dir / "cvelistV5" / "cves"
     

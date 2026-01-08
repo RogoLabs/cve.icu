@@ -14,6 +14,7 @@ Maps every CVE to either an official or unofficial CNA using:
 
 import json
 import re
+import sys
 from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
@@ -178,4 +179,4 @@ summary.sort(key=lambda x: x['count'], reverse=True)
 with open('../web/data/cna_analysis_restart.json', 'w') as f:
     json.dump(summary, f, indent=2)
 
-print(f"✅ CNA mapping complete. {len(summary)} CNAs found. Output: web/data/cna_analysis_restart.json")
+logger.info(f"CNA mapping complete. {len(summary)} CNAs found. Output: web/data/cna_analysis_restart.json")

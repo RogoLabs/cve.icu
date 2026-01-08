@@ -3,24 +3,41 @@
 Yearly Analysis Module
 Handles year-by-year data processing and aggregation
 """
+from __future__ import annotations
 
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime, timedelta
+from typing import Any
+
+# Logging setup
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class YearlyAnalyzer:
     """Handles yearly data processing and aggregation"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
+    available_years: list[int] = field(init=False)
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert path arguments and set up derived attributes."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
         self.available_years = list(range(1999, self.current_year + 1))
     
-    def calculate_actual_ytd_count(self, year, day_of_year):
+    def calculate_actual_ytd_count(self, year: int, day_of_year: int) -> int:
         """Calculate actual YTD CVE count for a given year up to specific day of year"""
         try:
             # Use the already-generated year data file which contains daily counts
@@ -49,7 +66,7 @@ class YearlyAnalyzer:
             
             return ytd_count
             
-        except Exception as e:
+        except (FileNotFoundError, json.JSONDecodeError, OSError, ImportError) as e:
             if not self.quiet:
                 print(f"⚠️  Warning: Could not calculate actual YTD for {year}: {e}")
             # Fallback: try to use uniform distribution if we have the year data file
@@ -66,24 +83,24 @@ class YearlyAnalyzer:
                 pass
             return 0
     
-    def generate_year_data_json(self):
+    def generate_year_data_json(self) -> list[dict[str, Any]]:
         """Generate JSON data files for all available years"""
         if not self.quiet:
-            print("📊 Generating year data JSON files...")
+            logger.info("Generating year data JSON files...")
         
         try:
             # Import the years analyzer
             from cve_years import CVEYearsAnalyzer
             
             if not self.quiet:
-                print("🔽 Initializing CVE data processing...")
+                logger.info("Initializing CVE data processing...")
             analyzer = CVEYearsAnalyzer(quiet=self.quiet)
             
             # Generate data for all years
             all_year_data = []
             
             for year in self.available_years:
-                print(f"  📅 Processing {year}...")
+                logger.debug(f"Processing {year}...")
                 
                 try:
                     year_data = analyzer.get_year_data(year)
@@ -95,28 +112,28 @@ class YearlyAnalyzer:
                             json.dump(year_data, f, indent=2)
                         
                         all_year_data.append(year_data)
-                        print(f"  ✅ Generated cve_{year}.json ({year_data.get('total_cves', 0):,} CVEs)")
+                        logger.info(f"Generated cve_{year}.json ({year_data.get('total_cves', 0):,} CVEs)")
                     else:
-                        print(f"  ⚠️  No data available for {year}")
+                        logger.warning(f"No data available for {year}")
                         
-                except Exception as e:
-                    print(f"  ❌ Failed to process {year}: {e}")
+                except (KeyError, json.JSONDecodeError, OSError) as e:
+                    logger.error(f"Failed to process {year}: {e}")
                     continue
             
-            print(f"✅ Generated {len(all_year_data)} year data files")
+            logger.info(f"Generated {len(all_year_data)} year data files")
             return all_year_data
             
         except ImportError as e:
-            print(f"❌ Failed to import CVE years analyzer: {e}")
-            print("📝 Creating placeholder data for development...")
+            logger.error(f"Failed to import CVE years analyzer: {e}")
+            logger.info("Creating placeholder data for development...")
             return self.create_placeholder_year_data()
-        except Exception as e:
-            print(f"❌ Error generating year data: {e}")
+        except (json.JSONDecodeError, OSError, KeyError) as e:
+            logger.error(f"Error generating year data: {e}")
             return []
     
-    def create_placeholder_year_data(self):
+    def create_placeholder_year_data(self) -> list[dict[str, Any]]:
         """Create placeholder year data for development/testing"""
-        print("📝 Creating placeholder year data...")
+        logger.info("Creating placeholder year data...")
         
         all_year_data = []
         
@@ -185,14 +202,14 @@ class YearlyAnalyzer:
                 json.dump(year_data, f, indent=2)
             
             all_year_data.append(year_data)
-            print(f"  📝 Created placeholder cve_{year}.json")
+            logger.debug(f"Created placeholder cve_{year}.json")
         
-        print(f"✅ Created {len(all_year_data)} placeholder year files")
+        logger.info(f"Created {len(all_year_data)} placeholder year files")
         return all_year_data
     
-    def generate_cve_all_json(self, all_year_data):
+    def generate_cve_all_json(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate overall CVE statistics across all years"""
-        print("  📊 Generating overall CVE statistics...")
+        logger.info("Generating overall CVE statistics...")
         
         # Calculate totals and trends
         total_cves = sum(year['total_cves'] for year in all_year_data)
@@ -247,12 +264,12 @@ class YearlyAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(cve_all_data, f, indent=2)
         
-        print(f"  ✅ Generated cve_all.json with {total_cves:,} total CVEs")
+        logger.info(f"Generated cve_all.json with {total_cves:,} total CVEs")
         return cve_all_data
     
-    def generate_growth_analysis(self, all_year_data):
+    def generate_growth_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate growth trend analysis across all years"""
-        print(f"  📈 Generating growth trend analysis...")
+        logger.info("Generating growth trend analysis...")
         
         # Get current date for year-to-date calculations
         current_date = datetime.now()
@@ -362,5 +379,5 @@ class YearlyAnalyzer:
             json.dump(growth_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"  ✅ Generated growth analysis with {len(growth_data)} years of data")
+            logger.info(f"Generated growth analysis with {len(growth_data)} years of data")
         return growth_analysis

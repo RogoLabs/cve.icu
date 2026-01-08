@@ -3,19 +3,21 @@
 CVE.ICU Quick Template Builder
 Fast template-only rebuild for development - skips data processing
 """
+from __future__ import annotations
 
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 class CVEQuickBuilder:
     """Fast template-only builder for development"""
     
-    def __init__(self):
-        self.current_year = datetime.now().year
-        self.available_years = list(range(1999, self.current_year + 1))
+    def __init__(self) -> None:
+        self.current_year: int = datetime.now().year
+        self.available_years: list[int] = list(range(1999, self.current_year + 1))
         # Go up two levels: scripts -> data -> project root
         self.project_root = Path(__file__).parent.parent.parent
         self.templates_dir = self.project_root / 'templates'
@@ -39,13 +41,13 @@ class CVEQuickBuilder:
         print(f"📂 Templates: {self.templates_dir}")
         print(f"🌐 Web output: {self.web_dir}")
     
-    def format_number(self, num):
+    def format_number(self, num: Any) -> str:
         """Format numbers with commas"""
         if isinstance(num, (int, float)):
             return f"{num:,}"
         return str(num)
     
-    def copy_static_assets(self):
+    def copy_static_assets(self) -> None:
         """Copy static assets (CSS, JS, images) if they don't exist"""
         print("📁 Checking static assets...")
         
@@ -65,7 +67,7 @@ class CVEQuickBuilder:
         else:
             print("  ✅ Static assets already exist")
     
-    def generate_html_pages(self):
+    def generate_html_pages(self) -> None:
         """Generate HTML pages from templates"""
         print("📄 Generating HTML pages...")
         
@@ -115,13 +117,13 @@ class CVEQuickBuilder:
                 
                 print(f"  📄 Generated {template_name}")
                 
-            except Exception as e:
+            except (jinja2.TemplateError, OSError) as e:
                 print(f"  ❌ Error generating {template_name}: {e}")
                 continue
         
         print("✅ HTML pages generated successfully")
     
-    def build(self):
+    def build(self) -> None:
         """Main build method - templates only"""
         print("\n🏗️  Starting quick template build...")
         print("=" * 50)
@@ -141,7 +143,7 @@ class CVEQuickBuilder:
         print("🌐 Templates updated - data files unchanged")
         print("⚡ Build time: ~1 second vs ~5 minutes")
 
-def main():
+def main() -> None:
     """Main entry point"""
     builder = CVEQuickBuilder()
     builder.build()

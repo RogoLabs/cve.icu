@@ -4,33 +4,44 @@ CVE Years Analyzer
 Processes CVE data from JSONL file and generates yearly analysis data
 Handles historical data (1999-2016) and individual years (2017-present)
 """
+from __future__ import annotations
 
 import json
+from collections import Counter, defaultdict
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from collections import Counter
+from typing import Any
 from urllib.parse import urlparse
+
 from download_cve_data import CVEDataDownloader
 
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
+
+@dataclass
 class CVEYearsAnalyzer:
     """Analyzes CVE data by year and generates structured data for visualization"""
+    quiet: bool = False
+    base_dir: Path = field(default_factory=lambda: Path(__file__).parent)
+    downloader: CVEDataDownloader = field(default=None, init=False)
+    data_file: Path | None = None
+    year_data_cache: dict[int, dict[str, Any]] = field(default_factory=dict)
+    cna_list: dict[str, Any] = field(default_factory=dict)
+    cna_name_map: dict[str, str] = field(default_factory=dict)
     
-    def __init__(self, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(__file__).parent
-        self.downloader = CVEDataDownloader(quiet=quiet)
-        self.data_file = None
-        self.year_data_cache = {}
-        
-        # CNA mapping data for proper name resolution
-        self.cna_list = {}
-        self.cna_name_map = {}
-        
+    def __post_init__(self) -> None:
+        """Initialize downloader and log startup."""
+        self.downloader = CVEDataDownloader(quiet=self.quiet)
         if not self.quiet:
-            print(f"📊 CVE Years Analyzer Initialized")
-            print(f"📅 Target coverage: 1999-{datetime.now().year}")
+            logger.info(f"📊 CVE Years Analyzer Initialized")
+            logger.info(f"📅 Target coverage: 1999-{datetime.now().year}")
 
-    def extract_severity_info(self, cve_data):
+    def extract_severity_info(self, cve_data: dict[str, Any]) -> dict[str, Any]:
         """Extract normalized CVSS severity and score from a CVE record.
 
         This is intentionally conservative and mirrors the original notebook
@@ -38,22 +49,24 @@ class CVEYearsAnalyzer:
         "UNKNOWN"/0.0 when nothing is available.
         """
 
-        def _normalize(severity):
+        def _normalize(severity: str | None) -> str:
             if not severity:
                 return "UNKNOWN"
             sev = str(severity).strip().upper()
-            # Common variants across NVD data
-            if sev in {"CRITICAL", "CRIT"}:
-                return "CRITICAL"
-            if sev in {"HIGH", "H"}:
-                return "HIGH"
-            if sev in {"MEDIUM", "MED"}:
-                return "MEDIUM"
-            if sev in {"LOW", "L"}:
-                return "LOW"
-            if sev in {"NONE", "N"}:
-                return "NONE"
-            return sev or "UNKNOWN"
+            # Common variants across NVD data using match/case
+            match sev:
+                case "CRITICAL" | "CRIT":
+                    return "CRITICAL"
+                case "HIGH" | "H":
+                    return "HIGH"
+                case "MEDIUM" | "MED":
+                    return "MEDIUM"
+                case "LOW" | "L":
+                    return "LOW"
+                case "NONE" | "N":
+                    return "NONE"
+                case _:
+                    return sev or "UNKNOWN"
 
         # NVD 1.1+ style: metrics are under cve.metrics
         metrics = cve_data.get("cve", {}).get("metrics", {})
@@ -69,7 +82,7 @@ class CVEYearsAnalyzer:
             severity = metric.get("baseSeverity")
             try:
                 score_val = float(score)
-            except Exception:
+            except (TypeError, ValueError):
                 score_val = 0.0
             return {
                 "version": version_label,
@@ -103,13 +116,13 @@ class CVEYearsAnalyzer:
                     "severity": _normalize(severity),
                     "score": float(score) if score is not None else 0.0,
                 }
-        except Exception:
+        except (TypeError, KeyError, ValueError):
             pass
 
         # Ultimate fallback
         return {"version": "unknown", "severity": "UNKNOWN", "score": 0.0}
 
-    def parse_cve_date(self, cve_data):
+    def parse_cve_date(self, cve_data: dict[str, Any]) -> datetime | None:
         """Extract a publication date for a CVE record.
 
         Tries multiple known NVD-style shapes and falls back to lastModified or
@@ -125,7 +138,7 @@ class CVEYearsAnalyzer:
                 try:
                     # Handle ISO8601 with or without fractional seconds
                     return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                except Exception:
+                except (ValueError, TypeError):
                     pass
 
         # Try lastModified style keys as a fallback
@@ -136,7 +149,7 @@ class CVEYearsAnalyzer:
             if date_str:
                 try:
                     return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                except Exception:
+                except (ValueError, TypeError):
                     pass
 
         # Legacy / alternative layouts: sometimes dates are nested under cve
@@ -149,9 +162,9 @@ class CVEYearsAnalyzer:
                 if date_str:
                     try:
                         return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                    except Exception:
+                    except (ValueError, TypeError):
                         pass
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             pass
 
         # As a last resort, derive a year from the CVE ID itself; this at least
@@ -165,22 +178,22 @@ class CVEYearsAnalyzer:
                     year = int(parts[1])
                     # Use January 1st of that year as a synthetic publication date
                     return datetime(year, 1, 1)
-        except Exception:
+        except (ValueError, KeyError, TypeError, IndexError):
             pass
 
         # If everything fails, return None so callers can skip this CVE
         return None
     
-    def ensure_data_loaded(self):
+    def ensure_data_loaded(self) -> None:
         """Ensure CVE data is downloaded and available"""
         if self.data_file is None:
             if not self.quiet:
-                print("🔽 Loading CVE data...")
+                logger.info("🔽 Loading CVE data...")
             self.data_file = self.downloader.ensure_data_available()
             if not self.quiet:
-                print(f"✅ Data loaded from: {self.data_file}")
+                logger.info(f"✅ Data loaded from: {self.data_file}")
 
-    def process_year_data(self, year):
+    def process_year_data(self, year: int) -> dict[str, Any]:
         """Process CVE data for a specific year"""
         if year in self.year_data_cache:
             return self.year_data_cache[year]
@@ -188,11 +201,11 @@ class CVEYearsAnalyzer:
         self.ensure_data_loaded()
 
         if not self.quiet:
-            print(f"📊 Processing CVE data for {year}...")
+            logger.info(f"📊 Processing CVE data for {year}...")
 
-        # Initialize counters
+        # Initialize counters using defaultdict for cleaner code
         monthly_counts = [0] * 12
-        daily_counts = {}
+        daily_counts: defaultdict[str, int] = defaultdict(int)
         cvss_data = {
             'v2.0': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
             'v3.0': {'severity_counts': Counter(), 'score_distribution': Counter(), 'total': 0},
@@ -208,17 +221,17 @@ class CVEYearsAnalyzer:
         cpe_vendor_counts = Counter()
 
         if not self.quiet:
-            print("🔽 Loading CVE data...")
+            logger.info("🔽 Loading CVE data...")
 
         if not self.quiet:
-            print("  📊 Reading JSON array format...")
+            logger.debug("  📊 Reading JSON array format...")
         with open(self.data_file, 'r', encoding='utf-8') as f:
             try:
                 all_cves = json.load(f)
                 if not self.quiet:
-                    print(f"  📊 Loaded {len(all_cves)} CVE records")
+                    logger.debug(f"  📊 Loaded {len(all_cves)} CVE records")
             except json.JSONDecodeError as e:
-                print(f"  ❌ Failed to parse JSON: {e}")
+                logger.error(f"  ❌ Failed to parse JSON: {e}")
                 return self.create_empty_year_data(year)
 
         # EPSS summary buckets for this year (using precomputed mapping)
@@ -244,7 +257,8 @@ class CVEYearsAnalyzer:
                         self.epss_mapping = json.load(ef)
                 else:
                     self.epss_mapping = {}
-            except Exception:
+            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+                logger.debug(f"EPSS data not available: {e}")
                 self.epss_mapping = {}
 
             # Lazy-load KEV mapping once per analyzer instance (best-effort)
@@ -260,14 +274,15 @@ class CVEYearsAnalyzer:
                             self.kev_mapping = {k: bool(v) for k, v in raw.items()}
                     else:
                         self.kev_mapping = {}
-                except Exception:
+                except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+                    logger.debug(f"KEV data not available: {e}")
                     self.kev_mapping = {}
 
         # Process each CVE record
         total_cves = 0
         for cve_idx, cve_data in enumerate(all_cves):
             if cve_idx % 10000 == 0 and cve_idx > 0 and not self.quiet:
-                print(f"  📊 Processed {cve_idx:,} CVEs...")
+                logger.debug(f"  📊 Processed {cve_idx:,} CVEs...")
 
             try:
                 cve_id = cve_data.get('cve', {}).get('id', '')
@@ -292,7 +307,7 @@ class CVEYearsAnalyzer:
                 monthly_counts[month_idx] += 1
 
                 date_str = pub_date.strftime('%Y-%m-%d')
-                daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+                daily_counts[date_str] += 1
 
                 severity_info = self.extract_severity_info(cve_data)
                 cvss_version = severity_info['version']
@@ -322,7 +337,7 @@ class CVEYearsAnalyzer:
                                 epss_buckets['epss_gt_0_5'] += 1
                             if epss_score > 0.9:
                                 epss_buckets['epss_gt_0_9'] += 1
-                except Exception:
+                except (TypeError, ValueError, KeyError):
                     pass
 
                 # KEV aggregation (simple count per year)
@@ -330,7 +345,7 @@ class CVEYearsAnalyzer:
                     if getattr(self, 'kev_mapping', None):
                         if self.kev_mapping.get(cve_id):
                             kev_summary['kev_count'] += 1
-                except Exception:
+                except (TypeError, KeyError):
                     pass
 
                 # Additional fields
@@ -363,7 +378,7 @@ class CVEYearsAnalyzer:
 
             except (json.JSONDecodeError, KeyError, ValueError, IndexError) as e:
                 if cve_idx <= 10:
-                    print(f"  ⚠️  Error processing CVE {cve_idx}: {e}")
+                    logger.warning(f"  ⚠️  Error processing CVE {cve_idx}: {e}")
                 continue
 
         # Prepare daily publication analysis
@@ -464,10 +479,10 @@ class CVEYearsAnalyzer:
         self.year_data_cache[year] = year_data
 
         if not self.quiet:
-            print(f"  ✅ Found {total_cves} CVEs for {year}")
+            logger.info(f"  ✅ Found {total_cves} CVEs for {year}")
         return year_data
 
-    def create_complete_daily_array(self, daily_counts, year):
+    def create_complete_daily_array(self, daily_counts: dict[str, int], year: int) -> dict[str, int]:
         """Create complete daily array with zeros for missing dates to prevent UI issues"""
         try:
             # Create date range for the entire year
@@ -489,13 +504,13 @@ class CVEYearsAnalyzer:
             
             return complete_daily_counts
             
-        except Exception as e:
-            print(f"⚠️  Warning: Could not create complete daily array: {e}")
+        except (ValueError, OSError) as e:
+            logger.warning(f"⚠️  Warning: Could not create complete daily array: {e}")
             return daily_counts
     
-    def extract_cwe_info(self, cve_data):
+    def extract_cwe_info(self, cve_data: dict[str, Any]) -> list[str]:
         """Extract CWE (Common Weakness Enumeration) information from CVE data"""
-        cwes = []
+        cwes: list[str] = []
         try:
             # Look for CWE information in the weaknesses section
             weaknesses = cve_data.get('cve', {}).get('weaknesses', [])
@@ -512,49 +527,53 @@ class CVEYearsAnalyzer:
             
             return cwes
             
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             return []
     
-    def extract_identifier_info(self, cve_data):
+    def extract_identifier_info(self, cve_data: dict[str, Any]) -> list[str]:
         """Extract CVE identifiers and references information (secure hostname check)"""
-        identifiers = []
+        identifiers: list[str] = []
         try:
             # Extract references/identifiers from the CVE data
             references = cve_data.get('cve', {}).get('references', [])
             for ref in references:
-                url = ref.get('url', '')
-                if url:
+                if url := ref.get('url', ''):
                     try:
                         parsed = urlparse(url)
                         hostname = parsed.hostname or ''
-                        if hostname == 'github.com' or hostname.endswith('.github.com'):
-                            identifiers.append('GitHub')
-                        elif hostname == 'nvd.nist.gov':
-                            identifiers.append('NVD')
-                        elif hostname == 'cve.mitre.org':
-                            identifiers.append('MITRE')
-                        elif hostname == 'security-tracker.debian.org':
-                            identifiers.append('Debian')
-                        elif hostname == 'access.redhat.com':
-                            identifiers.append('Red Hat')
-                        elif hostname == 'ubuntu.com' or hostname.endswith('.ubuntu.com'):
-                            identifiers.append('Ubuntu')
-                        elif 'bugzilla' in hostname:
-                            identifiers.append('Bugzilla')
-                        elif hostname == 'exploit-db.com' or hostname == 'www.exploit-db.com':
-                            identifiers.append('Exploit-DB')
-                        else:
-                            if hostname:
-                                identifiers.append(hostname)
-                    except Exception:
+                        # Use match/case for hostname classification
+                        match hostname:
+                            case 'github.com':
+                                identifiers.append('GitHub')
+                            case h if h.endswith('.github.com'):
+                                identifiers.append('GitHub')
+                            case 'nvd.nist.gov':
+                                identifiers.append('NVD')
+                            case 'cve.mitre.org':
+                                identifiers.append('MITRE')
+                            case 'security-tracker.debian.org':
+                                identifiers.append('Debian')
+                            case 'access.redhat.com':
+                                identifiers.append('Red Hat')
+                            case 'ubuntu.com':
+                                identifiers.append('Ubuntu')
+                            case h if h.endswith('.ubuntu.com'):
+                                identifiers.append('Ubuntu')
+                            case h if 'bugzilla' in h:
+                                identifiers.append('Bugzilla')
+                            case 'exploit-db.com' | 'www.exploit-db.com':
+                                identifiers.append('Exploit-DB')
+                            case h if h:
+                                identifiers.append(h)
+                    except (ValueError, TypeError, AttributeError):
                         pass
             return identifiers
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             return []
     
-    def extract_cpe_vendor_info(self, cve_data):
+    def extract_cpe_vendor_info(self, cve_data: dict[str, Any]) -> list[str]:
         """Extract vendor information from CPE (Common Platform Enumeration) data"""
-        vendors = []
+        vendors: list[str] = []
         try:
             # Look in cve.configurations for CPE data (it's a list, not dict with nodes)
             configurations = cve_data.get('cve', {}).get('configurations', [])
@@ -582,7 +601,7 @@ class CVEYearsAnalyzer:
             
             return list(set(vendors))  # Remove duplicates
             
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             return []
 
     def extract_vendor_info(self, cve_data):
@@ -591,7 +610,7 @@ class CVEYearsAnalyzer:
         This extracts only the actual CNA that assigned the CVE ID, not the
         affected vendors/products (which are in CPE data).
         """
-        vendors = set()
+        vendors: set[str] = set()
 
         try:
             cve = cve_data.get("cve", {})
@@ -614,13 +633,13 @@ class CVEYearsAnalyzer:
             # not the CNA that assigned the CVE. CPE vendors are tracked separately
             # in extract_cpe_vendor_info() and cpe_vendors field.
 
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             # Best-effort only
             pass
 
         return list(vendors)
     
-    def get_year_data(self, year):
+    def get_year_data(self, year: int) -> dict[str, Any]:
         """Main method to get processed data for a specific year"""
         current_year = datetime.now().year
         
@@ -629,18 +648,18 @@ class CVEYearsAnalyzer:
         
         return self.process_year_data(year)
     
-    def get_all_years_data(self):
+    def get_all_years_data(self) -> dict[int, dict[str, Any]]:
         """Get data for all available years"""
         current_year = datetime.now().year
-        all_data = {}
+        all_data: dict[int, dict[str, Any]] = {}
         
-        print(f"📊 Processing all years (1999-{current_year})...")
+        logger.info(f"📊 Processing all years (1999-{current_year})...")
         
         for year in range(1999, current_year + 1):
             try:
                 all_data[year] = self.get_year_data(year)
-            except Exception as e:
-                print(f"⚠️  Failed to process {year}: {e}")
+            except (ValueError, KeyError, json.JSONDecodeError, OSError) as e:
+                logger.warning(f"⚠️  Failed to process {year}: {e}")
                 # Create empty data structure for failed years
                 all_data[year] = {
                     'year': year,
@@ -654,15 +673,18 @@ class CVEYearsAnalyzer:
         
         return all_data
     
-    def generate_summary_stats(self):
+    def generate_summary_stats(self) -> dict[str, Any]:
         """Generate overall summary statistics"""
         self.ensure_data_loaded()
         
-        print("📊 Generating summary statistics...")
+        logger.info("📊 Generating summary statistics...")
         
         total_cves = 0
-        year_counts = Counter()
-        severity_counts = Counter()
+        year_counts: Counter[int] = Counter()
+        severity_counts: Counter[str] = Counter()
+        
+        if self.data_file is None:
+            return {}
         
         with open(self.data_file, 'r', encoding='utf-8') as f:
             for line in f:
@@ -702,7 +724,7 @@ class CVEYearsAnalyzer:
             'generated_at': datetime.now().isoformat()
         }
 
-def main():
+def main() -> None:
     """Main entry point for standalone testing"""
     import argparse
     

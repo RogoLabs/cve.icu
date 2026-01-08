@@ -3,27 +3,44 @@
 CNA Analysis Module
 Handles all CNA (CVE Numbering Authority) related data processing and analysis
 """
+from __future__ import annotations
 
 import json
+from collections import defaultdict
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime
+from typing import Any
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class CNAAnalyzer:
     """Handles CNA-specific analysis and data processing"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
+    kev_cve_set: set[str] = field(default_factory=set, init=False)
+    epss_data: dict[str, dict[str, float]] = field(default_factory=dict, init=False)
     
-    def __init__(self, base_dir, cache_dir, data_dir):
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
-        self.quiet = False
-        
+    def __post_init__(self) -> None:
+        """Convert path arguments and load threat intelligence data."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
         # Pre-load threat intelligence data for per-CNA metrics
         self.kev_cve_set = self._load_kev_set()
         self.epss_data = self._load_epss_data()
     
-    def _load_kev_set(self):
+    def _load_kev_set(self) -> set[str]:
         """Load KEV CVE IDs into a set for fast lookup"""
         kev_file = self.cache_dir / 'known_exploited_vulnerabilities_parsed.json'
         if kev_file.exists():
@@ -31,24 +48,24 @@ class CNAAnalyzer:
                 with open(kev_file, 'r') as f:
                     kev_data = json.load(f)
                 return set(kev_data.keys())
-            except Exception as e:
-                print(f"    ⚠️ Error loading KEV data: {e}")
+            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+                logger.warning(f"    ⚠️ Error loading KEV data: {e}")
         return set()
     
-    def _load_epss_data(self):
+    def _load_epss_data(self) -> dict[str, dict[str, float]]:
         """Load EPSS scores for CVE lookup"""
         epss_file = self.cache_dir / 'epss_scores-current.json'
         if epss_file.exists():
             try:
                 with open(epss_file, 'r') as f:
                     return json.load(f)
-            except Exception as e:
-                print(f"    ⚠️ Error loading EPSS data: {e}")
+            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+                logger.warning(f"    ⚠️ Error loading EPSS data: {e}")
         return {}
         
-    def load_cna_name_mappings(self):
+    def load_cna_name_mappings(self) -> dict[str, str]:
         """Load CNA name mappings for UUID resolution"""
-        print(f"    🗺️ Loading CNA name mappings...")
+        logger.info(f"    🗺️ Loading CNA name mappings...")
         mappings = {}
         
         # Load from cna_name_map.json (UUID to name mappings)
@@ -73,15 +90,15 @@ class CNAAnalyzer:
                     # Direct UUID to name mapping
                     mappings.update(data)
                     
-                print(f"    ✅ Loaded {len(mappings)} UUID mappings from cna_name_map.json")
-            except Exception as e:
-                print(f"    ⚠️ Error loading cna_name_map.json: {e}")
+                logger.info(f"    ✅ Loaded {len(mappings)} UUID mappings from cna_name_map.json")
+            except (FileNotFoundError, json.JSONDecodeError, KeyError, OSError) as e:
+                logger.warning(f"    ⚠️ Error loading cna_name_map.json: {e}")
         
         return mappings
     
-    def load_official_cna_list(self):
+    def load_official_cna_list(self) -> list[dict[str, Any]]:
         """Load official CNA list for comprehensive analysis"""
-        print(f"    📋 Loading official CNA list...")
+        logger.info(f"    📋 Loading official CNA list...")
         official_cnas = []
         
         cna_list_file = self.cache_dir / 'cna_list.json'
@@ -96,13 +113,13 @@ class CNAAnalyzer:
                 elif isinstance(data, list):
                     official_cnas = data
                     
-                print(f"    ✅ Loaded {len(official_cnas)} official CNAs from cna_list.json")
-            except Exception as e:
-                print(f"    ⚠️ Error loading cna_list.json: {e}")
+                logger.info(f"    ✅ Loaded {len(official_cnas)} official CNAs from cna_list.json")
+            except (FileNotFoundError, json.JSONDecodeError, KeyError, OSError) as e:
+                logger.warning(f"    ⚠️ Error loading cna_list.json: {e}")
         
         return official_cnas
     
-    def resolve_cna_name(self, source_identifier, mappings):
+    def resolve_cna_name(self, source_identifier: str | None, mappings: dict[str, str]) -> str:
         """Resolve CNA name from source identifier using various methods"""
         if not source_identifier:
             return 'Unknown'
@@ -144,12 +161,11 @@ class CNAAnalyzer:
         # Return cleaned identifier
         return source_identifier.replace('_', ' ').title()
     
-    def process_cna_type_distribution(self, official_cnas, cna_stats):
+    def process_cna_type_distribution(self, official_cnas: list[dict[str, Any]], cna_stats: dict[str, dict[str, Any]]) -> dict[str, Any]:
         """Process CNA type distribution from official data"""
-        print(f"    📊 Processing CNA type distribution...")
+        logger.info(f"    📊 Processing CNA type distribution...")
         
-        type_counts = {}
-        type_percentages = {}
+        type_counts: defaultdict[str, int] = defaultdict(int)
         
         # Count types from official CNAs using correct nested structure
         for cna in official_cnas:
@@ -160,27 +176,28 @@ class CNAAnalyzer:
             
             for cna_type in cna_types:
                 if cna_type and cna_type != 'Unknown':
-                    type_counts[cna_type] = type_counts.get(cna_type, 0) + 1
+                    type_counts[cna_type] += 1
         
-        # Calculate percentages
+        # Calculate percentages using dict comprehension
         total_official = len(official_cnas)
-        if total_official > 0:
-            for cna_type, count in type_counts.items():
-                type_percentages[cna_type] = round((count / total_official) * 100, 1)
+        type_percentages = {
+            cna_type: round((count / total_official) * 100, 1)
+            for cna_type, count in type_counts.items()
+        } if total_official > 0 else {}
         
         # Sort by count (descending)
         sorted_types = sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
         
         return {
-            'type_counts': type_counts,
+            'type_counts': dict(type_counts),
             'type_percentages': type_percentages,
             'sorted_types': sorted_types,
             'total_official_cnas': total_official
         }
     
-    def generate_comprehensive_cna_analysis(self, all_year_data):
+    def generate_comprehensive_cna_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate comprehensive CNA analysis processing all CVEs and official CNA data"""
-        print(f"  🏢 Generating comprehensive CNA analysis...")
+        logger.info(f"  🏢 Generating comprehensive CNA analysis...")
         
         # Load CNA mappings and official data
         mappings = self.load_cna_name_mappings()
@@ -193,22 +210,21 @@ class CNAAnalyzer:
         nvd_file = self.cache_dir / 'nvd.json'
         if nvd_file.exists():
             if not self.quiet:
-                print(f"    📂 Loading CVE data from {nvd_file}...")
+                logger.info(f"    📂 Loading CVE data from {nvd_file}...")
             with open(nvd_file, 'r') as f:
                 cve_data = json.load(f)
             
-            print(f"    📊 Processing {len(cve_data)} CVEs for comprehensive CNA analysis...")
+            logger.info(f"    📊 Processing {len(cve_data)} CVEs for comprehensive CNA analysis...")
             
             for i, cve_entry in enumerate(cve_data):
                 if i % 50000 == 0 and i > 0 and not self.quiet:
-                    print(f"    📊 Processed {i:,} CVEs...")
+                    logger.debug(f"    📊 Processed {i:,} CVEs...")
                 
                 try:
                     cve_section = cve_entry.get('cve', {})
                     cve_id = cve_section.get('id', '')
-                    source_identifier = cve_section.get('sourceIdentifier', '')
                     
-                    if source_identifier:
+                    if source_identifier := cve_section.get('sourceIdentifier', ''):
                         cna_name = self.resolve_cna_name(source_identifier, mappings)
                         
                         if cna_name and cna_name != 'Unknown':
@@ -250,8 +266,7 @@ class CNAAnalyzer:
                                         cna_stats[cna_name]['cwe_counts'][cwe_val] = cna_stats[cna_name]['cwe_counts'].get(cwe_val, 0) + 1
                             
                             # Update date tracking
-                            pub_date = cve_section.get('published', '')
-                            if pub_date:
+                            if pub_date := cve_section.get('published', ''):
                                 if pub_date < cna_stats[cna_name]['first_cve_date'] or not cna_stats[cna_name]['first_cve_date']:
                                     cna_stats[cna_name]['first_cve_date'] = pub_date
                                 if pub_date > cna_stats[cna_name]['last_cve_date']:
@@ -265,11 +280,11 @@ class CNAAnalyzer:
                                     if cna_stats[cna_name]['last_cve_year'] is None or year > cna_stats[cna_name]['last_cve_year']:
                                         cna_stats[cna_name]['last_cve_year'] = year
                                         
-                except Exception:
+                except (KeyError, ValueError, TypeError):
                     continue
             
             if not self.quiet:
-                print(f"    ✅ Processed all CVEs, found {len(cna_stats)} CNAs with published CVEs")
+                logger.info(f"    ✅ Processed all CVEs, found {len(cna_stats)} CNAs with published CVEs")
         
         # Create comprehensive CNA list with official data integration
         cna_list = []
@@ -322,7 +337,7 @@ class CNAAnalyzer:
                 try:
                     last_date = datetime.fromisoformat(stats['last_cve_date'].replace('Z', '+00:00'))
                     days_since_last = (datetime.now() - last_date.replace(tzinfo=None)).days
-                except:
+                except (ValueError, TypeError):
                     days_since_last = 365  # Default to inactive if date parsing fails
             
             # Determine activity status
@@ -398,12 +413,12 @@ class CNAAnalyzer:
         with open(output_file, 'w') as f:
             json.dump(analysis_data, f, indent=2)
         
-        print(f"  ✅ Generated comprehensive CNA analysis with {len(cna_list)} CNAs")
+        logger.info(f"  ✅ Generated comprehensive CNA analysis with {len(cna_list)} CNAs")
         return analysis_data
     
-    def generate_current_year_cna_analysis(self, current_year_data):
+    def generate_current_year_cna_analysis(self, current_year_data: dict[str, Any]) -> dict[str, Any]:
         """Generate current year CNA analysis by filtering comprehensive analysis for current year CVEs"""
-        print(f"    🏢 Generating current year CNA analysis for {self.current_year}...")
+        logger.info(f"    🏢 Generating current year CNA analysis for {self.current_year}...")
         
         # Load comprehensive CNA analysis first to get all CNA data
         comprehensive_file = self.data_dir / 'cna_analysis.json'
@@ -412,9 +427,9 @@ class CNAAnalyzer:
         if comprehensive_file.exists():
             with open(comprehensive_file, 'r') as f:
                 comprehensive_data = json.load(f)
-            print(f"    ✅ Loaded comprehensive CNA analysis with {len(comprehensive_data.get('cna_list', []))} CNAs")
+            logger.info(f"    ✅ Loaded comprehensive CNA analysis with {len(comprehensive_data.get('cna_list', []))} CNAs")
         else:
-            print(f"    ⚠️ No comprehensive CNA analysis found, generating from scratch...")
+            logger.warning(f"    ⚠️ No comprehensive CNA analysis found, generating from scratch...")
             # Generate comprehensive analysis if it doesn't exist
             comprehensive_data = self.generate_comprehensive_cna_analysis({})
         
@@ -458,7 +473,7 @@ class CNAAnalyzer:
         # If we have access to raw CVE data for current year, get actual counts
         nvd_file = self.cache_dir / 'nvd.json'
         if nvd_file.exists() and len(current_year_cnas) > 0:
-            print(f"    📊 Calculating actual CVE counts for {self.current_year}...")
+            logger.info(f"    📊 Calculating actual CVE counts for {self.current_year}...")
             try:
                 with open(nvd_file, 'r') as f:
                     cve_data = json.load(f)
@@ -478,7 +493,7 @@ class CNAAnalyzer:
                                 cna_name = self.resolve_cna_name(source_identifier, mappings)
                                 if cna_name:
                                     actual_counts[cna_name] = actual_counts.get(cna_name, 0) + 1
-                    except:
+                    except (KeyError, TypeError, AttributeError):
                         continue
                 
                 # Update counts in current year CNAs
@@ -487,10 +502,10 @@ class CNAAnalyzer:
                     if cna_name in actual_counts:
                         cna['count'] = actual_counts[cna_name]
                 
-                print(f"    ✅ Updated actual CVE counts for {len(actual_counts)} CNAs")
+                logger.info(f"    ✅ Updated actual CVE counts for {len(actual_counts)} CNAs")
                 
-            except Exception as e:
-                print(f"    ⚠️ Could not calculate actual counts: {e}")
+            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+                logger.warning(f"    ⚠️ Could not calculate actual counts: {e}")
         
         # Sort by count (descending)
         current_year_cnas.sort(key=lambda x: x['count'], reverse=True)
@@ -499,7 +514,7 @@ class CNAAnalyzer:
         for i, cna in enumerate(current_year_cnas):
             cna['rank'] = i + 1
         
-        print(f"    ✅ Found {len(current_year_cnas)} CNAs active in {self.current_year}")
+        logger.info(f"    ✅ Found {len(current_year_cnas)} CNAs active in {self.current_year}")
         
         # Calculate type distribution for current year
         type_distribution = self._calculate_type_distribution_for_current_year(current_year_cnas)
@@ -524,13 +539,12 @@ class CNAAnalyzer:
         with open(current_year_file, 'w') as f:
             json.dump(current_year_cna_data, f, indent=2)
         
-        print(f"    📄 Generated enhanced cna_analysis_current_year.json with {len(current_year_cnas)} CNAs")
+        logger.info(f"    📄 Generated enhanced cna_analysis_current_year.json with {len(current_year_cnas)} CNAs")
         return current_year_cna_data
     
-    def _calculate_type_distribution_for_current_year(self, cna_assigners):
+    def _calculate_type_distribution_for_current_year(self, cna_assigners: list[dict[str, Any]]) -> dict[str, Any]:
         """Calculate CNA type distribution for current year data"""
-        type_counts = {}
-        type_percentages = {}
+        type_counts: defaultdict[str, int] = defaultdict(int)
         
         # Count types from current year CNAs
         for cna in cna_assigners:
@@ -540,19 +554,20 @@ class CNAAnalyzer:
             
             for cna_type in cna_types:
                 if cna_type:
-                    type_counts[cna_type] = type_counts.get(cna_type, 0) + 1
+                    type_counts[cna_type] += 1
         
-        # Calculate percentages
+        # Calculate percentages using dict comprehension
         total_cnas = len(cna_assigners)
-        if total_cnas > 0:
-            for cna_type, count in type_counts.items():
-                type_percentages[cna_type] = round((count / total_cnas) * 100, 1)
+        type_percentages = {
+            cna_type: round((count / total_cnas) * 100, 1)
+            for cna_type, count in type_counts.items()
+        } if total_cnas > 0 else {}
         
         # Sort by count (descending)
         sorted_types = sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
         
         return {
-            'type_counts': type_counts,
+            'type_counts': dict(type_counts),
             'type_percentages': type_percentages,
             'sorted_types': sorted_types,
             'total_official_cnas': total_cnas

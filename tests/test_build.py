@@ -6,7 +6,6 @@ a full build against live data.
 """
 
 import json
-import os
 from pathlib import Path
 
 import pytest

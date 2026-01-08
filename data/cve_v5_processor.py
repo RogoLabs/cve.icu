@@ -3,36 +3,50 @@
 CVE V5 Processor Module
 Handles CVE V5 list data processing as the single source of truth for CNA analysis
 """
+from __future__ import annotations
 
 import json
 import subprocess
 import shutil
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+from typing import Any
 
 from download_cve_data import CVEDataDownloader
 
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
 
+logger = get_logger(__name__)
+
+
+@dataclass
 class CVEV5Processor:
     """Processes CVE V5 list data for authoritative CNA analysis"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
+    current_year: int = field(default_factory=lambda: datetime.now().year)
+    v5_cache_dir: Path = field(init=False)
+    epss_mapping: dict[str, dict[str, float]] = field(default_factory=dict, init=False)
+    kev_cve_set: set[str] = field(default_factory=set, init=False)
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.current_year = datetime.now().year
+    def __post_init__(self) -> None:
+        """Convert paths and load threat intelligence data."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
         self.v5_cache_dir = self.cache_dir / 'cvelistV5'
-        # Optional EPSS enrichment mapping, keyed by CVE ID
-        self.epss_mapping = {}
-        # KEV CVE set for threat intelligence tracking
-        self.kev_cve_set = set()
         # Load threat intelligence data
         self._load_epss_mapping()
         self._load_kev_set()
 
-    def _load_epss_mapping(self):
+    def _load_epss_mapping(self) -> None:
         """Load EPSS mapping from cache if available.
 
         Uses the same cache directory as CVEDataDownloader to avoid
@@ -51,16 +65,16 @@ class CVEV5Processor:
                 with open(epss_json_path, 'r', encoding='utf-8') as f:
                     self.epss_mapping = json.load(f)
                 if not self.quiet:
-                    print(f"  ✅ Loaded EPSS mapping for {len(self.epss_mapping):,} CVEs")
+                    logger.info(f"  ✅ Loaded EPSS mapping for {len(self.epss_mapping):,} CVEs")
             else:
                 if not self.quiet:
-                    print("  ⚠️  EPSS mapping not available; proceeding without enrichment")
-        except Exception as e:
+                    logger.warning("  ⚠️  EPSS mapping not available; proceeding without enrichment")
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
             if not self.quiet:
-                print(f"  ⚠️  Could not load EPSS mapping: {e}")
+                logger.warning(f"  ⚠️  Could not load EPSS mapping: {e}")
             self.epss_mapping = {}
 
-    def _load_kev_set(self):
+    def _load_kev_set(self) -> None:
         """Load KEV CVE IDs into a set for fast lookup"""
         kev_file = self.cache_dir / 'known_exploited_vulnerabilities_parsed.json'
         if kev_file.exists():
@@ -69,14 +83,14 @@ class CVEV5Processor:
                     kev_data = json.load(f)
                 self.kev_cve_set = set(kev_data.keys())
                 if not self.quiet:
-                    print(f"  ✅ Loaded KEV set with {len(self.kev_cve_set):,} CVEs")
-            except Exception as e:
+                    logger.info(f"  ✅ Loaded KEV set with {len(self.kev_cve_set):,} CVEs")
+            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
                 if not self.quiet:
-                    print(f"  ⚠️  Could not load KEV data: {e}")
+                    logger.warning(f"  ⚠️  Could not load KEV data: {e}")
                 self.kev_cve_set = set()
         else:
             if not self.quiet:
-                print("  ⚠️  KEV data not available; proceeding without KEV enrichment")
+                logger.warning("  ⚠️  KEV data not available; proceeding without KEV enrichment")
 
         # CNA type classification patterns
         self.cna_type_patterns = {
@@ -108,19 +122,19 @@ class CVEV5Processor:
             ]
         }
         
-    def clone_or_update_cve_v5_repo(self):
+    def clone_or_update_cve_v5_repo(self) -> bool:
         """Clone or update the CVE V5 repository with shallow clone"""
-        print(f"  📥 Setting up CVE V5 repository...")
+        logger.info(f"  📥 Setting up CVE V5 repository...")
         
         if self.v5_cache_dir.exists():
             # Check if it's a valid git repository
             git_dir = self.v5_cache_dir / '.git'
             if not git_dir.exists():
-                print(f"    ⚠️ Invalid git repository, re-cloning...")
+                logger.warning(f"    ⚠️ Invalid git repository, re-cloning...")
                 shutil.rmtree(self.v5_cache_dir)
                 return self._clone_fresh_repo()
             
-            print(f"    🔄 Updating existing CVE V5 repository...")
+            logger.info(f"    🔄 Updating existing CVE V5 repository...")
             try:
                 # First try a simple git pull (no --depth flag for existing repos)
                 result = subprocess.run(
@@ -131,11 +145,11 @@ class CVEV5Processor:
                     timeout=300
                 )
                 if result.returncode == 0:
-                    print(f"    ✅ Successfully updated CVE V5 repository")
+                    logger.info(f"    ✅ Successfully updated CVE V5 repository")
                     return True
                 else:
                     # Try to reset and pull if there are conflicts
-                    print(f"    🔄 Pull failed, trying reset and pull...")
+                    logger.info(f"    🔄 Pull failed, trying reset and pull...")
                     reset_result = subprocess.run(
                         ['git', 'reset', '--hard', 'origin/main'],
                         cwd=self.v5_cache_dir,
@@ -152,33 +166,33 @@ class CVEV5Processor:
                             timeout=300
                         )
                         if pull_result.returncode == 0:
-                            print(f"    ✅ Successfully updated CVE V5 repository after reset")
+                            logger.info(f"    ✅ Successfully updated CVE V5 repository after reset")
                             return True
                     
                     # Only re-clone as last resort
-                    print(f"    ⚠️ All update attempts failed, re-cloning as last resort...")
-                    print(f"    📝 Git pull error: {result.stderr}")
+                    logger.warning(f"    ⚠️ All update attempts failed, re-cloning as last resort...")
+                    logger.debug(f"    📝 Git pull error: {result.stderr}")
                     shutil.rmtree(self.v5_cache_dir)
                     return self._clone_fresh_repo()
                     
             except subprocess.TimeoutExpired:
-                print(f"    ⏰ Git pull timed out, repository may be up to date")
+                logger.warning(f"    ⏰ Git pull timed out, repository may be up to date")
                 return True  # Don't re-clone on timeout, assume it's working
-            except Exception as e:
-                print(f"    ⚠️ Update failed with exception: {e}")
+            except (subprocess.SubprocessError, OSError) as e:
+                logger.warning(f"    ⚠️ Update failed with exception: {e}")
                 # Only re-clone if it's a critical error
                 if "not a git repository" in str(e).lower():
                     shutil.rmtree(self.v5_cache_dir)
                     return self._clone_fresh_repo()
                 else:
-                    print(f"    📝 Assuming repository is usable despite error")
+                    logger.debug(f"    📝 Assuming repository is usable despite error")
                     return True
         else:
             return self._clone_fresh_repo()
     
-    def _clone_fresh_repo(self):
+    def _clone_fresh_repo(self) -> bool:
         """Clone fresh CVE V5 repository"""
-        print(f"    📦 Cloning CVE V5 repository (shallow clone)...")
+        logger.info(f"    📦 Cloning CVE V5 repository (shallow clone)...")
         try:
             # Ensure cache directory exists
             self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -193,20 +207,20 @@ class CVEV5Processor:
             ], capture_output=True, text=True, timeout=600)
             
             if result.returncode == 0:
-                print(f"    ✅ Successfully cloned CVE V5 repository")
+                logger.info(f"    ✅ Successfully cloned CVE V5 repository")
                 return True
             else:
-                print(f"    ❌ Failed to clone CVE V5 repository: {result.stderr}")
+                logger.error(f"    ❌ Failed to clone CVE V5 repository: {result.stderr}")
                 return False
                 
         except subprocess.TimeoutExpired:
-            print(f"    ❌ Clone operation timed out")
+            logger.error(f"    ❌ Clone operation timed out")
             return False
-        except Exception as e:
-            print(f"    ❌ Clone failed: {e}")
+        except (subprocess.SubprocessError, OSError) as e:
+            logger.error(f"    ❌ Clone failed: {e}")
             return False
     
-    def get_repo_stats(self):
+    def get_repo_stats(self) -> dict[str, Any] | None:
         """Get basic statistics about the cloned repository"""
         if not self.v5_cache_dir.exists():
             return None
@@ -237,7 +251,7 @@ class CVEV5Processor:
         
         return stats
     
-    def classify_cna_type(self, org_id, short_name):
+    def classify_cna_type(self, org_id: str, short_name: str) -> list[str]:
         """Classify CNA type based on organization ID and short name"""
         # Combine org_id and short_name for pattern matching
         search_text = f"{org_id} {short_name}".lower()
@@ -291,7 +305,7 @@ class CVEV5Processor:
         
         return matched_types if matched_types else ['Vendor']
     
-    def calculate_enhanced_statistics(self, cna_list):
+    def calculate_enhanced_statistics(self, cna_list: list[dict[str, Any]]) -> dict[str, Any]:
         """Calculate enhanced statistics for CNA analysis"""
         if not cna_list:
             return {}
@@ -325,18 +339,18 @@ class CVEV5Processor:
             for cna_type in cna_types:
                 type_counts[cna_type] += 1
         
-        # Convert to format expected by JavaScript
+        # Convert to format expected by JavaScript using comprehensions
         # JavaScript expects: type_distribution.sorted_types and type_distribution.type_percentages
-        sorted_types = []
-        type_percentages = {}
-        
-        # Sort by count (descending)
         sorted_type_items = sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
         
-        for cna_type, count in sorted_type_items:
-            percentage = (count / total_cnas * 100) if total_cnas > 0 else 0
-            sorted_types.append([cna_type, count])  # JavaScript expects [type, count] pairs
-            type_percentages[cna_type] = round(percentage, 1)
+        # List comprehension for sorted_types (JavaScript expects [type, count] pairs)
+        sorted_types = [[cna_type, count] for cna_type, count in sorted_type_items]
+        
+        # Dict comprehension for type_percentages
+        type_percentages = {
+            cna_type: round((count / total_cnas * 100), 1) if total_cnas > 0 else 0
+            for cna_type, count in sorted_type_items
+        }
         
         # Create the structure expected by JavaScript
         type_distribution = {
@@ -401,8 +415,8 @@ class CVEV5Processor:
 
             return record
             
-        except Exception as e:
-            print(f"    ⚠️ Error parsing {cve_file_path}: {e}")
+        except (json.JSONDecodeError, KeyError, ValueError, OSError) as e:
+            logger.warning(f"    ⚠️ Error parsing {cve_file_path}: {e}")
             return None
     
     def process_all_cves_single_pass(self):
@@ -501,11 +515,11 @@ class CVEV5Processor:
 
     def process_year_data(self, year):
         """Process all CVE records for a specific year"""
-        print(f"    📅 Processing CVE data for year {year}...")
+        logger.info(f"    📅 Processing CVE data for year {year}...")
         
         year_dir = self.v5_cache_dir / 'cves' / str(year)
         if not year_dir.exists():
-            print(f"    ⚠️ No data found for year {year}")
+            logger.warning(f"    ⚠️ No data found for year {year}")
             return {}
         
         cna_stats = defaultdict(lambda: {
@@ -527,7 +541,7 @@ class CVEV5Processor:
         processed = 0
         
         if not self.quiet:
-            print(f"    📊 Found {total_files} CVE files for {year}")
+            logger.info(f"    📊 Found {total_files} CVE files for {year}")
         
         for cve_file in cve_files:
             cve_record = self.parse_cve_v5_record(cve_file)
@@ -550,25 +564,25 @@ class CVEV5Processor:
             
             processed += 1
             if processed % 1000 == 0 and not self.quiet:
-                print(f"    📈 Processed {processed}/{total_files} files...")
+                logger.debug(f"    📈 Processed {processed}/{total_files} files...")
         
         if not self.quiet:
-            print(f"    ✅ Processed {processed} CVE files, found {len(cna_stats)} CNAs for {year}")
+            logger.info(f"    ✅ Processed {processed} CVE files, found {len(cna_stats)} CNAs for {year}")
         return dict(cna_stats)
     
-    def generate_comprehensive_cna_analysis(self):
+    def generate_comprehensive_cna_analysis(self) -> dict[str, Any] | None:
         """Generate comprehensive CNA analysis using CVE V5 data as single source of truth"""
-        print(f"  🏢 Generating comprehensive CNA analysis from CVE V5 data...")
+        logger.info(f"  🏢 Generating comprehensive CNA analysis from CVE V5 data...")
         
         # Ensure we have the latest CVE V5 data
         if not self.clone_or_update_cve_v5_repo():
-            print(f"  ❌ Failed to setup CVE V5 repository")
+            logger.error(f"  ❌ Failed to setup CVE V5 repository")
             return None
         
         # Get repository statistics
         repo_stats = self.get_repo_stats()
         if not repo_stats:
-            print(f"  ❌ Failed to get repository statistics")
+            logger.error(f"  ❌ Failed to get repository statistics")
             return None
             
         print(f"  📊 Repository contains {repo_stats['total_cves']} CVEs across {repo_stats['total_years']} years")
@@ -592,12 +606,12 @@ class CVEV5Processor:
             if stats['first_date']:
                 try:
                     first_pub_year = datetime.fromisoformat(stats['first_date'].replace('Z', '+00:00')).year
-                except:
+                except (ValueError, TypeError):
                     pass
             if stats['last_date']:
                 try:
                     last_pub_year = datetime.fromisoformat(stats['last_date'].replace('Z', '+00:00')).year
-                except:
+                except (ValueError, TypeError):
                     pass
             if first_pub_year and last_pub_year:
                 years_active_count = max(1, last_pub_year - first_pub_year + 1)
@@ -608,7 +622,7 @@ class CVEV5Processor:
                 try:
                     last_date = datetime.fromisoformat(stats['last_date'].replace('Z', '+00:00'))
                     days_since_last = (datetime.now(last_date.tzinfo) - last_date).days
-                except:
+                except (ValueError, TypeError):
                     days_since_last = 365
 
             # Determine activity status
@@ -691,18 +705,18 @@ class CVEV5Processor:
         with open(output_file, 'w') as f:
             json.dump(comprehensive_data, f, indent=2)
         
-        print(f"  📄 Generated comprehensive CNA analysis with {len(cna_list)} CNAs")
-        print(f"  📊 Active: {enhanced_stats.get('active_cnas', 0)}, Inactive: {enhanced_stats.get('inactive_cnas', 0)}")
+        logger.info(f"  📄 Generated comprehensive CNA analysis with {len(cna_list)} CNAs")
+        logger.info(f"  📊 Active: {enhanced_stats.get('active_cnas', 0)}, Inactive: {enhanced_stats.get('inactive_cnas', 0)}")
         
         return comprehensive_data
     
-    def process_current_year_by_publication_date(self):
+    def process_current_year_by_publication_date(self) -> dict[str, dict[str, Any]]:
         """Process CVEs from ALL years, filtering by current year publication date"""
-        print(f"    🔍 Scanning all CVE years for {self.current_year} publications...")
+        logger.info(f"    🔍 Scanning all CVE years for {self.current_year} publications...")
         
         cves_dir = self.v5_cache_dir / 'cves'
         if not cves_dir.exists():
-            print(f"    ❌ CVEs directory not found")
+            logger.error(f"    ❌ CVEs directory not found")
             return {}
         
         cna_stats = defaultdict(lambda: {
@@ -724,7 +738,7 @@ class CVEV5Processor:
                 
             year = int(year_dir.name)
             if not self.quiet:
-                print(f"    📂 Scanning CVE-{year}-* files for {self.current_year} publications...")
+                logger.debug(f"    📂 Scanning CVE-{year}-* files for {self.current_year} publications...")
             
             # Get all CVE files in this year directory (handle nested structure)
             cve_files = []
@@ -759,34 +773,34 @@ class CVEV5Processor:
                                 
                                 year_current_cves += 1
                                 current_year_cves += 1
-                        except Exception:
+                        except (ValueError, TypeError):
                             # Skip CVEs with invalid dates
                             pass
                 
                 total_processed += 1
                 if total_processed % 5000 == 0 and not self.quiet:
-                    print(f"    📈 Processed {total_processed} files, found {current_year_cves} {self.current_year} publications...")
+                    logger.debug(f"    📈 Processed {total_processed} files, found {current_year_cves} {self.current_year} publications...")
             
             if year_current_cves > 0 and not self.quiet:
-                print(f"    ✅ Found {year_current_cves} CVEs published in {self.current_year} from CVE-{year}-* files")
+                logger.debug(f"    ✅ Found {year_current_cves} CVEs published in {self.current_year} from CVE-{year}-* files")
         
         if not self.quiet:
-            print(f"    🎯 Total: {current_year_cves} CVEs published in {self.current_year}, from {len(cna_stats)} CNAs")
+            logger.info(f"    🎯 Total: {current_year_cves} CVEs published in {self.current_year}, from {len(cna_stats)} CNAs")
         return dict(cna_stats)
     
-    def generate_current_year_analysis(self):
+    def generate_current_year_analysis(self) -> dict[str, Any] | None:
         """Generate current year CNA analysis from CVE V5 data based on publication date"""
-        print(f"  📅 Generating {self.current_year} CNA analysis from CVE V5 data (by publication date)...")
+        logger.info(f"  📅 Generating {self.current_year} CNA analysis from CVE V5 data (by publication date)...")
         
         # Process data from ALL years, filtering by publication date
         current_year_data = self.process_current_year_by_publication_date()
         
         if not current_year_data:
-            print(f"  ⚠️ No CVEs published in {self.current_year} found")
+            logger.warning(f"  ⚠️ No CVEs published in {self.current_year} found")
             return None
         
         # Load comprehensive analysis to get full CNA history for years_active calculation
-        print(f"    📊 Loading comprehensive analysis for full CNA history...")
+        logger.info(f"    📊 Loading comprehensive analysis for full CNA history...")
         comprehensive_file = self.data_dir / 'cna_analysis.json'
         comprehensive_cnas = {}
         if comprehensive_file.exists():
@@ -798,9 +812,9 @@ class CVEV5Processor:
                         for cna in comprehensive_data['cna_list']:
                             if 'assigner_org_id' in cna:
                                 comprehensive_cnas[cna['assigner_org_id']] = cna
-                print(f"    ✅ Loaded {len(comprehensive_cnas)} CNAs from comprehensive analysis")
-            except Exception as e:
-                print(f"    ⚠️ Could not load comprehensive analysis: {e}")
+                logger.info(f"    ✅ Loaded {len(comprehensive_cnas)} CNAs from comprehensive analysis")
+            except (FileNotFoundError, json.JSONDecodeError, KeyError, OSError) as e:
+                logger.warning(f"    ⚠️ Could not load comprehensive analysis: {e}")
         
         # Convert to final format
         current_year_cnas = []
@@ -822,7 +836,7 @@ class CVEV5Processor:
                         first_cve_year = datetime.fromisoformat(stats['first_date'].replace('Z', '+00:00')).year
                         last_cve_year = datetime.fromisoformat(stats['last_date'].replace('Z', '+00:00')).year
                         years_active = max(1, last_cve_year - first_cve_year + 1)
-                    except:
+                    except (ValueError, TypeError):
                         years_active = 1
             # Aggregate severity and CWE types for current year
             severity_counts = defaultdict(int)
@@ -851,14 +865,15 @@ class CVEV5Processor:
                             for metric in cvss:
                                 base_score = metric.get('cvssData', {}).get('baseScore')
                                 if base_score is not None:
-                                    if base_score >= 9:
-                                        severity_counts['Critical'] += 1
-                                    elif base_score >= 7:
-                                        severity_counts['High'] += 1
-                                    elif base_score >= 4:
-                                        severity_counts['Medium'] += 1
-                                    else:
-                                        severity_counts['Low'] += 1
+                                    match base_score:
+                                        case s if s >= 9:
+                                            severity_counts['Critical'] += 1
+                                        case s if s >= 7:
+                                            severity_counts['High'] += 1
+                                        case s if s >= 4:
+                                            severity_counts['Medium'] += 1
+                                        case _:
+                                            severity_counts['Low'] += 1
                         # CWE extraction
                         weaknesses = cve_data.get('weaknesses', [])
                         for weakness in weaknesses:
@@ -866,7 +881,7 @@ class CVEV5Processor:
                                 cwe_id = desc.get('value')
                                 if cwe_id and cwe_id.startswith('CWE-'):
                                     cwe_counts[cwe_id] += 1
-                    except Exception:
+                    except (json.JSONDecodeError, KeyError, TypeError, OSError):
                         pass
             top_cwe_types = dict(sorted(cwe_counts.items(), key=lambda x: x[1], reverse=True)[:5])
             severity_distribution = dict(severity_counts)
@@ -933,6 +948,6 @@ class CVEV5Processor:
         with open(output_file, 'w') as f:
             json.dump(current_year_analysis, f, indent=2)
         
-        print(f"  📄 Generated {self.current_year} CNA analysis with {len(current_year_cnas)} CNAs")
+        logger.info(f"  📄 Generated {self.current_year} CNA analysis with {len(current_year_cnas)} CNAs")
         
         return current_year_analysis

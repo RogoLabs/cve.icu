@@ -3,31 +3,47 @@
 Calendar Analysis Module for CVE.ICU
 Generates daily CVE publication data for calendar heatmap visualization
 """
+from __future__ import annotations
 
 import json
+from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
+
 import numpy as np
-from collections import defaultdict
+
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
+@dataclass
 class CalendarAnalyzer:
     """Analyzer for generating calendar-based CVE publication data"""
+    base_dir: Path
+    cache_dir: Path
+    data_dir: Path
+    quiet: bool = False
     
-    def __init__(self, base_dir, cache_dir, data_dir, quiet=False):
-        self.quiet = quiet
-        self.base_dir = Path(base_dir)
-        self.cache_dir = Path(cache_dir)
-        self.data_dir = Path(data_dir)
-        self.nvd_file = self.cache_dir / 'nvd.json'
+    def __post_init__(self) -> None:
+        """Convert path arguments to Path objects and set up derived attributes."""
+        self.base_dir = Path(self.base_dir)
+        self.cache_dir = Path(self.cache_dir)
+        self.data_dir = Path(self.data_dir)
+        self.nvd_file: Path = self.cache_dir / 'nvd.json'
         
-    def load_nvd_data(self):
+    def load_nvd_data(self) -> list[dict[str, Any]]:
         """Load and parse NVD data from JSONL file"""
         if not self.quiet:
-            print("    📂 Loading NVD data for calendar analysis...")
+            logger.info("    📂 Loading NVD data for calendar analysis...")
         
         if not self.nvd_file.exists():
-            print(f"    ❌ NVD file not found: {self.nvd_file}")
+            logger.error(f"    ❌ NVD file not found: {self.nvd_file}")
             return []
         
         cve_records = []
@@ -36,7 +52,7 @@ class CalendarAnalyzer:
                 data = json.load(f)
                 
             if not self.quiet:
-                print(f"    📊 Processing {len(data):,} CVE records for calendar analysis...")
+                logger.info(f"    📊 Processing {len(data):,} CVE records for calendar analysis...")
             
             for entry in data:
                 try:
@@ -66,24 +82,24 @@ class CalendarAnalyzer:
                             'cvss_score': cvss_score
                         })
                         
-                except Exception:
+                except (KeyError, TypeError, ValueError):
                     continue  # Skip malformed entries
                     
             if not self.quiet:
-                print(f"    ✅ Loaded {len(cve_records):,} valid CVE records")
+                logger.info(f"    ✅ Loaded {len(cve_records):,} valid CVE records")
             return cve_records
             
-        except Exception as e:
-            print(f"    ❌ Error loading NVD data: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.error(f"    ❌ Error loading NVD data: {e}")
             return []
     
-    def process_daily_data(self, cve_records):
+    def process_daily_data(self, cve_records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
         """Process CVE records into daily publication counts"""
         if not self.quiet:
-            print("    📅 Processing daily CVE publication data...")
+            logger.info("    📅 Processing daily CVE publication data...")
         
-        daily_counts = defaultdict(int)
-        daily_scores = defaultdict(list)
+        daily_counts: dict[str, int] = defaultdict(int)
+        daily_scores: dict[str, list[float]] = defaultdict(list)
         
         for record in cve_records:
             try:
@@ -96,7 +112,7 @@ class CalendarAnalyzer:
                 if record['cvss_score'] is not None:
                     daily_scores[date_key].append(record['cvss_score'])
                     
-            except Exception:
+            except (ValueError, KeyError, TypeError):
                 continue  # Skip invalid dates
         
         # Calculate daily averages
@@ -113,13 +129,13 @@ class CalendarAnalyzer:
             }
         
         if not self.quiet:
-            print(f"    ✅ Processed {len(daily_data):,} days of CVE data")
+            logger.info(f"    ✅ Processed {len(daily_data):,} days of CVE data")
         return daily_data
     
-    def calculate_statistics(self, daily_data, cve_records):
+    def calculate_statistics(self, daily_data: dict[str, dict[str, Any]], cve_records: list[dict[str, Any]]) -> dict[str, Any]:
         """Calculate overall statistics for the calendar analysis"""
         if not self.quiet:
-            print("    📊 Calculating calendar statistics...")
+            logger.info("    📊 Calculating calendar statistics...")
         
         total_cves = len(cve_records)
         total_days = len(daily_data)
@@ -176,20 +192,20 @@ class CalendarAnalyzer:
         
         return statistics
     
-    def generate_calendar_analysis(self):
+    def generate_calendar_analysis(self) -> dict[str, Any] | None:
         """Generate comprehensive calendar analysis"""
-        print("  📅 Generating calendar analysis...")
+        logger.info("  📅 Generating calendar analysis...")
         
         # Load CVE data
         cve_records = self.load_nvd_data()
         if not cve_records:
-            print("  ❌ No CVE data available for calendar analysis")
+            logger.error("  ❌ No CVE data available for calendar analysis")
             return None
         
         # Process daily data
         daily_data = self.process_daily_data(cve_records)
         if not daily_data:
-            print("  ❌ No daily data generated")
+            logger.error("  ❌ No daily data generated")
             return None
         
         # Calculate statistics
@@ -226,12 +242,12 @@ class CalendarAnalyzer:
             json.dump(analysis_result, f, indent=2)
         
         if not self.quiet:
-            print(f"  ✅ Generated calendar analysis with {len(calendar_data):,} days of data")
+            logger.info(f"  ✅ Generated calendar analysis with {len(calendar_data):,} days of data")
         return analysis_result
     
-    def generate_current_year_calendar_analysis(self):
+    def generate_current_year_calendar_analysis(self) -> dict[str, Any] | None:
         """Generate current year specific calendar analysis"""
-        print("  📅 Generating current year calendar analysis...")
+        logger.info("  📅 Generating current year calendar analysis...")
         
         # Load full analysis first
         full_analysis = self.generate_calendar_analysis()
@@ -295,7 +311,7 @@ class CalendarAnalyzer:
             json.dump(current_year_analysis, f, indent=2)
         
         if not self.quiet:
-            print(f"  ✅ Generated current year calendar analysis with {len(current_year_daily):,} days")
+            logger.info(f"  ✅ Generated current year calendar analysis with {len(current_year_daily):,} days")
         return current_year_analysis
 
 
@@ -307,11 +323,11 @@ if __name__ == "__main__":
     
     analyzer = CalendarAnalyzer(base_dir, cache_dir, data_dir)
     
-    print("🗓️  Testing Calendar Analysis...")
+    logger.info("🗓️  Testing Calendar Analysis...")
     comprehensive_analysis = analyzer.generate_calendar_analysis()
     current_year_analysis = analyzer.generate_current_year_calendar_analysis()
     
     if comprehensive_analysis and current_year_analysis:
-        print("✅ Calendar analysis test completed successfully!")
+        logger.info("✅ Calendar analysis test completed successfully!")
     else:
-        print("❌ Calendar analysis test failed!")
+        logger.error("❌ Calendar analysis test failed!")

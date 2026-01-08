@@ -5,9 +5,20 @@ Processes all CVE data to generate complete CNA statistics including ALL active 
 """
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict, Counter
+
+# Logging setup
+sys.path.insert(0, str(Path(__file__).parent.parent))
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
+
 from download_cve_data import CVEDataDownloader
 
 class ComprehensiveCNAAnalyzer:
@@ -22,17 +33,17 @@ class ComprehensiveCNAAnalyzer:
         self.cna_list = {}
         self.cna_name_map = {}
         
-        print("🏢 Comprehensive CNA Analyzer Initialized")
-        print("📊 Will process ALL CVE data to find every active CNA")
+        logger.info("Comprehensive CNA Analyzer Initialized")
+        logger.info("Will process ALL CVE data to find every active CNA")
     
     def ensure_data_loaded(self):
         """Ensure CVE data is downloaded and available"""
         if self.data_file is None:
             if not self.quiet:
-                print("🔽 Loading CVE data...")
+                logger.info("Loading CVE data...")
             self.data_file = self.downloader.ensure_data_available()
             if not self.quiet:
-                print(f"✅ Data loaded from: {self.data_file}")
+                logger.info(f"Data loaded from: {self.data_file}")
             
             # Load CNA mapping data
             self.load_cna_mappings()
@@ -63,18 +74,18 @@ class ComprehensiveCNAAnalyzer:
                             if source_id:
                                 self.cna_list[source_id] = cna
                 
-                print(f"✅ Loaded {len(self.cna_list)} CNA entries")
+                logger.info(f"Loaded {len(self.cna_list)} CNA entries")
             
             # Load CNA name mapping
             cna_name_map_file = self.downloader.cache_dir / "cna_name_map.json"
             if cna_name_map_file.exists():
                 with open(cna_name_map_file, 'r', encoding='utf-8') as f:
                     self.cna_name_map = json.load(f)
-                print(f"✅ Loaded CNA name mappings for {len(self.cna_name_map)} entries")
+                logger.info(f"Loaded CNA name mappings for {len(self.cna_name_map)} entries")
                 
-        except Exception as e:
-            print(f"⚠️  Warning: Could not load CNA mappings: {e}")
-            print("  📝 Will use raw sourceIdentifier values as fallback")
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.warning(f"Could not load CNA mappings: {e}")
+            logger.info("Will use raw sourceIdentifier values as fallback")
     
     def resolve_cna_name(self, source_identifier):
         """Resolve CNA sourceIdentifier to proper organization name using comprehensive mapping"""
@@ -86,7 +97,7 @@ class ComprehensiveCNAAnalyzer:
             # First try the official UUID-based name mapping file (most authoritative)
             if source_identifier in self.cna_name_map:
                 resolved_name = self.cna_name_map[source_identifier]
-                print(f"✅ Resolved UUID {source_identifier} to: {resolved_name}")
+                logger.debug(f"Resolved UUID {source_identifier} to: {resolved_name}")
                 return resolved_name
             
             # Create comprehensive domain-to-organization mapping
@@ -244,22 +255,22 @@ class ComprehensiveCNAAnalyzer:
             
             # If it looks like a UUID but wasn't found in mapping, keep as-is for now
             if len(source_identifier) == 36 and source_identifier.count('-') == 4:
-                print(f"⚠️  Warning: UUID {source_identifier} not found in official mapping")
+                logger.warning(f"UUID {source_identifier} not found in official mapping")
                 return source_identifier
             
             # Return as-is if no mapping found
             return source_identifier
             
-        except Exception as e:
-            print(f"⚠️  Warning: Error resolving CNA name for '{source_identifier}': {e}")
+        except (KeyError, TypeError, AttributeError) as e:
+            logger.warning(f"Error resolving CNA name for '{source_identifier}': {e}")
             return source_identifier
     
     def generate_comprehensive_cna_analysis(self):
         """Generate comprehensive CNA analysis with ALL active CNAs"""
         self.ensure_data_loaded()
         
-        print("🏢 Generating comprehensive CNA analysis...")
-        print("📊 Processing all CVE data to find every active CNA...")
+        logger.info("Generating comprehensive CNA analysis...")
+        logger.info("Processing all CVE data to find every active CNA...")
         
         # Track all CNAs and their statistics
         cna_stats = defaultdict(lambda: {
@@ -274,7 +285,7 @@ class ComprehensiveCNAAnalyzer:
         total_cves_processed = 0
         cves_with_cna = 0
         
-        print("📂 Loading JSON array from file...")
+        logger.info("Loading JSON array from file...")
         try:
             with open(self.data_file, 'r', encoding='utf-8') as f:
                 cve_array = json.load(f)
@@ -282,10 +293,10 @@ class ComprehensiveCNAAnalyzer:
             if not isinstance(cve_array, list):
                 raise ValueError(f"Expected JSON array, got {type(cve_array)}")
             
-            print(f"✅ Loaded JSON array with {len(cve_array):,} entries")
+            logger.info(f"Loaded JSON array with {len(cve_array):,} entries")
             
-        except Exception as e:
-            print(f"❌ Error loading JSON array: {e}")
+        except (FileNotFoundError, json.JSONDecodeError, ValueError, OSError) as e:
+            logger.error(f"Error loading JSON array: {e}")
             return {}
         
         # Process each CVE entry in the array
@@ -380,7 +391,7 @@ class ComprehensiveCNAAnalyzer:
                                     break
                         
                         cna_stats[cna_name]['severity_distribution'][severity] += 1
-                    except Exception:
+                    except (KeyError, TypeError, IndexError):
                         cna_stats[cna_name]['severity_distribution']['UNKNOWN'] += 1
                     
                     # Extract CWE information
@@ -393,20 +404,20 @@ class ComprehensiveCNAAnalyzer:
                                     cwe_value = desc.get('value', '')
                                     if cwe_value and cwe_value.startswith('CWE-') and 'Missing_' not in cwe_value:
                                         cna_stats[cna_name]['cwe_types'][cwe_value] += 1
-                    except Exception:
+                    except (KeyError, TypeError):
                         pass
                     
                 # Progress indicator
                 if entry_num % 10000 == 0 and entry_num > 0 and not self.quiet:
-                    print(f"  📊 Processed {entry_num:,} entries, found {len(cna_stats)} unique CNAs so far...")
+                    logger.debug(f"Processed {entry_num:,} entries, found {len(cna_stats)} unique CNAs so far...")
             
             except (KeyError, ValueError, TypeError):
                 continue
         
-        print(f"✅ Processing complete!")
-        print(f"📊 Total CVEs processed: {total_cves_processed:,}")
-        print(f"🏢 CVEs with CNA information: {cves_with_cna:,}")
-        print(f"🎯 Unique CNAs found: {len(cna_stats):,}")
+        logger.info("Processing complete!")
+        logger.info(f"Total CVEs processed: {total_cves_processed:,}")
+        logger.info(f"CVEs with CNA information: {cves_with_cna:,}")
+        logger.info(f"Unique CNAs found: {len(cna_stats):,}")
         
         # Convert to final format with activity status
         current_date = datetime.now()
@@ -526,8 +537,8 @@ class ComprehensiveCNAAnalyzer:
                     'earliest': 1999,  # CVE program started in 1999
                     'latest': current_year
                 }
-        except Exception as e:
-            print(f"⚠️  Warning: Error calculating coverage years: {e}")
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Error calculating coverage years: {e}")
             current_year = datetime.now().year
             return {
                 'earliest': 1999,
@@ -542,9 +553,9 @@ class ComprehensiveCNAAnalyzer:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(analysis, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Comprehensive CNA analysis saved to: {output_path}")
-        print(f"📊 Found {analysis['summary_statistics']['total_unique_cnas']:,} unique CNAs")
-        print(f"🎯 Total CVEs assigned: {analysis['summary_statistics']['total_cves_assigned']:,}")
+        logger.info(f"Comprehensive CNA analysis saved to: {output_path}")
+        logger.info(f"Found {analysis['summary_statistics']['total_unique_cnas']:,} unique CNAs")
+        logger.info(f"Total CVEs assigned: {analysis['summary_statistics']['total_cves_assigned']:,}")
 
 def main():
     """Main entry point"""
