@@ -61,6 +61,44 @@ class ScoringAnalyzer:
         with open(self.epss_file, 'r') as f:
             return json.load(f)
     
+    def load_nvd_publication_dates(self) -> dict[str, str]:
+        """Load CVE publication dates from NVD data.
+        
+        Returns a dict mapping CVE ID -> publication year (e.g., "2024")
+        """
+        if not self.nvd_file.exists():
+            logger.warning(f"⚠️  NVD file not found: {self.nvd_file}")
+            return {}
+        
+        logger.debug("  📂 Loading NVD publication dates...")
+        pub_dates: dict[str, str] = {}
+        
+        try:
+            with open(self.nvd_file, 'r') as f:
+                nvd_data = json.load(f)
+            
+            # NVD data is a list of items with 'cve' key
+            if isinstance(nvd_data, list):
+                for item in nvd_data:
+                    cve = item.get('cve', {})
+                    cve_id = cve.get('id', '')
+                    published = cve.get('published', '')
+                    if cve_id and published:
+                        # Extract year from ISO date like "2024-01-15T04:00:00.000"
+                        try:
+                            pub_year = published[:4]
+                            if pub_year.isdigit():
+                                pub_dates[cve_id] = pub_year
+                        except (IndexError, ValueError):
+                            pass
+            
+            logger.debug(f"  ✅ Loaded publication dates for {len(pub_dates):,} CVEs")
+            return pub_dates
+            
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning(f"⚠️  Error loading NVD data: {e}")
+            return {}
+    
     def load_kev_data(self) -> dict[str, Any]:
         """Load KEV data from CISA JSON"""
         if not self.kev_file.exists():
@@ -222,9 +260,13 @@ class ScoringAnalyzer:
             logger.warning("  ⚠️  No KEV data available")
             return None
         
+        # Load NVD publication dates for accurate published year
+        nvd_pub_dates = self.load_nvd_publication_dates()
+        
         # Aggregations
         by_year_added = defaultdict(int)
-        by_year_cve = defaultdict(int)  # Year the CVE was published
+        by_year_cve = defaultdict(int)  # Year from CVE ID (CVE-YYYY-NNNN)
+        by_year_published = defaultdict(int)  # Actual NVD publication year
         by_vendor = defaultdict(int)
         by_product = defaultdict(int)
         by_cwe = defaultdict(int)
@@ -244,12 +286,16 @@ class ScoringAnalyzer:
             cwes = vuln.get('cwes', [])
             ransomware = vuln.get('knownRansomwareCampaignUse', 'Unknown')
             
-            # Year CVE was published
+            # Year from CVE ID (CVE-YYYY-NNNN) - not reliable for publication date
             try:
                 cve_year = cve_id.split('-')[1]
                 by_year_cve[cve_year] += 1
             except (IndexError, ValueError):
                 pass
+            
+            # Actual publication year from NVD
+            if cve_id in nvd_pub_dates:
+                by_year_published[nvd_pub_dates[cve_id]] += 1
             
             # Year added to KEV
             if date_added:
@@ -314,6 +360,7 @@ class ScoringAnalyzer:
             },
             'by_year_added': dict(sorted(by_year_added.items())),
             'by_year_cve': dict(sorted(by_year_cve.items())),
+            'by_year_published': dict(sorted(by_year_published.items())),
             'timeline': dict(sorted(timeline.items())),
             'top_vendors': top_vendors,
             'top_products': top_products,
