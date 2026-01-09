@@ -146,7 +146,7 @@
     <div class="homepage-chart-card">
         <div class="homepage-chart-header">
             <h4 class="homepage-chart-title">🎯 Scoring & Risk</h4>
-            <small class="homepage-chart-subtitle">CVE volume vs KEV catalog: when added (red) and CVE publication year (orange dashed)</small>
+            <small class="homepage-chart-subtitle">CVE volume vs CISA KEV catalog additions and original publication dates</small>
         </div>
         <div class="homepage-chart-body">
             <div class="homepage-chart-container homepage-preview-container">
@@ -889,7 +889,7 @@ function initializeRiskVolumeChart() {
                         order: 3
                     },
                     {
-                        label: 'KEV Added (when added to catalog)',
+                        label: 'KEV: Date Added',
                         data: kevAddedFiltered,
                         type: 'line',
                         borderColor: '#dc3545',
@@ -905,7 +905,7 @@ function initializeRiskVolumeChart() {
                         spanGaps: false
                     },
                     {
-                        label: 'KEV Published (actual pub year)',
+                        label: 'KEV: Year Published',
                         data: kevPublished,
                         type: 'line',
                         borderColor: '#fd7e14',
