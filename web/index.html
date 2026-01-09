@@ -233,7 +233,7 @@
     <div class="homepage-chart-card">
         <div class="homepage-chart-header">
             <h4 class="homepage-chart-title">🎯 Scoring & Risk</h4>
-            <small class="homepage-chart-subtitle">CVE volume compared to Known Exploited Vulnerabilities (KEV) by year</small>
+            <small class="homepage-chart-subtitle">CVE volume compared to Known Exploited Vulnerabilities (KEV) additions by year</small>
         </div>
         <div class="homepage-chart-body">
             <div class="homepage-chart-container homepage-preview-container">
@@ -1285,10 +1285,11 @@ function initializeRiskVolumeChart() {
         fetch('data/kev_analysis.json').then(r => r.json())
     ])
     .then(([yearlyData, kevData]) => {
-        const kevByYear = kevData.by_year_cve || {};
+        // Use by_year_added (when added to KEV) not by_year_cve (CVE ID year)
+        const kevByYear = kevData.by_year_added || {};
         const yearlySummary = yearlyData.years || {};
         
-        // Get years from 2010 onwards (KEV data starts around 2002 but meaningful from 2010+)
+        // Get years from 2010 onwards (KEV catalog started in 2021)
         const years = Object.keys(yearlySummary)
             .map(y => parseInt(y))
             .filter(y => y >= 2010)
