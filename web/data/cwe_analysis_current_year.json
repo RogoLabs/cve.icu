@@ -1,43 +1,50 @@
 {
-  "generated_at": "2026-01-09T15:19:06.534073",
+  "generated_at": "2026-01-09T18:20:55.660243",
   "year": 2026,
-  "total_cves_with_cwe": 723,
+  "total_cves_with_cwe": 765,
   "total_unique_cwes": 20,
   "top_cwes": [
     {
       "cwe": "CWE-79",
-      "count": 159,
+      "count": 173,
       "id": "79",
       "description": "Cross-site Scripting (XSS)",
       "name": "CWE-79: Cross-site Scripting (XSS)"
     },
     {
-      "cwe": "CWE-862",
-      "count": 87,
-      "id": "862",
-      "description": "Missing Authorization",
-      "name": "CWE-862: Missing Authorization"
-    },
-    {
       "cwe": "CWE-89",
-      "count": 83,
+      "count": 93,
       "id": "89",
       "description": "SQL Injection",
       "name": "CWE-89: SQL Injection"
     },
     {
+      "cwe": "CWE-862",
+      "count": 91,
+      "id": "862",
+      "description": "Missing Authorization",
+      "name": "CWE-862: Missing Authorization"
+    },
+    {
       "cwe": "CWE-74",
-      "count": 52,
+      "count": 57,
       "id": "74",
       "description": "CWE-74",
       "name": "CWE-74"
     },
     {
       "cwe": "CWE-20",
-      "count": 40,
+      "count": 41,
       "id": "20",
       "description": "Improper Input Validation",
       "name": "CWE-20: Improper Input Validation"
+    },
+    {
+      "cwe": "CWE-352",
+      "count": 26,
+      "id": "352",
+      "description": "Cross-Site Request Forgery (CSRF)",
+      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
     },
     {
       "cwe": "CWE-476",
@@ -47,11 +54,11 @@
       "name": "CWE-476: NULL Pointer Dereference"
     },
     {
-      "cwe": "CWE-352",
+      "cwe": "CWE-434",
       "count": 25,
-      "id": "352",
-      "description": "Cross-Site Request Forgery (CSRF)",
-      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
+      "id": "434",
+      "description": "Unrestricted Upload of File",
+      "name": "CWE-434: Unrestricted Upload of File"
     },
     {
       "cwe": "CWE-98",
@@ -61,11 +68,11 @@
       "name": "CWE-98"
     },
     {
-      "cwe": "CWE-434",
+      "cwe": "CWE-22",
       "count": 24,
-      "id": "434",
-      "description": "Unrestricted Upload of File",
-      "name": "CWE-434: Unrestricted Upload of File"
+      "id": "22",
+      "description": "Path Traversal",
+      "name": "CWE-22: Path Traversal"
     },
     {
       "cwe": "CWE-120",
@@ -73,13 +80,6 @@
       "id": "120",
       "description": "CWE-120",
       "name": "CWE-120"
-    },
-    {
-      "cwe": "CWE-22",
-      "count": 23,
-      "id": "22",
-      "description": "Path Traversal",
-      "name": "CWE-22: Path Traversal"
     },
     {
       "cwe": "CWE-416",
@@ -90,21 +90,28 @@
     },
     {
       "cwe": "CWE-94",
-      "count": 19,
+      "count": 20,
       "id": "94",
       "description": "Code Injection",
       "name": "CWE-94: Code Injection"
     },
     {
       "cwe": "CWE-284",
-      "count": 18,
+      "count": 19,
       "id": "284",
       "description": "CWE-284",
       "name": "CWE-284"
     },
     {
+      "cwe": "CWE-78",
+      "count": 18,
+      "id": "78",
+      "description": "OS Command Injection",
+      "name": "CWE-78: OS Command Injection"
+    },
+    {
       "cwe": "CWE-200",
-      "count": 17,
+      "count": 18,
       "id": "200",
       "description": "Information Exposure",
       "name": "CWE-200: Information Exposure"
@@ -136,50 +143,50 @@
       "id": "125",
       "description": "Out-of-bounds Read",
       "name": "CWE-125: Out-of-bounds Read"
-    },
-    {
-      "cwe": "CWE-639",
-      "count": 16,
-      "id": "639",
-      "description": "CWE-639",
-      "name": "CWE-639"
     }
   ],
   "top_cwes_limited": [
     {
       "cwe": "CWE-79",
-      "count": 159,
+      "count": 173,
       "id": "79",
       "description": "Cross-site Scripting (XSS)",
       "name": "CWE-79: Cross-site Scripting (XSS)"
     },
     {
-      "cwe": "CWE-862",
-      "count": 87,
-      "id": "862",
-      "description": "Missing Authorization",
-      "name": "CWE-862: Missing Authorization"
-    },
-    {
       "cwe": "CWE-89",
-      "count": 83,
+      "count": 93,
       "id": "89",
       "description": "SQL Injection",
       "name": "CWE-89: SQL Injection"
     },
     {
+      "cwe": "CWE-862",
+      "count": 91,
+      "id": "862",
+      "description": "Missing Authorization",
+      "name": "CWE-862: Missing Authorization"
+    },
+    {
       "cwe": "CWE-74",
-      "count": 52,
+      "count": 57,
       "id": "74",
       "description": "CWE-74",
       "name": "CWE-74"
     },
     {
       "cwe": "CWE-20",
-      "count": 40,
+      "count": 41,
       "id": "20",
       "description": "Improper Input Validation",
       "name": "CWE-20: Improper Input Validation"
+    },
+    {
+      "cwe": "CWE-352",
+      "count": 26,
+      "id": "352",
+      "description": "Cross-Site Request Forgery (CSRF)",
+      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
     },
     {
       "cwe": "CWE-476",
@@ -189,11 +196,11 @@
       "name": "CWE-476: NULL Pointer Dereference"
     },
     {
-      "cwe": "CWE-352",
+      "cwe": "CWE-434",
       "count": 25,
-      "id": "352",
-      "description": "Cross-Site Request Forgery (CSRF)",
-      "name": "CWE-352: Cross-Site Request Forgery (CSRF)"
+      "id": "434",
+      "description": "Unrestricted Upload of File",
+      "name": "CWE-434: Unrestricted Upload of File"
     },
     {
       "cwe": "CWE-98",
@@ -203,11 +210,11 @@
       "name": "CWE-98"
     },
     {
-      "cwe": "CWE-434",
+      "cwe": "CWE-22",
       "count": 24,
-      "id": "434",
-      "description": "Unrestricted Upload of File",
-      "name": "CWE-434: Unrestricted Upload of File"
+      "id": "22",
+      "description": "Path Traversal",
+      "name": "CWE-22: Path Traversal"
     },
     {
       "cwe": "CWE-120",
@@ -215,13 +222,6 @@
       "id": "120",
       "description": "CWE-120",
       "name": "CWE-120"
-    },
-    {
-      "cwe": "CWE-22",
-      "count": 23,
-      "id": "22",
-      "description": "Path Traversal",
-      "name": "CWE-22: Path Traversal"
     },
     {
       "cwe": "CWE-416",
@@ -232,21 +232,28 @@
     },
     {
       "cwe": "CWE-94",
-      "count": 19,
+      "count": 20,
       "id": "94",
       "description": "Code Injection",
       "name": "CWE-94: Code Injection"
     },
     {
       "cwe": "CWE-284",
-      "count": 18,
+      "count": 19,
       "id": "284",
       "description": "CWE-284",
       "name": "CWE-284"
     },
     {
+      "cwe": "CWE-78",
+      "count": 18,
+      "id": "78",
+      "description": "OS Command Injection",
+      "name": "CWE-78: OS Command Injection"
+    },
+    {
       "cwe": "CWE-200",
-      "count": 17,
+      "count": 18,
       "id": "200",
       "description": "Information Exposure",
       "name": "CWE-200: Information Exposure"
@@ -278,13 +285,6 @@
       "id": "125",
       "description": "Out-of-bounds Read",
       "name": "CWE-125: Out-of-bounds Read"
-    },
-    {
-      "cwe": "CWE-639",
-      "count": 16,
-      "id": "639",
-      "description": "CWE-639",
-      "name": "CWE-639"
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-09T15:19:06.524604",
+  "generated_at": "2026-01-09T18:20:55.650342",
   "year": 2026,
-  "total_unique_cpes": 67,
-  "total_cpe_entries": 991,
-  "total_cves_with_cpes": 92,
-  "total_unique_vendors": 17,
-  "total_unique_products": 24,
+  "total_unique_cpes": 517,
+  "total_cpe_entries": 1493,
+  "total_cves_with_cpes": 120,
+  "total_unique_vendors": 24,
+  "total_unique_products": 50,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2737:build_20240417:*:*:*:*:*:*",
@@ -224,6 +224,14 @@
       "count": 873
     },
     {
+      "vendor": "coollabs",
+      "count": 425
+    },
+    {
+      "vendor": "samsung",
+      "count": 56
+    },
+    {
       "vendor": "google",
       "count": 55
     },
@@ -234,6 +242,10 @@
     {
       "vendor": "mediatek",
       "count": 15
+    },
+    {
+      "vendor": "fabian",
+      "count": 13
     },
     {
       "vendor": "webkul",
@@ -256,34 +268,26 @@
       "count": 3
     },
     {
+      "vendor": "expresstech",
+      "count": 3
+    },
+    {
       "vendor": "webassembly",
       "count": 2
     },
     {
       "vendor": "phome",
       "count": 2
-    },
-    {
-      "vendor": "gitea",
-      "count": 1
-    },
-    {
-      "vendor": "itsourcecode",
-      "count": 1
-    },
-    {
-      "vendor": "campcodes",
-      "count": 1
-    },
-    {
-      "vendor": "phpgurukul",
-      "count": 1
     }
   ],
   "top_products": [
     {
       "product": "quts_hero",
       "count": 460
+    },
+    {
+      "product": "coolify",
+      "count": 425
     },
     {
       "product": "qts",
@@ -298,7 +302,27 @@
       "count": 18
     },
     {
+      "product": "online_product_reservation_system",
+      "count": 13
+    },
+    {
+      "product": "exynos_1580_firmware",
+      "count": 7
+    },
+    {
+      "product": "exynos_2400_firmware",
+      "count": 7
+    },
+    {
       "product": "bagisto",
+      "count": 6
+    },
+    {
+      "product": "exynos_1380_firmware",
+      "count": 6
+    },
+    {
+      "product": "exynos_1480_firmware",
       "count": 6
     },
     {
@@ -314,47 +338,27 @@
       "count": 4
     },
     {
-      "product": "nr15",
+      "product": "exynos_1330_firmware",
       "count": 4
-    },
-    {
-      "product": "nr16",
-      "count": 4
-    },
-    {
-      "product": "open5gs",
-      "count": 3
-    },
-    {
-      "product": "nuttx",
-      "count": 2
-    },
-    {
-      "product": "wabt",
-      "count": 2
-    },
-    {
-      "product": "empirecms",
-      "count": 2
-    },
-    {
-      "product": "license_center",
-      "count": 2
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 940,
-      "percentage": 94.9
+      "count": 996,
+      "percentage": 66.7
     },
     {
       "type": "Application",
-      "count": 51,
-      "percentage": 5.1
+      "count": 497,
+      "percentage": 33.3
     }
   ],
   "cves_with_most_cpes": [
+    {
+      "cve": "CVE-2025-64423",
+      "cpe_count": 425
+    },
     {
       "cve": "CVE-2025-48721",
       "cpe_count": 38
@@ -430,11 +434,7 @@
     {
       "cve": "CVE-2025-53592",
       "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53593",
-      "cpe_count": 34
     }
   ],
-  "average_cpes_per_cve": 10.8
+  "average_cpes_per_cve": 12.4
 }
