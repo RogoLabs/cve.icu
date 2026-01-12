@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-12T15:21:11.428673",
+  "generated_at": "2026-01-12T18:53:29.529377",
   "year": 2026,
-  "total_unique_cpes": 520,
-  "total_cpe_entries": 1509,
-  "total_cves_with_cpes": 136,
-  "total_unique_vendors": 26,
-  "total_unique_products": 53,
+  "total_unique_cpes": 570,
+  "total_cpe_entries": 4501,
+  "total_cves_with_cpes": 173,
+  "total_unique_vendors": 39,
+  "total_unique_products": 91,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2737:build_20240417:*:*:*:*:*:*",
@@ -220,12 +220,12 @@
   ],
   "top_vendors": [
     {
-      "vendor": "qnap",
-      "count": 873
+      "vendor": "coollabs",
+      "count": 3361
     },
     {
-      "vendor": "coollabs",
-      "count": 425
+      "vendor": "qnap",
+      "count": 873
     },
     {
       "vendor": "samsung",
@@ -233,15 +233,19 @@
     },
     {
       "vendor": "google",
-      "count": 55
+      "count": 56
+    },
+    {
+      "vendor": "qualcomm",
+      "count": 25
+    },
+    {
+      "vendor": "fabian",
+      "count": 19
     },
     {
       "vendor": "signalk",
       "count": 18
-    },
-    {
-      "vendor": "fabian",
-      "count": 16
     },
     {
       "vendor": "mediatek",
@@ -249,7 +253,11 @@
     },
     {
       "vendor": "color",
-      "count": 12
+      "count": 13
+    },
+    {
+      "vendor": "intel",
+      "count": 9
     },
     {
       "vendor": "webkul",
@@ -264,30 +272,22 @@
       "count": 4
     },
     {
+      "vendor": "carmelo",
+      "count": 4
+    },
+    {
       "vendor": "apache",
       "count": 3
-    },
-    {
-      "vendor": "open5gs",
-      "count": 3
-    },
-    {
-      "vendor": "expresstech",
-      "count": 3
-    },
-    {
-      "vendor": "webassembly",
-      "count": 2
     }
   ],
   "top_products": [
     {
-      "product": "quts_hero",
-      "count": 460
+      "product": "coolify",
+      "count": 3361
     },
     {
-      "product": "coolify",
-      "count": 425
+      "product": "quts_hero",
+      "count": 460
     },
     {
       "product": "qts",
@@ -307,7 +307,11 @@
     },
     {
       "product": "iccdev",
-      "count": 12
+      "count": 13
+    },
+    {
+      "product": "quartus_prime",
+      "count": 9
     },
     {
       "product": "exynos_1580_firmware",
@@ -316,6 +320,10 @@
     {
       "product": "exynos_2400_firmware",
       "count": 7
+    },
+    {
+      "product": "online_music_site",
+      "count": 6
     },
     {
       "product": "bagisto",
@@ -332,32 +340,52 @@
     {
       "product": "nr17",
       "count": 5
-    },
-    {
-      "product": "online_guitar_store",
-      "count": 4
-    },
-    {
-      "product": "ksoa",
-      "count": 4
     }
   ],
   "cpe_type_distribution": [
     {
-      "type": "Operating System",
-      "count": 996,
-      "percentage": 66.0
+      "type": "Application",
+      "count": 3478,
+      "percentage": 77.3
     },
     {
-      "type": "Application",
-      "count": 513,
-      "percentage": 34.0
+      "type": "Operating System",
+      "count": 1023,
+      "percentage": 22.7
     }
   ],
   "cves_with_most_cpes": [
     {
+      "cve": "CVE-2025-64419",
+      "cpe_count": 435
+    },
+    {
+      "cve": "CVE-2025-64422",
+      "cpe_count": 426
+    },
+    {
+      "cve": "CVE-2025-64420",
+      "cpe_count": 425
+    },
+    {
+      "cve": "CVE-2025-64421",
+      "cpe_count": 425
+    },
+    {
       "cve": "CVE-2025-64423",
       "cpe_count": 425
+    },
+    {
+      "cve": "CVE-2025-59156",
+      "cpe_count": 408
+    },
+    {
+      "cve": "CVE-2025-59157",
+      "cpe_count": 408
+    },
+    {
+      "cve": "CVE-2025-59158",
+      "cpe_count": 408
     },
     {
       "cve": "CVE-2025-48721",
@@ -406,35 +434,7 @@
     {
       "cve": "CVE-2025-52864",
       "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-52872",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53405",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53414",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53589",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53590",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53591",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-53592",
-      "cpe_count": 34
     }
   ],
-  "average_cpes_per_cve": 11.1
+  "average_cpes_per_cve": 26.0
 }
