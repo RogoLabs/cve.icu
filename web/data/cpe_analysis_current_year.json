@@ -1,12 +1,19 @@
 {
-  "generated_at": "2026-01-12T21:19:05.520718",
+  "generated_at": "2026-01-13T00:29:29.146291",
   "year": 2026,
-  "total_unique_cpes": 570,
-  "total_cpe_entries": 4501,
-  "total_cves_with_cpes": 173,
-  "total_unique_vendors": 39,
-  "total_unique_products": 91,
+  "total_unique_cpes": 594,
+  "total_cpe_entries": 5437,
+  "total_cves_with_cpes": 231,
+  "total_unique_vendors": 54,
+  "total_unique_products": 109,
   "top_cpes": [
+    {
+      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
+      "count": 36,
+      "vendor": "color",
+      "product": "iccdev",
+      "type": "Application"
+    },
     {
       "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2737:build_20240417:*:*:*:*:*:*",
       "count": 25,
@@ -209,19 +216,12 @@
       "vendor": "qnap",
       "product": "qts",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:qnap:qts:5.2.4.3079:build_20250321:*:*:*:*:*:*",
-      "count": 25,
-      "vendor": "qnap",
-      "product": "qts",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
     {
       "vendor": "coollabs",
-      "count": 3361
+      "count": 4211
     },
     {
       "vendor": "qnap",
@@ -234,6 +234,14 @@
     {
       "vendor": "google",
       "count": 56
+    },
+    {
+      "vendor": "color",
+      "count": 36
+    },
+    {
+      "vendor": "craftcms",
+      "count": 32
     },
     {
       "vendor": "qualcomm",
@@ -252,12 +260,12 @@
       "count": 15
     },
     {
-      "vendor": "color",
-      "count": 13
-    },
-    {
       "vendor": "intel",
       "count": 9
+    },
+    {
+      "vendor": "utt",
+      "count": 8
     },
     {
       "vendor": "webkul",
@@ -270,20 +278,12 @@
     {
       "vendor": "yonyou",
       "count": 4
-    },
-    {
-      "vendor": "carmelo",
-      "count": 4
-    },
-    {
-      "vendor": "apache",
-      "count": 3
     }
   ],
   "top_products": [
     {
       "product": "coolify",
-      "count": 3361
+      "count": 4211
     },
     {
       "product": "quts_hero",
@@ -298,15 +298,19 @@
       "count": 55
     },
     {
+      "product": "iccdev",
+      "count": 36
+    },
+    {
+      "product": "craft_cms",
+      "count": 32
+    },
+    {
       "product": "signal_k_server",
       "count": 18
     },
     {
       "product": "online_product_reservation_system",
-      "count": 13
-    },
-    {
-      "product": "iccdev",
       "count": 13
     },
     {
@@ -336,22 +340,18 @@
     {
       "product": "exynos_1480_firmware",
       "count": 6
-    },
-    {
-      "product": "nr17",
-      "count": 5
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 3478,
-      "percentage": 77.3
+      "count": 4406,
+      "percentage": 81.0
     },
     {
       "type": "Operating System",
-      "count": 1023,
-      "percentage": 22.7
+      "count": 1031,
+      "percentage": 19.0
     }
   ],
   "cves_with_most_cpes": [
@@ -373,6 +373,14 @@
     },
     {
       "cve": "CVE-2025-64423",
+      "cpe_count": 425
+    },
+    {
+      "cve": "CVE-2025-64424",
+      "cpe_count": 425
+    },
+    {
+      "cve": "CVE-2025-64425",
       "cpe_count": 425
     },
     {
@@ -426,15 +434,7 @@
     {
       "cve": "CVE-2025-52431",
       "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-52863",
-      "cpe_count": 34
-    },
-    {
-      "cve": "CVE-2025-52864",
-      "cpe_count": 34
     }
   ],
-  "average_cpes_per_cve": 26.0
+  "average_cpes_per_cve": 23.5
 }
