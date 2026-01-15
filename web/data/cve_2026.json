@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 1813,
+  "total_cves": 1838,
   "date_data": {
     "monthly_distribution": {
-      "1": 1813,
+      "1": 1838,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -18,10 +18,10 @@
     },
     "daily_analysis": {
       "total_days": 14,
-      "avg_per_day": 129.5,
+      "avg_per_day": 131.29,
       "highest_day": {
         "date": "2026-01-13",
-        "count": 448
+        "count": 446
       },
       "lowest_day": {
         "date": "2026-01-03",
@@ -40,8 +40,9 @@
         "2026-01-10": 74,
         "2026-01-11": 12,
         "2026-01-12": 87,
-        "2026-01-13": 448,
-        "2026-01-14": 154
+        "2026-01-13": 446,
+        "2026-01-14": 181,
+        "2026-01-15": 0
       }
     }
   },
@@ -57,42 +58,42 @@
       }
     },
     "v3.1": {
-      "total": 1054,
+      "total": 1076,
       "severity_distribution": {
-        "LOW": 23,
-        "MEDIUM": 521,
-        "HIGH": 376,
+        "LOW": 24,
+        "MEDIUM": 531,
+        "HIGH": 387,
         "CRITICAL": 134
       },
       "score_distribution": {
         "3.4": 1,
-        "5.3": 71,
+        "5.3": 73,
         "4.3": 58,
         "6.4": 63,
         "8.1": 31,
-        "6.5": 85,
+        "6.5": 87,
         "9.6": 6,
-        "7.5": 81,
+        "7.5": 84,
         "9.1": 22,
         "6.3": 3,
         "9.8": 72,
-        "6.1": 53,
+        "6.1": 56,
         "8.5": 3,
         "7.1": 28,
         "5.0": 2,
-        "7.7": 5,
-        "5.5": 41,
+        "7.7": 7,
+        "5.5": 42,
         "4.9": 8,
-        "8.6": 12,
+        "8.6": 13,
         "3.5": 5,
-        "7.2": 27,
+        "7.2": 28,
         "6.8": 13,
         "9.3": 6,
-        "8.8": 45,
+        "8.8": 46,
         "9.9": 8,
-        "5.4": 38,
-        "7.8": 89,
-        "8.4": 12,
+        "5.4": 39,
+        "7.8": 90,
+        "8.4": 14,
         "5.1": 6,
         "6.2": 8,
         "5.9": 5,
@@ -103,8 +104,8 @@
         "3.3": 2,
         "6.6": 6,
         "7.6": 3,
-        "3.7": 2,
-        "4.7": 5,
+        "3.7": 3,
+        "4.7": 6,
         "2.7": 2,
         "4.4": 21,
         "2.0": 1,
@@ -133,34 +134,34 @@
       }
     },
     "v4.0": {
-      "total": 583,
+      "total": 595,
       "severity_distribution": {
-        "MEDIUM": 269,
-        "HIGH": 214,
-        "LOW": 50,
+        "MEDIUM": 277,
+        "HIGH": 216,
+        "LOW": 52,
         "CRITICAL": 50
       },
       "score_distribution": {
-        "6.9": 70,
+        "6.9": 69,
         "5.3": 46,
         "7.7": 5,
         "5.8": 2,
         "2.0": 5,
-        "7.3": 9,
-        "4.8": 24,
-        "5.1": 59,
+        "7.3": 10,
+        "4.8": 29,
+        "5.1": 60,
         "5.5": 5,
         "7.4": 17,
-        "1.3": 6,
+        "1.3": 7,
         "4.9": 2,
         "1.2": 13,
         "4.6": 8,
         "2.2": 1,
         "8.1": 4,
         "4.4": 1,
-        "7.0": 6,
+        "7.0": 8,
         "2.7": 6,
-        "6.8": 11,
+        "6.8": 12,
         "9.2": 5,
         "8.8": 12,
         "8.9": 13,
@@ -174,11 +175,11 @@
         "8.7": 50,
         "2.3": 14,
         "7.1": 16,
-        "5.7": 5,
+        "5.7": 6,
         "8.5": 41,
         "8.4": 6,
         "5.0": 1,
-        "8.6": 18,
+        "8.6": 17,
         "6.3": 8,
         "6.6": 4,
         "7.5": 2,
@@ -190,19 +191,20 @@
         "4.5": 1,
         "6.7": 1,
         "2.1": 2,
-        "2.4": 1,
+        "2.4": 2,
         "1.1": 1,
         "6.1": 4,
-        "5.6": 3
+        "5.6": 3,
+        "6.2": 1
       }
     },
     "unknown": {
-      "total": 174,
+      "total": 165,
       "severity_distribution": {
-        "UNKNOWN": 174
+        "UNKNOWN": 165
       },
       "score_distribution": {
-        "0.0": 174
+        "0.0": 165
       }
     },
     "epss_summary": {
@@ -218,8 +220,12 @@
     "cna_assigners": [],
     "cpe_vendors": [
       {
+        "name": "Microsoft",
+        "count": 62
+      },
+      {
         "name": "Color",
-        "count": 38
+        "count": 47
       },
       {
         "name": "Qnap",
@@ -230,16 +236,20 @@
         "count": 28
       },
       {
+        "name": "Adobe",
+        "count": 25
+      },
+      {
         "name": "Google",
         "count": 24
       },
       {
         "name": "Fabian",
-        "count": 19
+        "count": 21
       },
       {
-        "name": "Microsoft",
-        "count": 17
+        "name": "Apple",
+        "count": 19
       },
       {
         "name": "Utt",
@@ -258,8 +268,8 @@
         "count": 10
       },
       {
-        "name": "Adobe",
-        "count": 10
+        "name": "Aiohttp",
+        "count": 8
       },
       {
         "name": "Apache",
@@ -282,20 +292,12 @@
         "count": 6
       },
       {
+        "name": "Openproject",
+        "count": 6
+      },
+      {
         "name": "Craftcms",
         "count": 5
-      },
-      {
-        "name": "Anisha",
-        "count": 4
-      },
-      {
-        "name": "Wang.Market",
-        "count": 4
-      },
-      {
-        "name": "Yonyou",
-        "count": 4
       }
     ]
   },
@@ -303,15 +305,15 @@
     "top_cwes": [
       {
         "cwe": "CWE-79",
-        "count": 236
+        "count": 247
       },
       {
         "cwe": "CWE-89",
-        "count": 137
+        "count": 140
       },
       {
         "cwe": "CWE-862",
-        "count": 109
+        "count": 110
       },
       {
         "cwe": "CWE-74",
@@ -319,11 +321,15 @@
       },
       {
         "cwe": "CWE-20",
-        "count": 61
+        "count": 62
       },
       {
         "cwe": "CWE-416",
         "count": 57
+      },
+      {
+        "cwe": "CWE-787",
+        "count": 48
       },
       {
         "cwe": "CWE-200",
@@ -339,7 +345,7 @@
       },
       {
         "cwe": "CWE-125",
-        "count": 42
+        "count": 43
       },
       {
         "cwe": "CWE-476",
@@ -351,14 +357,10 @@
       },
       {
         "cwe": "CWE-78",
-        "count": 39
+        "count": 40
       },
       {
         "cwe": "CWE-352",
-        "count": 37
-      },
-      {
-        "cwe": "CWE-787",
         "count": 37
       },
       {
@@ -370,11 +372,11 @@
         "count": 34
       },
       {
-        "cwe": "CWE-120",
-        "count": 33
+        "cwe": "CWE-77",
+        "count": 34
       },
       {
-        "cwe": "CWE-77",
+        "cwe": "CWE-120",
         "count": 33
       },
       {
@@ -387,19 +389,19 @@
     "vulnerability_status": [
       {
         "status": "Awaiting Analysis",
-        "count": 1134
+        "count": 1035
       },
       {
         "status": "Undergoing Analysis",
-        "count": 373
+        "count": 377
       },
       {
         "status": "Analyzed",
-        "count": 274
+        "count": 367
       },
       {
         "status": "Received",
-        "count": 29
+        "count": 56
       },
       {
         "status": "Modified",
@@ -409,44 +411,44 @@
     "cve_tags": [],
     "reference_tags": [
       {
-        "tag": "Third Party Advisory",
-        "count": 287
+        "tag": "Vendor Advisory",
+        "count": 325
       },
       {
-        "tag": "Vendor Advisory",
-        "count": 240
+        "tag": "Third Party Advisory",
+        "count": 309
       },
       {
         "tag": "Exploit",
-        "count": 228
+        "count": 245
       },
       {
         "tag": "VDB Entry",
-        "count": 196
-      },
-      {
-        "tag": "Issue Tracking",
-        "count": 111
+        "count": 211
       },
       {
         "tag": "Patch",
-        "count": 101
+        "count": 148
+      },
+      {
+        "tag": "Issue Tracking",
+        "count": 129
       },
       {
         "tag": "Permissions Required",
-        "count": 67
+        "count": 72
       },
       {
         "tag": "Product",
-        "count": 63
+        "count": 69
       },
       {
         "tag": "Release Notes",
-        "count": 34
+        "count": 45
       },
       {
         "tag": "Mailing List",
-        "count": 17
+        "count": 18
       },
       {
         "tag": "Mitigation",
@@ -463,7 +465,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2026-01-14T21:16:40.076810",
+    "processed_at": "2026-01-15T00:28:40.027285",
     "data_source": "data/cache/nvd.json"
   }
 }
