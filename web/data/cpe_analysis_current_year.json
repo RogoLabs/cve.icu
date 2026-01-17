@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-16T21:18:06.690202",
+  "generated_at": "2026-01-17T00:31:22.912654",
   "year": 2026,
-  "total_unique_cpes": 964,
-  "total_cpe_entries": 7707,
-  "total_cves_with_cpes": 535,
-  "total_unique_vendors": 93,
-  "total_unique_products": 210,
+  "total_unique_cpes": 985,
+  "total_cpe_entries": 7877,
+  "total_cves_with_cpes": 569,
+  "total_unique_vendors": 103,
+  "total_unique_products": 225,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -93,7 +93,7 @@
     },
     {
       "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
-      "count": 47,
+      "count": 48,
       "vendor": "color",
       "product": "iccdev",
       "type": "Application"
@@ -237,11 +237,15 @@
     },
     {
       "vendor": "rustfs",
-      "count": 144
+      "count": 276
     },
     {
       "vendor": "google",
       "count": 56
+    },
+    {
+      "vendor": "color",
+      "count": 48
     },
     {
       "vendor": "trendmicro",
@@ -250,10 +254,6 @@
     {
       "vendor": "huawei",
       "count": 48
-    },
-    {
-      "vendor": "color",
-      "count": 47
     },
     {
       "vendor": "adobe",
@@ -299,7 +299,7 @@
     },
     {
       "product": "rustfs",
-      "count": 144
+      "count": 276
     },
     {
       "product": "windows_10_1809",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 4931,
-      "percentage": 64.0
+      "count": 5087,
+      "percentage": 64.6
     },
     {
       "type": "Operating System",
-      "count": 2776,
-      "percentage": 36.0
+      "count": 2790,
+      "percentage": 35.4
     }
   ],
   "cves_with_most_cpes": [
@@ -416,6 +416,14 @@
       "cpe_count": 78
     },
     {
+      "cve": "CVE-2025-68705",
+      "cpe_count": 66
+    },
+    {
+      "cve": "CVE-2025-69255",
+      "cpe_count": 66
+    },
+    {
       "cve": "CVE-2026-22043",
       "cpe_count": 66
     },
@@ -426,15 +434,7 @@
     {
       "cve": "CVE-2025-59380",
       "cpe_count": 38
-    },
-    {
-      "cve": "CVE-2025-59381",
-      "cpe_count": 38
-    },
-    {
-      "cve": "CVE-2025-62852",
-      "cpe_count": 38
     }
   ],
-  "average_cpes_per_cve": 14.4
+  "average_cpes_per_cve": 13.8
 }
