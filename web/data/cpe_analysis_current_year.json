@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-23T15:21:15.342647",
+  "generated_at": "2026-01-23T18:20:49.387012",
   "year": 2026,
-  "total_unique_cpes": 1204,
-  "total_cpe_entries": 8373,
-  "total_cves_with_cpes": 841,
-  "total_unique_vendors": 210,
-  "total_unique_products": 387,
+  "total_unique_cpes": 1283,
+  "total_cpe_entries": 8505,
+  "total_cves_with_cpes": 893,
+  "total_unique_vendors": 229,
+  "total_unique_products": 408,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -127,6 +127,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:arubanetworks:arubaos:*:*:*:*:*:*:*:*",
+      "count": 34,
+      "vendor": "arubanetworks",
+      "product": "arubaos",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2008:r2:sp1:*:*:*:*:x64:*",
       "count": 26,
       "vendor": "microsoft",
@@ -209,13 +216,6 @@
       "vendor": "qnap",
       "product": "quts_hero",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.4.3070:build_20250312:*:*:*:*:*:*",
-      "count": 25,
-      "vendor": "qnap",
-      "product": "quts_hero",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
@@ -244,8 +244,16 @@
       "count": 61
     },
     {
+      "vendor": "arubanetworks",
+      "count": 59
+    },
+    {
       "vendor": "google",
       "count": 57
+    },
+    {
+      "vendor": "juniper",
+      "count": 54
     },
     {
       "vendor": "color",
@@ -270,14 +278,6 @@
     {
       "vendor": "craftcms",
       "count": 32
-    },
-    {
-      "vendor": "sap",
-      "count": 30
-    },
-    {
-      "vendor": "hikvision",
-      "count": 28
     }
   ],
   "top_products": [
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 5532,
-      "percentage": 66.1
+      "count": 5565,
+      "percentage": 65.4
     },
     {
       "type": "Operating System",
-      "count": 2841,
-      "percentage": 33.9
+      "count": 2940,
+      "percentage": 34.6
     }
   ],
   "cves_with_most_cpes": [
@@ -428,13 +428,13 @@
       "cpe_count": 66
     },
     {
-      "cve": "CVE-2025-48721",
-      "cpe_count": 38
+      "cve": "CVE-2026-21911",
+      "cpe_count": 54
     },
     {
-      "cve": "CVE-2025-59380",
+      "cve": "CVE-2025-48721",
       "cpe_count": 38
     }
   ],
-  "average_cpes_per_cve": 10.0
+  "average_cpes_per_cve": 9.5
 }
