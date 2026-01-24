@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-23T21:19:18.997444",
+  "generated_at": "2026-01-24T00:31:41.955547",
   "year": 2026,
-  "total_unique_cpes": 1283,
-  "total_cpe_entries": 8505,
-  "total_cves_with_cpes": 893,
-  "total_unique_vendors": 229,
-  "total_unique_products": 408,
+  "total_unique_cpes": 1614,
+  "total_cpe_entries": 9823,
+  "total_cves_with_cpes": 949,
+  "total_unique_vendors": 250,
+  "total_unique_products": 438,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -228,6 +228,10 @@
       "count": 1303
     },
     {
+      "vendor": "juniper",
+      "count": 1181
+    },
+    {
       "vendor": "qnap",
       "count": 877
     },
@@ -240,6 +244,10 @@
       "count": 276
     },
     {
+      "vendor": "paloaltonetworks",
+      "count": 153
+    },
+    {
       "vendor": "mozilla",
       "count": 61
     },
@@ -250,10 +258,6 @@
     {
       "vendor": "google",
       "count": 57
-    },
-    {
-      "vendor": "juniper",
-      "count": 54
     },
     {
       "vendor": "color",
@@ -274,16 +278,16 @@
     {
       "vendor": "adobe",
       "count": 34
-    },
-    {
-      "vendor": "craftcms",
-      "count": 32
     }
   ],
   "top_products": [
     {
       "product": "coolify",
       "count": 4211
+    },
+    {
+      "product": "junos",
+      "count": 812
     },
     {
       "product": "android",
@@ -298,8 +302,16 @@
       "count": 410
     },
     {
+      "product": "junos_os_evolved",
+      "count": 364
+    },
+    {
       "product": "rustfs",
       "count": 276
+    },
+    {
+      "product": "pan-os",
+      "count": 151
     },
     {
       "product": "windows_10_1809",
@@ -328,30 +340,18 @@
     {
       "product": "windows_10_22h2",
       "count": 86
-    },
-    {
-      "product": "windows_server_2025",
-      "count": 83
-    },
-    {
-      "product": "windows_server_2022_23h2",
-      "count": 77
-    },
-    {
-      "product": "windows_server_2022",
-      "count": 75
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 5565,
-      "percentage": 65.4
+      "count": 5606,
+      "percentage": 57.1
     },
     {
       "type": "Operating System",
-      "count": 2940,
-      "percentage": 34.6
+      "count": 4217,
+      "percentage": 42.9
     }
   ],
   "cves_with_most_cpes": [
@@ -396,6 +396,18 @@
       "cpe_count": 408
     },
     {
+      "cve": "CVE-2026-0227",
+      "cpe_count": 153
+    },
+    {
+      "cve": "CVE-2025-59960",
+      "cpe_count": 152
+    },
+    {
+      "cve": "CVE-2025-59961",
+      "cpe_count": 132
+    },
+    {
       "cve": "CVE-2026-20968",
       "cpe_count": 116
     },
@@ -412,29 +424,17 @@
       "cpe_count": 116
     },
     {
-      "cve": "CVE-2026-22042",
-      "cpe_count": 78
+      "cve": "CVE-2025-60003",
+      "cpe_count": 89
     },
     {
-      "cve": "CVE-2025-68705",
-      "cpe_count": 66
+      "cve": "CVE-2025-60011",
+      "cpe_count": 89
     },
     {
-      "cve": "CVE-2025-69255",
-      "cpe_count": 66
-    },
-    {
-      "cve": "CVE-2026-22043",
-      "cpe_count": 66
-    },
-    {
-      "cve": "CVE-2026-21911",
-      "cpe_count": 54
-    },
-    {
-      "cve": "CVE-2025-48721",
-      "cpe_count": 38
+      "cve": "CVE-2026-0203",
+      "cpe_count": 89
     }
   ],
-  "average_cpes_per_cve": 9.5
+  "average_cpes_per_cve": 10.4
 }
