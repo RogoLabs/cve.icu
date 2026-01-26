@@ -2,26 +2,26 @@
   "stats": {
     "total_cnas_in_analysis": 428,
     "official_cna_registry_count": 489,
-    "exact_matches": 387,
+    "exact_matches": 388,
     "case_mismatches": 1,
     "org_name_matches": 5,
     "normalized_matches": 7,
     "partial_matches": 4,
-    "unmatched": 24,
-    "exact_match_cves": 309342,
+    "unmatched": 23,
+    "exact_match_cves": 309533,
     "case_mismatch_cves": 115,
     "org_name_match_cves": 621,
     "normalized_match_cves": 1473,
     "partial_match_cves": 45,
-    "unmatched_cves": 914,
-    "exact_match_pct": 98.99,
-    "issues_pct": 1.01
+    "unmatched_cves": 739,
+    "exact_match_pct": 99.04,
+    "issues_pct": 0.96
   },
   "exact_matches": [
     {
       "cna_name": "mitre",
-      "cve_count": 112056,
-      "kev_count": 301,
+      "cve_count": 112057,
+      "kev_count": 302,
       "epss_high_count": 2994,
       "official_short_name": "mitre",
       "official_org_name": "MITRE Corporation",
@@ -42,7 +42,7 @@
     },
     {
       "cna_name": "VulDB",
-      "cve_count": 11869,
+      "cve_count": 11870,
       "kev_count": 4,
       "epss_high_count": 67,
       "official_short_name": "VulDB",
@@ -64,8 +64,8 @@
     },
     {
       "cna_name": "redhat",
-      "cve_count": 10712,
-      "kev_count": 28,
+      "cve_count": 10721,
+      "kev_count": 29,
       "epss_high_count": 256,
       "official_short_name": "redhat",
       "official_org_name": "Red Hat, Inc.",
@@ -351,7 +351,7 @@
     {
       "cna_name": "VulnCheck",
       "cve_count": 1472,
-      "kev_count": 11,
+      "kev_count": 12,
       "epss_high_count": 136,
       "official_short_name": "VulnCheck",
       "official_org_name": "VulnCheck",
@@ -765,14 +765,6 @@
     }
   ],
   "unmatched": [
-    {
-      "cna_name": "facebook",
-      "cve_count": 175,
-      "kev_count": 5,
-      "epss_high_count": 4,
-      "match_type": null,
-      "confidence": null
-    },
     {
       "cna_name": "dwf",
       "cve_count": 157,
