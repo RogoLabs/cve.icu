@@ -1,9 +1,9 @@
 {
   "year": 2026,
-  "total_cves": 4154,
+  "total_cves": 4159,
   "date_data": {
     "monthly_distribution": {
-      "1": 4154,
+      "1": 4159,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -17,8 +17,8 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 29,
-      "avg_per_day": 143.24,
+      "total_days": 30,
+      "avg_per_day": 138.63,
       "highest_day": {
         "date": "2026-01-13",
         "count": 445
@@ -57,7 +57,7 @@
         "2026-01-27": 189,
         "2026-01-28": 211,
         "2026-01-29": 123,
-        "2026-01-30": 0
+        "2026-01-30": 5
       }
     }
   },
@@ -94,10 +94,10 @@
       }
     },
     "v3.1": {
-      "total": 2457,
+      "total": 2458,
       "severity_distribution": {
         "LOW": 70,
-        "MEDIUM": 1205,
+        "MEDIUM": 1206,
         "HIGH": 896,
         "CRITICAL": 284,
         "NONE": 2
@@ -105,7 +105,7 @@
       "score_distribution": {
         "3.4": 1,
         "5.3": 182,
-        "4.3": 151,
+        "4.3": 152,
         "6.4": 97,
         "8.1": 102,
         "6.5": 195,
@@ -181,16 +181,16 @@
       }
     },
     "v4.0": {
-      "total": 1403,
+      "total": 1407,
       "severity_distribution": {
-        "MEDIUM": 652,
-        "HIGH": 546,
+        "MEDIUM": 653,
+        "HIGH": 547,
         "LOW": 69,
-        "CRITICAL": 136
+        "CRITICAL": 138
       },
       "score_distribution": {
         "6.9": 144,
-        "5.3": 110,
+        "5.3": 111,
         "7.7": 18,
         "5.8": 3,
         "2.0": 5,
@@ -214,12 +214,12 @@
         "8.9": 18,
         "5.2": 7,
         "5.4": 12,
-        "9.3": 84,
+        "9.3": 85,
         "9.4": 13,
-        "10.0": 23,
+        "10.0": 24,
         "7.2": 8,
         "7.9": 1,
-        "8.7": 123,
+        "8.7": 124,
         "2.3": 17,
         "7.1": 46,
         "5.7": 12,
@@ -277,7 +277,7 @@
     "cpe_vendors": [
       {
         "name": "Microsoft",
-        "count": 158
+        "count": 159
       },
       {
         "name": "Oracle",
@@ -336,6 +336,10 @@
         "count": 19
       },
       {
+        "name": "Phpgurukul",
+        "count": 17
+      },
+      {
         "name": "Arubanetworks",
         "count": 17
       },
@@ -348,11 +352,7 @@
         "count": 17
       },
       {
-        "name": "Phpgurukul",
-        "count": 16
-      },
-      {
-        "name": "Mozilla",
+        "name": "Samsung",
         "count": 16
       }
     ]
@@ -373,7 +373,7 @@
       },
       {
         "cwe": "CWE-74",
-        "count": 125
+        "count": 126
       },
       {
         "cwe": "CWE-22",
@@ -385,7 +385,7 @@
       },
       {
         "cwe": "CWE-434",
-        "count": 110
+        "count": 111
       },
       {
         "cwe": "CWE-428",
@@ -393,7 +393,7 @@
       },
       {
         "cwe": "CWE-787",
-        "count": 103
+        "count": 104
       },
       {
         "cwe": "CWE-284",
@@ -425,7 +425,7 @@
       },
       {
         "cwe": "CWE-77",
-        "count": 74
+        "count": 75
       },
       {
         "cwe": "CWE-416",
@@ -449,15 +449,15 @@
       },
       {
         "status": "Analyzed",
-        "count": 1254
+        "count": 1291
       },
       {
         "status": "Undergoing Analysis",
-        "count": 646
+        "count": 609
       },
       {
         "status": "Received",
-        "count": 48
+        "count": 53
       },
       {
         "status": "Modified",
@@ -468,31 +468,31 @@
     "reference_tags": [
       {
         "tag": "Vendor Advisory",
-        "count": 1094
+        "count": 1107
       },
       {
         "tag": "Third Party Advisory",
-        "count": 1004
+        "count": 1037
       },
       {
         "tag": "Exploit",
-        "count": 781
+        "count": 828
       },
       {
         "tag": "VDB Entry",
-        "count": 444
+        "count": 446
       },
       {
         "tag": "Patch",
-        "count": 415
+        "count": 416
       },
       {
         "tag": "Product",
-        "count": 305
+        "count": 332
       },
       {
         "tag": "Issue Tracking",
-        "count": 260
+        "count": 264
       },
       {
         "tag": "Permissions Required",
@@ -500,7 +500,7 @@
       },
       {
         "tag": "Release Notes",
-        "count": 191
+        "count": 192
       },
       {
         "tag": "Mailing List",
@@ -508,11 +508,11 @@
       },
       {
         "tag": "Broken Link",
-        "count": 35
+        "count": 38
       },
       {
         "tag": "Not Applicable",
-        "count": 32
+        "count": 34
       },
       {
         "tag": "US Government Resource",
@@ -533,7 +533,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2026-01-30T03:59:15.469486",
+    "processed_at": "2026-01-30T06:27:34.218261",
     "data_source": "data/cache/nvd.json"
   }
 }
