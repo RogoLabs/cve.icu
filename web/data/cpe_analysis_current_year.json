@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-01-30T21:22:42.903240",
+  "generated_at": "2026-01-31T00:34:51.180061",
   "year": 2026,
-  "total_unique_cpes": 2264,
-  "total_cpe_entries": 12799,
-  "total_cves_with_cpes": 1385,
-  "total_unique_vendors": 357,
-  "total_unique_products": 1004,
+  "total_unique_cpes": 2488,
+  "total_cpe_entries": 13163,
+  "total_cves_with_cpes": 1484,
+  "total_unique_vendors": 381,
+  "total_unique_products": 1199,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -85,18 +85,18 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
+      "count": 57,
+      "vendor": "color",
+      "product": "iccdev",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
       "count": 50,
       "vendor": "microsoft",
       "product": "windows_server_2016",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
-      "count": 48,
-      "vendor": "color",
-      "product": "iccdev",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1607:*:*:*:*:*:*:x64:*",
@@ -162,6 +162,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:discourse:discourse:*:*:*:*:stable:*:*:*",
+      "count": 26,
+      "vendor": "discourse",
+      "product": "discourse",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2737:build_20240417:*:*:*:*:*:*",
       "count": 25,
       "vendor": "qnap",
@@ -209,13 +216,6 @@
       "vendor": "qnap",
       "product": "quts_hero",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.1.2929:build_20241025:*:*:*:*:*:*",
-      "count": 25,
-      "vendor": "qnap",
-      "product": "quts_hero",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
@@ -252,6 +252,10 @@
       "count": 187
     },
     {
+      "vendor": "iptime",
+      "count": 164
+    },
+    {
       "vendor": "paloaltonetworks",
       "count": 153
     },
@@ -261,7 +265,7 @@
     },
     {
       "vendor": "google",
-      "count": 77
+      "count": 78
     },
     {
       "vendor": "gitlab",
@@ -269,15 +273,11 @@
     },
     {
       "vendor": "mozilla",
-      "count": 61
+      "count": 65
     },
     {
       "vendor": "arubanetworks",
       "count": 59
-    },
-    {
-      "vendor": "color",
-      "count": 48
     }
   ],
   "top_products": [
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 6582,
-      "percentage": 51.4
+      "count": 6754,
+      "percentage": 51.3
     },
     {
       "type": "Application",
-      "count": 6216,
-      "percentage": 48.6
+      "count": 6408,
+      "percentage": 48.7
     },
     {
       "type": "Hardware",
@@ -425,6 +425,10 @@
       "cpe_count": 175
     },
     {
+      "cve": "CVE-2025-55423",
+      "cpe_count": 164
+    },
+    {
       "cve": "CVE-2026-0227",
       "cpe_count": 153
     },
@@ -435,11 +439,7 @@
     {
       "cve": "CVE-2025-47334",
       "cpe_count": 146
-    },
-    {
-      "cve": "CVE-2025-59961",
-      "cpe_count": 132
     }
   ],
-  "average_cpes_per_cve": 9.2
+  "average_cpes_per_cve": 8.9
 }
