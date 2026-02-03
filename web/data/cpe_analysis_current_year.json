@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-02T18:27:20.711992",
+  "generated_at": "2026-02-03T00:37:27.643838",
   "year": 2026,
-  "total_unique_cpes": 2533,
-  "total_cpe_entries": 13239,
-  "total_cves_with_cpes": 1537,
-  "total_unique_vendors": 404,
-  "total_unique_products": 1235,
+  "total_unique_cpes": 2561,
+  "total_cpe_entries": 13605,
+  "total_cves_with_cpes": 1608,
+  "total_unique_vendors": 421,
+  "total_unique_products": 1257,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -69,6 +69,13 @@
       "vendor": "microsoft",
       "product": "windows_10_1809",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:openssl:openssl:*:*:*:*:*:*:*:*",
+      "count": 63,
+      "vendor": "openssl",
+      "product": "openssl",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
@@ -209,13 +216,6 @@
       "vendor": "qnap",
       "product": "quts_hero",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2860:build_20240817:*:*:*:*:*:*",
-      "count": 25,
-      "vendor": "qnap",
-      "product": "quts_hero",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
@@ -229,7 +229,7 @@
     },
     {
       "vendor": "microsoft",
-      "count": 1315
+      "count": 1316
     },
     {
       "vendor": "juniper",
@@ -241,7 +241,7 @@
     },
     {
       "vendor": "samsung",
-      "count": 545
+      "count": 777
     },
     {
       "vendor": "rustfs",
@@ -249,7 +249,7 @@
     },
     {
       "vendor": "oracle",
-      "count": 187
+      "count": 191
     },
     {
       "vendor": "iptime",
@@ -276,8 +276,8 @@
       "count": 65
     },
     {
-      "vendor": "arubanetworks",
-      "count": 59
+      "vendor": "openssl",
+      "count": 63
     }
   ],
   "top_products": [
@@ -291,7 +291,7 @@
     },
     {
       "product": "android",
-      "count": 537
+      "count": 769
     },
     {
       "product": "quts_hero",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 6760,
-      "percentage": 51.1
+      "count": 7004,
+      "percentage": 51.5
     },
     {
       "type": "Application",
-      "count": 6478,
-      "percentage": 48.9
+      "count": 6600,
+      "percentage": 48.5
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 146
     }
   ],
-  "average_cpes_per_cve": 8.6
+  "average_cpes_per_cve": 8.5
 }
