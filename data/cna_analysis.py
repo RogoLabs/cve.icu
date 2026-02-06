@@ -223,6 +223,11 @@ class CNAAnalyzer:
                 try:
                     cve_section = cve_entry.get('cve', {})
                     cve_id = cve_section.get('id', '')
+                    vuln_status = cve_section.get('vulnStatus', '')
+
+                    # Keep counting logic aligned with yearly/cve_all outputs.
+                    if 'Rejected' in vuln_status:
+                        continue
                     
                     if source_identifier := cve_section.get('sourceIdentifier', ''):
                         cna_name = self.resolve_cna_name(source_identifier, mappings)
@@ -486,8 +491,9 @@ class CNAAnalyzer:
                     try:
                         cve_section = cve_entry.get('cve', {})
                         cve_id = cve_section.get('id', '')
+                        vuln_status = cve_section.get('vulnStatus', '')
                         
-                        if cve_id.startswith(f'CVE-{self.current_year}-'):
+                        if cve_id.startswith(f'CVE-{self.current_year}-') and 'Rejected' not in vuln_status:
                             source_identifier = cve_section.get('sourceIdentifier', '')
                             if source_identifier:
                                 cna_name = self.resolve_cna_name(source_identifier, mappings)

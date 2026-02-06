@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
@@ -86,12 +87,12 @@ class CVESiteBuilder:
         self.current_year: int = datetime.now().year
         self.available_years: list[int] = list(range(1999, self.current_year + 1))
         self.base_dir: Path = Path(__file__).parent
+        self.output_root_dir: Path = self.base_dir / "web"
         self.templates_dir: Path = self.base_dir / "templates"
-        self.web_dir: Path = self.base_dir / "web"
-        self.static_dir: Path = self.web_dir / "static"
-        self.data_dir: Path = self.web_dir / "data"
+        self.source_static_dir: Path = self.output_root_dir / "static"
         self.data_scripts_dir: Path = self.base_dir / "data"
         self.cache_dir: Path = self.data_scripts_dir / "cache"
+        self._set_output_dirs(self.output_root_dir)
 
         # Set up Jinja2 environment
         self.jinja_env = Environment(
@@ -109,6 +110,12 @@ class CVESiteBuilder:
             logger.info(f"📊 Coverage: 1999-{self.current_year} ({len(self.available_years)} years)")
             logger.info(f"🌐 Web output: {self.web_dir}")
             logger.debug(f"📁 Data scripts: {self.data_scripts_dir}")
+
+    def _set_output_dirs(self, web_dir: Path) -> None:
+        """Update output directory paths for staged/production builds."""
+        self.web_dir = web_dir
+        self.static_dir = self.web_dir / "static"
+        self.data_dir = self.web_dir / "data"
 
     def print_verbose(self, message: str) -> None:
         """Print message only if not in quiet mode"""
@@ -179,22 +186,14 @@ class CVESiteBuilder:
             return False
 
     def clean_build(self) -> None:
-        """Clean and recreate the web directory"""
+        """Clean and recreate the active output directory."""
         self.print_verbose("🧹 Cleaning web directory...")
 
-        # Remove existing HTML files and data directory, but keep static assets
         if self.web_dir.exists():
-            # Remove HTML files
-            for html_file in self.web_dir.glob("*.html"):
-                html_file.unlink()
+            shutil.rmtree(self.web_dir)
 
-            # Remove and recreate data directory
-            if self.data_dir.exists():
-                shutil.rmtree(self.data_dir)
-
-        # Create directory structure
-        self.web_dir.mkdir(exist_ok=True)
-        self.data_dir.mkdir(exist_ok=True)
+        self.web_dir.mkdir(parents=True, exist_ok=True)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
 
         self.print_verbose("✅ Web directory cleaned and recreated")
 
@@ -203,8 +202,12 @@ class CVESiteBuilder:
         self.print_verbose("📁 Checking static assets...")
 
         if not self.static_dir.exists():
-            self.print_verbose("⚠️  Warning: Static directory not found, creating...")
-            self.static_dir.mkdir(parents=True, exist_ok=True)
+            if self.source_static_dir.exists() and self.static_dir != self.source_static_dir:
+                self.print_verbose("📦 Copying static assets into staged output...")
+                shutil.copytree(self.source_static_dir, self.static_dir)
+            else:
+                self.print_verbose("⚠️  Warning: Static directory not found, creating...")
+                self.static_dir.mkdir(parents=True, exist_ok=True)
 
         # Check for required files
         required_files = ["css/style.css", "js/chart.min.js", "images/logo.png"]
@@ -216,7 +219,82 @@ class CVESiteBuilder:
             else:
                 self.print_verbose(f"  ⚠️  Missing {file_path}")
 
+        # Preserve root-level deployment files (for example GitHub Pages custom domain).
+        for root_file_name in ["CNAME"]:
+            source_root_file = self.output_root_dir / root_file_name
+            destination_root_file = self.web_dir / root_file_name
+            if source_root_file.exists():
+                shutil.copy2(source_root_file, destination_root_file)
+                self.print_verbose(f"  ✅ Preserved {root_file_name}")
+
         self.print_verbose("✅ Static assets check complete")
+
+    def validate_build_outputs(self) -> None:
+        """Validate critical artifacts before publishing staged output."""
+        required_html = [
+            "index.html",
+            "years.html",
+            "cna-hub.html",
+            "cna.html",
+            "cpe.html",
+            "cvss.html",
+            "cwe.html",
+            "calendar.html",
+            "growth.html",
+            "scoring.html",
+            "epss.html",
+            "kev.html",
+            "data-quality.html",
+            "about.html",
+        ]
+        required_json = [
+            "cna_analysis.json",
+            "cna_analysis_current_year.json",
+            "cpe_analysis.json",
+            "cpe_analysis_current_year.json",
+            "cvss_analysis.json",
+            "cvss_analysis_current_year.json",
+            "cwe_analysis.json",
+            "cwe_analysis_current_year.json",
+            "calendar_analysis.json",
+            "calendar_analysis_current_year.json",
+            "growth_analysis.json",
+            "yearly_summary.json",
+            "cve_all.json",
+            "epss_analysis.json",
+            "kev_analysis.json",
+            "risk_matrix.json",
+            "scoring_comparison.json",
+            "data_quality.json",
+            "homepage_summary.json",
+        ]
+
+        missing_html = [name for name in required_html if not (self.web_dir / name).exists()]
+        missing_json = [name for name in required_json if not (self.data_dir / name).exists()]
+        if missing_html or missing_json:
+            missing = ", ".join([*missing_html, *[f"data/{name}" for name in missing_json]])
+            raise RuntimeError(f"Missing required build artifacts: {missing}")
+
+    def publish_staged_site(self, staged_web_dir: Path) -> None:
+        """Atomically replace production web output with staged build."""
+        final_web_dir = self.output_root_dir
+        backup_web_dir = self.base_dir / ".web_backup"
+
+        if backup_web_dir.exists():
+            shutil.rmtree(backup_web_dir)
+
+        if final_web_dir.exists():
+            final_web_dir.rename(backup_web_dir)
+
+        try:
+            staged_web_dir.rename(final_web_dir)
+        except OSError as exc:
+            if backup_web_dir.exists() and not final_web_dir.exists():
+                backup_web_dir.rename(final_web_dir)
+            raise RuntimeError(f"Failed to publish staged site: {exc}") from exc
+        else:
+            if backup_web_dir.exists():
+                shutil.rmtree(backup_web_dir)
 
     def generate_year_data_json(self) -> list[dict[str, Any]]:
         """Generate JSON data files for all available years"""
@@ -350,6 +428,12 @@ class CVESiteBuilder:
 
             traceback.print_exc()
             logger.warning("  ⚠️  Current year CNA analysis will be missing")
+
+        # Fall back to NVD-based CNA analysis if CVE V5 artifacts are unavailable.
+        if not (self.data_dir / "cna_analysis.json").exists() or not (
+            self.data_dir / "cna_analysis_current_year.json"
+        ).exists():
+            self.generate_cna_analysis_fallback(all_year_data)
 
         # Generate CPE analysis
         try:
@@ -578,6 +662,7 @@ class CVESiteBuilder:
 
         # Generate cve_all.json from year data
         self.generate_cve_all_json(all_year_data)
+        self.generate_homepage_summary_json(all_year_data)
 
         logger.info("✅ Combined analysis JSON files generated")
 
@@ -589,7 +674,152 @@ class CVESiteBuilder:
             "calendar_analysis": "generated",
             "growth_analysis": "generated",
             "cve_all": "generated",
+            "homepage_summary": "generated",
         }
+
+    def _read_json_file(self, file_name: str, default: Any) -> Any:
+        """Read a JSON file from the output data directory with graceful fallback."""
+        file_path = self.data_dir / file_name
+        if not file_path.exists():
+            logger.warning(f"  ⚠️  Missing {file_name}, using defaults for homepage summary")
+            return default
+
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning(f"  ⚠️  Could not read {file_name} ({e}), using defaults for homepage summary")
+            return default
+
+    def generate_homepage_summary_json(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Generate a compact aggregate payload for homepage charts and stat cards."""
+        logger.info("  🏠 Generating homepage_summary.json...")
+
+        # Build compact yearly totals directly from generated year data.
+        yearly_summary_years: dict[str, dict[str, Any]] = {}
+        for year_data in sorted(all_year_data, key=lambda x: x.get("year", 0)):
+            year = year_data.get("year")
+            if not isinstance(year, int):
+                continue
+            yearly_summary_years[str(year)] = {
+                "year": year,
+                "total_cves": year_data.get("total_cves", 0),
+            }
+
+        growth_analysis_raw = self._read_json_file("growth_analysis.json", {})
+        cvss_analysis_raw = self._read_json_file("cvss_analysis.json", {})
+        epss_analysis_raw = self._read_json_file("epss_analysis.json", {})
+        kev_analysis_raw = self._read_json_file("kev_analysis.json", {})
+        cwe_analysis_raw = self._read_json_file("cwe_analysis.json", {})
+        cna_analysis_raw = self._read_json_file("cna_analysis.json", {})
+        cpe_analysis_raw = self._read_json_file("cpe_analysis.json", {})
+        calendar_current_year_raw = self._read_json_file("calendar_analysis_current_year.json", {})
+
+        homepage_summary = {
+            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "current_year": self.current_year,
+            "yearly_summary": {
+                "years": yearly_summary_years,
+            },
+            "growth_analysis": {
+                "growth_data": growth_analysis_raw.get("growth_data", []),
+            },
+            "cvss_analysis": {
+                "score_distribution": cvss_analysis_raw.get("score_distribution", {}),
+                "kev_global_count": cvss_analysis_raw.get("kev_global_count", 0),
+            },
+            "epss_analysis": {
+                "statistics": epss_analysis_raw.get("statistics", {}),
+                "total_cves_with_epss": epss_analysis_raw.get("total_cves_with_epss", 0),
+            },
+            "kev_analysis": {
+                "statistics": kev_analysis_raw.get("statistics", {}),
+                "by_year_added": kev_analysis_raw.get("by_year_added", {}),
+                "by_year_published": kev_analysis_raw.get("by_year_published", {}),
+            },
+            "cwe_analysis": {
+                "top_cwes": cwe_analysis_raw.get("top_cwes", [])[:10],
+            },
+            "cna_analysis": {
+                "cna_list": cna_analysis_raw.get("cna_list", [])[:25],
+            },
+            "cpe_analysis": {
+                "top_cpes": cpe_analysis_raw.get("top_cpes", [])[:25],
+            },
+            "calendar_analysis_current_year": {
+                "daily_data": calendar_current_year_raw.get("daily_data", []),
+            },
+        }
+
+        output_file = self.data_dir / "homepage_summary.json"
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(homepage_summary, f, indent=2)
+
+        logger.info("  ✅ Generated homepage_summary.json")
+
+    def generate_cna_analysis_fallback(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Fallback CNA generation using cached NVD data when CVE V5 data is unavailable."""
+        logger.warning("  ⚠️  Falling back to NVD-based CNA analysis")
+        try:
+            from cna_analysis import CNAAnalyzer
+
+            cna_analyzer = CNAAnalyzer(self.base_dir, self.cache_dir, self.data_dir, quiet=self.quiet)
+            comprehensive = cna_analyzer.generate_comprehensive_cna_analysis(all_year_data)
+            cna_list = comprehensive.get("cna_list", [])
+            fallback_total = sum(cna.get("count", 0) for cna in cna_list)
+            comprehensive["repository_stats"] = {
+                "total_cves": fallback_total,
+                "source": "nvd_fallback",
+            }
+
+            # Persist normalized fallback metadata for downstream validation.
+            with open(self.data_dir / "cna_analysis.json", "w", encoding="utf-8") as f:
+                json.dump(comprehensive, f, indent=2)
+
+            current_year_data = next((data for data in all_year_data if data.get("year") == self.current_year), {})
+            current_year = cna_analyzer.generate_current_year_cna_analysis(current_year_data)
+
+            logger.info(
+                "  ✅ Fallback CNA analysis generated: "
+                f"{comprehensive.get('total_cnas', 0)} total CNAs, "
+                f"{current_year.get('total_cnas', 0)} current-year CNAs, "
+                f"{fallback_total:,} total CVEs"
+            )
+        except (ImportError, json.JSONDecodeError, OSError, KeyError, TypeError) as e:
+            logger.error(f"  ❌ Fallback CNA analysis failed: {e}")
+
+    def _write_fallback_data_quality_json(self, reason: str) -> None:
+        """Write a minimal data_quality.json payload when detailed analysis cannot be generated."""
+        fallback_data = {
+            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "status": "fallback",
+            "reason": reason,
+            "stats": {
+                "total_cnas_in_analysis": 0,
+                "exact_matches": 0,
+                "case_mismatches": 0,
+                "org_name_matches": 0,
+                "normalized_matches": 0,
+                "partial_matches": 0,
+                "unmatched": 0,
+                "case_mismatch_cves": 0,
+                "org_name_match_cves": 0,
+                "normalized_match_cves": 0,
+                "partial_match_cves": 0,
+                "unmatched_cves": 0,
+            },
+            "case_mismatches": [],
+            "org_name_matches": [],
+            "normalized_matches": [],
+            "partial_matches": [],
+            "unmatched": [],
+        }
+
+        output_file = self.data_dir / "data_quality.json"
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(fallback_data, f, indent=2)
+
+        logger.warning(f"  ⚠️  Wrote fallback data_quality.json ({reason})")
 
     def generate_cve_all_json(self, all_year_data: list[dict[str, Any]]) -> None:
         """Generate overall CVE statistics across all years"""
@@ -711,6 +941,10 @@ class CVESiteBuilder:
         """Generate data quality analysis JSON using CNAScorecard-style name matching"""
         logger.info("🔍 Generating data quality analysis...")
 
+        output_env_key = "CVE_OUTPUT_DATA_DIR"
+        previous_output_env = os.environ.get(output_env_key)
+        os.environ[output_env_key] = str(self.data_dir)
+
         try:
             # Import and run the rebuild_data_quality script
             import sys
@@ -725,18 +959,34 @@ class CVESiteBuilder:
             spec = importlib.util.spec_from_file_location(
                 "rebuild_data_quality", script_dir / "rebuild_data_quality.py"
             )
+            if spec is None or spec.loader is None:
+                raise ImportError("Could not load rebuild_data_quality module")
             rebuild_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(rebuild_module)
 
             # Run the main function (it handles its own output)
             rebuild_module.main()
 
-            logger.info("  ✅ Data quality analysis generated")
+            output_file = self.data_dir / "data_quality.json"
+            if output_file.exists():
+                logger.info("  ✅ Data quality analysis generated")
+            else:
+                self._write_fallback_data_quality_json("rebuild script completed without output")
 
         except FileNotFoundError:
             logger.warning("  ⚠️  rebuild_data_quality.py not found, skipping data quality analysis")
+            self._write_fallback_data_quality_json("rebuild_data_quality.py not found")
+        except SystemExit as e:
+            logger.warning(f"  ⚠️  Data quality script exited early ({e}), skipping data quality analysis")
+            self._write_fallback_data_quality_json(f"data quality script exited early ({e})")
         except (ImportError, OSError) as e:
             logger.warning(f"  ⚠️  Error generating data quality: {e}")
+            self._write_fallback_data_quality_json(f"data quality generation error: {e}")
+        finally:
+            if previous_output_env is None:
+                os.environ.pop(output_env_key, None)
+            else:
+                os.environ[output_env_key] = previous_output_env
 
     def generate_html_pages(self) -> None:
         """Generate HTML pages from templates"""
@@ -794,6 +1044,9 @@ class CVESiteBuilder:
         if not self.quiet:
             logger.info("=" * 50)
 
+        staged_web_dir = Path(tempfile.mkdtemp(prefix=".web_build_", dir=self.base_dir))
+        self._set_output_dirs(staged_web_dir)
+
         try:
             # Step 0: Optionally refresh data from upstream sources
             if refresh_data and not self.refresh_data(force=force_refresh):
@@ -825,6 +1078,13 @@ class CVESiteBuilder:
             # Step 7: Generate HTML pages
             self.generate_html_pages()
 
+            # Step 8: Validate generated artifacts before publishing
+            self.validate_build_outputs()
+
+            # Step 9: Atomically publish staged output
+            self.publish_staged_site(staged_web_dir)
+            self._set_output_dirs(self.output_root_dir)
+
             if not self.quiet:
                 logger.info("\n" + "=" * 50)
             self.print_always("✅ Build completed successfully!")
@@ -839,13 +1099,17 @@ class CVESiteBuilder:
 
             return True
 
-        except (ImportError, json.JSONDecodeError, OSError, jinja2.TemplateError) as e:
+        except (ImportError, json.JSONDecodeError, OSError, RuntimeError, jinja2.TemplateError) as e:
             logger.error(f"\n❌ Build failed: {e}")
             if not self.quiet:
                 import traceback
 
                 traceback.print_exc()
             return False
+        finally:
+            self._set_output_dirs(self.output_root_dir)
+            if staged_web_dir.exists():
+                shutil.rmtree(staged_web_dir, ignore_errors=True)
 
 
 def main() -> None:

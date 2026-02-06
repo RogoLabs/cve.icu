@@ -12,6 +12,10 @@ httpx>=0.27.0  # Async HTTP client for parallel downloads
 # Date and time handling
 python-dateutil>=2.8.0
 
+# Performance optimizations (optional but recommended)
+orjson>=3.9.0  # 5x faster JSON parsing (Rust-based)
+# ijson>=3.2.0  # Streaming JSON for very large files (optional)
+
 # JSON handling (built-in, but explicit for clarity)
 # json - built-in
 

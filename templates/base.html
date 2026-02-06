@@ -134,14 +134,81 @@
     
     <!-- Universal timestamp loader -->
     <script>
+    // Shared request cache to deduplicate JSON fetches within a page load.
+    window.CVE_REQUEST_CACHE = window.CVE_REQUEST_CACHE || new Map();
+    window.fetchJsonCached = window.fetchJsonCached || function(url, options = {}) {
+        const {
+            force = false,
+            retries = 2,
+            timeoutMs = 10000,
+            retryDelayMs = 300
+        } = options;
+        const resolvedUrl = new URL(url, window.location.href).toString();
+
+        if (!force && window.CVE_REQUEST_CACHE.has(resolvedUrl)) {
+            return window.CVE_REQUEST_CACHE.get(resolvedUrl);
+        }
+
+        const retryableStatuses = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const isRetryableNetworkError = (error) => {
+            if (!error) return false;
+            if (error.name === 'AbortError') return true;
+            const message = String(error.message || '').toLowerCase();
+            return message.includes('networkerror') || message.includes('failed to fetch');
+        };
+        const doFetch = async (attempt = 0) => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(resolvedUrl, { signal: controller.signal });
+                if (!response.ok) {
+                    const error = new Error(`HTTP error ${response.status} for ${resolvedUrl}`);
+                    error.status = response.status;
+                    throw error;
+                }
+                return await response.json();
+            } catch (error) {
+                const status = typeof error.status === 'number' ? error.status : null;
+                const canRetry = attempt < retries && (
+                    isRetryableNetworkError(error) ||
+                    (status !== null && retryableStatuses.has(status))
+                );
+
+                if (!canRetry) {
+                    throw error;
+                }
+
+                const backoffMs = retryDelayMs * Math.pow(2, attempt);
+                await wait(backoffMs);
+                return doFetch(attempt + 1);
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        };
+
+        const request = doFetch();
+
+        // Remove failed entries so retries can recover.
+        const cachedRequest = request.catch(error => {
+            window.CVE_REQUEST_CACHE.delete(resolvedUrl);
+            throw error;
+        });
+
+        if (!force) {
+            window.CVE_REQUEST_CACHE.set(resolvedUrl, cachedRequest);
+        }
+        return cachedRequest;
+    };
+
     // Universal function to load and display the last updated timestamp
     // Uses cve_all.json as the single source of truth for all pages
     function loadUniversalTimestamp() {
         const lastUpdatedElement = document.getElementById('lastUpdated');
         if (!lastUpdatedElement) return;
         
-        fetch('data/cve_all.json?v=' + new Date().getTime())
-            .then(response => response.json())
+        window.fetchJsonCached('data/cve_all.json')
             .then(data => {
                 if (data.generated_at) {
                     const date = new Date(data.generated_at);

@@ -16,6 +16,7 @@ Matching strategies (in order):
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -32,8 +33,8 @@ except ImportError:
 
 logger = get_logger(__name__)
 
-# Get the data directory
-WEB_DATA_DIR = DATA_DIR.parent / "web" / "data"
+# Get the data directory (override-able for staged builds)
+WEB_DATA_DIR = Path(os.environ.get("CVE_OUTPUT_DATA_DIR", str(DATA_DIR.parent / "web" / "data")))
 CACHE_DIR = DATA_DIR / "cache"
 
 

@@ -3,6 +3,12 @@
 CVE Years Analyzer
 Processes CVE data from JSONL file and generates yearly analysis data
 Handles historical data (1999-2016) and individual years (2017-present)
+
+Performance Optimizations (2026-01-10):
+- Optimized JSON loading with orjson (when available)
+- Cached date parsing for repeated date strings
+- Pre-computed lookup tables for severity normalization
+- Reduced memory allocations in hot loops
 """
 from __future__ import annotations
 
@@ -10,11 +16,26 @@ import json
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
 from download_cve_data import CVEDataDownloader
+
+# Import optimized utilities if available
+try:
+    from data.fast_json import load_json_fast, normalize_severity, parse_iso_date_cached
+    FAST_JSON_AVAILABLE = True
+except ImportError:
+    try:
+        from fast_json import load_json_fast, normalize_severity, parse_iso_date_cached
+        FAST_JSON_AVAILABLE = True
+    except ImportError:
+        FAST_JSON_AVAILABLE = False
+        load_json_fast = None
+        normalize_severity = None
+        parse_iso_date_cached = None
 
 try:
     from data.logging_config import get_logger
@@ -22,6 +43,36 @@ except ImportError:
     from logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+# Pre-computed severity normalization lookup (faster than match/case in hot loop)
+_SEVERITY_MAP = {
+    'CRITICAL': 'CRITICAL', 'CRIT': 'CRITICAL', 'C': 'CRITICAL',
+    'HIGH': 'HIGH', 'H': 'HIGH',
+    'MEDIUM': 'MEDIUM', 'MED': 'MEDIUM', 'M': 'MEDIUM',
+    'LOW': 'LOW', 'L': 'LOW',
+    'NONE': 'NONE', 'N': 'NONE',
+}
+
+
+@lru_cache(maxsize=10000)
+def _fast_parse_date(date_str: str) -> datetime | None:
+    """Parse ISO date string with caching for repeated values."""
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+def _normalize_severity_fast(severity: str | None) -> str:
+    """Normalize severity using pre-computed lookup table."""
+    if not severity:
+        return "UNKNOWN"
+    key = severity.strip().upper()
+    return _SEVERITY_MAP.get(key, key or "UNKNOWN")
+
 
 @dataclass
 class CVEYearsAnalyzer:
@@ -33,6 +84,12 @@ class CVEYearsAnalyzer:
     year_data_cache: dict[int, dict[str, Any]] = field(default_factory=dict)
     cna_list: dict[str, Any] = field(default_factory=dict)
     cna_name_map: dict[str, str] = field(default_factory=dict)
+    all_cves_cache: list[dict[str, Any]] | None = None
+    year_cve_buckets: dict[int, list[tuple[dict[str, Any], datetime]]] = field(default_factory=dict)
+    year_buckets_built: bool = False
+    epss_mapping: dict[str, dict[str, Any]] = field(default_factory=dict)
+    kev_mapping: dict[str, bool] = field(default_factory=dict)
+    threat_mappings_loaded: bool = False
     
     def __post_init__(self) -> None:
         """Initialize downloader and log startup."""
@@ -47,33 +104,15 @@ class CVEYearsAnalyzer:
         This is intentionally conservative and mirrors the original notebook
         logic: prefer v3.1, then v3.0, then v2.0, and fall back to
         "UNKNOWN"/0.0 when nothing is available.
+        
+        Performance: Uses pre-computed lookup table instead of match/case.
         """
-
-        def _normalize(severity: str | None) -> str:
-            if not severity:
-                return "UNKNOWN"
-            sev = str(severity).strip().upper()
-            # Common variants across NVD data using match/case
-            match sev:
-                case "CRITICAL" | "CRIT":
-                    return "CRITICAL"
-                case "HIGH" | "H":
-                    return "HIGH"
-                case "MEDIUM" | "MED":
-                    return "MEDIUM"
-                case "LOW" | "L":
-                    return "LOW"
-                case "NONE" | "N":
-                    return "NONE"
-                case _:
-                    return sev or "UNKNOWN"
-
         # NVD 1.1+ style: metrics are under cve.metrics
         metrics = cve_data.get("cve", {}).get("metrics", {})
 
-        # Helper to extract from a metrics list by key
-        def _from_metrics(key, version_label):
-            entries = metrics.get(key) or []
+        # Helper to extract from a metrics list by key (optimized)
+        def _from_metrics(key: str, version_label: str) -> dict[str, Any] | None:
+            entries = metrics.get(key)
             if not entries:
                 return None
             # Take the first entry as representative
@@ -86,7 +125,7 @@ class CVEYearsAnalyzer:
                 score_val = 0.0
             return {
                 "version": version_label,
-                "severity": _normalize(severity),
+                "severity": _normalize_severity_fast(severity),
                 "score": score_val,
             }
 
@@ -113,7 +152,7 @@ class CVEYearsAnalyzer:
                 severity = base_metric.get("baseSeverity", "UNKNOWN")
                 return {
                     "version": "v3.0",
-                    "severity": _normalize(severity),
+                    "severity": _normalize_severity_fast(severity),
                     "score": float(score) if score is not None else 0.0,
                 }
         except (TypeError, KeyError, ValueError):
@@ -127,19 +166,19 @@ class CVEYearsAnalyzer:
 
         Tries multiple known NVD-style shapes and falls back to lastModified or
         the year embedded in the CVE ID if necessary.
+        
+        Performance: Uses cached date parsing for repeated date strings.
         """
-
         # Prioritize cve['published'] and similar keys (NVD JSONL structure)
         for key in ("published", "publishedDate", "publishDate"):
             date_str = cve_data.get("cve", {}).get(key)
             if not date_str:
                 date_str = cve_data.get(key)
             if date_str:
-                try:
-                    # Handle ISO8601 with or without fractional seconds
-                    return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                except (ValueError, TypeError):
-                    pass
+                # Use cached parsing for better performance
+                result = _fast_parse_date(date_str)
+                if result:
+                    return result
 
         # Try lastModified style keys as a fallback
         for key in ("lastModified", "lastModifiedDate"):
@@ -147,10 +186,9 @@ class CVEYearsAnalyzer:
             if not date_str:
                 date_str = cve_data.get("cve", {}).get(key)
             if date_str:
-                try:
-                    return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                except (ValueError, TypeError):
-                    pass
+                result = _fast_parse_date(date_str)
+                if result:
+                    return result
 
         # Legacy / alternative layouts: sometimes dates are nested under cve
         # metadata or configurations – keep this best-effort and very defensive.
@@ -160,10 +198,9 @@ class CVEYearsAnalyzer:
             for key in ("DATE_PUBLIC", "date_public", "date"):
                 date_str = meta.get(key)
                 if date_str:
-                    try:
-                        return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                    except (ValueError, TypeError):
-                        pass
+                    result = _fast_parse_date(date_str)
+                    if result:
+                        return result
         except (KeyError, TypeError, AttributeError):
             pass
 
@@ -193,6 +230,101 @@ class CVEYearsAnalyzer:
             if not self.quiet:
                 logger.info(f"✅ Data loaded from: {self.data_file}")
 
+    def _load_all_cves(self) -> list[dict[str, Any]]:
+        """Load all CVE records once and cache for reuse across year processing."""
+        if self.all_cves_cache is not None:
+            return self.all_cves_cache
+
+        self.ensure_data_loaded()
+        if not self.quiet:
+            logger.debug("  📊 Reading JSON array format...")
+
+        if self.data_file is None:
+            self.all_cves_cache = []
+            return self.all_cves_cache
+
+        try:
+            if FAST_JSON_AVAILABLE and load_json_fast:
+                self.all_cves_cache = load_json_fast(self.data_file)
+                if not self.quiet:
+                    logger.debug(f"  📊 Loaded {len(self.all_cves_cache)} CVE records (using fast_json)")
+            else:
+                with open(self.data_file, "r", encoding="utf-8") as f:
+                    self.all_cves_cache = json.load(f)
+                if not self.quiet:
+                    logger.debug(f"  📊 Loaded {len(self.all_cves_cache)} CVE records")
+        except (json.JSONDecodeError, OSError) as e:
+            logger.error(f"  ❌ Failed to parse JSON: {e}")
+            self.all_cves_cache = []
+
+        return self.all_cves_cache
+
+    def _ensure_year_buckets(self) -> None:
+        """Bucket CVEs by publication year in a single pass."""
+        if self.year_buckets_built:
+            return
+
+        all_cves = self._load_all_cves()
+        buckets: defaultdict[int, list[tuple[dict[str, Any], datetime]]] = defaultdict(list)
+
+        for cve_idx, cve_data in enumerate(all_cves):
+            if cve_idx % 10000 == 0 and cve_idx > 0 and not self.quiet:
+                logger.debug(f"  📊 Indexed {cve_idx:,} CVEs by publication year...")
+
+            cve_id = cve_data.get("cve", {}).get("id", "")
+            if not cve_id.startswith("CVE-"):
+                continue
+
+            vuln_status = cve_data.get("cve", {}).get("vulnStatus", "")
+            if "Rejected" in vuln_status:
+                continue
+
+            pub_date = self.parse_cve_date(cve_data)
+            if pub_date is None:
+                continue
+
+            buckets[pub_date.year].append((cve_data, pub_date))
+
+        self.year_cve_buckets = dict(buckets)
+        self.year_buckets_built = True
+
+        # Buckets now hold references to CVE records; drop list container overhead.
+        self.all_cves_cache = None
+
+    def _ensure_threat_mappings_loaded(self) -> None:
+        """Load EPSS and KEV mappings once for all year analyses."""
+        if self.threat_mappings_loaded:
+            return
+
+        try:
+            epss_json = self.downloader.epss_parsed_file
+            if not epss_json.exists():
+                epss_json = self.downloader.parse_epss_csv()
+            if epss_json and Path(epss_json).exists():
+                with open(epss_json, "r", encoding="utf-8") as ef:
+                    self.epss_mapping = json.load(ef)
+            else:
+                self.epss_mapping = {}
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.debug(f"EPSS data not available: {e}")
+            self.epss_mapping = {}
+
+        try:
+            kev_json = self.downloader.kev_parsed_file
+            if not kev_json.exists():
+                kev_json = self.downloader.parse_kev_json()
+            if kev_json and Path(kev_json).exists():
+                with open(kev_json, "r", encoding="utf-8") as kf:
+                    raw = json.load(kf)
+                    self.kev_mapping = {k: bool(v) for k, v in raw.items()}
+            else:
+                self.kev_mapping = {}
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.debug(f"KEV data not available: {e}")
+            self.kev_mapping = {}
+
+        self.threat_mappings_loaded = True
+
     def process_year_data(self, year: int) -> dict[str, Any]:
         """Process CVE data for a specific year"""
         if year in self.year_data_cache:
@@ -220,19 +352,11 @@ class CVEYearsAnalyzer:
         reference_tag_counts = Counter()
         cpe_vendor_counts = Counter()
 
-        if not self.quiet:
-            logger.info("🔽 Loading CVE data...")
-
-        if not self.quiet:
-            logger.debug("  📊 Reading JSON array format...")
-        with open(self.data_file, 'r', encoding='utf-8') as f:
-            try:
-                all_cves = json.load(f)
-                if not self.quiet:
-                    logger.debug(f"  📊 Loaded {len(all_cves)} CVE records")
-            except json.JSONDecodeError as e:
-                logger.error(f"  ❌ Failed to parse JSON: {e}")
-                return self.create_empty_year_data(year)
+        try:
+            self._ensure_year_buckets()
+        except (json.JSONDecodeError, OSError) as e:
+            logger.error(f"  ❌ Failed to index CVE data by year: {e}")
+            return self.create_empty_year_data(year)
 
         # EPSS summary buckets for this year (using precomputed mapping)
         epss_buckets = {
@@ -246,60 +370,21 @@ class CVEYearsAnalyzer:
             'kev_count': 0,
         }
 
-        # Lazy-load EPSS mapping once per analyzer instance (best-effort)
-        if not hasattr(self, 'epss_mapping'):
-            try:
-                epss_json = self.downloader.epss_parsed_file
-                if not epss_json.exists():
-                    epss_json = self.downloader.parse_epss_csv()
-                if epss_json and Path(epss_json).exists():
-                    with open(epss_json, 'r', encoding='utf-8') as ef:
-                        self.epss_mapping = json.load(ef)
-                else:
-                    self.epss_mapping = {}
-            except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
-                logger.debug(f"EPSS data not available: {e}")
-                self.epss_mapping = {}
+        self._ensure_threat_mappings_loaded()
 
-            # Lazy-load KEV mapping once per analyzer instance (best-effort)
-            if not hasattr(self, 'kev_mapping'):
-                try:
-                    kev_json = self.downloader.kev_parsed_file
-                    if not kev_json.exists():
-                        kev_json = self.downloader.parse_kev_json()
-                    if kev_json and Path(kev_json).exists():
-                        with open(kev_json, 'r', encoding='utf-8') as kf:
-                            raw = json.load(kf)
-                            # Stored as {"CVE-...": true, ...}
-                            self.kev_mapping = {k: bool(v) for k, v in raw.items()}
-                    else:
-                        self.kev_mapping = {}
-                except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
-                    logger.debug(f"KEV data not available: {e}")
-                    self.kev_mapping = {}
+        year_records = self.year_cve_buckets.get(year, [])
+        if not self.quiet:
+            logger.debug(f"  📊 Processing {len(year_records):,} CVEs bucketed for {year}")
 
-        # Process each CVE record
+        # Process each CVE record for the selected year
         total_cves = 0
-        for cve_idx, cve_data in enumerate(all_cves):
+        for cve_idx, (cve_data, pub_date) in enumerate(year_records):
             if cve_idx % 10000 == 0 and cve_idx > 0 and not self.quiet:
                 logger.debug(f"  📊 Processed {cve_idx:,} CVEs...")
 
             try:
                 cve_id = cve_data.get('cve', {}).get('id', '')
-                if not cve_id.startswith('CVE-'):
-                    continue
-
                 vuln_status = cve_data.get('cve', {}).get('vulnStatus', '')
-                if 'Rejected' in vuln_status:
-                    continue
-
-                pub_date = self.parse_cve_date(cve_data)
-                if not pub_date:
-                    continue
-
-                actual_year = pub_date.year
-                if actual_year != year:
-                    continue
 
                 total_cves += 1
 

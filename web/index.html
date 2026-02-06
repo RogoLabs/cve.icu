@@ -404,14 +404,81 @@
     
     <!-- Universal timestamp loader -->
     <script>
+    // Shared request cache to deduplicate JSON fetches within a page load.
+    window.CVE_REQUEST_CACHE = window.CVE_REQUEST_CACHE || new Map();
+    window.fetchJsonCached = window.fetchJsonCached || function(url, options = {}) {
+        const {
+            force = false,
+            retries = 2,
+            timeoutMs = 10000,
+            retryDelayMs = 300
+        } = options;
+        const resolvedUrl = new URL(url, window.location.href).toString();
+
+        if (!force && window.CVE_REQUEST_CACHE.has(resolvedUrl)) {
+            return window.CVE_REQUEST_CACHE.get(resolvedUrl);
+        }
+
+        const retryableStatuses = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const isRetryableNetworkError = (error) => {
+            if (!error) return false;
+            if (error.name === 'AbortError') return true;
+            const message = String(error.message || '').toLowerCase();
+            return message.includes('networkerror') || message.includes('failed to fetch');
+        };
+        const doFetch = async (attempt = 0) => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(resolvedUrl, { signal: controller.signal });
+                if (!response.ok) {
+                    const error = new Error(`HTTP error ${response.status} for ${resolvedUrl}`);
+                    error.status = response.status;
+                    throw error;
+                }
+                return await response.json();
+            } catch (error) {
+                const status = typeof error.status === 'number' ? error.status : null;
+                const canRetry = attempt < retries && (
+                    isRetryableNetworkError(error) ||
+                    (status !== null && retryableStatuses.has(status))
+                );
+
+                if (!canRetry) {
+                    throw error;
+                }
+
+                const backoffMs = retryDelayMs * Math.pow(2, attempt);
+                await wait(backoffMs);
+                return doFetch(attempt + 1);
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        };
+
+        const request = doFetch();
+
+        // Remove failed entries so retries can recover.
+        const cachedRequest = request.catch(error => {
+            window.CVE_REQUEST_CACHE.delete(resolvedUrl);
+            throw error;
+        });
+
+        if (!force) {
+            window.CVE_REQUEST_CACHE.set(resolvedUrl, cachedRequest);
+        }
+        return cachedRequest;
+    };
+
     // Universal function to load and display the last updated timestamp
     // Uses cve_all.json as the single source of truth for all pages
     function loadUniversalTimestamp() {
         const lastUpdatedElement = document.getElementById('lastUpdated');
         if (!lastUpdatedElement) return;
         
-        fetch('data/cve_all.json?v=' + new Date().getTime())
-            .then(response => response.json())
+        window.fetchJsonCached('data/cve_all.json')
             .then(data => {
                 if (data.generated_at) {
                     const date = new Date(data.generated_at);
@@ -711,6 +778,23 @@
     
 <script>
 // Global CVSS variables removed temporarily
+let homepageSummaryPromise = null;
+
+function getHomepageSummary() {
+    if (!homepageSummaryPromise) {
+        homepageSummaryPromise = window.fetchJsonCached('data/homepage_summary.json');
+    }
+    return homepageSummaryPromise;
+}
+
+function getHomepageDataset(key) {
+    return getHomepageSummary().then(summary => {
+        if (!summary || typeof summary !== 'object') {
+            throw new Error('Invalid homepage summary payload');
+        }
+        return summary[key] || {};
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for Chart.js and CVE_COLORS to be available
@@ -735,53 +819,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }]
         };
         
-        // Load actual CVE data from JSON files
+        // Load year totals from yearly_summary to avoid one request per year
         const currentYear = new Date().getFullYear();
-        const loadPromises = [];
-        
-        // Generate years from 1999 to current year and load data
-        for (let year = 1999; year <= currentYear; year++) {
-            yearlyData.labels.push(year.toString());
-            
-            // Load actual CVE data for each year
-            const promise = fetch(`data/cve_${year}.json`)
-                .then(response => {
-                    if (!response.ok) {
-                        console.warn(`No data found for year ${year}`);
-                        return { total_cves: 0 };
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    return { year: year, count: data.total_cves || 0 };
-                })
-                .catch(error => {
-                    console.warn(`Error loading data for year ${year}:`, error);
-                    return { year: year, count: 0 };
-                });
-            
-            loadPromises.push(promise);
-        }
-        
-        // Wait for all data to load, then create the chart and update stats
-        Promise.all(loadPromises).then(results => {
-            // Sort results by year to ensure correct order
-            results.sort((a, b) => a.year - b.year);
-            
-            // Extract the CVE counts in the correct order
-            yearlyData.datasets[0].data = results.map(result => result.count);
-            
-            // Calculate and update statistics
-            updateStatistics(results);
-            
-            // Create the chart with real data
-            createChart();
-        }).catch(error => {
-            console.error('Error loading CVE data:', error);
-            // Fallback: create chart with empty data and show error in stats
-            updateStatisticsError();
-            createChart();
-        });
+        getHomepageDataset('yearly_summary')
+            .then(summaryData => {
+                const yearlySummary = (summaryData && summaryData.years) ? summaryData.years : {};
+                const results = [];
+                
+                for (let year = 1999; year <= currentYear; year++) {
+                    const yearSummary = yearlySummary[year] || yearlySummary[year.toString()] || {};
+                    results.push({ year: year, count: yearSummary.total_cves || 0 });
+                }
+                
+                yearlyData.labels = results.map(result => result.year.toString());
+                yearlyData.datasets[0].data = results.map(result => result.count);
+                
+                // Calculate and update statistics
+                updateStatistics(results);
+                
+                // Create the chart with real data
+                createChart();
+            })
+            .catch(error => {
+                console.error('Error loading CVE data:', error);
+                // Fallback: create chart with empty data and show error in stats
+                updateStatisticsError();
+                createChart();
+            });
         
         function updateStatistics(results) {
             try {
@@ -801,10 +865,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
                 
                 // Load YTD growth data from growth_analysis.json (accurate calculation)
-                fetch('data/growth_analysis.json')
-                    .then(response => response.json())
+                getHomepageDataset('growth_analysis')
                     .then(growthData => {
-                        const currentYearData = growthData.growth_data.find(d => d.is_ytd === true);
+                        const growthSeries = Array.isArray(growthData.growth_data) ? growthData.growth_data : [];
+                        const currentYearData = growthSeries.find(d => d.is_ytd === true);
                         
                         if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
                             const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
@@ -893,8 +957,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSimplePreviewCharts();
 
     // Initialize KEV global stats using cvss_analysis.json
-    fetch('data/cvss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cvss_analysis')
         .then(data => {
             const kevGlobal = data.kev_global_count || 0;
             const el = document.getElementById('kev-global-count');
@@ -908,8 +971,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Threat Intelligence cards
     // Load EPSS analysis data
-    fetch('data/epss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('epss_analysis')
         .then(data => {
             const stats = data.statistics || {};
             const totalWithEpss = data.total_cves_with_epss || 0;
@@ -933,8 +995,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     
     // Load KEV analysis for recent additions
-    fetch('data/kev_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('kev_analysis')
         .then(data => {
             const stats = data.statistics || {};
             const recentEl = document.getElementById('kev-recent');
@@ -970,8 +1031,7 @@ function initializeGrowthPreview() {
     const ctx = document.getElementById('growthPreviewChart');
     if (!ctx) return;
     
-    fetch('data/growth_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('growth_analysis')
         .then(data => {
             const growthData = data.growth_data || [];
             const currentYear = new Date().getFullYear();
@@ -1018,8 +1078,7 @@ function initializeCvssPreview() {
     const ctx = document.getElementById('homepageScoreChart');
     if (!ctx) return;
     
-    fetch('data/cvss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cvss_analysis')
         .then(data => {
             cvssPreviewData = data;
             
@@ -1157,8 +1216,7 @@ function initializeCwePreview() {
     const ctx = document.getElementById('cwePreviewChart');
     if (!ctx) return;
     
-    fetch('data/cwe_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cwe_analysis')
         .then(data => {
             const cweData = data.top_cwes || [];
             const topCWEs = cweData.slice(0, 5);
@@ -1197,8 +1255,7 @@ function initializeCnaPreview() {
     const ctx = document.getElementById('cnaPreviewChart');
     if (!ctx) return;
     
-    fetch('data/cna_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cna_analysis')
         .then(data => {
             const cnaData = data.cna_list || [];
             const topCNAs = cnaData.slice(0, 5);
@@ -1238,8 +1295,7 @@ function initializeCpePreview() {
     const ctx = document.getElementById('cpePreviewChart');
     if (!ctx) return;
     
-    fetch('data/cpe_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cpe_analysis')
         .then(data => {
             const cpeData = data.top_cpes || [];
             const topCPEs = cpeData.slice(0, 5);
@@ -1281,8 +1337,8 @@ function initializeRiskVolumeChart() {
     
     // Load both yearly CVE data and KEV analysis
     Promise.all([
-        fetch('data/yearly_summary.json').then(r => r.json()),
-        fetch('data/kev_analysis.json').then(r => r.json())
+        getHomepageDataset('yearly_summary'),
+        getHomepageDataset('kev_analysis')
     ])
     .then(([yearlyData, kevData]) => {
         // Two KEV metrics:
@@ -1426,8 +1482,7 @@ function initializeCalendarPreview() {
     const ctx = document.getElementById('calendarPreviewChart');
     if (!ctx) return;
     
-    fetch('data/calendar_analysis_current_year.json')
-        .then(response => response.json())
+    getHomepageDataset('calendar_analysis_current_year')
         .then(data => {
             // Aggregate daily_data into monthly totals
             const dailyData = data.daily_data || [];

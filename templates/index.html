@@ -279,6 +279,23 @@
 {% block scripts %}
 <script>
 // Global CVSS variables removed temporarily
+let homepageSummaryPromise = null;
+
+function getHomepageSummary() {
+    if (!homepageSummaryPromise) {
+        homepageSummaryPromise = window.fetchJsonCached('data/homepage_summary.json');
+    }
+    return homepageSummaryPromise;
+}
+
+function getHomepageDataset(key) {
+    return getHomepageSummary().then(summary => {
+        if (!summary || typeof summary !== 'object') {
+            throw new Error('Invalid homepage summary payload');
+        }
+        return summary[key] || {};
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for Chart.js and CVE_COLORS to be available
@@ -303,53 +320,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }]
         };
         
-        // Load actual CVE data from JSON files
+        // Load year totals from yearly_summary to avoid one request per year
         const currentYear = new Date().getFullYear();
-        const loadPromises = [];
-        
-        // Generate years from 1999 to current year and load data
-        for (let year = 1999; year <= currentYear; year++) {
-            yearlyData.labels.push(year.toString());
-            
-            // Load actual CVE data for each year
-            const promise = fetch(`data/cve_${year}.json`)
-                .then(response => {
-                    if (!response.ok) {
-                        console.warn(`No data found for year ${year}`);
-                        return { total_cves: 0 };
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    return { year: year, count: data.total_cves || 0 };
-                })
-                .catch(error => {
-                    console.warn(`Error loading data for year ${year}:`, error);
-                    return { year: year, count: 0 };
-                });
-            
-            loadPromises.push(promise);
-        }
-        
-        // Wait for all data to load, then create the chart and update stats
-        Promise.all(loadPromises).then(results => {
-            // Sort results by year to ensure correct order
-            results.sort((a, b) => a.year - b.year);
-            
-            // Extract the CVE counts in the correct order
-            yearlyData.datasets[0].data = results.map(result => result.count);
-            
-            // Calculate and update statistics
-            updateStatistics(results);
-            
-            // Create the chart with real data
-            createChart();
-        }).catch(error => {
-            console.error('Error loading CVE data:', error);
-            // Fallback: create chart with empty data and show error in stats
-            updateStatisticsError();
-            createChart();
-        });
+        getHomepageDataset('yearly_summary')
+            .then(summaryData => {
+                const yearlySummary = (summaryData && summaryData.years) ? summaryData.years : {};
+                const results = [];
+                
+                for (let year = 1999; year <= currentYear; year++) {
+                    const yearSummary = yearlySummary[year] || yearlySummary[year.toString()] || {};
+                    results.push({ year: year, count: yearSummary.total_cves || 0 });
+                }
+                
+                yearlyData.labels = results.map(result => result.year.toString());
+                yearlyData.datasets[0].data = results.map(result => result.count);
+                
+                // Calculate and update statistics
+                updateStatistics(results);
+                
+                // Create the chart with real data
+                createChart();
+            })
+            .catch(error => {
+                console.error('Error loading CVE data:', error);
+                // Fallback: create chart with empty data and show error in stats
+                updateStatisticsError();
+                createChart();
+            });
         
         function updateStatistics(results) {
             try {
@@ -369,10 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
                 
                 // Load YTD growth data from growth_analysis.json (accurate calculation)
-                fetch('data/growth_analysis.json')
-                    .then(response => response.json())
+                getHomepageDataset('growth_analysis')
                     .then(growthData => {
-                        const currentYearData = growthData.growth_data.find(d => d.is_ytd === true);
+                        const growthSeries = Array.isArray(growthData.growth_data) ? growthData.growth_data : [];
+                        const currentYearData = growthSeries.find(d => d.is_ytd === true);
                         
                         if (currentYearData && typeof currentYearData.ytd_vs_prev_ytd === 'number') {
                             const ytdGrowth = currentYearData.ytd_vs_prev_ytd;
@@ -461,8 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSimplePreviewCharts();
 
     // Initialize KEV global stats using cvss_analysis.json
-    fetch('data/cvss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cvss_analysis')
         .then(data => {
             const kevGlobal = data.kev_global_count || 0;
             const el = document.getElementById('kev-global-count');
@@ -476,8 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Threat Intelligence cards
     // Load EPSS analysis data
-    fetch('data/epss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('epss_analysis')
         .then(data => {
             const stats = data.statistics || {};
             const totalWithEpss = data.total_cves_with_epss || 0;
@@ -501,8 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     
     // Load KEV analysis for recent additions
-    fetch('data/kev_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('kev_analysis')
         .then(data => {
             const stats = data.statistics || {};
             const recentEl = document.getElementById('kev-recent');
@@ -538,8 +532,7 @@ function initializeGrowthPreview() {
     const ctx = document.getElementById('growthPreviewChart');
     if (!ctx) return;
     
-    fetch('data/growth_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('growth_analysis')
         .then(data => {
             const growthData = data.growth_data || [];
             const currentYear = new Date().getFullYear();
@@ -586,8 +579,7 @@ function initializeCvssPreview() {
     const ctx = document.getElementById('homepageScoreChart');
     if (!ctx) return;
     
-    fetch('data/cvss_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cvss_analysis')
         .then(data => {
             cvssPreviewData = data;
             
@@ -725,8 +717,7 @@ function initializeCwePreview() {
     const ctx = document.getElementById('cwePreviewChart');
     if (!ctx) return;
     
-    fetch('data/cwe_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cwe_analysis')
         .then(data => {
             const cweData = data.top_cwes || [];
             const topCWEs = cweData.slice(0, 5);
@@ -765,8 +756,7 @@ function initializeCnaPreview() {
     const ctx = document.getElementById('cnaPreviewChart');
     if (!ctx) return;
     
-    fetch('data/cna_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cna_analysis')
         .then(data => {
             const cnaData = data.cna_list || [];
             const topCNAs = cnaData.slice(0, 5);
@@ -806,8 +796,7 @@ function initializeCpePreview() {
     const ctx = document.getElementById('cpePreviewChart');
     if (!ctx) return;
     
-    fetch('data/cpe_analysis.json')
-        .then(response => response.json())
+    getHomepageDataset('cpe_analysis')
         .then(data => {
             const cpeData = data.top_cpes || [];
             const topCPEs = cpeData.slice(0, 5);
@@ -849,8 +838,8 @@ function initializeRiskVolumeChart() {
     
     // Load both yearly CVE data and KEV analysis
     Promise.all([
-        fetch('data/yearly_summary.json').then(r => r.json()),
-        fetch('data/kev_analysis.json').then(r => r.json())
+        getHomepageDataset('yearly_summary'),
+        getHomepageDataset('kev_analysis')
     ])
     .then(([yearlyData, kevData]) => {
         // Two KEV metrics:
@@ -994,8 +983,7 @@ function initializeCalendarPreview() {
     const ctx = document.getElementById('calendarPreviewChart');
     if (!ctx) return;
     
-    fetch('data/calendar_analysis_current_year.json')
-        .then(response => response.json())
+    getHomepageDataset('calendar_analysis_current_year')
         .then(data => {
             // Aggregate daily_data into monthly totals
             const dailyData = data.daily_data || [];
