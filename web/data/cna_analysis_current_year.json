@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-09T18:25:51.236479",
+  "generated_at": "2026-02-09T21:26:11.357532",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 201,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 864,
+      "count": 913,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-02-09T18:04:47.713Z",
+      "last_cve_date": "2026-02-09T21:18:13.054Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,17 +24,17 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 337,
-        "High": 355,
-        "Critical": 118,
-        "Low": 54
+        "Medium": 358,
+        "High": 376,
+        "Critical": 124,
+        "Low": 55
       },
       "top_cwe_types": {
-        "CWE-79": 96,
+        "CWE-79": 99,
         "CWE-20": 69,
         "CWE-22": 61,
-        "CWE-770": 34,
-        "CWE-918": 33
+        "CWE-918": 38,
+        "CWE-770": 34
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -42,7 +42,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          96
+          99
         ],
         [
           "CWE-20",
@@ -53,12 +53,12 @@
           61
         ],
         [
-          "CWE-770",
-          34
+          "CWE-918",
+          38
         ],
         [
-          "CWE-918",
-          33
+          "CWE-770",
+          34
         ]
       ]
     },
@@ -172,10 +172,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 515,
+      "count": 517,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-09T17:02:09.705Z",
+      "last_cve_date": "2026-02-09T19:32:07.858Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -185,7 +185,7 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 297,
+        "Medium": 299,
         "High": 156,
         "Critical": 55,
         "Low": 7
@@ -193,7 +193,7 @@
       "top_cwe_types": {
         "CWE-74": 188,
         "CWE-89": 141,
-        "CWE-119": 75,
+        "CWE-119": 77,
         "CWE-77": 74,
         "CWE-284": 48
       },
@@ -211,7 +211,7 @@
         ],
         [
           "CWE-119",
-          75
+          77
         ],
         [
           "CWE-77",
@@ -781,10 +781,64 @@
       ]
     },
     {
+      "name": "redhat",
+      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
+      "count": 47,
+      "rank": 16,
+      "first_cve_date": "2026-01-07T16:04:22.155Z",
+      "last_cve_date": "2026-02-09T18:58:29.065Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 10,
+        "Low": 11,
+        "Critical": 3,
+        "Medium": 23
+      },
+      "top_cwe_types": {
+        "CWE-20": 3,
+        "CWE-121": 3,
+        "CWE-266": 2,
+        "CWE-190": 2,
+        "CWE-295": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-20",
+          3
+        ],
+        [
+          "CWE-121",
+          3
+        ],
+        [
+          "CWE-266",
+          2
+        ],
+        [
+          "CWE-190",
+          2
+        ],
+        [
+          "CWE-295",
+          2
+        ]
+      ]
+    },
+    {
       "name": "TPLink",
       "assigner_org_id": "f23511db-6c3e-4e32-a477-6aa17d310630",
       "count": 46,
-      "rank": 16,
+      "rank": 17,
       "first_cve_date": "2026-01-07T01:04:26.594Z",
       "last_cve_date": "2026-02-05T17:45:28.407Z",
       "years_active": 2,
@@ -829,60 +883,6 @@
         ],
         [
           "CWE-476",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "redhat",
-      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 44,
-      "rank": 17,
-      "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-02-09T14:51:32.447Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 8,
-        "Low": 11,
-        "Critical": 3,
-        "Medium": 22
-      },
-      "top_cwe_types": {
-        "CWE-20": 3,
-        "CWE-121": 3,
-        "CWE-190": 2,
-        "CWE-295": 2,
-        "CWE-787": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-20",
-          3
-        ],
-        [
-          "CWE-121",
-          3
-        ],
-        [
-          "CWE-190",
-          2
-        ],
-        [
-          "CWE-295",
-          2
-        ],
-        [
-          "CWE-787",
           2
         ]
       ]
@@ -8450,10 +8450,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 864,
+      "count": 913,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-02-09T18:04:47.713Z",
+      "last_cve_date": "2026-02-09T21:18:13.054Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -8463,17 +8463,17 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 337,
-        "High": 355,
-        "Critical": 118,
-        "Low": 54
+        "Medium": 358,
+        "High": 376,
+        "Critical": 124,
+        "Low": 55
       },
       "top_cwe_types": {
-        "CWE-79": 96,
+        "CWE-79": 99,
         "CWE-20": 69,
         "CWE-22": 61,
-        "CWE-770": 34,
-        "CWE-918": 33
+        "CWE-918": 38,
+        "CWE-770": 34
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -8481,7 +8481,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          96
+          99
         ],
         [
           "CWE-20",
@@ -8492,12 +8492,12 @@
           61
         ],
         [
-          "CWE-770",
-          34
+          "CWE-918",
+          38
         ],
         [
-          "CWE-918",
-          33
+          "CWE-770",
+          34
         ]
       ]
     },
@@ -8611,10 +8611,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 515,
+      "count": 517,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-09T17:02:09.705Z",
+      "last_cve_date": "2026-02-09T19:32:07.858Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -8624,7 +8624,7 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 297,
+        "Medium": 299,
         "High": 156,
         "Critical": 55,
         "Low": 7
@@ -8632,7 +8632,7 @@
       "top_cwe_types": {
         "CWE-74": 188,
         "CWE-89": 141,
-        "CWE-119": 75,
+        "CWE-119": 77,
         "CWE-77": 74,
         "CWE-284": 48
       },
@@ -8650,7 +8650,7 @@
         ],
         [
           "CWE-119",
-          75
+          77
         ],
         [
           "CWE-77",
@@ -9220,10 +9220,64 @@
       ]
     },
     {
+      "name": "redhat",
+      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
+      "count": 47,
+      "rank": 16,
+      "first_cve_date": "2026-01-07T16:04:22.155Z",
+      "last_cve_date": "2026-02-09T18:58:29.065Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 10,
+        "Low": 11,
+        "Critical": 3,
+        "Medium": 23
+      },
+      "top_cwe_types": {
+        "CWE-20": 3,
+        "CWE-121": 3,
+        "CWE-266": 2,
+        "CWE-190": 2,
+        "CWE-295": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-20",
+          3
+        ],
+        [
+          "CWE-121",
+          3
+        ],
+        [
+          "CWE-266",
+          2
+        ],
+        [
+          "CWE-190",
+          2
+        ],
+        [
+          "CWE-295",
+          2
+        ]
+      ]
+    },
+    {
       "name": "TPLink",
       "assigner_org_id": "f23511db-6c3e-4e32-a477-6aa17d310630",
       "count": 46,
-      "rank": 16,
+      "rank": 17,
       "first_cve_date": "2026-01-07T01:04:26.594Z",
       "last_cve_date": "2026-02-05T17:45:28.407Z",
       "years_active": 2,
@@ -9268,60 +9322,6 @@
         ],
         [
           "CWE-476",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "redhat",
-      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 44,
-      "rank": 17,
-      "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-02-09T14:51:32.447Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 8,
-        "Low": 11,
-        "Critical": 3,
-        "Medium": 22
-      },
-      "top_cwe_types": {
-        "CWE-20": 3,
-        "CWE-121": 3,
-        "CWE-190": 2,
-        "CWE-295": 2,
-        "CWE-787": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-20",
-          3
-        ],
-        [
-          "CWE-121",
-          3
-        ],
-        [
-          "CWE-190",
-          2
-        ],
-        [
-          "CWE-295",
-          2
-        ],
-        [
-          "CWE-787",
           2
         ]
       ]
