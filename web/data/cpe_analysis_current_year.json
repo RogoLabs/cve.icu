@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-10T15:34:30.123666",
+  "generated_at": "2026-02-10T18:31:07.595052",
   "year": 2026,
-  "total_unique_cpes": 2702,
-  "total_cpe_entries": 14855,
-  "total_cves_with_cpes": 2014,
-  "total_unique_vendors": 512,
-  "total_unique_products": 1402,
+  "total_unique_cpes": 2772,
+  "total_cpe_entries": 15111,
+  "total_cves_with_cpes": 2193,
+  "total_unique_vendors": 530,
+  "total_unique_products": 1460,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
@@ -78,6 +78,13 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
+      "count": 61,
+      "vendor": "color",
+      "product": "iccdev",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
       "count": 60,
       "vendor": "microsoft",
@@ -90,13 +97,6 @@
       "vendor": "microsoft",
       "product": "windows_10_22h2",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
-      "count": 59,
-      "vendor": "color",
-      "product": "iccdev",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
@@ -155,6 +155,13 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:a:freerdp:freerdp:*:*:*:*:*:*:*:*",
+      "count": 29,
+      "vendor": "freerdp",
+      "product": "freerdp",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:a:meddream:pacs_server:7.3.6.870:*:*:*:premium:*:*:*",
       "count": 29,
       "vendor": "meddream",
@@ -209,13 +216,6 @@
       "vendor": "qnap",
       "product": "quts_hero",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:qnap:quts_hero:h5.2.0.2823:build_20240711:*:*:*:*:*:*",
-      "count": 25,
-      "vendor": "qnap",
-      "product": "quts_hero",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
@@ -265,7 +265,11 @@
     },
     {
       "vendor": "google",
-      "count": 95
+      "count": 96
+    },
+    {
+      "vendor": "huawei",
+      "count": 94
     },
     {
       "vendor": "ibm",
@@ -274,10 +278,6 @@
     {
       "vendor": "gitlab",
       "count": 72
-    },
-    {
-      "vendor": "huawei",
-      "count": 68
     }
   ],
   "top_products": [
@@ -287,7 +287,7 @@
     },
     {
       "product": "android",
-      "count": 1288
+      "count": 1289
     },
     {
       "product": "junos",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 7732,
-      "percentage": 52.0
+      "count": 7806,
+      "percentage": 51.7
     },
     {
       "type": "Application",
-      "count": 7122,
-      "percentage": 47.9
+      "count": 7304,
+      "percentage": 48.3
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 132
     }
   ],
-  "average_cpes_per_cve": 7.4
+  "average_cpes_per_cve": 6.9
 }
