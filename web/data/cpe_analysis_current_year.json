@@ -1,17 +1,24 @@
 {
-  "generated_at": "2026-02-13T21:20:12.677299",
+  "generated_at": "2026-02-14T00:30:25.447225",
   "year": 2026,
-  "total_unique_cpes": 3284,
-  "total_cpe_entries": 17660,
-  "total_cves_with_cpes": 2775,
-  "total_unique_vendors": 626,
-  "total_unique_products": 1774,
+  "total_unique_cpes": 3350,
+  "total_cpe_entries": 17903,
+  "total_cves_with_cpes": 2870,
+  "total_unique_vendors": 643,
+  "total_unique_products": 1823,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
       "count": 109,
       "vendor": "microsoft",
       "product": "windows_server_2025",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
+      "count": 108,
+      "vendor": "apple",
+      "product": "macos",
       "type": "Operating System"
     },
     {
@@ -50,13 +57,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
-      "count": 78,
-      "vendor": "apple",
-      "product": "macos",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
       "count": 75,
       "vendor": "gitlab",
@@ -75,6 +75,20 @@
       "count": 72,
       "vendor": "microsoft",
       "product": "windows_11_25h2",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
+      "count": 69,
+      "vendor": "apple",
+      "product": "ipados",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
+      "count": 69,
+      "vendor": "apple",
+      "product": "iphone_os",
       "type": "Operating System"
     },
     {
@@ -138,20 +152,6 @@
       "count": 60,
       "vendor": "microsoft",
       "product": "windows_10_22h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
-      "count": 57,
-      "vendor": "apple",
-      "product": "ipados",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
-      "count": 57,
-      "vendor": "apple",
-      "product": "iphone_os",
       "type": "Operating System"
     },
     {
@@ -249,7 +249,7 @@
     },
     {
       "vendor": "apple",
-      "count": 238
+      "count": 309
     },
     {
       "vendor": "oracle",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 9498,
-      "percentage": 53.8
+      "count": 9589,
+      "percentage": 53.6
     },
     {
       "type": "Application",
-      "count": 8161,
-      "percentage": 46.2
+      "count": 8313,
+      "percentage": 46.4
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 152
     }
   ],
-  "average_cpes_per_cve": 6.4
+  "average_cpes_per_cve": 6.2
 }
