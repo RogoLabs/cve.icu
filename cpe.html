@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>CPE Analysis - CVE.ICU</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-W0CE61HN2F');
+    </script>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="static/images/logo.png">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="static/css/style.css">
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.">
+    <meta name="keywords" content="CVE, vulnerabilities, security, analysis, dashboard, cybersecurity">
+    <meta name="author" content="CVE.ICU">
+    
+    <!-- Mobile-specific meta tags -->
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CVE.ICU">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="CVE.ICU - CVE Analysis Dashboard">
+    <meta property="og:description" content="Comprehensive CVE analysis and visualization from 1999 to present">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cve.icu">
+    <meta property="og:image" content="https://cve.icu/static/images/logo.png">
+</head>
+<body>
+    <!-- Header and Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="static/images/logo.png" alt="CVE.ICU Logo">
+                CVE.ICU
+            </a>
+            
+            <nav class="nav">
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="years.html">Yearly Analysis</a></li>
+                    <li class="nav-dropdown">
+                        <a href="cna-hub.html" class="dropdown-toggle">CNA</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cna.html">CNA Intelligence</a></li>
+                            <li><a href="data-quality.html">Name Matching</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="cpe.html">CPE</a></li>
+                    <li><a href="cwe.html">CWE</a></li>
+                    <li class="nav-dropdown">
+                        <a href="scoring.html" class="dropdown-toggle">Scoring</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cvss.html">CVSS</a></li>
+                            <li><a href="epss.html">EPSS</a></li>
+                            <li><a href="kev.html">KEV</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="growth.html">Growth</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                </ul>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+<!-- Hero Section -->
+<div class="page-header mb-4 text-center">
+    <h1 class="display-4 mb-2">CPE Analysis Dashboard</h1>
+    <small class="text-muted d-block mb-3" id="pageSubtitle">
+        Showing comprehensive analysis across all years (1999-2026)
+    </small>
+    
+    <!-- Data Mode Toggle -->
+    <div class="d-flex justify-content-center mb-3">
+        <button type="button" id="dataToggleBtn" onclick="toggleDataMode()" style="
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: all 0.15s ease-in-out;
+            background: none;
+            border: 2px solid var(--color-border);
+            cursor: pointer;
+            font-size: inherit;
+        " onmouseover="this.style.color='var(--color-accent)'; this.style.backgroundColor='rgba(13, 110, 253, 0.1)'; this.style.borderColor='var(--color-accent)'" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border)'">
+            <span id="toggleText">Switch to 2026 Only</span>
+        </button>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-number" id="totalCpes">Loading...</div>
+        <div class="stat-label">Total Unique CPEs</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📊 Platform identifiers</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="totalCvesWithCpes">Loading...</div>
+        <div class="stat-label">CVEs with CPEs</div>
+        <small class="text-muted" style="font-size: 0.75rem;">🔗 Linked vulnerabilities</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="avgCpesPerCve">Loading...</div>
+        <div class="stat-label">Avg CPEs per CVE</div>
+        <small class="text-muted" style="font-size: 0.75rem;">📈 Platform coverage</small>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="totalVendors">Loading...</div>
+        <div class="stat-label">Unique Vendors</div>
+        <small class="text-muted" style="font-size: 0.75rem;">🏢 Organizations</small>
+    </div>
+</div>
+
+<!-- CPE Analysis Overview -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">CPE Type Distribution</h3>
+                <small class="text-muted">Platform types breakdown</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header py-2">
+                <h3 class="card-title" style="font-size: 1.1rem;">Top Vendors by CPE Count</h3>
+                <small class="text-muted">Organizations with most CPE entries</small>
+            </div>
+            <div class="card-body py-3">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="vendorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top CPEs Table -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">Top CPEs by Frequency</h3>
+        <small class="text-muted">Most commonly referenced platforms</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="topCpesTable">
+                <thead>
+                    <tr>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 0)">Rank</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 1)">CPE String</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 2)">Count</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 3)">Vendor</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 4)">Product</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCpesTable', 5)">Type</th>
+                    </tr>
+                </thead>
+                <tbody id="topCpesTableBody">
+                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- CVEs with Most CPEs Table -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">CVEs with Most CPEs</h3>
+        <small class="text-muted">Vulnerabilities affecting multiple platforms</small>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table table-hover" id="topCvesTable">
+                <thead>
+                    <tr>
+                        <th style="cursor: pointer;" onclick="sortTable('topCvesTable', 0)">Rank</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCvesTable', 1)">CVE ID</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCvesTable', 2)">CPE Count</th>
+                        <th style="cursor: pointer;" onclick="sortTable('topCvesTable', 3)">Year</th>
+                    </tr>
+                </thead>
+                <tbody id="topCvesTableBody">
+                    <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Insights Panel -->
+<div class="card mb-4">
+    <div class="card-header py-2">
+        <h3 class="card-title" style="font-size: 1.1rem;">🔍 CPE Intelligence Insights</h3>
+    </div>
+    <div class="card-body py-3">
+        <div class="row" id="cpeInsights">
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Most Targeted Platform</div>
+                        <div class="insight-text" id="topPlatformInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">🏢</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Leading Vendor</div>
+                        <div class="insight-text" id="topVendorInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="insight-card">
+                    <div class="insight-icon">📊</div>
+                    <div class="insight-content">
+                        <div class="insight-title">Platform Coverage</div>
+                        <div class="insight-text" id="coverageInsight">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Export and Share Panel -->
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h2 class="card-title mb-0" style="font-size: 1.1rem;">📤 Export & Share</h2>
+    </div>
+    <div class="card-body py-3">
+        <div class="export-buttons">
+            <button class="btn btn-primary btn-sm" onclick="exportCpeCSV()">📊 Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="exportCpeJSON()">📋 Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="generatePermalink()">🔗 Share Link</button>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+        <div class="permalink-result mt-2" id="permalinkResult" style="display: none;">
+            <input type="text" class="form-control" id="permalinkInput" readonly>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="copyPermalink()">Copy Link</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+                <div style="flex: 1; min-width: 200px;">
+                    <p class="mb-1"><strong>Data Sources:</strong></p>
+                    <p class="text-muted small mb-0">
+                        <a href="https://nvd.nist.gov/" target="_blank" class="text-decoration-none">National Vulnerability Database (NVD)</a><br>
+                        <a href="https://cve.org/" target="_blank" class="text-decoration-none">CVE Program</a><br>
+                        Last updated: <span id="lastUpdated">Loading...</span>
+                    </p>
+                </div>
+                <div style="flex: 1; min-width: 200px; text-align: right;">
+                    <p class="mb-1"><strong>Platform Links:</strong></p>
+                    <p class="text-muted small mb-0">
+                        <a href="about.html" class="text-decoration-none">About CVE.ICU</a><br>
+                        <a href="https://cnascorecard.org" target="_blank" class="text-decoration-none">CNA Scorecard</a><br>
+                        <a href="https://cveforecast.org" target="_blank" class="text-decoration-none">CVE Forecast</a><br>
+                        <a href="https://github.com/rogolabs/cve.icu" target="_blank" class="text-decoration-none">GitHub Repository</a>
+                    </p>
+                </div>
+            </div>
+            <hr class="my-2">
+            <div class="text-center">
+                <small class="text-muted">
+                    &copy; 2026 CVE.ICU • Built by <a href="https://rogolabs.net" target="_blank" class="text-decoration-none">RogoLabs</a><br>
+                    Data updated every 6 hours • CVE coverage: 1999-2026
+                </small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js Library (UMD version) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- D3.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Universal timestamp loader -->
+    <script>
+    // Shared request cache to deduplicate JSON fetches within a page load.
+    window.CVE_REQUEST_CACHE = window.CVE_REQUEST_CACHE || new Map();
+    window.fetchJsonCached = window.fetchJsonCached || function(url, options = {}) {
+        const {
+            force = false,
+            retries = 2,
+            timeoutMs = 10000,
+            retryDelayMs = 300
+        } = options;
+        const resolvedUrl = new URL(url, window.location.href).toString();
+
+        if (!force && window.CVE_REQUEST_CACHE.has(resolvedUrl)) {
+            return window.CVE_REQUEST_CACHE.get(resolvedUrl);
+        }
+
+        const retryableStatuses = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const isRetryableNetworkError = (error) => {
+            if (!error) return false;
+            if (error.name === 'AbortError') return true;
+            const message = String(error.message || '').toLowerCase();
+            return message.includes('networkerror') || message.includes('failed to fetch');
+        };
+        const doFetch = async (attempt = 0) => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch(resolvedUrl, { signal: controller.signal });
+                if (!response.ok) {
+                    const error = new Error(`HTTP error ${response.status} for ${resolvedUrl}`);
+                    error.status = response.status;
+                    throw error;
+                }
+                return await response.json();
+            } catch (error) {
+                const status = typeof error.status === 'number' ? error.status : null;
+                const canRetry = attempt < retries && (
+                    isRetryableNetworkError(error) ||
+                    (status !== null && retryableStatuses.has(status))
+                );
+
+                if (!canRetry) {
+                    throw error;
+                }
+
+                const backoffMs = retryDelayMs * Math.pow(2, attempt);
+                await wait(backoffMs);
+                return doFetch(attempt + 1);
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        };
+
+        const request = doFetch();
+
+        // Remove failed entries so retries can recover.
+        const cachedRequest = request.catch(error => {
+            window.CVE_REQUEST_CACHE.delete(resolvedUrl);
+            throw error;
+        });
+
+        if (!force) {
+            window.CVE_REQUEST_CACHE.set(resolvedUrl, cachedRequest);
+        }
+        return cachedRequest;
+    };
+
+    // Universal function to load and display the last updated timestamp
+    // Uses cve_all.json as the single source of truth for all pages
+    function loadUniversalTimestamp() {
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        if (!lastUpdatedElement) return;
+        
+        window.fetchJsonCached('data/cve_all.json')
+            .then(data => {
+                if (data.generated_at) {
+                    const date = new Date(data.generated_at);
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false, // Use 24-hour clock
+                        timeZone: 'UTC', // Always show UTC
+                        timeZoneName: 'short'
+                    };
+                    const formattedDate = date.toLocaleString('en-US', options);
+                    lastUpdatedElement.textContent = formattedDate;
+                } else {
+                    lastUpdatedElement.textContent = 'Unknown';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading timestamp:', error);
+                lastUpdatedElement.textContent = 'Error loading timestamp';
+            });
+    }
+    
+    // Load timestamp when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUniversalTimestamp();
+    });
+    </script>
+    
+    <!-- Mobile Navigation Enhancement -->
+    <script>
+        // Enhanced mobile navigation toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    
+                    // Prevent body scroll when menu is open
+                    if (navMenu.classList.contains('active')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = navToggle.contains(event.target) || navMenu.contains(event.target);
+                    
+                    if (!isClickInside && navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Close menu when a nav link is clicked
+                const navLinks = navMenu.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+        });
+    </script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Wait for Chart.js to load before configuring
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Chart !== 'undefined') {
+                // Global configuration for Chart.js with design system
+                Chart.defaults.responsive = true;
+                Chart.defaults.maintainAspectRatio = false;
+                Chart.defaults.plugins.legend.position = 'top';
+                Chart.defaults.plugins.legend.labels.usePointStyle = true;
+                Chart.defaults.plugins.legend.labels.padding = 20;
+                Chart.defaults.plugins.legend.labels.font = {
+                    family: 'Inter, sans-serif',
+                    size: 12,
+                    weight: '500'
+                };
+                Chart.defaults.plugins.title.display = true;
+                Chart.defaults.plugins.title.font = {
+                    family: 'Inter, sans-serif',
+                    size: 16,
+                    weight: '600'
+                };
+                Chart.defaults.plugins.title.color = '#212529';
+                Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                Chart.defaults.plugins.tooltip.titleColor = '#212529';
+                Chart.defaults.plugins.tooltip.bodyColor = '#6c757d';
+                Chart.defaults.plugins.tooltip.borderColor = '#dee2e6';
+                Chart.defaults.plugins.tooltip.borderWidth = 1;
+                Chart.defaults.plugins.tooltip.cornerRadius = 8;
+                Chart.defaults.plugins.tooltip.titleFont = {
+                    family: 'Inter, sans-serif',
+                    size: 13,
+                    weight: '600'
+                };
+                Chart.defaults.plugins.tooltip.bodyFont = {
+                    family: 'Inter, sans-serif',
+                    size: 12,
+                    weight: '400'
+                };
+                // Chart.js v4 scale configuration
+                Chart.defaults.elements.point.backgroundColor = '#2196f3';
+                Chart.defaults.elements.point.borderColor = '#2196f3';
+                Chart.defaults.elements.line.borderColor = '#2196f3';
+                Chart.defaults.elements.bar.backgroundColor = '#2196f3';
+                
+                // Note: Scale-specific defaults are set per chart type in Chart.js v4
+                // Global scale defaults are handled differently
+            }
+            
+            // Add active class to current page navigation link
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Enhanced Color palette for consistent styling (Light Blue to Grey)
+        window.CVE_COLORS = window.CVE_COLORS || {
+            primary: '#2196f3',
+            secondary: '#64b5f6', 
+            success: '#81c784',
+            warning: '#ffb74d',
+            danger: '#f06292',
+            light: '#f8f9fa',
+            dark: '#212529',
+            
+            // Light Blue to Grey Visualization Palette
+            vizColors: [
+                '#e3f2fd', // Very light blue
+                '#bbdefb', // Light blue
+                '#90caf9', // Medium light blue
+                '#64b5f6', // Medium blue
+                '#42a5f5', // Blue
+                '#2196f3', // Primary blue
+                '#1e88e5', // Darker blue
+                '#1976d2', // Dark blue
+                '#9e9e9e', // Medium grey
+                '#757575'  // Dark grey
+            ],
+            
+            // Chart-specific colors
+            chartColors: [
+                '#2196f3', // Primary blue
+                '#64b5f6', // Secondary blue
+                '#90caf9', // Tertiary blue
+                '#bbdefb', // Quaternary blue
+                '#81c784', // Accent green
+                '#ffb74d', // Accent orange
+                '#f06292', // Accent pink
+                '#e0e0e0', // Light grey
+                '#9e9e9e', // Medium grey
+                '#616161'  // Dark grey
+            ],
+            
+            // Gradient colors for backgrounds
+            gradients: {
+                primary: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
+                secondary: 'linear-gradient(135deg, #bbdefb, #90caf9)',
+                tertiary: 'linear-gradient(135deg, #90caf9, #64b5f6)'
+            }
+        };
+        
+        // Enhanced utility function to generate colors for charts
+        function getChartColors(count, type = 'chart') {
+            const colors = [];
+            const palette = type === 'viz' ? CVE_COLORS.vizColors : CVE_COLORS.chartColors;
+            
+            for (let i = 0; i < count; i++) {
+                colors.push(palette[i % palette.length]);
+            }
+            return colors;
+        }
+        
+        // Generate light blue to grey gradient colors
+        function getGradientColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const ratio = i / Math.max(count - 1, 1);
+                // Interpolate between light blue and grey
+                const r = Math.round(227 + (158 - 227) * ratio); // e3 to 9e
+                const g = Math.round(242 + (158 - 242) * ratio); // f2 to 9e
+                const b = Math.round(253 + (158 - 253) * ratio); // fd to 9e
+                colors.push(`rgb(${r}, ${g}, ${b})`);
+            }
+            return colors;
+        }
+        
+        // Get color with opacity
+        function getColorWithOpacity(color, opacity = 0.8) {
+            if (color.startsWith('#')) {
+                const r = parseInt(color.slice(1, 3), 16);
+                const g = parseInt(color.slice(3, 5), 16);
+                const b = parseInt(color.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            }
+            return color;
+        }
+        
+        // Utility function to format numbers
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // Utility function to show loading state
+        function showLoading(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading data...</div>';
+            }
+        }
+        
+        // Utility function to hide loading state
+        function hideLoading(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                const loading = container.querySelector('.loading');
+                if (loading) {
+                    loading.remove();
+                }
+            }
+        }
+        
+        // Get current year for dynamic functionality
+        const CURRENT_YEAR = new Date().getFullYear();
+        const AVAILABLE_YEARS = [];
+        for (let year = 1999; year <= CURRENT_YEAR; year++) {
+            AVAILABLE_YEARS.push(year);
+        }
+        
+        // Mobile table enhancement - add touch scroll indicators
+        function enhanceMobileTable(tableContainer) {
+            if (window.innerWidth <= 768 && tableContainer) {
+                const table = tableContainer.querySelector('table');
+                if (table && table.scrollWidth > tableContainer.clientWidth) {
+                    tableContainer.style.overflowX = 'auto';
+                    tableContainer.style.webkitOverflowScrolling = 'touch';
+                    
+                    // Add scroll shadow indicators
+                    tableContainer.addEventListener('scroll', function() {
+                        const scrollLeft = this.scrollLeft;
+                        const maxScroll = this.scrollWidth - this.clientWidth;
+                        
+                        if (scrollLeft > 0) {
+                            this.classList.add('scrolled-left');
+                        } else {
+                            this.classList.remove('scrolled-left');
+                        }
+                        
+                        if (scrollLeft < maxScroll - 1) {
+                            this.classList.add('scrolled-right');
+                        } else {
+                            this.classList.remove('scrolled-right');
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Apply mobile table enhancements on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainers = document.querySelectorAll('.table-container');
+            tableContainers.forEach(enhanceMobileTable);
+            
+            // Re-apply on window resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    tableContainers.forEach(enhanceMobileTable);
+                }, 250);
+            });
+        });
+    </script>
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Global variables
+let cpeData = null;
+let currentYearCpeData = null;
+let isShowingCurrentYear = false;
+
+// Load data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCpeData();
+    updatePermalink();
+});
+
+// Load CPE data
+async function loadCpeData() {
+    try {
+        // Load comprehensive data
+        const response = await fetch('data/cpe_analysis.json');
+        
+        if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unable to read error text');
+            throw new Error(`Failed to load comprehensive CPE data: ${response.status} ${response.statusText}. Response: ${errorText}`);
+        }
+        
+        const comprehensiveData = await response.json();
+        
+        // Validate comprehensive data structure
+        if (!comprehensiveData || typeof comprehensiveData !== 'object') {
+            throw new Error('Invalid comprehensive CPE data structure');
+        }
+        
+        cpeData = comprehensiveData;
+        
+        // Load current year data
+        try {
+            const currentResponse = await fetch('data/cpe_analysis_current_year.json');
+            if (currentResponse.ok) {
+                const currentData = await currentResponse.json();
+                if (currentData && typeof currentData === 'object') {
+                    currentYearCpeData = currentData;
+                } else {
+                    console.warn('Invalid current year CPE data structure');
+                }
+            } else {
+                console.warn('Current year CPE data not available:', currentResponse.status);
+            }
+        } catch (e) {
+            console.warn('Error loading current year CPE data:', e);
+        }
+        
+        // Initialize display with validation
+        if (cpeData || currentYearCpeData) {
+            updateDisplay();
+        } else {
+            throw new Error('No valid CPE data loaded');
+        }
+        
+    } catch (error) {
+        console.error('Error loading CPE data:');
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('Full error object:', error);
+        
+        // Try to provide more specific error information
+        if (error.name) console.error('Error name:', error.name);
+        if (error.cause) console.error('Error cause:', error.cause);
+        
+        showErrorState();
+    }
+}
+
+// Update display based on current mode
+function updateDisplay() {
+    let data;
+    
+    // Improved data selection logic - use any available data on initial load
+    if (isShowingCurrentYear && currentYearCpeData) {
+        data = currentYearCpeData;
+    } else if (cpeData) {
+        data = cpeData;
+    } else if (currentYearCpeData) {
+        // Fallback to current year data if comprehensive data isn't loaded yet
+        data = currentYearCpeData;
+        console.warn('Using current year data as fallback for initial display');
+    } else {
+        console.error('No CPE data available for display');
+        showErrorState();
+        return;
+    }
+    
+    updateStatistics(data);
+    updateCharts(data);
+    updateInsights(data);
+    updateLastUpdated(data);
+}
+
+// Update statistics cards
+function updateStatistics(data) {
+    document.getElementById('totalCpes').textContent = data.total_unique_cpes?.toLocaleString() || '0';
+    document.getElementById('totalCvesWithCpes').textContent = data.total_cves_with_cpes?.toLocaleString() || '0';
+    document.getElementById('avgCpesPerCve').textContent = data.average_cpes_per_cve || '0';
+    document.getElementById('totalVendors').textContent = data.total_unique_vendors?.toLocaleString() || '0';
+}
+
+// Update all charts and tables
+function updateCharts(data) {
+    updateTypeChart(data);
+    updateVendorChart(data);
+    updateTopCpesTable(data);
+    updateTopCvesTable(data);
+}
+
+// Update CPE bar chart
+function updateCpeBarChart(data) {
+    const ctx = document.getElementById('cpeBarChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (window.cpeBarChart instanceof Chart) {
+        window.cpeBarChart.destroy();
+    }
+    
+    const topCpes = data.top_cpes?.slice(0, 15) || [];
+    
+    window.cpeBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topCpes.map(cpe => `${cpe.vendor}:${cpe.product}`.substring(0, 25) + '...'),
+            datasets: [{
+                label: 'CVE Count',
+                data: topCpes.map(cpe => cpe.count),
+                backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Update CPE type chart
+function updateTypeChart(data) {
+    const ctx = document.getElementById('typeChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (window.typeChart instanceof Chart) {
+        window.typeChart.destroy();
+    }
+    
+    const typeDistribution = data.cpe_type_distribution || [];
+    
+    window.typeChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: typeDistribution.map(t => t.type),
+            datasets: [{
+                data: typeDistribution.map(t => t.count),
+                backgroundColor: [
+                    '#3b82f6', // Primary blue
+                    '#60a5fa', // Light blue  
+                    '#93c5fd', // Lighter blue
+                    '#bfdbfe', // Very light blue
+                    '#6b7280', // Medium grey
+                    '#9ca3af', // Light grey
+                    '#d1d5db', // Very light grey
+                    '#e5e7eb'  // Lightest grey
+                ],
+                borderColor: [
+                    '#1e40af', // Darker blue borders
+                    '#2563eb',
+                    '#3b82f6', 
+                    '#60a5fa',
+                    '#4b5563',
+                    '#6b7280',
+                    '#9ca3af',
+                    '#d1d5db'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// Update Top CPEs table
+function updateTopCpesTable(data) {
+    const tableBody = document.getElementById('topCpesTableBody');
+    const topCpes = data.top_cpes?.slice(0, 20) || [];
+    
+    if (topCpes.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No CPE data available</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = topCpes.map((cpe, index) => `
+        <tr>
+            <td><span class="badge bg-primary">${index + 1}</span></td>
+            <td><code class="text-break" style="font-size: 0.85em;">${cpe.cpe}</code></td>
+            <td><strong>${cpe.count.toLocaleString()}</strong></td>
+            <td><span class="badge bg-info">${cpe.vendor}</span></td>
+            <td>${cpe.product}</td>
+            <td><span class="badge bg-secondary">${cpe.type}</span></td>
+        </tr>
+    `).join('');
+}
+
+// Update Top CVEs table
+function updateTopCvesTable(data) {
+    const tableBody = document.getElementById('topCvesTableBody');
+    const topCves = data.cves_with_most_cpes?.slice(0, 20) || [];
+    
+    if (topCves.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No CVE data available</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = topCves.map((cveData, index) => {
+        const year = cveData.cve ? cveData.cve.split('-')[1] : 'Unknown';
+        
+        return `
+            <tr>
+                <td><span class="badge bg-primary">${index + 1}</span></td>
+                <td><a href="https://nvd.nist.gov/vuln/detail/${cveData.cve}" target="_blank" class="text-decoration-none">${cveData.cve}</a></td>
+                <td><strong>${cveData.cpe_count.toLocaleString()}</strong></td>
+                <td><span class="badge bg-warning">${year}</span></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update vendor chart
+function updateVendorChart(data) {
+    const ctx = document.getElementById('vendorChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (window.vendorChart instanceof Chart) {
+        window.vendorChart.destroy();
+    }
+    
+    const topVendors = data.top_vendors?.slice(0, 10) || [];
+    
+    window.vendorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topVendors.map(v => v.vendor),
+            datasets: [{
+                label: 'CPE Count',
+                data: topVendors.map(v => v.count),
+                backgroundColor: '#60a5fa', // Light blue from universal palette
+                borderColor: '#2563eb',     // Darker blue border
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // This makes it horizontal
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Table sorting function
+function sortTable(tableId, columnIndex) {
+    const table = document.getElementById(tableId);
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // Skip if no data rows
+    if (rows.length === 0 || rows[0].cells.length === 1) return;
+    
+    // Determine sort direction
+    const currentSort = table.getAttribute('data-sort-column');
+    const currentDirection = table.getAttribute('data-sort-direction') || 'asc';
+    const newDirection = (currentSort == columnIndex && currentDirection === 'asc') ? 'desc' : 'asc';
+    
+    // Sort rows
+    rows.sort((a, b) => {
+        let aVal = a.cells[columnIndex].textContent.trim();
+        let bVal = b.cells[columnIndex].textContent.trim();
+        
+        // Handle numeric values
+        const aNum = parseFloat(aVal.replace(/[^0-9.-]/g, ''));
+        const bNum = parseFloat(bVal.replace(/[^0-9.-]/g, ''));
+        
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return newDirection === 'asc' ? aNum - bNum : bNum - aNum;
+        }
+        
+        // Handle text values
+        return newDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    });
+    
+    // Update table
+    rows.forEach(row => tbody.appendChild(row));
+    
+    // Update sort indicators
+    table.setAttribute('data-sort-column', columnIndex);
+    table.setAttribute('data-sort-direction', newDirection);
+    
+    // Update header indicators
+    table.querySelectorAll('th').forEach((th, index) => {
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (index === columnIndex) {
+            th.classList.add(newDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+        }
+    });
+}
+
+// Update insights
+function updateInsights(data) {
+    const topCpe = data.top_cpes?.[0];
+    const topVendor = data.top_vendors?.[0];
+    
+    if (topCpe) {
+        document.getElementById('topPlatformInsight').innerHTML = 
+            `<strong>${topCpe.vendor}:${topCpe.product}</strong> leads with ${topCpe.count.toLocaleString()} CVEs`;
+    }
+    
+    if (topVendor) {
+        document.getElementById('topVendorInsight').innerHTML = 
+            `<strong>${topVendor.vendor}</strong> has ${topVendor.count.toLocaleString()} CPE entries`;
+    }
+    
+    const avgCpes = data.average_cpes_per_cve || 0;
+    document.getElementById('coverageInsight').innerHTML = 
+        `Each CVE affects <strong>${avgCpes}</strong> platforms on average`;
+}
+
+
+
+
+
+// Toggle data mode
+function toggleDataMode() {
+    if (!currentYearCpeData) {
+        alert('Current year data not available');
+        return;
+    }
+    
+    isShowingCurrentYear = !isShowingCurrentYear;
+    
+    // Update toggle button
+    const toggleText = document.getElementById('toggleText');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    
+    if (isShowingCurrentYear) {
+        toggleText.textContent = 'Switch to All Years';
+        pageSubtitle.textContent = `Showing analysis for ${currentYearCpeData.year} only`;
+    } else {
+        toggleText.textContent = 'Switch to 2026 Only';
+        pageSubtitle.textContent = 'Showing comprehensive analysis across all years (1999-2026)';
+    }
+    
+    // Reset pagination
+    currentPage = 1;
+    
+    // Update display
+    updateDisplay();
+}
+
+// Update last updated timestamp
+function updateLastUpdated(data) {
+    if (data.generated_at) {
+        const date = new Date(data.generated_at);
+        document.getElementById('lastUpdated').textContent = date.toLocaleString();
+    }
+}
+
+// Update permalink
+function updatePermalink() {
+    document.getElementById('permalinkInput').value = window.location.href;
+}
+
+// Copy permalink
+function copyPermalink() {
+    const input = document.getElementById('permalinkInput');
+    input.select();
+    document.execCommand('copy');
+    
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.style.backgroundColor = '#28a745';
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.style.backgroundColor = '';
+    }, 2000);
+}
+
+// Export functions
+function exportCpeCSV() {
+    if (!cpeData || !cpeData.top_cpes) {
+        alert('No data available for export');
+        return;
+    }
+    
+    const data = isShowingCurrentYear && currentYearCpeData ? currentYearCpeData : cpeData;
+    
+    let csv = 'CPE Intelligence Dashboard Export\n\n';
+    csv += 'Rank,CPE Identifier,Vendor,Product,Type,CVE Count\n';
+    
+    data.top_cpes.forEach((cpe, index) => {
+        csv += `${index + 1},"${cpe.cpe}","${cpe.vendor}","${cpe.product}",${cpe.type},${cpe.count}\n`;
+    });
+    
+    csv += '\n\nSummary Statistics\n';
+    csv += `Total CPEs,${data.total_unique_cpes}\n`;
+    csv += `CVEs with CPEs,${data.total_cves_with_cpes}\n`;
+    csv += `Unique Vendors,${data.total_unique_vendors}\n`;
+    csv += `Average CPEs per CVE,${data.average_cpes_per_cve}\n`;
+    
+    downloadFile(csv, 'cpe-comprehensive-analysis.csv', 'text/csv');
+}
+
+function exportCpeJSON() {
+    if (!cpeData) {
+        alert('No data available for export');
+        return;
+    }
+    
+    const data = isShowingCurrentYear && currentYearCpeData ? currentYearCpeData : cpeData;
+    const jsonStr = JSON.stringify(data, null, 2);
+    downloadFile(jsonStr, 'cpe-comprehensive-analysis.json', 'application/json');
+}
+
+function downloadFile(content, filename, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Error state
+function showErrorState() {
+    document.getElementById('totalCpes').textContent = 'Error';
+    document.getElementById('totalCvesWithCpes').textContent = 'Error';
+    document.getElementById('averageCpesPerCve').textContent = 'Error';
+    document.getElementById('totalVendors').textContent = 'Error';
+    
+    document.getElementById('cpeTableBody').innerHTML = 
+        '<tr><td colspan="6" class="text-center text-danger">Error loading CPE data. Please refresh the page.</td></tr>';
+}
+</script>
+
+</body>
+</html>
