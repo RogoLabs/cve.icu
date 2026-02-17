@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-02-17T18:28:32.545994Z",
-  "catalog_version": "2026.02.13",
-  "total_kev_cves": 1518,
+  "generated_at": "2026-02-17T21:20:40.811207Z",
+  "catalog_version": "2026.02.17",
+  "total_kev_cves": 1522,
   "statistics": {
-    "added_last_30_days": 30,
-    "added_last_90_days": 57,
+    "added_last_30_days": 34,
+    "added_last_90_days": 61,
     "ransomware_associated": 310
   },
   "by_year_added": {
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 34
+    "2026": 38
   },
   "by_year_cve": {
     "2002": 1,
@@ -21,7 +21,7 @@
     "2005": 1,
     "2006": 2,
     "2007": 3,
-    "2008": 3,
+    "2008": 4,
     "2009": 12,
     "2010": 21,
     "2011": 9,
@@ -33,13 +33,13 @@
     "2017": 85,
     "2018": 89,
     "2019": 118,
-    "2020": 144,
+    "2020": 145,
     "2021": 209,
     "2022": 129,
     "2023": 158,
-    "2024": 157,
+    "2024": 158,
     "2025": 163,
-    "2026": 16
+    "2026": 17
   },
   "by_year_published": {
     "2002": 1,
@@ -48,7 +48,7 @@
     "2006": 2,
     "2007": 2,
     "2008": 4,
-    "2009": 10,
+    "2009": 11,
     "2010": 21,
     "2011": 9,
     "2012": 21,
@@ -59,13 +59,13 @@
     "2017": 88,
     "2018": 76,
     "2019": 128,
-    "2020": 144,
+    "2020": 145,
     "2021": 209,
     "2022": 128,
     "2023": 160,
-    "2024": 154,
+    "2024": 155,
     "2025": 174,
-    "2026": 19
+    "2026": 20
   },
   "timeline": {
     "2021-11": 291,
@@ -119,12 +119,12 @@
     "2025-11": 11,
     "2025-12": 20,
     "2026-01": 17,
-    "2026-02": 17
+    "2026-02": 21
   },
   "top_vendors": [
     [
       "Microsoft",
-      360
+      361
     ],
     [
       "Apple",
@@ -140,7 +140,7 @@
     ],
     [
       "Google",
-      67
+      68
     ],
     [
       "Oracle",
@@ -175,12 +175,12 @@
       21
     ],
     [
-      "Android",
+      "Synacor",
       16
     ],
     [
-      "Synacor",
-      15
+      "Android",
+      16
     ],
     [
       "SonicWall",
@@ -206,7 +206,7 @@
   "top_products": [
     [
       "Microsoft - Windows",
-      165
+      166
     ],
     [
       "Apple - Multiple Products",
@@ -300,7 +300,7 @@
     ],
     [
       "CWE-416",
-      86
+      87
     ],
     [
       "CWE-119",
@@ -360,7 +360,7 @@
     ],
     [
       "CWE-434",
-      17
+      18
     ],
     [
       "CWE-399",
@@ -368,6 +368,38 @@
     ]
   ],
   "recent_additions": [
+    {
+      "cve_id": "CVE-2020-7796",
+      "vendor": "Synacor",
+      "product": "Zimbra Collaboration Suite",
+      "date_added": "2026-02-17",
+      "due_date": "2026-03-10",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2024-7694",
+      "vendor": "TeamT5",
+      "product": "ThreatSonar Anti-Ransomware",
+      "date_added": "2026-02-17",
+      "due_date": "2026-03-10",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2008-0015",
+      "vendor": "Microsoft",
+      "product": "Windows",
+      "date_added": "2026-02-17",
+      "due_date": "2026-03-10",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-2441",
+      "vendor": "Google",
+      "product": "Chromium",
+      "date_added": "2026-02-17",
+      "due_date": "2026-03-10",
+      "ransomware": "Unknown"
+    },
     {
       "cve_id": "CVE-2026-1731",
       "vendor": "BeyondTrust",
@@ -494,38 +526,6 @@
       "product": "FreePBX",
       "date_added": "2026-02-03",
       "due_date": "2026-02-24",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2025-40551",
-      "vendor": "SolarWinds",
-      "product": "Web Help Desk",
-      "date_added": "2026-02-03",
-      "due_date": "2026-02-06",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-1281",
-      "vendor": "Ivanti",
-      "product": "Endpoint Manager Mobile (EPMM)",
-      "date_added": "2026-01-29",
-      "due_date": "2026-02-01",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-24858",
-      "vendor": "Fortinet",
-      "product": "Multiple Products",
-      "date_added": "2026-01-27",
-      "due_date": "2026-01-30",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2018-14634",
-      "vendor": "Linux",
-      "product": "Kernal",
-      "date_added": "2026-01-26",
-      "due_date": "2026-02-16",
       "ransomware": "Unknown"
     }
   ]
