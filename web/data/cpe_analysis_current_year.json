@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-18T21:21:11.233550",
+  "generated_at": "2026-02-19T00:34:37.469779",
   "year": 2026,
-  "total_unique_cpes": 3605,
-  "total_cpe_entries": 18489,
-  "total_cves_with_cpes": 3090,
-  "total_unique_vendors": 706,
-  "total_unique_products": 1950,
+  "total_unique_cpes": 3648,
+  "total_cpe_entries": 18689,
+  "total_cves_with_cpes": 3194,
+  "total_unique_vendors": 724,
+  "total_unique_products": 1974,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
@@ -113,6 +113,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
+      "count": 65,
+      "vendor": "color",
+      "product": "iccdev",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1607:*:*:*:*:*:*:x86:*",
       "count": 63,
       "vendor": "microsoft",
@@ -131,13 +138,6 @@
       "count": 62,
       "vendor": "gitlab",
       "product": "gitlab",
-      "type": "Application"
-    },
-    {
-      "cpe": "cpe:2.3:a:color:iccdev:*:*:*:*:*:*:*:*",
-      "count": 61,
-      "vendor": "color",
-      "product": "iccdev",
       "type": "Application"
     },
     {
@@ -183,6 +183,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:ibm:db2:*:*:*:*:*:windows:*:*",
+      "count": 38,
+      "vendor": "ibm",
+      "product": "db2",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_11_25h2:*:*:*:*:*:*:arm64:*",
       "count": 37,
       "vendor": "microsoft",
@@ -197,25 +204,18 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
-      "count": 36,
-      "vendor": "google",
-      "product": "chrome",
+      "cpe": "cpe:2.3:a:ibm:db2:*:*:*:*:*:linux:*:*",
+      "count": 37,
+      "vendor": "ibm",
+      "product": "db2",
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_23h2:*:*:*:*:*:*:arm64:*",
-      "count": 36,
-      "vendor": "microsoft",
-      "product": "windows_11_23h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_23h2:*:*:*:*:*:*:x64:*",
-      "count": 36,
-      "vendor": "microsoft",
-      "product": "windows_11_23h2",
-      "type": "Operating System"
+      "cpe": "cpe:2.3:a:ibm:db2:*:*:*:*:*:unix:*:*",
+      "count": 37,
+      "vendor": "ibm",
+      "product": "db2",
+      "type": "Application"
     }
   ],
   "top_vendors": [
@@ -252,12 +252,12 @@
       "count": 355
     },
     {
-      "vendor": "sap",
-      "count": 227
+      "vendor": "ibm",
+      "count": 241
     },
     {
-      "vendor": "ibm",
-      "count": 213
+      "vendor": "sap",
+      "count": 227
     },
     {
       "vendor": "oracle",
@@ -276,8 +276,8 @@
       "count": 119
     },
     {
-      "vendor": "canon",
-      "count": 112
+      "vendor": "sangoma",
+      "count": 115
     }
   ],
   "top_products": [
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 9735,
-      "percentage": 52.7
+      "count": 9754,
+      "percentage": 52.2
     },
     {
       "type": "Application",
-      "count": 8753,
-      "percentage": 47.3
+      "count": 8934,
+      "percentage": 47.8
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 152
     }
   ],
-  "average_cpes_per_cve": 6.0
+  "average_cpes_per_cve": 5.9
 }
