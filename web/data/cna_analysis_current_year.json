@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-21T03:53:00.191716",
+  "generated_at": "2026-02-21T06:20:01.753629",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 219,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 1144,
+      "count": 1156,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-02-21T00:01:46.960Z",
+      "last_cve_date": "2026-02-21T05:43:07.072Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,13 +24,13 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 455,
-        "High": 473,
-        "Critical": 152,
-        "Low": 64
+        "Medium": 457,
+        "High": 479,
+        "Critical": 155,
+        "Low": 65
       },
       "top_cwe_types": {
-        "CWE-79": 135,
+        "CWE-79": 137,
         "CWE-22": 82,
         "CWE-20": 75,
         "CWE-918": 48,
@@ -42,7 +42,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          135
+          137
         ],
         [
           "CWE-22",
@@ -227,10 +227,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 638,
+      "count": 641,
       "rank": 5,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-20T21:32:08.945Z",
+      "last_cve_date": "2026-02-21T06:02:09.608Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -240,7 +240,7 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 381,
+        "Medium": 384,
         "High": 184,
         "Critical": 63,
         "Low": 10
@@ -250,7 +250,7 @@
         "CWE-89": 154,
         "CWE-119": 102,
         "CWE-77": 95,
-        "CWE-284": 60
+        "CWE-284": 61
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -274,7 +274,7 @@
         ],
         [
           "CWE-284",
-          60
+          61
         ]
       ]
     },
@@ -1950,10 +1950,63 @@
       ]
     },
     {
+      "name": "fedora",
+      "assigner_org_id": "92fb86c3-55a5-4fb5-9c3f-4757b9e96dc5",
+      "count": 27,
+      "rank": 38,
+      "first_cve_date": "2026-01-09T07:53:48.144Z",
+      "last_cve_date": "2026-02-21T05:40:11.001Z",
+      "years_active": 10,
+      "first_cve_year": 2017,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 12,
+        "Medium": 12,
+        "Low": 3
+      },
+      "top_cwe_types": {
+        "CWE-79": 3,
+        "CWE-94": 2,
+        "CWE-476": 2,
+        "CWE-787": 2,
+        "CWE-331": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          3
+        ],
+        [
+          "CWE-94",
+          2
+        ],
+        [
+          "CWE-476",
+          2
+        ],
+        [
+          "CWE-787",
+          2
+        ],
+        [
+          "CWE-331",
+          1
+        ]
+      ]
+    },
+    {
       "name": "hackerone",
       "assigner_org_id": "36234546-b8fa-4601-9d6f-f4e334aa8ea1",
       "count": 27,
-      "rank": 38,
+      "rank": 39,
       "first_cve_date": "2026-01-05T16:47:38.510Z",
       "last_cve_date": "2026-01-30T20:11:15.219Z",
       "years_active": 11,
@@ -2007,7 +2060,7 @@
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 27,
-      "rank": 39,
+      "rank": 40,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-02-17T23:04:36.463Z",
       "years_active": 11,
@@ -2059,7 +2112,7 @@
       "name": "nvidia",
       "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
       "count": 25,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-14T18:30:41.061Z",
       "last_cve_date": "2026-02-18T13:58:03.881Z",
       "years_active": 11,
@@ -2104,59 +2157,6 @@
         [
           "CWE-416",
           2
-        ]
-      ]
-    },
-    {
-      "name": "fedora",
-      "assigner_org_id": "92fb86c3-55a5-4fb5-9c3f-4757b9e96dc5",
-      "count": 24,
-      "rank": 41,
-      "first_cve_date": "2026-01-09T07:53:48.144Z",
-      "last_cve_date": "2026-02-19T06:58:47.090Z",
-      "years_active": 10,
-      "first_cve_year": 2017,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 10,
-        "Medium": 11,
-        "Low": 3
-      },
-      "top_cwe_types": {
-        "CWE-79": 3,
-        "CWE-476": 2,
-        "CWE-787": 2,
-        "CWE-331": 1,
-        "CWE-280": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          3
-        ],
-        [
-          "CWE-476",
-          2
-        ],
-        [
-          "CWE-787",
-          2
-        ],
-        [
-          "CWE-331",
-          1
-        ],
-        [
-          "CWE-280",
-          1
         ]
       ]
     },
@@ -9483,10 +9483,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 1144,
+      "count": 1156,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-02-21T00:01:46.960Z",
+      "last_cve_date": "2026-02-21T05:43:07.072Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -9496,13 +9496,13 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 455,
-        "High": 473,
-        "Critical": 152,
-        "Low": 64
+        "Medium": 457,
+        "High": 479,
+        "Critical": 155,
+        "Low": 65
       },
       "top_cwe_types": {
-        "CWE-79": 135,
+        "CWE-79": 137,
         "CWE-22": 82,
         "CWE-20": 75,
         "CWE-918": 48,
@@ -9514,7 +9514,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          135
+          137
         ],
         [
           "CWE-22",
@@ -9699,10 +9699,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 638,
+      "count": 641,
       "rank": 5,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-20T21:32:08.945Z",
+      "last_cve_date": "2026-02-21T06:02:09.608Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -9712,7 +9712,7 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 381,
+        "Medium": 384,
         "High": 184,
         "Critical": 63,
         "Low": 10
@@ -9722,7 +9722,7 @@
         "CWE-89": 154,
         "CWE-119": 102,
         "CWE-77": 95,
-        "CWE-284": 60
+        "CWE-284": 61
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -9746,7 +9746,7 @@
         ],
         [
           "CWE-284",
-          60
+          61
         ]
       ]
     },
@@ -11422,10 +11422,63 @@
       ]
     },
     {
+      "name": "fedora",
+      "assigner_org_id": "92fb86c3-55a5-4fb5-9c3f-4757b9e96dc5",
+      "count": 27,
+      "rank": 38,
+      "first_cve_date": "2026-01-09T07:53:48.144Z",
+      "last_cve_date": "2026-02-21T05:40:11.001Z",
+      "years_active": 10,
+      "first_cve_year": 2017,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 12,
+        "Medium": 12,
+        "Low": 3
+      },
+      "top_cwe_types": {
+        "CWE-79": 3,
+        "CWE-94": 2,
+        "CWE-476": 2,
+        "CWE-787": 2,
+        "CWE-331": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          3
+        ],
+        [
+          "CWE-94",
+          2
+        ],
+        [
+          "CWE-476",
+          2
+        ],
+        [
+          "CWE-787",
+          2
+        ],
+        [
+          "CWE-331",
+          1
+        ]
+      ]
+    },
+    {
       "name": "hackerone",
       "assigner_org_id": "36234546-b8fa-4601-9d6f-f4e334aa8ea1",
       "count": 27,
-      "rank": 38,
+      "rank": 39,
       "first_cve_date": "2026-01-05T16:47:38.510Z",
       "last_cve_date": "2026-01-30T20:11:15.219Z",
       "years_active": 11,
@@ -11479,7 +11532,7 @@
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 27,
-      "rank": 39,
+      "rank": 40,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-02-17T23:04:36.463Z",
       "years_active": 11,
@@ -11531,7 +11584,7 @@
       "name": "nvidia",
       "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
       "count": 25,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-14T18:30:41.061Z",
       "last_cve_date": "2026-02-18T13:58:03.881Z",
       "years_active": 11,
@@ -11576,59 +11629,6 @@
         [
           "CWE-416",
           2
-        ]
-      ]
-    },
-    {
-      "name": "fedora",
-      "assigner_org_id": "92fb86c3-55a5-4fb5-9c3f-4757b9e96dc5",
-      "count": 24,
-      "rank": 41,
-      "first_cve_date": "2026-01-09T07:53:48.144Z",
-      "last_cve_date": "2026-02-19T06:58:47.090Z",
-      "years_active": 10,
-      "first_cve_year": 2017,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 10,
-        "Medium": 11,
-        "Low": 3
-      },
-      "top_cwe_types": {
-        "CWE-79": 3,
-        "CWE-476": 2,
-        "CWE-787": 2,
-        "CWE-331": 1,
-        "CWE-280": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          3
-        ],
-        [
-          "CWE-476",
-          2
-        ],
-        [
-          "CWE-787",
-          2
-        ],
-        [
-          "CWE-331",
-          1
-        ],
-        [
-          "CWE-280",
-          1
         ]
       ]
     },
