@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-23T09:26:07.243355",
+  "generated_at": "2026-02-23T12:20:42.177100",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 220,
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 722,
+      "count": 725,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-23T09:02:07.066Z",
+      "last_cve_date": "2026-02-23T10:32:49.611Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,8 +186,8 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 421,
-        "High": 194,
+        "Medium": 423,
+        "High": 195,
         "Critical": 95,
         "Low": 12
       },
@@ -196,7 +196,7 @@
         "CWE-89": 158,
         "CWE-119": 141,
         "CWE-77": 98,
-        "CWE-284": 68
+        "CWE-284": 69
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -220,7 +220,7 @@
         ],
         [
           "CWE-284",
-          68
+          69
         ]
       ]
     },
@@ -573,10 +573,10 @@
     {
       "name": "INCIBE",
       "assigner_org_id": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
-      "count": 70,
+      "count": 73,
       "rank": 12,
       "first_cve_date": "2026-01-12T11:26:30.574Z",
-      "last_cve_date": "2026-02-19T08:50:36.880Z",
+      "last_cve_date": "2026-02-23T10:31:25.455Z",
       "years_active": 7,
       "first_cve_year": 2020,
       "last_cve_year": 2026,
@@ -586,13 +586,13 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 39,
+        "Medium": 41,
         "High": 16,
-        "Critical": 15
+        "Critical": 16
       },
       "top_cwe_types": {
-        "CWE-79": 35,
-        "CWE-89": 18,
+        "CWE-79": 37,
+        "CWE-89": 19,
         "CWE-352": 5,
         "CWE-639": 2,
         "CWE-22": 2
@@ -603,11 +603,11 @@
       "top_cwes": [
         [
           "CWE-79",
-          35
+          37
         ],
         [
           "CWE-89",
-          18
+          19
         ],
         [
           "CWE-352",
@@ -2161,10 +2161,63 @@
       ]
     },
     {
+      "name": "HCL",
+      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
+      "count": 24,
+      "rank": 42,
+      "first_cve_date": "2026-01-07T06:48:19.946Z",
+      "last_cve_date": "2026-02-23T10:56:52.305Z",
+      "years_active": 8,
+      "first_cve_year": 2019,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 8,
+        "High": 1,
+        "Low": 15
+      },
+      "top_cwe_types": {
+        "CWE-613": 2,
+        "CWE-200": 2,
+        "CWE-522": 2,
+        "CWE-497": 1,
+        "CWE-323": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-613",
+          2
+        ],
+        [
+          "CWE-200",
+          2
+        ],
+        [
+          "CWE-522",
+          2
+        ],
+        [
+          "CWE-497",
+          1
+        ],
+        [
+          "CWE-323",
+          1
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 24,
-      "rank": 42,
+      "rank": 43,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-01-27T20:32:13.334Z",
       "years_active": 10,
@@ -2209,59 +2262,6 @@
         ],
         [
           "CWE-732",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "HCL",
-      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
-      "count": 23,
-      "rank": 43,
-      "first_cve_date": "2026-01-07T06:48:19.946Z",
-      "last_cve_date": "2026-02-20T20:01:10.544Z",
-      "years_active": 8,
-      "first_cve_year": 2019,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 7,
-        "High": 1,
-        "Low": 15
-      },
-      "top_cwe_types": {
-        "CWE-613": 2,
-        "CWE-200": 2,
-        "CWE-522": 2,
-        "CWE-497": 1,
-        "CWE-323": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-613",
-          2
-        ],
-        [
-          "CWE-200",
-          2
-        ],
-        [
-          "CWE-522",
-          2
-        ],
-        [
-          "CWE-497",
-          1
-        ],
-        [
-          "CWE-323",
           1
         ]
       ]
@@ -9681,10 +9681,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 722,
+      "count": 725,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-23T09:02:07.066Z",
+      "last_cve_date": "2026-02-23T10:32:49.611Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -9694,8 +9694,8 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 421,
-        "High": 194,
+        "Medium": 423,
+        "High": 195,
         "Critical": 95,
         "Low": 12
       },
@@ -9704,7 +9704,7 @@
         "CWE-89": 158,
         "CWE-119": 141,
         "CWE-77": 98,
-        "CWE-284": 68
+        "CWE-284": 69
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -9728,7 +9728,7 @@
         ],
         [
           "CWE-284",
-          68
+          69
         ]
       ]
     },
@@ -10081,10 +10081,10 @@
     {
       "name": "INCIBE",
       "assigner_org_id": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
-      "count": 70,
+      "count": 73,
       "rank": 12,
       "first_cve_date": "2026-01-12T11:26:30.574Z",
-      "last_cve_date": "2026-02-19T08:50:36.880Z",
+      "last_cve_date": "2026-02-23T10:31:25.455Z",
       "years_active": 7,
       "first_cve_year": 2020,
       "last_cve_year": 2026,
@@ -10094,13 +10094,13 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 39,
+        "Medium": 41,
         "High": 16,
-        "Critical": 15
+        "Critical": 16
       },
       "top_cwe_types": {
-        "CWE-79": 35,
-        "CWE-89": 18,
+        "CWE-79": 37,
+        "CWE-89": 19,
         "CWE-352": 5,
         "CWE-639": 2,
         "CWE-22": 2
@@ -10111,11 +10111,11 @@
       "top_cwes": [
         [
           "CWE-79",
-          35
+          37
         ],
         [
           "CWE-89",
-          18
+          19
         ],
         [
           "CWE-352",
@@ -11669,10 +11669,63 @@
       ]
     },
     {
+      "name": "HCL",
+      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
+      "count": 24,
+      "rank": 42,
+      "first_cve_date": "2026-01-07T06:48:19.946Z",
+      "last_cve_date": "2026-02-23T10:56:52.305Z",
+      "years_active": 8,
+      "first_cve_year": 2019,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 8,
+        "High": 1,
+        "Low": 15
+      },
+      "top_cwe_types": {
+        "CWE-613": 2,
+        "CWE-200": 2,
+        "CWE-522": 2,
+        "CWE-497": 1,
+        "CWE-323": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-613",
+          2
+        ],
+        [
+          "CWE-200",
+          2
+        ],
+        [
+          "CWE-522",
+          2
+        ],
+        [
+          "CWE-497",
+          1
+        ],
+        [
+          "CWE-323",
+          1
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 24,
-      "rank": 42,
+      "rank": 43,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-01-27T20:32:13.334Z",
       "years_active": 10,
@@ -11717,59 +11770,6 @@
         ],
         [
           "CWE-732",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "HCL",
-      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
-      "count": 23,
-      "rank": 43,
-      "first_cve_date": "2026-01-07T06:48:19.946Z",
-      "last_cve_date": "2026-02-20T20:01:10.544Z",
-      "years_active": 8,
-      "first_cve_year": 2019,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 7,
-        "High": 1,
-        "Low": 15
-      },
-      "top_cwe_types": {
-        "CWE-613": 2,
-        "CWE-200": 2,
-        "CWE-522": 2,
-        "CWE-497": 1,
-        "CWE-323": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-613",
-          2
-        ],
-        [
-          "CWE-200",
-          2
-        ],
-        [
-          "CWE-522",
-          2
-        ],
-        [
-          "CWE-497",
-          1
-        ],
-        [
-          "CWE-323",
           1
         ]
       ]
