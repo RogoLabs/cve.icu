@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-24T03:56:22.357569",
+  "generated_at": "2026-02-24T06:29:56.513531",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 222,
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 749,
+      "count": 752,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-24T03:32:10.667Z",
+      "last_cve_date": "2026-02-24T05:52:29.889Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,17 +186,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 438,
-        "High": 201,
+        "Medium": 440,
+        "High": 202,
         "Critical": 98,
         "Low": 12
       },
       "top_cwe_types": {
-        "CWE-74": 227,
-        "CWE-89": 162,
+        "CWE-74": 228,
+        "CWE-89": 163,
         "CWE-119": 144,
         "CWE-77": 102,
-        "CWE-94": 71
+        "CWE-94": 72
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -204,11 +204,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          227
+          228
         ],
         [
           "CWE-89",
-          162
+          163
         ],
         [
           "CWE-119",
@@ -220,7 +220,7 @@
         ],
         [
           "CWE-94",
-          71
+          72
         ]
       ]
     },
@@ -1105,10 +1105,10 @@
     {
       "name": "sap",
       "assigner_org_id": "e4686d1a-f260-4930-ac4c-2f5c992778dd",
-      "count": 46,
+      "count": 47,
       "rank": 22,
       "first_cve_date": "2026-01-13T01:12:53.331Z",
-      "last_cve_date": "2026-02-10T03:04:54.749Z",
+      "last_cve_date": "2026-02-24T05:23:52.911Z",
       "years_active": 10,
       "first_cve_year": 2017,
       "last_cve_year": 2026,
@@ -1118,7 +1118,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 26,
+        "Medium": 27,
         "High": 10,
         "Low": 4,
         "Critical": 6
@@ -1128,7 +1128,7 @@
         "CWE-601": 5,
         "CWE-79": 4,
         "CWE-94": 3,
-        "CWE-113": 2
+        "CWE-497": 2
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -1151,7 +1151,7 @@
           3
         ],
         [
-          "CWE-113",
+          "CWE-497",
           2
         ]
       ]
@@ -1791,10 +1791,64 @@
       ]
     },
     {
+      "name": "WPScan",
+      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
+      "count": 31,
+      "rank": 35,
+      "first_cve_date": "2026-01-01T06:00:03.091Z",
+      "last_cve_date": "2026-02-24T06:00:07.864Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 19,
+        "Critical": 4,
+        "High": 6,
+        "Low": 1
+      },
+      "top_cwe_types": {
+        "CWE-79": 8,
+        "CWE-862": 6,
+        "CWE-269": 4,
+        "CWE-89": 3,
+        "CWE-352": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          8
+        ],
+        [
+          "CWE-862",
+          6
+        ],
+        [
+          "CWE-269",
+          4
+        ],
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-352",
+          2
+        ]
+      ]
+    },
+    {
       "name": "qualcomm",
       "assigner_org_id": "2cfc7d3e-20d3-47ac-8db7-1b7285aff15f",
       "count": 31,
-      "rank": 35,
+      "rank": 36,
       "first_cve_date": "2026-01-06T22:48:28.547Z",
       "last_cve_date": "2026-02-02T15:20:47.013Z",
       "years_active": 10,
@@ -1846,7 +1900,7 @@
       "name": "SEC-VLab",
       "assigner_org_id": "551230f0-3615-47bd-b7cc-93e92e730bbf",
       "count": 30,
-      "rank": 36,
+      "rank": 37,
       "first_cve_date": "2026-01-26T10:03:21.868Z",
       "last_cve_date": "2026-02-19T11:01:56.524Z",
       "years_active": 4,
@@ -1891,60 +1945,6 @@
         ],
         [
           "CWE-269",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "WPScan",
-      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
-      "count": 30,
-      "rank": 37,
-      "first_cve_date": "2026-01-01T06:00:03.091Z",
-      "last_cve_date": "2026-02-22T06:00:02.222Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 19,
-        "Critical": 4,
-        "High": 6,
-        "Low": 1
-      },
-      "top_cwe_types": {
-        "CWE-79": 7,
-        "CWE-862": 6,
-        "CWE-269": 4,
-        "CWE-89": 3,
-        "CWE-352": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          7
-        ],
-        [
-          "CWE-862",
-          6
-        ],
-        [
-          "CWE-269",
-          4
-        ],
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-352",
           2
         ]
       ]
@@ -9761,10 +9761,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 749,
+      "count": 752,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-24T03:32:10.667Z",
+      "last_cve_date": "2026-02-24T05:52:29.889Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -9774,17 +9774,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 438,
-        "High": 201,
+        "Medium": 440,
+        "High": 202,
         "Critical": 98,
         "Low": 12
       },
       "top_cwe_types": {
-        "CWE-74": 227,
-        "CWE-89": 162,
+        "CWE-74": 228,
+        "CWE-89": 163,
         "CWE-119": 144,
         "CWE-77": 102,
-        "CWE-94": 71
+        "CWE-94": 72
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -9792,11 +9792,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          227
+          228
         ],
         [
           "CWE-89",
-          162
+          163
         ],
         [
           "CWE-119",
@@ -9808,7 +9808,7 @@
         ],
         [
           "CWE-94",
-          71
+          72
         ]
       ]
     },
@@ -10693,10 +10693,10 @@
     {
       "name": "sap",
       "assigner_org_id": "e4686d1a-f260-4930-ac4c-2f5c992778dd",
-      "count": 46,
+      "count": 47,
       "rank": 22,
       "first_cve_date": "2026-01-13T01:12:53.331Z",
-      "last_cve_date": "2026-02-10T03:04:54.749Z",
+      "last_cve_date": "2026-02-24T05:23:52.911Z",
       "years_active": 10,
       "first_cve_year": 2017,
       "last_cve_year": 2026,
@@ -10706,7 +10706,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 26,
+        "Medium": 27,
         "High": 10,
         "Low": 4,
         "Critical": 6
@@ -10716,7 +10716,7 @@
         "CWE-601": 5,
         "CWE-79": 4,
         "CWE-94": 3,
-        "CWE-113": 2
+        "CWE-497": 2
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -10739,7 +10739,7 @@
           3
         ],
         [
-          "CWE-113",
+          "CWE-497",
           2
         ]
       ]
@@ -11379,10 +11379,64 @@
       ]
     },
     {
+      "name": "WPScan",
+      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
+      "count": 31,
+      "rank": 35,
+      "first_cve_date": "2026-01-01T06:00:03.091Z",
+      "last_cve_date": "2026-02-24T06:00:07.864Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 19,
+        "Critical": 4,
+        "High": 6,
+        "Low": 1
+      },
+      "top_cwe_types": {
+        "CWE-79": 8,
+        "CWE-862": 6,
+        "CWE-269": 4,
+        "CWE-89": 3,
+        "CWE-352": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          8
+        ],
+        [
+          "CWE-862",
+          6
+        ],
+        [
+          "CWE-269",
+          4
+        ],
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-352",
+          2
+        ]
+      ]
+    },
+    {
       "name": "qualcomm",
       "assigner_org_id": "2cfc7d3e-20d3-47ac-8db7-1b7285aff15f",
       "count": 31,
-      "rank": 35,
+      "rank": 36,
       "first_cve_date": "2026-01-06T22:48:28.547Z",
       "last_cve_date": "2026-02-02T15:20:47.013Z",
       "years_active": 10,
@@ -11434,7 +11488,7 @@
       "name": "SEC-VLab",
       "assigner_org_id": "551230f0-3615-47bd-b7cc-93e92e730bbf",
       "count": 30,
-      "rank": 36,
+      "rank": 37,
       "first_cve_date": "2026-01-26T10:03:21.868Z",
       "last_cve_date": "2026-02-19T11:01:56.524Z",
       "years_active": 4,
@@ -11479,60 +11533,6 @@
         ],
         [
           "CWE-269",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "WPScan",
-      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
-      "count": 30,
-      "rank": 37,
-      "first_cve_date": "2026-01-01T06:00:03.091Z",
-      "last_cve_date": "2026-02-22T06:00:02.222Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 19,
-        "Critical": 4,
-        "High": 6,
-        "Low": 1
-      },
-      "top_cwe_types": {
-        "CWE-79": 7,
-        "CWE-862": 6,
-        "CWE-269": 4,
-        "CWE-89": 3,
-        "CWE-352": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          7
-        ],
-        [
-          "CWE-862",
-          6
-        ],
-        [
-          "CWE-269",
-          4
-        ],
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-352",
           2
         ]
       ]
