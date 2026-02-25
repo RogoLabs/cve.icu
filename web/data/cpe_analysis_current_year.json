@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-25T15:28:46.402442",
+  "generated_at": "2026-02-25T18:31:08.544507",
   "year": 2026,
-  "total_unique_cpes": 4122,
-  "total_cpe_entries": 20148,
-  "total_cves_with_cpes": 3926,
-  "total_unique_vendors": 892,
-  "total_unique_products": 2226,
+  "total_unique_cpes": 4229,
+  "total_cpe_entries": 20853,
+  "total_cves_with_cpes": 4114,
+  "total_unique_vendors": 919,
+  "total_unique_products": 2321,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
@@ -69,6 +69,13 @@
       "vendor": "apple",
       "product": "iphone_os",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:esr:*:*:*",
+      "count": 77,
+      "vendor": "mozilla",
+      "product": "firefox",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
@@ -141,6 +148,13 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:-:*:*:*",
+      "count": 61,
+      "vendor": "mozilla",
+      "product": "firefox",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
       "count": 60,
       "vendor": "microsoft",
@@ -155,10 +169,24 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:-:*:*:*",
+      "count": 59,
+      "vendor": "mozilla",
+      "product": "thunderbird",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
-      "count": 52,
+      "count": 58,
       "vendor": "imagemagick",
       "product": "imagemagick",
+      "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:esr:*:*:*",
+      "count": 50,
+      "vendor": "mozilla",
+      "product": "thunderbird",
       "type": "Application"
     },
     {
@@ -177,7 +205,7 @@
     },
     {
       "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
-      "count": 39,
+      "count": 45,
       "vendor": "google",
       "product": "chrome",
       "type": "Application"
@@ -187,34 +215,6 @@
       "count": 38,
       "vendor": "microsoft",
       "product": "windows_11_24h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_24h2:*:*:*:*:*:*:x64:*",
-      "count": 38,
-      "vendor": "microsoft",
-      "product": "windows_11_24h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:ibm:db2:*:*:*:*:*:windows:*:*",
-      "count": 38,
-      "vendor": "ibm",
-      "product": "db2",
-      "type": "Application"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_25h2:*:*:*:*:*:*:arm64:*",
-      "count": 37,
-      "vendor": "microsoft",
-      "product": "windows_11_25h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_25h2:*:*:*:*:*:*:x64:*",
-      "count": 37,
-      "vendor": "microsoft",
-      "product": "windows_11_25h2",
       "type": "Operating System"
     }
   ],
@@ -229,7 +229,7 @@
     },
     {
       "vendor": "microsoft",
-      "count": 1951
+      "count": 1955
     },
     {
       "vendor": "samsung",
@@ -237,7 +237,7 @@
     },
     {
       "vendor": "juniper",
-      "count": 1182
+      "count": 1325
     },
     {
       "vendor": "qnap",
@@ -245,15 +245,19 @@
     },
     {
       "vendor": "rustfs",
-      "count": 501
+      "count": 610
     },
     {
       "vendor": "ibm",
-      "count": 415
+      "count": 448
     },
     {
       "vendor": "apple",
       "count": 363
+    },
+    {
+      "vendor": "mozilla",
+      "count": 251
     },
     {
       "vendor": "sap",
@@ -272,12 +276,8 @@
       "count": 147
     },
     {
-      "vendor": "paloaltonetworks",
-      "count": 119
-    },
-    {
-      "vendor": "craftcms",
-      "count": 117
+      "vendor": "google",
+      "count": 120
     }
   ],
   "top_products": [
@@ -291,15 +291,15 @@
     },
     {
       "product": "junos",
-      "count": 812
+      "count": 955
+    },
+    {
+      "product": "rustfs",
+      "count": 610
     },
     {
       "product": "quts_hero",
       "count": 524
-    },
-    {
-      "product": "rustfs",
-      "count": 501
     },
     {
       "product": "qts",
@@ -334,24 +334,24 @@
       "count": 146
     },
     {
-      "product": "windows_11_23h2",
-      "count": 139
+      "product": "firefox",
+      "count": 140
     },
     {
-      "product": "windows_10_1607",
-      "count": 131
+      "product": "windows_11_23h2",
+      "count": 139
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 10127,
-      "percentage": 50.3
+      "count": 10616,
+      "percentage": 50.9
     },
     {
       "type": "Operating System",
-      "count": 10020,
-      "percentage": 49.7
+      "count": 10236,
+      "percentage": 49.1
     },
     {
       "type": "Hardware",
