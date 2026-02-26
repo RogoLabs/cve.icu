@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-25T21:18:38.951331",
+  "generated_at": "2026-02-26T00:27:49.010556",
   "year": 2026,
-  "total_unique_cpes": 4229,
-  "total_cpe_entries": 20853,
-  "total_cves_with_cpes": 4114,
-  "total_unique_vendors": 919,
-  "total_unique_products": 2321,
+  "total_unique_cpes": 4296,
+  "total_cpe_entries": 21198,
+  "total_cves_with_cpes": 4170,
+  "total_unique_vendors": 936,
+  "total_unique_products": 2355,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
@@ -99,11 +99,25 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:-:*:*:*",
+      "count": 70,
+      "vendor": "mozilla",
+      "product": "firefox",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
       "count": 69,
       "vendor": "microsoft",
       "product": "windows_server_2016",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:-:*:*:*",
+      "count": 67,
+      "vendor": "mozilla",
+      "product": "thunderbird",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_11_23h2:*:*:*:*:*:*:*:*",
@@ -148,13 +162,6 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:-:*:*:*",
-      "count": 61,
-      "vendor": "mozilla",
-      "product": "firefox",
-      "type": "Application"
-    },
-    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
       "count": 60,
       "vendor": "microsoft",
@@ -167,13 +174,6 @@
       "vendor": "microsoft",
       "product": "windows_10_22h2",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:-:*:*:*",
-      "count": 59,
-      "vendor": "mozilla",
-      "product": "thunderbird",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
@@ -233,7 +233,7 @@
     },
     {
       "vendor": "samsung",
-      "count": 1389
+      "count": 1391
     },
     {
       "vendor": "juniper",
@@ -249,15 +249,19 @@
     },
     {
       "vendor": "ibm",
-      "count": 448
+      "count": 485
     },
     {
       "vendor": "apple",
       "count": 363
     },
     {
+      "vendor": "zyxel",
+      "count": 292
+    },
+    {
       "vendor": "mozilla",
-      "count": 251
+      "count": 268
     },
     {
       "vendor": "sap",
@@ -274,10 +278,6 @@
     {
       "vendor": "gitlab",
       "count": 147
-    },
-    {
-      "vendor": "google",
-      "count": 120
     }
   ],
   "top_products": [
@@ -314,6 +314,10 @@
       "count": 171
     },
     {
+      "product": "firefox",
+      "count": 149
+    },
+    {
       "product": "windows_10_21h2",
       "count": 149
     },
@@ -334,10 +338,6 @@
       "count": 146
     },
     {
-      "product": "firefox",
-      "count": 140
-    },
-    {
       "product": "windows_11_23h2",
       "count": 139
     }
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 10616,
-      "percentage": 50.9
+      "count": 10722,
+      "percentage": 50.6
     },
     {
       "type": "Operating System",
-      "count": 10236,
-      "percentage": 49.1
+      "count": 10475,
+      "percentage": 49.4
     },
     {
       "type": "Hardware",
