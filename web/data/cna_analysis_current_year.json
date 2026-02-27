@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-02-27T03:54:48.651983",
+  "generated_at": "2026-02-27T06:25:41.466709",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
-  "total_cnas": 234,
-  "active_cnas": 234,
+  "total_cnas": 235,
+  "active_cnas": 235,
   "inactive_cnas": 0,
-  "official_cnas": 234,
+  "official_cnas": 235,
   "unofficial_cnas": 0,
   "cna_list": [
     {
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 804,
+      "count": 811,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-27T03:02:13.772Z",
+      "last_cve_date": "2026-02-27T06:02:09.605Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,17 +186,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 469,
+        "Medium": 475,
         "High": 213,
-        "Critical": 108,
+        "Critical": 109,
         "Low": 14
       },
       "top_cwe_types": {
-        "CWE-74": 240,
-        "CWE-89": 175,
+        "CWE-74": 242,
+        "CWE-89": 177,
         "CWE-119": 161,
-        "CWE-77": 104,
-        "CWE-94": 74
+        "CWE-77": 105,
+        "CWE-94": 75
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -204,11 +204,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          240
+          242
         ],
         [
           "CWE-89",
-          175
+          177
         ],
         [
           "CWE-119",
@@ -216,21 +216,21 @@
         ],
         [
           "CWE-77",
-          104
+          105
         ],
         [
           "CWE-94",
-          74
+          75
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 705,
+      "count": 707,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-02-26T19:23:09.638Z",
+      "last_cve_date": "2026-02-27T04:33:03.419Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -241,8 +241,8 @@
       ],
       "severity_distribution": {
         "Critical": 30,
-        "Medium": 557,
-        "High": 110,
+        "Medium": 558,
+        "High": 111,
         "Low": 8
       },
       "top_cwe_types": {
@@ -250,7 +250,7 @@
         "CWE-862": 166,
         "CWE-352": 58,
         "CWE-89": 29,
-        "CWE-639": 24
+        "CWE-639": 25
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -274,17 +274,17 @@
         ],
         [
           "CWE-639",
-          24
+          25
         ]
       ]
     },
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 506,
+      "count": 510,
       "rank": 6,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-02-26T00:00:00.000Z",
+      "last_cve_date": "2026-02-27T05:28:17.383Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -295,8 +295,8 @@
       ],
       "severity_distribution": {
         "Medium": 182,
-        "Critical": 112,
-        "High": 196,
+        "Critical": 114,
+        "High": 198,
         "Low": 7
       },
       "top_cwe_types": {
@@ -1585,10 +1585,63 @@
       ]
     },
     {
+      "name": "jpcert",
+      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
+      "count": 37,
+      "rank": 31,
+      "first_cve_date": "2026-01-06T06:34:11.329Z",
+      "last_cve_date": "2026-02-27T05:39:54.060Z",
+      "years_active": 17,
+      "first_cve_year": 2010,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Medium": 16,
+        "High": 19,
+        "Critical": 2
+      },
+      "top_cwe_types": {
+        "CWE-427": 7,
+        "CWE-79": 6,
+        "CWE-78": 5,
+        "CWE-639": 2,
+        "CWE-22": 2
+      },
+      "kev_count": 1,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-427",
+          7
+        ],
+        [
+          "CWE-79",
+          6
+        ],
+        [
+          "CWE-78",
+          5
+        ],
+        [
+          "CWE-639",
+          2
+        ],
+        [
+          "CWE-22",
+          2
+        ]
+      ]
+    },
+    {
       "name": "cisco",
       "assigner_org_id": "d1c1063e-7a18-46af-9102-31f8928bc633",
       "count": 37,
-      "rank": 31,
+      "rank": 32,
       "first_cve_date": "2026-01-07T16:23:43.283Z",
       "last_cve_date": "2026-02-25T16:26:29.215Z",
       "years_active": 20,
@@ -1634,59 +1687,6 @@
         ],
         [
           "CWE-805",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "jpcert",
-      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 36,
-      "rank": 32,
-      "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-02-26T05:39:24.457Z",
-      "years_active": 17,
-      "first_cve_year": 2010,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Medium": 15,
-        "High": 19,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-427": 7,
-        "CWE-79": 6,
-        "CWE-78": 5,
-        "CWE-639": 2,
-        "CWE-22": 2
-      },
-      "kev_count": 1,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-427",
-          7
-        ],
-        [
-          "CWE-79",
-          6
-        ],
-        [
-          "CWE-78",
-          5
-        ],
-        [
-          "CWE-639",
-          2
-        ],
-        [
-          "CWE-22",
           2
         ]
       ]
@@ -9692,10 +9692,41 @@
       ]
     },
     {
+      "name": "AHA",
+      "assigner_org_id": "26969f82-7e87-44d8-9cb5-f6fb926ddd43",
+      "count": 1,
+      "rank": 220,
+      "first_cve_date": "2026-02-27T04:28:46.955Z",
+      "last_cve_date": "2026-02-27T04:28:46.955Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-321": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-321",
+          1
+        ]
+      ]
+    },
+    {
       "name": "canonical",
       "assigner_org_id": "cc1ad9ee-3454-478d-9317-d3e869d708bc",
       "count": 1,
-      "rank": 220,
+      "rank": 221,
       "first_cve_date": "2026-01-28T15:01:46.364Z",
       "last_cve_date": "2026-01-28T15:01:46.364Z",
       "years_active": 20,
@@ -9731,7 +9762,7 @@
       "name": "WatchGuard",
       "assigner_org_id": "5d1c2695-1a31-4499-88ae-e847036fd7e3",
       "count": 1,
-      "rank": 221,
+      "rank": 222,
       "first_cve_date": "2026-01-30T13:02:59.561Z",
       "last_cve_date": "2026-01-30T13:02:59.561Z",
       "years_active": 3,
@@ -9762,7 +9793,7 @@
       "name": "JAMF",
       "assigner_org_id": "67325c3f-c596-46c5-a235-e1a1e73abe4e",
       "count": 1,
-      "rank": 222,
+      "rank": 223,
       "first_cve_date": "2026-01-21T15:25:19.543Z",
       "last_cve_date": "2026-01-21T15:25:19.543Z",
       "years_active": 3,
@@ -9793,7 +9824,7 @@
       "name": "Gridware",
       "assigner_org_id": "b7efe717-a805-47cf-8e9a-921fca0ce0ce",
       "count": 1,
-      "rank": 223,
+      "rank": 224,
       "first_cve_date": "2026-02-05T06:33:02.766Z",
       "last_cve_date": "2026-02-05T06:33:02.766Z",
       "years_active": 3,
@@ -9824,7 +9855,7 @@
       "name": "Hillstone",
       "assigner_org_id": "2b565742-f273-46f9-b583-07c1fcdea31a",
       "count": 1,
-      "rank": 224,
+      "rank": 225,
       "first_cve_date": "2026-02-04T03:11:30.275Z",
       "last_cve_date": "2026-02-04T03:11:30.275Z",
       "years_active": 4,
@@ -9855,7 +9886,7 @@
       "name": "atlassian",
       "assigner_org_id": "f08a6ab8-ed46-4c22-8884-d911ccfe3c66",
       "count": 1,
-      "rank": 225,
+      "rank": 226,
       "first_cve_date": "2026-01-28T00:30:00.557Z",
       "last_cve_date": "2026-01-28T00:30:00.557Z",
       "years_active": 10,
@@ -9886,7 +9917,7 @@
       "name": "M-Files Corporation",
       "assigner_org_id": "bcf7a16e-bfdc-46e4-9e42-4187da3f4410",
       "count": 1,
-      "rank": 226,
+      "rank": 227,
       "first_cve_date": "2026-01-21T10:29:57.786Z",
       "last_cve_date": "2026-01-21T10:29:57.786Z",
       "years_active": 5,
@@ -9917,7 +9948,7 @@
       "name": "Octopus",
       "assigner_org_id": "6f4f8c89-ef06-4bae-a2a5-6734ddf76272",
       "count": 1,
-      "rank": 227,
+      "rank": 228,
       "first_cve_date": "2026-02-25T12:22:18.328Z",
       "last_cve_date": "2026-02-25T12:22:18.328Z",
       "years_active": 6,
@@ -9941,7 +9972,7 @@
       "name": "EDB",
       "assigner_org_id": "20be33e2-bf35-4d13-8fad-18bd2f3e3659",
       "count": 1,
-      "rank": 228,
+      "rank": 229,
       "first_cve_date": "2026-01-16T16:29:42.134Z",
       "last_cve_date": "2026-01-16T16:29:42.134Z",
       "years_active": 3,
@@ -9972,7 +10003,7 @@
       "name": "HashiCorp",
       "assigner_org_id": "67fedba0-ff2e-4543-ba5b-aa93e87718cc",
       "count": 1,
-      "rank": 229,
+      "rank": 230,
       "first_cve_date": "2026-02-12T01:35:06.231Z",
       "last_cve_date": "2026-02-12T01:35:06.231Z",
       "years_active": 5,
@@ -10003,7 +10034,7 @@
       "name": "Meta",
       "assigner_org_id": "4fc57720-52fe-4431-a0fb-3d2c8747b827",
       "count": 1,
-      "rank": 230,
+      "rank": 231,
       "first_cve_date": "2026-01-26T19:16:38.250Z",
       "last_cve_date": "2026-01-26T19:16:38.250Z",
       "years_active": 9,
@@ -10039,7 +10070,7 @@
       "name": "Fortra",
       "assigner_org_id": "df4dee71-de3a-4139-9588-11b62fe6c0ff",
       "count": 1,
-      "rank": 231,
+      "rank": 232,
       "first_cve_date": "2026-02-25T18:57:02.962Z",
       "last_cve_date": "2026-02-25T18:57:02.962Z",
       "years_active": 3,
@@ -10070,7 +10101,7 @@
       "name": "harborist",
       "assigner_org_id": "7ffcee3d-2c14-4c3e-b844-86c6a321a158",
       "count": 1,
-      "rank": 232,
+      "rank": 233,
       "first_cve_date": "2026-02-12T04:39:42.914Z",
       "last_cve_date": "2026-02-12T04:39:42.914Z",
       "years_active": 2,
@@ -10101,7 +10132,7 @@
       "name": "Hackrate",
       "assigner_org_id": "7004884b-51e2-48e8-b4a2-5ca29e80453e",
       "count": 1,
-      "rank": 233,
+      "rank": 234,
       "first_cve_date": "2026-02-11T14:49:44.991Z",
       "last_cve_date": "2026-02-11T14:49:44.991Z",
       "years_active": 1,
@@ -10132,7 +10163,7 @@
       "name": "BLSOPS",
       "assigner_org_id": "27b6da8a-f51d-48d9-9eef-9b7f3405d20d",
       "count": 1,
-      "rank": 234,
+      "rank": 235,
       "first_cve_date": "2026-02-06T16:22:28.282Z",
       "last_cve_date": "2026-02-06T16:22:28.282Z",
       "years_active": 4,
@@ -10326,10 +10357,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 804,
+      "count": 811,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-02-27T03:02:13.772Z",
+      "last_cve_date": "2026-02-27T06:02:09.605Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -10339,17 +10370,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 469,
+        "Medium": 475,
         "High": 213,
-        "Critical": 108,
+        "Critical": 109,
         "Low": 14
       },
       "top_cwe_types": {
-        "CWE-74": 240,
-        "CWE-89": 175,
+        "CWE-74": 242,
+        "CWE-89": 177,
         "CWE-119": 161,
-        "CWE-77": 104,
-        "CWE-94": 74
+        "CWE-77": 105,
+        "CWE-94": 75
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -10357,11 +10388,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          240
+          242
         ],
         [
           "CWE-89",
-          175
+          177
         ],
         [
           "CWE-119",
@@ -10369,21 +10400,21 @@
         ],
         [
           "CWE-77",
-          104
+          105
         ],
         [
           "CWE-94",
-          74
+          75
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 705,
+      "count": 707,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-02-26T19:23:09.638Z",
+      "last_cve_date": "2026-02-27T04:33:03.419Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -10394,8 +10425,8 @@
       ],
       "severity_distribution": {
         "Critical": 30,
-        "Medium": 557,
-        "High": 110,
+        "Medium": 558,
+        "High": 111,
         "Low": 8
       },
       "top_cwe_types": {
@@ -10403,7 +10434,7 @@
         "CWE-862": 166,
         "CWE-352": 58,
         "CWE-89": 29,
-        "CWE-639": 24
+        "CWE-639": 25
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -10427,17 +10458,17 @@
         ],
         [
           "CWE-639",
-          24
+          25
         ]
       ]
     },
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 506,
+      "count": 510,
       "rank": 6,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-02-26T00:00:00.000Z",
+      "last_cve_date": "2026-02-27T05:28:17.383Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -10448,8 +10479,8 @@
       ],
       "severity_distribution": {
         "Medium": 182,
-        "Critical": 112,
-        "High": 196,
+        "Critical": 114,
+        "High": 198,
         "Low": 7
       },
       "top_cwe_types": {
@@ -11738,10 +11769,63 @@
       ]
     },
     {
+      "name": "jpcert",
+      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
+      "count": 37,
+      "rank": 31,
+      "first_cve_date": "2026-01-06T06:34:11.329Z",
+      "last_cve_date": "2026-02-27T05:39:54.060Z",
+      "years_active": 17,
+      "first_cve_year": 2010,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Medium": 16,
+        "High": 19,
+        "Critical": 2
+      },
+      "top_cwe_types": {
+        "CWE-427": 7,
+        "CWE-79": 6,
+        "CWE-78": 5,
+        "CWE-639": 2,
+        "CWE-22": 2
+      },
+      "kev_count": 1,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-427",
+          7
+        ],
+        [
+          "CWE-79",
+          6
+        ],
+        [
+          "CWE-78",
+          5
+        ],
+        [
+          "CWE-639",
+          2
+        ],
+        [
+          "CWE-22",
+          2
+        ]
+      ]
+    },
+    {
       "name": "cisco",
       "assigner_org_id": "d1c1063e-7a18-46af-9102-31f8928bc633",
       "count": 37,
-      "rank": 31,
+      "rank": 32,
       "first_cve_date": "2026-01-07T16:23:43.283Z",
       "last_cve_date": "2026-02-25T16:26:29.215Z",
       "years_active": 20,
@@ -11787,59 +11871,6 @@
         ],
         [
           "CWE-805",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "jpcert",
-      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 36,
-      "rank": 32,
-      "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-02-26T05:39:24.457Z",
-      "years_active": 17,
-      "first_cve_year": 2010,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Medium": 15,
-        "High": 19,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-427": 7,
-        "CWE-79": 6,
-        "CWE-78": 5,
-        "CWE-639": 2,
-        "CWE-22": 2
-      },
-      "kev_count": 1,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-427",
-          7
-        ],
-        [
-          "CWE-79",
-          6
-        ],
-        [
-          "CWE-78",
-          5
-        ],
-        [
-          "CWE-639",
-          2
-        ],
-        [
-          "CWE-22",
           2
         ]
       ]
@@ -19845,10 +19876,41 @@
       ]
     },
     {
+      "name": "AHA",
+      "assigner_org_id": "26969f82-7e87-44d8-9cb5-f6fb926ddd43",
+      "count": 1,
+      "rank": 220,
+      "first_cve_date": "2026-02-27T04:28:46.955Z",
+      "last_cve_date": "2026-02-27T04:28:46.955Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-321": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-321",
+          1
+        ]
+      ]
+    },
+    {
       "name": "canonical",
       "assigner_org_id": "cc1ad9ee-3454-478d-9317-d3e869d708bc",
       "count": 1,
-      "rank": 220,
+      "rank": 221,
       "first_cve_date": "2026-01-28T15:01:46.364Z",
       "last_cve_date": "2026-01-28T15:01:46.364Z",
       "years_active": 20,
@@ -19884,7 +19946,7 @@
       "name": "WatchGuard",
       "assigner_org_id": "5d1c2695-1a31-4499-88ae-e847036fd7e3",
       "count": 1,
-      "rank": 221,
+      "rank": 222,
       "first_cve_date": "2026-01-30T13:02:59.561Z",
       "last_cve_date": "2026-01-30T13:02:59.561Z",
       "years_active": 3,
@@ -19915,7 +19977,7 @@
       "name": "JAMF",
       "assigner_org_id": "67325c3f-c596-46c5-a235-e1a1e73abe4e",
       "count": 1,
-      "rank": 222,
+      "rank": 223,
       "first_cve_date": "2026-01-21T15:25:19.543Z",
       "last_cve_date": "2026-01-21T15:25:19.543Z",
       "years_active": 3,
@@ -19946,7 +20008,7 @@
       "name": "Gridware",
       "assigner_org_id": "b7efe717-a805-47cf-8e9a-921fca0ce0ce",
       "count": 1,
-      "rank": 223,
+      "rank": 224,
       "first_cve_date": "2026-02-05T06:33:02.766Z",
       "last_cve_date": "2026-02-05T06:33:02.766Z",
       "years_active": 3,
@@ -19977,7 +20039,7 @@
       "name": "Hillstone",
       "assigner_org_id": "2b565742-f273-46f9-b583-07c1fcdea31a",
       "count": 1,
-      "rank": 224,
+      "rank": 225,
       "first_cve_date": "2026-02-04T03:11:30.275Z",
       "last_cve_date": "2026-02-04T03:11:30.275Z",
       "years_active": 4,
@@ -20008,7 +20070,7 @@
       "name": "atlassian",
       "assigner_org_id": "f08a6ab8-ed46-4c22-8884-d911ccfe3c66",
       "count": 1,
-      "rank": 225,
+      "rank": 226,
       "first_cve_date": "2026-01-28T00:30:00.557Z",
       "last_cve_date": "2026-01-28T00:30:00.557Z",
       "years_active": 10,
@@ -20039,7 +20101,7 @@
       "name": "M-Files Corporation",
       "assigner_org_id": "bcf7a16e-bfdc-46e4-9e42-4187da3f4410",
       "count": 1,
-      "rank": 226,
+      "rank": 227,
       "first_cve_date": "2026-01-21T10:29:57.786Z",
       "last_cve_date": "2026-01-21T10:29:57.786Z",
       "years_active": 5,
@@ -20070,7 +20132,7 @@
       "name": "Octopus",
       "assigner_org_id": "6f4f8c89-ef06-4bae-a2a5-6734ddf76272",
       "count": 1,
-      "rank": 227,
+      "rank": 228,
       "first_cve_date": "2026-02-25T12:22:18.328Z",
       "last_cve_date": "2026-02-25T12:22:18.328Z",
       "years_active": 6,
@@ -20094,7 +20156,7 @@
       "name": "EDB",
       "assigner_org_id": "20be33e2-bf35-4d13-8fad-18bd2f3e3659",
       "count": 1,
-      "rank": 228,
+      "rank": 229,
       "first_cve_date": "2026-01-16T16:29:42.134Z",
       "last_cve_date": "2026-01-16T16:29:42.134Z",
       "years_active": 3,
@@ -20125,7 +20187,7 @@
       "name": "HashiCorp",
       "assigner_org_id": "67fedba0-ff2e-4543-ba5b-aa93e87718cc",
       "count": 1,
-      "rank": 229,
+      "rank": 230,
       "first_cve_date": "2026-02-12T01:35:06.231Z",
       "last_cve_date": "2026-02-12T01:35:06.231Z",
       "years_active": 5,
@@ -20156,7 +20218,7 @@
       "name": "Meta",
       "assigner_org_id": "4fc57720-52fe-4431-a0fb-3d2c8747b827",
       "count": 1,
-      "rank": 230,
+      "rank": 231,
       "first_cve_date": "2026-01-26T19:16:38.250Z",
       "last_cve_date": "2026-01-26T19:16:38.250Z",
       "years_active": 9,
@@ -20192,7 +20254,7 @@
       "name": "Fortra",
       "assigner_org_id": "df4dee71-de3a-4139-9588-11b62fe6c0ff",
       "count": 1,
-      "rank": 231,
+      "rank": 232,
       "first_cve_date": "2026-02-25T18:57:02.962Z",
       "last_cve_date": "2026-02-25T18:57:02.962Z",
       "years_active": 3,
@@ -20223,7 +20285,7 @@
       "name": "harborist",
       "assigner_org_id": "7ffcee3d-2c14-4c3e-b844-86c6a321a158",
       "count": 1,
-      "rank": 232,
+      "rank": 233,
       "first_cve_date": "2026-02-12T04:39:42.914Z",
       "last_cve_date": "2026-02-12T04:39:42.914Z",
       "years_active": 2,
@@ -20254,7 +20316,7 @@
       "name": "Hackrate",
       "assigner_org_id": "7004884b-51e2-48e8-b4a2-5ca29e80453e",
       "count": 1,
-      "rank": 233,
+      "rank": 234,
       "first_cve_date": "2026-02-11T14:49:44.991Z",
       "last_cve_date": "2026-02-11T14:49:44.991Z",
       "years_active": 1,
@@ -20285,7 +20347,7 @@
       "name": "BLSOPS",
       "assigner_org_id": "27b6da8a-f51d-48d9-9eef-9b7f3405d20d",
       "count": 1,
-      "rank": 234,
+      "rank": 235,
       "first_cve_date": "2026-02-06T16:22:28.282Z",
       "last_cve_date": "2026-02-06T16:22:28.282Z",
       "years_active": 4,
