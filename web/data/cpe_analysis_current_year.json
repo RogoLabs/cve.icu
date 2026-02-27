@@ -1,12 +1,19 @@
 {
-  "generated_at": "2026-02-26T21:19:07.284579",
+  "generated_at": "2026-02-27T00:30:06.821496",
   "year": 2026,
-  "total_unique_cpes": 4369,
-  "total_cpe_entries": 21472,
-  "total_cves_with_cpes": 4273,
-  "total_unique_vendors": 963,
-  "total_unique_products": 2402,
+  "total_unique_cpes": 4483,
+  "total_cpe_entries": 21873,
+  "total_cves_with_cpes": 4420,
+  "total_unique_vendors": 1004,
+  "total_unique_products": 2467,
   "top_cpes": [
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
+      "count": 169,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
     {
       "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
       "count": 128,
@@ -204,13 +211,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 46,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
       "count": 45,
       "vendor": "google",
@@ -249,11 +249,15 @@
     },
     {
       "vendor": "ibm",
-      "count": 494
+      "count": 498
     },
     {
       "vendor": "apple",
       "count": 363
+    },
+    {
+      "vendor": "linux",
+      "count": 341
     },
     {
       "vendor": "zyxel",
@@ -274,10 +278,6 @@
     {
       "vendor": "iptime",
       "count": 164
-    },
-    {
-      "vendor": "gitlab",
-      "count": 147
     }
   ],
   "top_products": [
@@ -310,6 +310,10 @@
       "count": 364
     },
     {
+      "product": "linux_kernel",
+      "count": 341
+    },
+    {
       "product": "windows_10_1809",
       "count": 171
     },
@@ -336,22 +340,18 @@
     {
       "product": "windows_11_25h2",
       "count": 146
-    },
-    {
-      "product": "windows_11_23h2",
-      "count": 139
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 10871,
-      "percentage": 50.6
+      "count": 11019,
+      "percentage": 50.4
     },
     {
       "type": "Operating System",
-      "count": 10600,
-      "percentage": 49.4
+      "count": 10853,
+      "percentage": 49.6
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 152
     }
   ],
-  "average_cpes_per_cve": 5.0
+  "average_cpes_per_cve": 4.9
 }
