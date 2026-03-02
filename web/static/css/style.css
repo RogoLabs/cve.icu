@@ -2084,8 +2084,16 @@ tbody tr:hover {
 }
 
 .homepage-chart-card:hover .chart-export-controls,
-.card:hover .chart-export-controls {
+.card:hover .chart-export-controls,
+.homepage-chart-card:focus-within .chart-export-controls,
+.card:focus-within .chart-export-controls {
     opacity: 1;
+}
+
+@media (hover: none) {
+    .chart-export-controls {
+        opacity: 1;
+    }
 }
 
 .chart-export-btn {
@@ -2136,6 +2144,7 @@ tbody tr:hover {
     .btn,
     button,
     .theme-toggle,
+    .chart-export-controls,
     .quick-select-buttons,
     .export-buttons,
     .homepage-chart-footer,
