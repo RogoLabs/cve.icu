@@ -31,22 +31,22 @@
 <!-- Statistics Cards -->
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-number" id="totalCpes">Loading...</div>
+        <div class="stat-number" id="totalCpes"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Total Unique CPEs</div>
         <small class="text-muted" style="font-size: 0.75rem;">📊 Platform identifiers</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="totalCvesWithCpes">Loading...</div>
+        <div class="stat-number" id="totalCvesWithCpes"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">CVEs with CPEs</div>
         <small class="text-muted" style="font-size: 0.75rem;">🔗 Linked vulnerabilities</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="avgCpesPerCve">Loading...</div>
+        <div class="stat-number" id="avgCpesPerCve"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Avg CPEs per CVE</div>
         <small class="text-muted" style="font-size: 0.75rem;">📈 Platform coverage</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="totalVendors">Loading...</div>
+        <div class="stat-number" id="totalVendors"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Unique Vendors</div>
         <small class="text-muted" style="font-size: 0.75rem;">🏢 Organizations</small>
     </div>
@@ -103,7 +103,7 @@
                     </tr>
                 </thead>
                 <tbody id="topCpesTableBody">
-                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                    <tr><td colspan="6" class="text-center"><span class="skeleton skeleton-text"></span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -128,7 +128,7 @@
                     </tr>
                 </thead>
                 <tbody id="topCvesTableBody">
-                    <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                    <tr><td colspan="5" class="text-center"><span class="skeleton skeleton-text"></span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -147,7 +147,7 @@
                     <div class="insight-icon">🎯</div>
                     <div class="insight-content">
                         <div class="insight-title">Most Targeted Platform</div>
-                        <div class="insight-text" id="topPlatformInsight">Loading...</div>
+                        <div class="insight-text" id="topPlatformInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@
                     <div class="insight-icon">🏢</div>
                     <div class="insight-content">
                         <div class="insight-title">Leading Vendor</div>
-                        <div class="insight-text" id="topVendorInsight">Loading...</div>
+                        <div class="insight-text" id="topVendorInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -165,7 +165,7 @@
                     <div class="insight-icon">📊</div>
                     <div class="insight-content">
                         <div class="insight-title">Platform Coverage</div>
-                        <div class="insight-text" id="coverageInsight">Loading...</div>
+                        <div class="insight-text" id="coverageInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -673,9 +673,18 @@ function showErrorState() {
     document.getElementById('totalCvesWithCpes').textContent = 'Error';
     document.getElementById('averageCpesPerCve').textContent = 'Error';
     document.getElementById('totalVendors').textContent = 'Error';
-    
-    document.getElementById('cpeTableBody').innerHTML = 
+
+    document.getElementById('cpeTableBody').innerHTML =
         '<tr><td colspan="6" class="text-center text-danger">Error loading CPE data. Please refresh the page.</td></tr>';
 }
+
+// Deep linking for data mode
+(function() {
+    var origToggle = toggleDataMode;
+    toggleDataMode = function() { origToggle(); if (window.CVE_HASH) CVE_HASH.update('mode', isShowingCurrentYear ? 'current' : ''); };
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { if (window.CVE_HASH && CVE_HASH.get().mode === 'current') origToggle(); }, 500);
+    });
+})();
 </script>
 {% endblock %}

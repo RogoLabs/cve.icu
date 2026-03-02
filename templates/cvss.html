@@ -735,5 +735,14 @@ function copyPermalink() {
 function updatePermalink() {
     // Update permalink functionality if needed
 }
+
+// Deep linking for data mode
+(function() {
+    var origToggle = toggleDataMode;
+    toggleDataMode = function() { origToggle(); if (window.CVE_HASH) CVE_HASH.update('mode', currentDataMode !== 'all' ? currentDataMode : ''); };
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { if (window.CVE_HASH && CVE_HASH.get().mode === 'current' && typeof setDataMode === 'function') setDataMode('current'); }, 500);
+    });
+})();
 </script>
 {% endblock %}

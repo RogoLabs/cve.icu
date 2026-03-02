@@ -23,8 +23,14 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="static/images/logo.png">
     
+    <!-- Preload critical assets -->
+    <link rel="preload" href="static/css/style.css" as="style">
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="static/css/style.css">
+
+    <!-- SEO -->
+    <meta name="robots" content="index, follow">
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.">
@@ -46,6 +52,15 @@
     <meta property="og:image" content="https://cve.icu/static/images/logo.png">
 </head>
 <body>
+    <!-- Apply saved theme before render to prevent flash -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('cve-icu-theme');
+            var preferLight = theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches);
+            if (!preferLight) document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+    </script>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Header and Navigation -->
     <header class="header">
         <div class="nav-container">
@@ -78,7 +93,10 @@
                     <li><a href="growth.html">Growth</a></li>
                     <li><a href="calendar.html">Calendar</a></li>
                 </ul>
-                <button class="nav-toggle" aria-label="Toggle navigation">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-live="polite" title="Toggle dark mode">
+                    <span id="themeIcon">&#9790;</span>
+                </button>
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -88,7 +106,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container">
+    <main id="main-content" class="container">
         
 <style>
 /* About page specific styling */
@@ -846,7 +864,7 @@
             <div class="text-center">
                 <small class="text-muted">
                     &copy; 2026 CVE.ICU • Built by <a href="https://rogolabs.net" target="_blank" class="text-decoration-none">RogoLabs</a><br>
-                    Data updated every 6 hours • CVE coverage: 1999-2026
+                    Data updated every 3 hours • CVE coverage: 1999-2026
                 </small>
             </div>
         </div>
@@ -855,8 +873,7 @@
     <!-- Chart.js Library (UMD version) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- D3.js for advanced visualizations -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
     
     <!-- Universal timestamp loader -->
     <script>
@@ -976,12 +993,14 @@
             if (navToggle && navMenu) {
                 navToggle.addEventListener('click', function() {
                     navMenu.classList.toggle('active');
-                    
+
                     // Prevent body scroll when menu is open
                     if (navMenu.classList.contains('active')) {
                         document.body.style.overflow = 'hidden';
+                        navToggle.setAttribute('aria-expanded', 'true');
                     } else {
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     }
                 });
                 
@@ -992,6 +1011,7 @@
                     if (!isClickInside && navMenu.classList.contains('active')) {
                         navMenu.classList.remove('active');
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     }
                 });
                 
@@ -1001,23 +1021,205 @@
                     link.addEventListener('click', function() {
                         navMenu.classList.remove('active');
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     });
                 });
             }
         });
     </script>
     
+    <!-- Theme Toggle -->
+    <script>
+        (function() {
+            var toggle = document.getElementById('themeToggle');
+            var icon = document.getElementById('themeIcon');
+            function isDark() {
+                return document.documentElement.getAttribute('data-theme') === 'dark';
+            }
+            function updateIcon() {
+                // Moon for light mode (click to go dark), Sun for dark mode (click to go light)
+                icon.innerHTML = isDark() ? '&#9788;' : '&#9790;';
+            }
+            updateIcon();
+            toggle.addEventListener('click', function() {
+                if (isDark()) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('cve-icu-theme', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('cve-icu-theme', 'dark');
+                }
+                updateIcon();
+                applyChartTheme();
+            });
+        })();
+
+        function applyChartTheme() {
+            if (typeof Chart === 'undefined') return;
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            var textColor = dark ? '#e1e4ea' : '#212529';
+            var mutedColor = dark ? '#9ca3b4' : '#6c757d';
+            var gridColor = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+            var tooltipBg = dark ? 'rgba(30,33,48,0.95)' : 'rgba(255,255,255,0.95)';
+            var tooltipBorder = dark ? '#2d3348' : '#dee2e6';
+
+            Chart.defaults.plugins.title.color = textColor;
+            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
+            Chart.defaults.plugins.tooltip.titleColor = textColor;
+            Chart.defaults.plugins.tooltip.bodyColor = mutedColor;
+            Chart.defaults.plugins.tooltip.borderColor = tooltipBorder;
+            Chart.defaults.plugins.legend.labels.color = textColor;
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+
+            // Update existing charts
+            Chart.helpers.each(Chart.instances, function(chart) {
+                if (chart.options.scales) {
+                    Object.values(chart.options.scales).forEach(function(scale) {
+                        if (scale.ticks) scale.ticks.color = scale.ticks.color === undefined ? textColor : (dark ? textColor : undefined);
+                        if (scale.grid) scale.grid.color = gridColor;
+                        if (scale.title) scale.title.color = textColor;
+                    });
+                }
+                chart.update('none');
+            });
+        }
+    </script>
+
+    <!-- Chart Export Utility -->
+    <script>
+        window.addChartExport = function(canvasId, title) {
+            var canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            var container = canvas.closest('.homepage-chart-card, .card');
+            if (!container) return;
+            // Ensure the container is positioned for absolute children
+            if (getComputedStyle(container).position === 'static') {
+                container.style.position = 'relative';
+            }
+            var controls = document.createElement('div');
+            controls.className = 'chart-export-controls';
+            controls.innerHTML =
+                '<button class="chart-export-btn" data-action="png" title="Download as PNG">PNG</button>' +
+                '<button class="chart-export-btn" data-action="csv" title="Download as CSV">CSV</button>';
+            container.appendChild(controls);
+
+            controls.addEventListener('click', function(e) {
+                var btn = e.target.closest('.chart-export-btn');
+                if (!btn) return;
+                var chart = Chart.getChart(canvas);
+                if (!chart) return;
+                var action = btn.getAttribute('data-action');
+                var safeName = (title || canvasId).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+                if (action === 'png') {
+                    var link = document.createElement('a');
+                    // Temporarily force white background for export
+                    var origBg = canvas.style.backgroundColor;
+                    canvas.style.backgroundColor = '#ffffff';
+                    chart.update('none');
+                    link.href = chart.toBase64Image('image/png', 1);
+                    canvas.style.backgroundColor = origBg;
+                    chart.update('none');
+                    link.download = safeName + '.png';
+                    link.click();
+                } else if (action === 'csv') {
+                    var data = chart.data;
+                    var labels = data.labels || [];
+                    var rows = ['Label,' + data.datasets.map(function(ds) { return '"' + (ds.label || 'Value') + '"'; }).join(',')];
+                    labels.forEach(function(label, i) {
+                        var vals = data.datasets.map(function(ds) { return ds.data[i] != null ? ds.data[i] : ''; });
+                        rows.push('"' + label + '",' + vals.join(','));
+                    });
+                    var blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+                    var link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = safeName + '.csv';
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }
+            });
+        };
+
+        // Auto-attach export buttons to all charts once loaded
+        function autoAttachChartExports() {
+            if (typeof Chart === 'undefined') return;
+            Object.keys(Chart.instances).forEach(function(key) {
+                var chart = Chart.instances[key];
+                var canvas = chart.canvas;
+                if (canvas && !canvas.dataset.exportAttached) {
+                    canvas.dataset.exportAttached = '1';
+                    var title = '';
+                    if (chart.options.plugins && chart.options.plugins.title && chart.options.plugins.title.text) {
+                        title = chart.options.plugins.title.text;
+                    }
+                    window.addChartExport(canvas.id, title || canvas.id);
+                }
+            });
+        }
+        // Run periodically to catch lazy-loaded charts
+        setInterval(autoAttachChartExports, 2000);
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(autoAttachChartExports, 1000);
+        });
+
+        // Deep linking utility: encode/decode page state in URL hash
+        window.CVE_HASH = {
+            get: function() {
+                var params = {};
+                var hash = window.location.hash.slice(1);
+                if (!hash) return params;
+                hash.split('&').forEach(function(pair) {
+                    var parts = pair.split('=');
+                    if (parts.length === 2) params[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+                });
+                return params;
+            },
+            set: function(params) {
+                var pairs = [];
+                Object.keys(params).forEach(function(key) {
+                    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                        pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
+                    }
+                });
+                var newHash = pairs.length ? '#' + pairs.join('&') : '';
+                if (window.location.hash !== newHash) {
+                    history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+                }
+            },
+            update: function(key, value) {
+                var params = this.get();
+                if (value === undefined || value === null || value === '') {
+                    delete params[key];
+                } else {
+                    params[key] = value;
+                }
+                this.set(params);
+            }
+        };
+    </script>
+
     <!-- Custom JavaScript -->
     <script>
         // Wait for Chart.js to load before configuring
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof Chart !== 'undefined') {
+                var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                var textColor = dark ? '#e1e4ea' : '#212529';
+                var mutedColor = dark ? '#9ca3b4' : '#6c757d';
+                var gridColor = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+                var tooltipBg = dark ? 'rgba(30,33,48,0.95)' : 'rgba(255,255,255,0.95)';
+                var tooltipBorder = dark ? '#2d3348' : '#dee2e6';
+
                 // Global configuration for Chart.js with design system
                 Chart.defaults.responsive = true;
                 Chart.defaults.maintainAspectRatio = false;
+                Chart.defaults.color = textColor;
+                Chart.defaults.borderColor = gridColor;
                 Chart.defaults.plugins.legend.position = 'top';
                 Chart.defaults.plugins.legend.labels.usePointStyle = true;
                 Chart.defaults.plugins.legend.labels.padding = 20;
+                Chart.defaults.plugins.legend.labels.color = textColor;
                 Chart.defaults.plugins.legend.labels.font = {
                     family: 'Inter, sans-serif',
                     size: 12,
@@ -1029,11 +1231,11 @@
                     size: 16,
                     weight: '600'
                 };
-                Chart.defaults.plugins.title.color = '#212529';
-                Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-                Chart.defaults.plugins.tooltip.titleColor = '#212529';
-                Chart.defaults.plugins.tooltip.bodyColor = '#6c757d';
-                Chart.defaults.plugins.tooltip.borderColor = '#dee2e6';
+                Chart.defaults.plugins.title.color = textColor;
+                Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
+                Chart.defaults.plugins.tooltip.titleColor = textColor;
+                Chart.defaults.plugins.tooltip.bodyColor = mutedColor;
+                Chart.defaults.plugins.tooltip.borderColor = tooltipBorder;
                 Chart.defaults.plugins.tooltip.borderWidth = 1;
                 Chart.defaults.plugins.tooltip.cornerRadius = 8;
                 Chart.defaults.plugins.tooltip.titleFont = {
@@ -1051,9 +1253,6 @@
                 Chart.defaults.elements.point.borderColor = '#2196f3';
                 Chart.defaults.elements.line.borderColor = '#2196f3';
                 Chart.defaults.elements.bar.backgroundColor = '#2196f3';
-                
-                // Note: Scale-specific defaults are set per chart type in Chart.js v4
-                // Global scale defaults are handled differently
             }
             
             // Add active class to current page navigation link

@@ -119,14 +119,17 @@ class CalendarAnalyzer:
         daily_data = {}
         for date_key, count in daily_counts.items():
             scores = daily_scores.get(date_key, [])
-            avg_score = np.mean(scores) if scores else None
-            
-            daily_data[date_key] = {
+
+            entry: dict[str, Any] = {
                 'date': date_key,
                 'count': count,
-                'avg_cvss_score': round(avg_score, 2) if avg_score else None,
-                'cvss_count': len(scores)
             }
+            # Only include CVSS fields when there is actual score data
+            if scores:
+                entry['avg_cvss_score'] = round(float(np.mean(scores)), 1)
+                entry['cvss_count'] = len(scores)
+
+            daily_data[date_key] = entry
         
         if not self.quiet:
             logger.info(f"    ✅ Processed {len(daily_data):,} days of CVE data")
@@ -214,12 +217,15 @@ class CalendarAnalyzer:
         # Prepare calendar data for frontend
         calendar_data = []
         for date_key, data in daily_data.items():
-            calendar_data.append({
+            entry: dict[str, Any] = {
                 'date': date_key,
                 'value': data['count'],
-                'avg_cvss': data['avg_cvss_score'],
-                'cvss_count': data['cvss_count']
-            })
+            }
+            # Only include CVSS fields when score data exists (saves ~bytes per entry)
+            if 'avg_cvss_score' in data:
+                entry['avg_cvss'] = data['avg_cvss_score']
+                entry['cvss_count'] = data['cvss_count']
+            calendar_data.append(entry)
         
         # Sort by date
         calendar_data.sort(key=lambda x: x['date'])
@@ -269,7 +275,7 @@ class CalendarAnalyzer:
             max_day = max(current_year_daily, key=lambda x: x['value']) if current_year_daily else None
             
             # Calculate CVSS average for current year
-            cvss_scores = [data['avg_cvss'] for data in current_year_daily if data['avg_cvss'] is not None]
+            cvss_scores = [data['avg_cvss'] for data in current_year_daily if data.get('avg_cvss') is not None]
             avg_cvss = np.mean(cvss_scores) if cvss_scores else None
             
             current_year_stats = {

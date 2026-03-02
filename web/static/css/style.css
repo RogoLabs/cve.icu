@@ -80,6 +80,153 @@
     --box-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
+/* Dark Mode Theme */
+[data-theme="dark"] {
+    --color-bg-primary: #0f1117;
+    --color-bg-secondary: #1a1d27;
+    --color-bg-content: #1e2130;
+    --color-bg-hover: #252838;
+    --color-text: #e1e4ea;
+    --color-text-primary: #e1e4ea;
+    --color-text-secondary: #9ca3b4;
+    --color-text-muted: #6b7280;
+    --color-primary: #3b82f6;
+    --color-primary-light: rgba(59, 130, 246, 0.15);
+    --color-accent: #60a5fa;
+    --color-border: #2d3348;
+    --color-border-light: #252838;
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-info: #22d3ee;
+    --color-light: #1a1d27;
+    --color-dark: #e1e4ea;
+    --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+    --box-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .page-header {
+    background: linear-gradient(135deg, #1a1d27 0%, #252838 100%);
+}
+
+[data-theme="dark"] .stat-card {
+    background: linear-gradient(135deg, #1e2130 0%, #252838 100%);
+    border-color: #2d3348;
+}
+
+[data-theme="dark"] .stat-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] a:hover {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .card-header.bg-primary {
+    background-color: #1e3a5f !important;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: #252838 !important;
+}
+
+[data-theme="dark"] .page-header button {
+    background-color: #252838 !important;
+    border-color: #2d3348 !important;
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .page-header button:hover {
+    background-color: #2d3348 !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+}
+
+[data-theme="dark"] .page-header button:active,
+[data-theme="dark"] .page-header button.active {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .table {
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+    border-color: #2d3348;
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background-color: #252838;
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--color-text-secondary) !important;
+}
+
+[data-theme="dark"] .skeleton {
+    background: #2d3348;
+}
+
+[data-theme="dark"] .homepage-chart-card {
+    background-color: var(--color-bg-content);
+    border-color: #2d3348;
+}
+
+[data-theme="dark"] .calendar-container {
+    background: var(--color-bg-content);
+}
+
+[data-theme="dark"] .quick-select-btn {
+    background-color: #252838;
+    border-color: #2d3348;
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .quick-select-btn:hover {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+    color: var(--color-text-secondary);
+    border-color: #2d3348;
+}
+
+[data-theme="dark"] .btn-outline-secondary:hover {
+    background-color: #252838;
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background: var(--color-bg-content) !important;
+    border-color: #2d3348 !important;
+}
+
+/* Dark mode toggle button */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    padding: 0.375rem 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    margin-left: 0.75rem;
+}
+
+.theme-toggle:hover {
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
 /* Base Typography */
 body {
     font-family: var(--font-family);
@@ -499,6 +646,18 @@ main {
     color: var(--color-text-secondary);
     line-height: 1.4;
     font-weight: 500;
+}
+
+/* Sparkline charts in stat cards */
+.stat-sparkline {
+    width: 100%;
+    height: 32px;
+    margin-top: 0.5rem;
+}
+
+.stat-sparkline canvas {
+    width: 100% !important;
+    height: 32px !important;
 }
 
 /* Enhanced stats cards for specific use cases */
@@ -1879,28 +2038,247 @@ tbody tr:hover {
     }
 }
 
+/* Skeleton loading animations */
+@keyframes skeleton-pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+}
+
+.skeleton {
+    background: var(--color-border);
+    border-radius: 4px;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+.skeleton-number {
+    width: 5rem;
+    height: 2rem;
+    margin: 0 auto;
+}
+
+.skeleton-text {
+    width: 6rem;
+    height: 0.875rem;
+    margin: 0.25rem auto 0;
+}
+
+.skeleton-chart {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    border-radius: var(--border-radius);
+}
+
+/* Chart export controls */
+.chart-export-controls {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.homepage-chart-card:hover .chart-export-controls,
+.card:hover .chart-export-controls {
+    opacity: 1;
+}
+
+.chart-export-btn {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+
+.chart-export-btn:hover {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+/* Skip to content link (accessibility) */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    z-index: 10000;
+    transition: top 0.2s;
+}
+.skip-link:focus {
+    top: 0;
+}
+
 /* Print styles */
 @media print {
+
+    /* Page margins */
+    @page {
+        margin: 1.5cm;
+    }
+
+    /* 1. Hide non-essential UI elements */
     .header,
     .footer,
     .nav-toggle,
+    .btn,
+    button,
+    .theme-toggle,
     .quick-select-buttons,
     .export-buttons,
-    .btn {
+    .homepage-chart-footer,
+    .page-header .btn,
+    .whats-new-banner {
         display: none !important;
     }
-    
-    .container {
-        max-width: 100%;
-        padding: 0;
+
+    /* 2. Force white backgrounds (override dark mode) */
+    body,
+    .card,
+    .stat-card,
+    .stat-cards,
+    .page-header,
+    .container,
+    [data-theme="dark"] body,
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .stat-cards,
+    [data-theme="dark"] .page-header {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
     }
-    
+
+    /* 3. Force dark text color for readability */
+    body,
+    p,
+    span,
+    h1, h2, h3, h4, h5, h6,
+    a,
+    td, th,
+    label,
+    .stat-card,
+    .stat-card *,
+    .card *,
+    .page-header *,
+    [data-theme="dark"] body,
+    [data-theme="dark"] p,
+    [data-theme="dark"] span,
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3,
+    [data-theme="dark"] h4,
+    [data-theme="dark"] h5,
+    [data-theme="dark"] h6,
+    [data-theme="dark"] a,
+    [data-theme="dark"] td,
+    [data-theme="dark"] th,
+    [data-theme="dark"] label,
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .stat-card *,
+    [data-theme="dark"] .card *,
+    [data-theme="dark"] .page-header * {
+        color: #212529 !important;
+    }
+
+    /* 4. Remove box shadows and border-radius for clean printing */
+    *,
+    *::before,
+    *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    .card,
+    .stat-card,
+    .page-header {
+        border-radius: 0 !important;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    /* Remove pseudo-element decorations */
+    .stat-card::before,
+    .page-header::before {
+        display: none !important;
+    }
+
+    /* 5. Make charts display at full width */
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .chart-container,
+    .chart-wrapper,
+    canvas {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* 6. Ensure tables print with borders and don't break across pages */
+    table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+
+    th, td {
+        border: 1px solid #dee2e6 !important;
+        padding: 6px 8px !important;
+    }
+
+    thead {
+        display: table-header-group !important;
+    }
+
+    tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
     .card {
         break-inside: avoid;
         page-break-inside: avoid;
     }
-    
-    body {
-        background: white;
+
+    /* 7. Remove hover effects and transitions */
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
     }
+
+    .stat-card:hover,
+    .card:hover,
+    a:hover {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    /* Print links with their URLs */
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #6c757d !important;
+        word-break: break-all;
+    }
+
+    /* Prevent nav links from printing URLs */
+    .header a::after,
+    .footer a::after {
+        content: none !important;
+    }
+
 }

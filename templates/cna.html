@@ -31,22 +31,22 @@
 <!-- Statistics Cards -->
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-number" id="activeCnas">Loading...</div>
+        <div class="stat-number" id="activeCnas"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Active CNAs</div>
         <small class="text-muted" style="font-size: 0.75rem;">📈 Currently publishing</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="highVolumeCnas">Loading...</div>
+        <div class="stat-number" id="highVolumeCnas"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">High-Volume CNAs</div>
         <small class="text-muted" style="font-size: 0.75rem;">🚀 CNAs with 1000+ CVEs</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="medianYearsActive">Loading...</div>
+        <div class="stat-number" id="medianYearsActive"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Median Years Active</div>
         <small class="text-muted" style="font-size: 0.75rem;">📊 Typical CNA lifespan</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="marketConcentration">Loading...</div>
+        <div class="stat-number" id="marketConcentration"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Top 5 CNA Share</div>
         <small class="text-muted" style="font-size: 0.75rem;">📊 Concentration of assignments</small>
     </div>
@@ -79,7 +79,6 @@
                     <canvas id="cnaTypeChart"></canvas>
                 </div>
                 <small class="text-muted mt-2 d-block">
-                    <i class="fas fa-info-circle me-1"></i>
                     Note: CNAs can and often have multiple types (e.g., Vendor + Researcher).
                 </small>
             </div>
@@ -161,7 +160,7 @@
                     <div class="insight-icon">🏆</div>
                     <div class="insight-content">
                         <div class="insight-title">Top CNA</div>
-                        <div class="insight-text" id="marketLeaderInsight">Loading...</div>
+                        <div class="insight-text" id="marketLeaderInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -170,7 +169,7 @@
                     <div class="insight-icon">📊</div>
                     <div class="insight-content">
                         <div class="insight-title">Activity Status</div>
-                        <div class="insight-text" id="activityInsight">Loading...</div>
+                        <div class="insight-text" id="activityInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -179,7 +178,7 @@
                     <div class="insight-icon">🏢</div>
                     <div class="insight-content">
                         <div class="insight-title">Years Active</div>
-                        <div class="insight-text" id="orgTypeInsight">Loading...</div>
+                        <div class="insight-text" id="orgTypeInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -1909,5 +1908,35 @@ function showErrorState() {
     document.getElementById('marketConcentration').textContent = 'Error';
     document.getElementById('cnaTableBody').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading CNA data. Please refresh the page.</td></tr>';
 }
+
+// Deep linking: save/restore filter state from URL hash
+(function() {
+    var origApply = applyFilters;
+    applyFilters = function() {
+        origApply();
+        if (window.CVE_HASH) {
+            CVE_HASH.set({
+                mode: currentDataMode !== 'all' ? currentDataMode : '',
+                type: activeFilters.type || '',
+                status: activeFilters.status || '',
+                kev: activeFilters.hasKev ? '1' : '',
+                hv: activeFilters.highVolume ? '1' : ''
+            });
+        }
+    };
+    // Restore from hash on load
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            if (!window.CVE_HASH) return;
+            var h = CVE_HASH.get();
+            if (h.mode === 'current' && typeof setDataMode === 'function') setDataMode('current');
+            if (h.type) document.getElementById('filterType').value = h.type;
+            if (h.status) document.getElementById('filterStatus').value = h.status;
+            if (h.kev === '1') document.getElementById('filterKev').checked = true;
+            if (h.hv === '1') document.getElementById('filterHighVolume').checked = true;
+            if (h.type || h.status || h.kev || h.hv) origApply();
+        }, 500);
+    });
+})();
 </script>
 {% endblock %}
