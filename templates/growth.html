@@ -40,7 +40,6 @@
     <!-- Note about historical data requirement -->
     <div class="d-flex justify-content-center mb-3">
         <div class="text-muted small">
-            <i class="fas fa-info-circle me-1"></i>
             Growth analysis shows comprehensive trends across all years (1999-{{ current_year }})
         </div>
     </div>
@@ -49,27 +48,27 @@
 <!-- Statistics Cards -->
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-number" id="totalCvesCount">-</div>
+        <div class="stat-number" id="totalCvesCount"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Total CVEs</div>
-        <small class="text-muted" style="font-size: 0.75rem;" id="totalCvesSubtext">📊 Loading...</small>
+        <small class="text-muted" style="font-size: 0.75rem;" id="totalCvesSubtext"><span class="skeleton skeleton-text"></span></small>
     </div>
-    
+
     <div class="stat-card">
-        <div class="stat-number" id="avgGrowthRate">-</div>
+        <div class="stat-number" id="avgGrowthRate"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Average Annual Growth</div>
-        <small class="text-muted" style="font-size: 0.75rem;" id="avgGrowthSubtext">📈 Loading...</small>
+        <small class="text-muted" style="font-size: 0.75rem;" id="avgGrowthSubtext"><span class="skeleton skeleton-text"></span></small>
     </div>
-    
+
     <div class="stat-card">
-        <div class="stat-number" id="peakGrowthYear">-</div>
+        <div class="stat-number" id="peakGrowthYear"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Peak Growth Year</div>
-        <small class="text-muted" style="font-size: 0.75rem;" id="peakGrowthSubtext">🚀 Loading...</small>
+        <small class="text-muted" style="font-size: 0.75rem;" id="peakGrowthSubtext"><span class="skeleton skeleton-text"></span></small>
     </div>
-    
+
     <div class="stat-card">
-        <div class="stat-number" id="ytdComparison">-</div>
+        <div class="stat-number" id="ytdComparison"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Year-to-Date Growth</div>
-        <small class="text-muted" style="font-size: 0.75rem;" id="ytdSubtext">📅 Loading...</small>
+        <small class="text-muted" style="font-size: 0.75rem;" id="ytdSubtext"><span class="skeleton skeleton-text"></span></small>
     </div>
 </div>
 
@@ -80,15 +79,15 @@
         <div class="card mb-4">
             <div class="card-header py-2 d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-chart-line me-2"></i>CVE Growth Trends Over Time
+                    CVE Growth Trends Over Time
                 </h3>
                 <div class="chart-controls">
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-outline-secondary active quick-select-btn" id="absoluteBtn" onclick="toggleGrowthView('absolute')">
-                            <i class="fas fa-chart-bar me-1"></i>Absolute
+                            Absolute
                         </button>
                         <button type="button" class="btn btn-outline-secondary quick-select-btn" id="rateBtn" onclick="toggleGrowthView('rate')">
-                            <i class="fas fa-percentage me-1"></i>Growth Rate
+                            Growth Rate
                         </button>
                     </div>
                 </div>
@@ -106,7 +105,7 @@
         <div class="card mb-4">
             <div class="card-header py-2">
                 <h3 class="card-title mb-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-chart-bar me-2"></i>Growth Rate Distribution
+                    Growth Rate Distribution
                 </h3>
             </div>
             <div class="card-body">
@@ -124,7 +123,7 @@
         <div class="card mb-4">
             <div class="card-header py-2">
                 <h3 class="card-title mb-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-chart-area me-2"></i>Cumulative CVE Growth
+                    Cumulative CVE Growth
                 </h3>
             </div>
             <div class="card-body">
@@ -180,7 +179,7 @@
         <div class="card mb-4">
             <div class="card-header py-2">
                 <h3 class="card-title mb-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-table me-2"></i>Year-over-Year Growth Data
+                    Year-over-Year Growth Data
                 </h3>
             </div>
             <div class="card-body p-0">
@@ -641,9 +640,9 @@ function updateGrowthTable(data) {
             yearDisplay = `${yearData.year} <span class="badge bg-warning text-dark ms-1">YTD</span>`;
         }
         
-        const growthIconHtml = yearData.growth_rate > 0 ? 
-            '<i class="fas fa-arrow-up text-success me-1"></i>' : 
-            '<i class="fas fa-arrow-down text-danger me-1"></i>';
+        const growthIconHtml = yearData.growth_rate > 0 ?
+            '<span class="text-success me-1">&#9650;</span>' :
+            '<span class="text-danger me-1">&#9660;</span>';
         
         return `
             <tr class="${rowClass}" style="border-left: ${borderLeftStyle}">
@@ -758,7 +757,7 @@ function copyPermalink() {
         // Show success feedback
         const btn = event.target.closest('button');
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        btn.innerHTML = 'Copied!';
         btn.classList.add('btn-success');
         btn.classList.remove('btn-outline-primary');
         
@@ -779,14 +778,23 @@ function showErrorState() {
     document.getElementById('avgGrowthRate').textContent = 'Error';
     document.getElementById('peakGrowthYear').textContent = 'Error';
     document.getElementById('ytdComparison').textContent = 'Error';
-    
+
     document.getElementById('totalCvesSubtext').textContent = 'Failed to load data';
     document.getElementById('avgGrowthSubtext').textContent = 'Failed to load data';
     document.getElementById('peakGrowthSubtext').textContent = 'Failed to load data';
     document.getElementById('ytdSubtext').textContent = 'Failed to load data';
-    
-    document.getElementById('growthTableBody').innerHTML = 
+
+    document.getElementById('growthTableBody').innerHTML =
         '<tr><td colspan="5" class="text-center text-danger">Error loading growth data</td></tr>';
 }
+
+// Deep linking for growth view
+(function() {
+    var origToggle = toggleGrowthView;
+    toggleGrowthView = function(mode) { origToggle(mode); if (window.CVE_HASH) CVE_HASH.update('view', mode !== 'absolute' ? mode : ''); };
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { if (window.CVE_HASH && CVE_HASH.get().view === 'rate') origToggle('rate'); }, 500);
+    });
+})();
 </script>
 {% endblock %}

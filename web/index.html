@@ -23,8 +23,14 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="static/images/logo.png">
     
+    <!-- Preload critical assets -->
+    <link rel="preload" href="static/css/style.css" as="style">
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="static/css/style.css">
+
+    <!-- SEO -->
+    <meta name="robots" content="index, follow">
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="CVE.ICU provides comprehensive analysis and visualization of Common Vulnerabilities and Exposures (CVE) data from 1999 to present.">
@@ -46,6 +52,15 @@
     <meta property="og:image" content="https://cve.icu/static/images/logo.png">
 </head>
 <body>
+    <!-- Apply saved theme before render to prevent flash -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('cve-icu-theme');
+            var preferLight = theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches);
+            if (!preferLight) document.documentElement.setAttribute('data-theme', 'dark');
+        })();
+    </script>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Header and Navigation -->
     <header class="header">
         <div class="nav-container">
@@ -78,7 +93,10 @@
                     <li><a href="growth.html">Growth</a></li>
                     <li><a href="calendar.html">Calendar</a></li>
                 </ul>
-                <button class="nav-toggle" aria-label="Toggle navigation">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-live="polite" title="Toggle dark mode">
+                    <span id="themeIcon">&#9790;</span>
+                </button>
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -88,7 +106,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container">
+    <main id="main-content" class="container">
         
 <style>
 /* Quick select button styling matching CVSS dashboard */
@@ -122,39 +140,33 @@
 <div class="page-header mb-4 text-center">
     <h1 class="display-4 mb-2">CVE.ICU</h1>
     <small class="text-muted d-block mb-3">
-        Advanced vulnerability intelligence platform delivering comprehensive CVE analytics from 1999 to 2026
+        CVE data, visualized. <span id="header-total-cves"><span class="skeleton" style="width:5rem;height:0.9rem;"></span></span> vulnerabilities from 1999 to present.
     </small>
-    <div class="mt-2">
-        <a href="about.html" class="btn btn-outline-secondary btn-sm" style="font-size: 0.875rem;">
-            <i class="fas fa-info-circle me-1"></i>Learn More About the Platform
-        </a>
-        <small class="text-muted d-block mt-1" style="font-size: 0.875rem;">
-            Discover data sources, technical architecture, and intelligence capabilities
-        </small>
-    </div>
 </div>
 
 <!-- Statistics Cards -->
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-number" id="cves-this-year">Loading...</div>
+        <div class="stat-number" id="cves-this-year"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">CVEs This Year</div>
+        <div class="stat-sparkline"><canvas id="sparkline-monthly"></canvas></div>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="avg-cves-per-day">Loading...</div>
+        <div class="stat-number" id="avg-cves-per-day"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Avg CVEs/Day</div>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="growth-rate">Loading...</div>
+        <div class="stat-number" id="growth-rate"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">YOY Growth</div>
-        <div class="stat-detail" id="growth-detail">Loading...</div>
+        <div class="stat-detail" id="growth-detail"><span class="skeleton skeleton-text"></span></div>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="total-cves">Loading...</div>
+        <div class="stat-number" id="total-cves"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Total CVEs</div>
+        <div class="stat-sparkline"><canvas id="sparkline-yearly"></canvas></div>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="kev-global-count">Loading...</div>
+        <div class="stat-number" id="kev-global-count"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Known Exploited CVEs</div>
         <div class="stat-detail" id="kev-global-detail">CISA KEV catalog</div>
     </div>
@@ -242,22 +254,22 @@
             <!-- Threat Intelligence Stats -->
             <div class="stats-grid mt-3">
                 <div class="stat-card">
-                    <div class="stat-number" id="epss-high-risk">Loading...</div>
+                    <div class="stat-number" id="epss-high-risk"><span class="skeleton skeleton-number"></span></div>
                     <div class="stat-label">High Risk CVEs</div>
                     <div class="stat-detail">EPSS &gt; 0.5</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="epss-elevated-risk">Loading...</div>
+                    <div class="stat-number" id="epss-elevated-risk"><span class="skeleton skeleton-number"></span></div>
                     <div class="stat-label">Elevated Risk</div>
                     <div class="stat-detail">EPSS &gt; 0.1</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="epss-coverage">Loading...</div>
+                    <div class="stat-number" id="epss-coverage"><span class="skeleton skeleton-number"></span></div>
                     <div class="stat-label">EPSS Coverage</div>
                     <div class="stat-detail" id="epss-coverage-detail">CVEs scored</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="kev-recent">Loading...</div>
+                    <div class="stat-number" id="kev-recent"><span class="skeleton skeleton-number"></span></div>
                     <div class="stat-label">KEV Recent</div>
                     <div class="stat-detail">Last 30 days</div>
                 </div>
@@ -390,7 +402,7 @@
             <div class="text-center">
                 <small class="text-muted">
                     &copy; 2026 CVE.ICU • Built by <a href="https://rogolabs.net" target="_blank" class="text-decoration-none">RogoLabs</a><br>
-                    Data updated every 6 hours • CVE coverage: 1999-2026
+                    Data updated every 3 hours • CVE coverage: 1999-2026
                 </small>
             </div>
         </div>
@@ -399,8 +411,7 @@
     <!-- Chart.js Library (UMD version) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- D3.js for advanced visualizations -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
     
     <!-- Universal timestamp loader -->
     <script>
@@ -520,12 +531,14 @@
             if (navToggle && navMenu) {
                 navToggle.addEventListener('click', function() {
                     navMenu.classList.toggle('active');
-                    
+
                     // Prevent body scroll when menu is open
                     if (navMenu.classList.contains('active')) {
                         document.body.style.overflow = 'hidden';
+                        navToggle.setAttribute('aria-expanded', 'true');
                     } else {
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     }
                 });
                 
@@ -536,6 +549,7 @@
                     if (!isClickInside && navMenu.classList.contains('active')) {
                         navMenu.classList.remove('active');
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     }
                 });
                 
@@ -545,23 +559,205 @@
                     link.addEventListener('click', function() {
                         navMenu.classList.remove('active');
                         document.body.style.overflow = '';
+                        navToggle.setAttribute('aria-expanded', 'false');
                     });
                 });
             }
         });
     </script>
     
+    <!-- Theme Toggle -->
+    <script>
+        (function() {
+            var toggle = document.getElementById('themeToggle');
+            var icon = document.getElementById('themeIcon');
+            function isDark() {
+                return document.documentElement.getAttribute('data-theme') === 'dark';
+            }
+            function updateIcon() {
+                // Moon for light mode (click to go dark), Sun for dark mode (click to go light)
+                icon.innerHTML = isDark() ? '&#9788;' : '&#9790;';
+            }
+            updateIcon();
+            toggle.addEventListener('click', function() {
+                if (isDark()) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('cve-icu-theme', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('cve-icu-theme', 'dark');
+                }
+                updateIcon();
+                applyChartTheme();
+            });
+        })();
+
+        function applyChartTheme() {
+            if (typeof Chart === 'undefined') return;
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            var textColor = dark ? '#e1e4ea' : '#212529';
+            var mutedColor = dark ? '#9ca3b4' : '#6c757d';
+            var gridColor = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+            var tooltipBg = dark ? 'rgba(30,33,48,0.95)' : 'rgba(255,255,255,0.95)';
+            var tooltipBorder = dark ? '#2d3348' : '#dee2e6';
+
+            Chart.defaults.plugins.title.color = textColor;
+            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
+            Chart.defaults.plugins.tooltip.titleColor = textColor;
+            Chart.defaults.plugins.tooltip.bodyColor = mutedColor;
+            Chart.defaults.plugins.tooltip.borderColor = tooltipBorder;
+            Chart.defaults.plugins.legend.labels.color = textColor;
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+
+            // Update existing charts
+            Chart.helpers.each(Chart.instances, function(chart) {
+                if (chart.options.scales) {
+                    Object.values(chart.options.scales).forEach(function(scale) {
+                        if (scale.ticks) scale.ticks.color = scale.ticks.color === undefined ? textColor : (dark ? textColor : undefined);
+                        if (scale.grid) scale.grid.color = gridColor;
+                        if (scale.title) scale.title.color = textColor;
+                    });
+                }
+                chart.update('none');
+            });
+        }
+    </script>
+
+    <!-- Chart Export Utility -->
+    <script>
+        window.addChartExport = function(canvasId, title) {
+            var canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            var container = canvas.closest('.homepage-chart-card, .card');
+            if (!container) return;
+            // Ensure the container is positioned for absolute children
+            if (getComputedStyle(container).position === 'static') {
+                container.style.position = 'relative';
+            }
+            var controls = document.createElement('div');
+            controls.className = 'chart-export-controls';
+            controls.innerHTML =
+                '<button class="chart-export-btn" data-action="png" title="Download as PNG">PNG</button>' +
+                '<button class="chart-export-btn" data-action="csv" title="Download as CSV">CSV</button>';
+            container.appendChild(controls);
+
+            controls.addEventListener('click', function(e) {
+                var btn = e.target.closest('.chart-export-btn');
+                if (!btn) return;
+                var chart = Chart.getChart(canvas);
+                if (!chart) return;
+                var action = btn.getAttribute('data-action');
+                var safeName = (title || canvasId).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+                if (action === 'png') {
+                    var link = document.createElement('a');
+                    // Temporarily force white background for export
+                    var origBg = canvas.style.backgroundColor;
+                    canvas.style.backgroundColor = '#ffffff';
+                    chart.update('none');
+                    link.href = chart.toBase64Image('image/png', 1);
+                    canvas.style.backgroundColor = origBg;
+                    chart.update('none');
+                    link.download = safeName + '.png';
+                    link.click();
+                } else if (action === 'csv') {
+                    var data = chart.data;
+                    var labels = data.labels || [];
+                    var rows = ['Label,' + data.datasets.map(function(ds) { return '"' + (ds.label || 'Value') + '"'; }).join(',')];
+                    labels.forEach(function(label, i) {
+                        var vals = data.datasets.map(function(ds) { return ds.data[i] != null ? ds.data[i] : ''; });
+                        rows.push('"' + label + '",' + vals.join(','));
+                    });
+                    var blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+                    var link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = safeName + '.csv';
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }
+            });
+        };
+
+        // Auto-attach export buttons to all charts once loaded
+        function autoAttachChartExports() {
+            if (typeof Chart === 'undefined') return;
+            Object.keys(Chart.instances).forEach(function(key) {
+                var chart = Chart.instances[key];
+                var canvas = chart.canvas;
+                if (canvas && !canvas.dataset.exportAttached) {
+                    canvas.dataset.exportAttached = '1';
+                    var title = '';
+                    if (chart.options.plugins && chart.options.plugins.title && chart.options.plugins.title.text) {
+                        title = chart.options.plugins.title.text;
+                    }
+                    window.addChartExport(canvas.id, title || canvas.id);
+                }
+            });
+        }
+        // Run periodically to catch lazy-loaded charts
+        setInterval(autoAttachChartExports, 2000);
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(autoAttachChartExports, 1000);
+        });
+
+        // Deep linking utility: encode/decode page state in URL hash
+        window.CVE_HASH = {
+            get: function() {
+                var params = {};
+                var hash = window.location.hash.slice(1);
+                if (!hash) return params;
+                hash.split('&').forEach(function(pair) {
+                    var parts = pair.split('=');
+                    if (parts.length === 2) params[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+                });
+                return params;
+            },
+            set: function(params) {
+                var pairs = [];
+                Object.keys(params).forEach(function(key) {
+                    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                        pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
+                    }
+                });
+                var newHash = pairs.length ? '#' + pairs.join('&') : '';
+                if (window.location.hash !== newHash) {
+                    history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+                }
+            },
+            update: function(key, value) {
+                var params = this.get();
+                if (value === undefined || value === null || value === '') {
+                    delete params[key];
+                } else {
+                    params[key] = value;
+                }
+                this.set(params);
+            }
+        };
+    </script>
+
     <!-- Custom JavaScript -->
     <script>
         // Wait for Chart.js to load before configuring
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof Chart !== 'undefined') {
+                var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                var textColor = dark ? '#e1e4ea' : '#212529';
+                var mutedColor = dark ? '#9ca3b4' : '#6c757d';
+                var gridColor = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+                var tooltipBg = dark ? 'rgba(30,33,48,0.95)' : 'rgba(255,255,255,0.95)';
+                var tooltipBorder = dark ? '#2d3348' : '#dee2e6';
+
                 // Global configuration for Chart.js with design system
                 Chart.defaults.responsive = true;
                 Chart.defaults.maintainAspectRatio = false;
+                Chart.defaults.color = textColor;
+                Chart.defaults.borderColor = gridColor;
                 Chart.defaults.plugins.legend.position = 'top';
                 Chart.defaults.plugins.legend.labels.usePointStyle = true;
                 Chart.defaults.plugins.legend.labels.padding = 20;
+                Chart.defaults.plugins.legend.labels.color = textColor;
                 Chart.defaults.plugins.legend.labels.font = {
                     family: 'Inter, sans-serif',
                     size: 12,
@@ -573,11 +769,11 @@
                     size: 16,
                     weight: '600'
                 };
-                Chart.defaults.plugins.title.color = '#212529';
-                Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-                Chart.defaults.plugins.tooltip.titleColor = '#212529';
-                Chart.defaults.plugins.tooltip.bodyColor = '#6c757d';
-                Chart.defaults.plugins.tooltip.borderColor = '#dee2e6';
+                Chart.defaults.plugins.title.color = textColor;
+                Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
+                Chart.defaults.plugins.tooltip.titleColor = textColor;
+                Chart.defaults.plugins.tooltip.bodyColor = mutedColor;
+                Chart.defaults.plugins.tooltip.borderColor = tooltipBorder;
                 Chart.defaults.plugins.tooltip.borderWidth = 1;
                 Chart.defaults.plugins.tooltip.cornerRadius = 8;
                 Chart.defaults.plugins.tooltip.titleFont = {
@@ -595,9 +791,6 @@
                 Chart.defaults.elements.point.borderColor = '#2196f3';
                 Chart.defaults.elements.line.borderColor = '#2196f3';
                 Chart.defaults.elements.bar.backgroundColor = '#2196f3';
-                
-                // Note: Scale-specific defaults are set per chart type in Chart.js v4
-                // Global scale defaults are handled differently
             }
             
             // Add active class to current page navigation link
@@ -796,6 +989,37 @@ function getHomepageDataset(key) {
     });
 }
 
+function renderSparkline(canvasId, values) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas || !values.length || typeof Chart === 'undefined') return;
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var color = dark ? 'rgba(96,165,250,0.8)' : 'rgba(33,150,243,0.8)';
+    var fill = dark ? 'rgba(96,165,250,0.1)' : 'rgba(33,150,243,0.08)';
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: values.map(function(_, i) { return ''; }),
+            datasets: [{
+                data: values,
+                borderColor: color,
+                backgroundColor: fill,
+                fill: true,
+                borderWidth: 1.5,
+                pointRadius: 0,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, title: { display: false }, tooltip: { enabled: false } },
+            scales: { x: { display: false }, y: { display: false } },
+            animation: { duration: 600 },
+            events: []
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Wait for Chart.js and CVE_COLORS to be available
     if (typeof Chart === 'undefined' || typeof window.CVE_COLORS === 'undefined') {
@@ -806,37 +1030,57 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize CVEs by Year Chart
     const ctx = document.getElementById('cvesByYearChart');
     if (ctx) {
-        // Sample data - this would be populated by the Python backend
-        const yearlyData = {
-            labels: [],
-            datasets: [{
-                label: 'CVEs Published',
-                data: [],
-                borderColor: window.CVE_COLORS.primary,
-                backgroundColor: window.CVE_COLORS.primaryLight,
-                fill: false,
-                tension: 0.1
-            }]
-        };
-        
-        // Load year totals from yearly_summary to avoid one request per year
+        const yearlyData = { labels: [], datasets: [] };
+
+        // Load year totals from yearly_summary
         const currentYear = new Date().getFullYear();
         getHomepageDataset('yearly_summary')
             .then(summaryData => {
                 const yearlySummary = (summaryData && summaryData.years) ? summaryData.years : {};
                 const results = [];
-                
+
                 for (let year = 1999; year <= currentYear; year++) {
                     const yearSummary = yearlySummary[year] || yearlySummary[year.toString()] || {};
                     results.push({ year: year, count: yearSummary.total_cves || 0 });
                 }
-                
-                yearlyData.labels = results.map(result => result.year.toString());
-                yearlyData.datasets[0].data = results.map(result => result.count);
-                
+
+                // Split into complete years and current (YTD) year
+                const completeData = results.map(r => r.year < currentYear ? r.count : null);
+                const ytdData = results.map((r, i) => {
+                    // Show the connecting segment: last complete year + current year
+                    if (r.year === currentYear || r.year === currentYear - 1) return r.count;
+                    return null;
+                });
+
+                yearlyData.labels = results.map(r => r.year.toString());
+                yearlyData.datasets = [
+                    {
+                        label: 'CVEs Published',
+                        data: completeData,
+                        borderColor: window.CVE_COLORS.primary,
+                        backgroundColor: window.CVE_COLORS.primaryLight,
+                        fill: false,
+                        tension: 0.1,
+                        spanGaps: false
+                    },
+                    {
+                        label: currentYear + ' (YTD)',
+                        data: ytdData,
+                        borderColor: window.CVE_COLORS.primary,
+                        borderDash: [6, 4],
+                        pointStyle: 'rectRot',
+                        pointRadius: function(ctx) { return ctx.dataIndex === results.length - 1 ? 6 : 0; },
+                        pointBackgroundColor: window.CVE_COLORS.primary,
+                        pointBorderColor: window.CVE_COLORS.primary,
+                        fill: false,
+                        tension: 0.1,
+                        spanGaps: false
+                    }
+                ];
+
                 // Calculate and update statistics
                 updateStatistics(results);
-                
+
                 // Create the chart with real data
                 createChart();
             })
@@ -852,7 +1096,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Calculate total CVEs
                 const totalCves = results.reduce((sum, result) => sum + result.count, 0);
                 document.getElementById('total-cves').textContent = totalCves.toLocaleString();
-                
+                var headerEl = document.getElementById('header-total-cves');
+                if (headerEl) headerEl.textContent = totalCves.toLocaleString() + '+';
+
                 // Calculate CVEs this year (current year)
                 const currentYear = new Date().getFullYear();
                 const currentYearData = results.find(r => r.year === currentYear);
@@ -863,7 +1109,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dayOfYear = Math.floor((new Date() - new Date(currentYear, 0, 0)) / (1000 * 60 * 60 * 24));
                 const avgCvesPerDay = cvesThisYear > 0 && dayOfYear > 0 ? (cvesThisYear / dayOfYear).toFixed(1) : '0';
                 document.getElementById('avg-cves-per-day').textContent = avgCvesPerDay;
-                
+
+                // Sparkline: yearly CVE totals (last 10 complete years)
+                var recentYears = results.filter(r => r.year < currentYear).slice(-10);
+                renderSparkline('sparkline-yearly', recentYears.map(r => r.count));
+
+                // Sparkline: monthly CVEs this year
+                getHomepageDataset('calendar_analysis_current_year')
+                    .then(function(calData) {
+                        var daily = calData.daily_data || [];
+                        var monthly = {};
+                        daily.forEach(function(d) {
+                            var m = d.date.substring(0, 7);
+                            monthly[m] = (monthly[m] || 0) + d.value;
+                        });
+                        var vals = Object.keys(monthly).sort().map(function(k) { return monthly[k]; });
+                        if (vals.length > 0) renderSparkline('sparkline-monthly', vals);
+                    })
+                    .catch(function() {});
+
                 // Load YTD growth data from growth_analysis.json (accurate calculation)
                 getHomepageDataset('growth_analysis')
                     .then(growthData => {
@@ -952,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
     // Initialize preview charts with simplified, error-free approach
     initializeSimplePreviewCharts();
 
@@ -1005,26 +1269,43 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('KEV analysis error:', error);
         });
     
-    // Initialize Risk vs Volume chart
-    initializeRiskVolumeChart();
+    // Risk vs Volume chart is lazy-loaded via initializeSimplePreviewCharts
 });
 
-// Simplified preview charts initialization to eliminate JavaScript syntax errors
+// Lazy-load preview charts when they scroll into view
 function initializeSimplePreviewCharts() {
-    // CNA Preview Chart
-    initializeCnaPreview();
-    
-    // CPE Preview Chart
-    initializeCpePreview();
-    
-    // CWE Preview Chart
-    initializeCwePreview();
-    
-    // Growth Preview Chart
-    initializeGrowthPreview();
-    
-    // Calendar Preview Chart
-    initializeCalendarPreview();
+    var chartMap = {
+        'cnaPreviewChart': initializeCnaPreview,
+        'cpePreviewChart': initializeCpePreview,
+        'cwePreviewChart': initializeCwePreview,
+        'riskVolumeChart': initializeRiskVolumeChart,
+        'growthPreviewChart': initializeGrowthPreview,
+        'calendarPreviewChart': initializeCalendarPreview
+    };
+
+    if (!('IntersectionObserver' in window)) {
+        // Fallback: load all immediately
+        Object.values(chartMap).forEach(function(fn) { fn(); });
+        return;
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var fn = chartMap[entry.target.id];
+                if (fn) {
+                    fn();
+                    delete chartMap[entry.target.id];
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    Object.keys(chartMap).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) observer.observe(el);
+    });
 }
 
 function initializeGrowthPreview() {

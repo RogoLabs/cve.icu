@@ -31,22 +31,22 @@
 <!-- Statistics Cards -->
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-number" id="totalCwes">Loading...</div>
+        <div class="stat-number" id="totalCwes"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Total CWEs</div>
         <small class="text-muted" style="font-size: 0.75rem;">🔍 Unique weakness types</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="totalCvesWithCwe">Loading...</div>
+        <div class="stat-number" id="totalCvesWithCwe"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">CVEs with CWE</div>
         <small class="text-muted" style="font-size: 0.75rem;">📊 Classified vulnerabilities</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="topCwePercentage">Loading...</div>
-        <div class="stat-label" id="topCweLabel">Loading...</div>
+        <div class="stat-number" id="topCwePercentage"><span class="skeleton skeleton-number"></span></div>
+        <div class="stat-label" id="topCweLabel"><span class="skeleton skeleton-text"></span></div>
         <small class="text-muted" style="font-size: 0.75rem;">🎯 Most common weakness</small>
     </div>
     <div class="stat-card">
-        <div class="stat-number" id="top5CweShare">Loading...</div>
+        <div class="stat-number" id="top5CweShare"><span class="skeleton skeleton-number"></span></div>
         <div class="stat-label">Top 5 CWE Share</div>
         <small class="text-muted" style="font-size: 0.75rem;">🏆 Combined dominance</small>
     </div>
@@ -79,7 +79,6 @@
                     <canvas id="cweCategoryChart"></canvas>
                 </div>
                 <small class="text-muted mt-2 d-block">
-                    <i class="fas fa-info-circle me-1"></i>
                     Categories based on <a href="https://cwe.mitre.org/data/definitions/1000.html" target="_blank" class="text-decoration-none">CWE Research Concepts</a> taxonomy.
                 </small>
             </div>
@@ -99,7 +98,7 @@
                     <div class="insight-icon">🎯</div>
                     <div class="insight-content">
                         <div class="insight-title">Most Critical</div>
-                        <div class="insight-text" id="criticalInsight">Loading analysis...</div>
+                        <div class="insight-text" id="criticalInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -108,7 +107,7 @@
                     <div class="insight-icon">📈</div>
                     <div class="insight-content">
                         <div class="insight-title">Trend Analysis</div>
-                        <div class="insight-text" id="trendInsight">Loading analysis...</div>
+                        <div class="insight-text" id="trendInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -117,7 +116,7 @@
                     <div class="insight-icon">📈</div>
                     <div class="insight-content">
                         <div class="insight-title">Temporal Trends</div>
-                        <div class="insight-text" id="temporalInsight">Loading analysis...</div>
+                        <div class="insight-text" id="temporalInsight"><span class="skeleton skeleton-text"></span></div>
                     </div>
                 </div>
             </div>
@@ -907,5 +906,14 @@ function updateLastUpdated(timestamp) {
         document.getElementById('lastUpdated').textContent = date.toLocaleString();
     }
 }
+
+// Deep linking for data mode
+(function() {
+    var origToggle = toggleDataMode;
+    toggleDataMode = function() { origToggle(); if (window.CVE_HASH) CVE_HASH.update('mode', isCurrentYearMode ? 'current' : ''); };
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { if (window.CVE_HASH && CVE_HASH.get().mode === 'current') origToggle(); }, 500);
+    });
+})();
 </script>
 {% endblock %}
