@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-03-03T12:19:10.068187",
+  "generated_at": "2026-03-03T15:25:33.271805",
   "year": 2026,
-  "total_unique_cpes": 4915,
-  "total_cpe_entries": 23257,
-  "total_cves_with_cpes": 4811,
-  "total_unique_vendors": 1115,
-  "total_unique_products": 2621,
+  "total_unique_cpes": 4939,
+  "total_cpe_entries": 23371,
+  "total_cves_with_cpes": 4867,
+  "total_unique_vendors": 1126,
+  "total_unique_products": 2636,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -190,6 +190,20 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:google:android:15.0:*:*:*:*:*:*:*",
+      "count": 53,
+      "vendor": "google",
+      "product": "android",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:google:android:16.0:-:*:*:*:*:*:*",
+      "count": 50,
+      "vendor": "google",
+      "product": "android",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:esr:*:*:*",
       "count": 50,
       "vendor": "mozilla",
@@ -202,20 +216,6 @@
       "vendor": "microsoft",
       "product": "windows_server_2012",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2012:-:*:*:*:*:*:*:*",
-      "count": 47,
-      "vendor": "microsoft",
-      "product": "windows_server_2012",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
-      "count": 45,
-      "vendor": "google",
-      "product": "chrome",
-      "type": "Application"
     }
   ],
   "top_vendors": [
@@ -273,10 +273,10 @@
     },
     {
       "vendor": "sap",
-      "count": 227
+      "count": 234
     },
     {
-      "vendor": "gitlab",
+      "vendor": "google",
       "count": 197
     }
   ],
@@ -287,7 +287,7 @@
     },
     {
       "product": "android",
-      "count": 1292
+      "count": 1366
     },
     {
       "product": "junos",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 12202,
-      "percentage": 52.5
+      "count": 12239,
+      "percentage": 52.4
     },
     {
       "type": "Operating System",
-      "count": 11054,
-      "percentage": 47.5
+      "count": 11131,
+      "percentage": 47.6
     },
     {
       "type": "Hardware",
