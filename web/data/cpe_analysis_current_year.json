@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-03-05T21:17:56.876969",
+  "generated_at": "2026-03-06T00:33:48.639767",
   "year": 2026,
-  "total_unique_cpes": 5193,
-  "total_cpe_entries": 25563,
-  "total_cves_with_cpes": 5290,
-  "total_unique_vendors": 1202,
-  "total_unique_products": 2820,
+  "total_unique_cpes": 5252,
+  "total_cpe_entries": 26395,
+  "total_cves_with_cpes": 5391,
+  "total_unique_vendors": 1224,
+  "total_unique_products": 2862,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -197,6 +197,13 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
+      "count": 61,
+      "vendor": "google",
+      "product": "chrome",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:*:*",
       "count": 60,
       "vendor": "microsoft",
@@ -209,19 +216,12 @@
       "vendor": "microsoft",
       "product": "windows_10_22h2",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:esr:*:*:*",
-      "count": 50,
-      "vendor": "mozilla",
-      "product": "thunderbird",
-      "type": "Application"
     }
   ],
   "top_vendors": [
     {
       "vendor": "qualcomm",
-      "count": 4314
+      "count": 4873
     },
     {
       "vendor": "coollabs",
@@ -249,19 +249,19 @@
     },
     {
       "vendor": "ibm",
-      "count": 558
+      "count": 572
     },
     {
       "vendor": "parseplatform",
       "count": 546
     },
     {
-      "vendor": "apple",
-      "count": 363
+      "vendor": "google",
+      "count": 380
     },
     {
-      "vendor": "google",
-      "count": 362
+      "vendor": "apple",
+      "count": 363
     },
     {
       "vendor": "linux",
@@ -326,32 +326,32 @@
       "count": 171
     },
     {
+      "product": "craft_cms",
+      "count": 169
+    },
+    {
+      "product": "checkmk",
+      "count": 156
+    },
+    {
       "product": "firefox",
       "count": 149
     },
     {
       "product": "windows_10_21h2",
       "count": 149
-    },
-    {
-      "product": "windows_10_22h2",
-      "count": 149
-    },
-    {
-      "product": "windows_11_24h2",
-      "count": 148
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 12838,
-      "percentage": 50.2
+      "count": 13456,
+      "percentage": 51.0
     },
     {
       "type": "Application",
-      "count": 12724,
-      "percentage": 49.8
+      "count": 12938,
+      "percentage": 49.0
     },
     {
       "type": "Hardware",
@@ -433,13 +433,13 @@
       "cpe_count": 185
     },
     {
-      "cve": "CVE-2025-47369",
-      "cpe_count": 175
+      "cve": "CVE-2025-47379",
+      "cpe_count": 178
     },
     {
-      "cve": "CVE-2025-47376",
-      "cpe_count": 170
+      "cve": "CVE-2025-47369",
+      "cpe_count": 175
     }
   ],
-  "average_cpes_per_cve": 4.8
+  "average_cpes_per_cve": 4.9
 }
