@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-03-11T18:39:57.051583",
+  "generated_at": "2026-03-11T21:16:15.495787",
   "year": 2026,
-  "total_unique_cpes": 5514,
-  "total_cpe_entries": 27213,
-  "total_cves_with_cpes": 5893,
-  "total_unique_vendors": 1321,
-  "total_unique_products": 3058,
+  "total_unique_cpes": 5818,
+  "total_cpe_entries": 31258,
+  "total_cves_with_cpes": 6075,
+  "total_unique_vendors": 1326,
+  "total_unique_products": 3080,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -78,6 +78,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
+      "count": 82,
+      "vendor": "imagemagick",
+      "product": "imagemagick",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x86:*",
       "count": 81,
       "vendor": "microsoft",
@@ -113,11 +120,25 @@
       "type": "Application"
     },
     {
+      "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
+      "count": 74,
+      "vendor": "openclaw",
+      "product": "openclaw",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:google:android:14.0:*:*:*:*:*:*:*",
       "count": 73,
       "vendor": "google",
       "product": "android",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:-:*:*:*",
+      "count": 72,
+      "vendor": "mozilla",
+      "product": "firefox",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_11_24h2:*:*:*:*:*:*:*:*",
@@ -132,20 +153,6 @@
       "vendor": "microsoft",
       "product": "windows_11_25h2",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
-      "count": 71,
-      "vendor": "imagemagick",
-      "product": "imagemagick",
-      "type": "Application"
-    },
-    {
-      "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:-:*:*:*",
-      "count": 70,
-      "vendor": "mozilla",
-      "product": "firefox",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
@@ -181,13 +188,6 @@
       "vendor": "microsoft",
       "product": "windows_10_1607",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
-      "count": 66,
-      "vendor": "openclaw",
-      "product": "openclaw",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:arubanetworks:arubaos:*:*:*:*:*:*:*:*",
@@ -228,6 +228,10 @@
       "count": 4211
     },
     {
+      "vendor": "adobe",
+      "count": 3739
+    },
+    {
       "vendor": "microsoft",
       "count": 1957
     },
@@ -244,11 +248,11 @@
       "count": 1078
     },
     {
-      "vendor": "rustfs",
-      "count": 610
+      "vendor": "parseplatform",
+      "count": 676
     },
     {
-      "vendor": "parseplatform",
+      "vendor": "rustfs",
       "count": 610
     },
     {
@@ -257,7 +261,7 @@
     },
     {
       "vendor": "google",
-      "count": 408
+      "count": 427
     },
     {
       "vendor": "apple",
@@ -273,11 +277,7 @@
     },
     {
       "vendor": "mozilla",
-      "count": 268
-    },
-    {
-      "vendor": "sap",
-      "count": 234
+      "count": 270
     }
   ],
   "top_products": [
@@ -287,11 +287,23 @@
     },
     {
       "product": "android",
-      "count": 1559
+      "count": 1578
+    },
+    {
+      "product": "commerce",
+      "count": 1311
+    },
+    {
+      "product": "commerce_b2b",
+      "count": 1216
     },
     {
       "product": "junos",
       "count": 955
+    },
+    {
+      "product": "magento",
+      "count": 951
     },
     {
       "product": "rustfs",
@@ -322,36 +334,24 @@
       "count": 197
     },
     {
+      "product": "tomcat",
+      "count": 191
+    },
+    {
       "product": "windows_10_1809",
       "count": 171
-    },
-    {
-      "product": "craft_cms",
-      "count": 169
-    },
-    {
-      "product": "checkmk",
-      "count": 156
-    },
-    {
-      "product": "firefox",
-      "count": 149
-    },
-    {
-      "product": "windows_10_21h2",
-      "count": 149
     }
   ],
   "cpe_type_distribution": [
     {
-      "type": "Operating System",
-      "count": 13681,
-      "percentage": 50.3
+      "type": "Application",
+      "count": 17530,
+      "percentage": 56.1
     },
     {
-      "type": "Application",
-      "count": 13531,
-      "percentage": 49.7
+      "type": "Operating System",
+      "count": 13727,
+      "percentage": 43.9
     },
     {
       "type": "Hardware",
@@ -433,13 +433,13 @@
       "cpe_count": 185
     },
     {
-      "cve": "CVE-2025-47379",
-      "cpe_count": 178
+      "cve": "CVE-2026-21282",
+      "cpe_count": 183
     },
     {
-      "cve": "CVE-2025-47369",
-      "cpe_count": 175
+      "cve": "CVE-2026-21284",
+      "cpe_count": 183
     }
   ],
-  "average_cpes_per_cve": 4.6
+  "average_cpes_per_cve": 5.1
 }
