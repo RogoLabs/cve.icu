@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-12T09:22:55.394691",
+  "generated_at": "2026-03-12T12:18:06.623510",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 251,
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1039,
+      "count": 1041,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-12T08:32:13.134Z",
+      "last_cve_date": "2026-03-12T12:02:14.140Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,17 +186,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 612,
+        "Medium": 614,
         "High": 252,
         "Critical": 156,
         "Low": 19
       },
       "top_cwe_types": {
-        "CWE-74": 307,
+        "CWE-74": 308,
         "CWE-119": 232,
         "CWE-89": 227,
         "CWE-77": 117,
-        "CWE-94": 102
+        "CWE-94": 103
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -204,7 +204,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          307
+          308
         ],
         [
           "CWE-119",
@@ -220,7 +220,7 @@
         ],
         [
           "CWE-94",
-          102
+          103
         ]
       ]
     },
@@ -840,10 +840,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 73,
+      "count": 75,
       "rank": 17,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-03-11T16:17:24.321Z",
+      "last_cve_date": "2026-03-12T10:54:31.990Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -854,21 +854,25 @@
       ],
       "severity_distribution": {
         "High": 19,
-        "Medium": 37,
-        "Low": 14,
+        "Medium": 38,
+        "Low": 15,
         "Critical": 3
       },
       "top_cwe_types": {
+        "CWE-93": 4,
         "CWE-20": 3,
         "CWE-266": 3,
         "CWE-200": 3,
-        "CWE-121": 3,
-        "CWE-918": 3
+        "CWE-121": 3
       },
       "kev_count": 0,
       "epss_high_count": 0,
       "epss_elevated_count": 0,
       "top_cwes": [
+        [
+          "CWE-93",
+          4
+        ],
         [
           "CWE-20",
           3
@@ -883,10 +887,6 @@
         ],
         [
           "CWE-121",
-          3
-        ],
-        [
-          "CWE-918",
           3
         ]
       ]
@@ -3023,10 +3023,63 @@
       ]
     },
     {
+      "name": "certcc",
+      "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
+      "count": 20,
+      "rank": 58,
+      "first_cve_date": "2026-01-06T14:45:29.207Z",
+      "last_cve_date": "2026-03-12T11:37:48.314Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Critical": 3,
+        "Medium": 7,
+        "High": 7
+      },
+      "top_cwe_types": {
+        "CWE-497": 4,
+        "CWE-502": 3,
+        "CWE-94": 2,
+        "CWE-89": 1,
+        "CWE-190": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-497",
+          4
+        ],
+        [
+          "CWE-502",
+          3
+        ],
+        [
+          "CWE-94",
+          2
+        ],
+        [
+          "CWE-89",
+          1
+        ],
+        [
+          "CWE-190",
+          1
+        ]
+      ]
+    },
+    {
       "name": "SamsungMobile",
       "assigner_org_id": "3af57064-a867-422c-b2ad-40307b65c458",
       "count": 20,
-      "rank": 58,
+      "rank": 59,
       "first_cve_date": "2026-01-09T06:15:41.575Z",
       "last_cve_date": "2026-02-04T06:14:50.618Z",
       "years_active": 6,
@@ -3072,59 +3125,6 @@
         [
           "CWE-280",
           2
-        ]
-      ]
-    },
-    {
-      "name": "certcc",
-      "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
-      "count": 17,
-      "rank": 59,
-      "first_cve_date": "2026-01-06T14:45:29.207Z",
-      "last_cve_date": "2026-03-05T16:53:32.465Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Critical": 3,
-        "Medium": 7,
-        "High": 7
-      },
-      "top_cwe_types": {
-        "CWE-497": 4,
-        "CWE-94": 2,
-        "CWE-89": 1,
-        "CWE-190": 1,
-        "CWE-1104": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-497",
-          4
-        ],
-        [
-          "CWE-94",
-          2
-        ],
-        [
-          "CWE-89",
-          1
-        ],
-        [
-          "CWE-190",
-          1
-        ],
-        [
-          "CWE-1104",
-          1
         ]
       ]
     },
@@ -11379,10 +11379,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1039,
+      "count": 1041,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-12T08:32:13.134Z",
+      "last_cve_date": "2026-03-12T12:02:14.140Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -11392,17 +11392,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 612,
+        "Medium": 614,
         "High": 252,
         "Critical": 156,
         "Low": 19
       },
       "top_cwe_types": {
-        "CWE-74": 307,
+        "CWE-74": 308,
         "CWE-119": 232,
         "CWE-89": 227,
         "CWE-77": 117,
-        "CWE-94": 102
+        "CWE-94": 103
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -11410,7 +11410,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          307
+          308
         ],
         [
           "CWE-119",
@@ -11426,7 +11426,7 @@
         ],
         [
           "CWE-94",
-          102
+          103
         ]
       ]
     },
@@ -12046,10 +12046,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 73,
+      "count": 75,
       "rank": 17,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-03-11T16:17:24.321Z",
+      "last_cve_date": "2026-03-12T10:54:31.990Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -12060,21 +12060,25 @@
       ],
       "severity_distribution": {
         "High": 19,
-        "Medium": 37,
-        "Low": 14,
+        "Medium": 38,
+        "Low": 15,
         "Critical": 3
       },
       "top_cwe_types": {
+        "CWE-93": 4,
         "CWE-20": 3,
         "CWE-266": 3,
         "CWE-200": 3,
-        "CWE-121": 3,
-        "CWE-918": 3
+        "CWE-121": 3
       },
       "kev_count": 0,
       "epss_high_count": 0,
       "epss_elevated_count": 0,
       "top_cwes": [
+        [
+          "CWE-93",
+          4
+        ],
         [
           "CWE-20",
           3
@@ -12089,10 +12093,6 @@
         ],
         [
           "CWE-121",
-          3
-        ],
-        [
-          "CWE-918",
           3
         ]
       ]
@@ -14229,10 +14229,63 @@
       ]
     },
     {
+      "name": "certcc",
+      "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
+      "count": 20,
+      "rank": 58,
+      "first_cve_date": "2026-01-06T14:45:29.207Z",
+      "last_cve_date": "2026-03-12T11:37:48.314Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Critical": 3,
+        "Medium": 7,
+        "High": 7
+      },
+      "top_cwe_types": {
+        "CWE-497": 4,
+        "CWE-502": 3,
+        "CWE-94": 2,
+        "CWE-89": 1,
+        "CWE-190": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-497",
+          4
+        ],
+        [
+          "CWE-502",
+          3
+        ],
+        [
+          "CWE-94",
+          2
+        ],
+        [
+          "CWE-89",
+          1
+        ],
+        [
+          "CWE-190",
+          1
+        ]
+      ]
+    },
+    {
       "name": "SamsungMobile",
       "assigner_org_id": "3af57064-a867-422c-b2ad-40307b65c458",
       "count": 20,
-      "rank": 58,
+      "rank": 59,
       "first_cve_date": "2026-01-09T06:15:41.575Z",
       "last_cve_date": "2026-02-04T06:14:50.618Z",
       "years_active": 6,
@@ -14278,59 +14331,6 @@
         [
           "CWE-280",
           2
-        ]
-      ]
-    },
-    {
-      "name": "certcc",
-      "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
-      "count": 17,
-      "rank": 59,
-      "first_cve_date": "2026-01-06T14:45:29.207Z",
-      "last_cve_date": "2026-03-05T16:53:32.465Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Critical": 3,
-        "Medium": 7,
-        "High": 7
-      },
-      "top_cwe_types": {
-        "CWE-497": 4,
-        "CWE-94": 2,
-        "CWE-89": 1,
-        "CWE-190": 1,
-        "CWE-1104": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-497",
-          4
-        ],
-        [
-          "CWE-94",
-          2
-        ],
-        [
-          "CWE-89",
-          1
-        ],
-        [
-          "CWE-190",
-          1
-        ],
-        [
-          "CWE-1104",
-          1
         ]
       ]
     },
