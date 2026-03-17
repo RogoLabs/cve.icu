@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-17T09:26:21.998922",
+  "generated_at": "2026-03-17T12:27:48.590016",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 255,
@@ -335,10 +335,10 @@
     {
       "name": "Linux",
       "assigner_org_id": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
-      "count": 480,
+      "count": 482,
       "rank": 7,
       "first_cve_date": "2026-01-05T09:32:25.534Z",
-      "last_cve_date": "2026-03-10T17:28:27.371Z",
+      "last_cve_date": "2026-03-17T09:11:04.913Z",
       "years_active": 3,
       "first_cve_year": 2024,
       "last_cve_year": 2026,
@@ -785,10 +785,64 @@
       ]
     },
     {
+      "name": "redhat",
+      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
+      "count": 87,
+      "rank": 16,
+      "first_cve_date": "2026-01-07T16:04:22.155Z",
+      "last_cve_date": "2026-03-17T11:14:21.284Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 20,
+        "Medium": 46,
+        "Low": 18,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-93": 6,
+        "CWE-125": 4,
+        "CWE-20": 3,
+        "CWE-284": 3,
+        "CWE-266": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-93",
+          6
+        ],
+        [
+          "CWE-125",
+          4
+        ],
+        [
+          "CWE-20",
+          3
+        ],
+        [
+          "CWE-284",
+          3
+        ],
+        [
+          "CWE-266",
+          3
+        ]
+      ]
+    },
+    {
       "name": "INCIBE",
       "assigner_org_id": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
       "count": 87,
-      "rank": 16,
+      "rank": 17,
       "first_cve_date": "2026-01-12T11:26:30.574Z",
       "last_cve_date": "2026-03-16T10:13:37.130Z",
       "years_active": 7,
@@ -833,60 +887,6 @@
         ],
         [
           "CWE-943",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "redhat",
-      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 83,
-      "rank": 17,
-      "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-03-15T00:19:07.864Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 20,
-        "Medium": 45,
-        "Low": 15,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-93": 4,
-        "CWE-125": 4,
-        "CWE-20": 3,
-        "CWE-284": 3,
-        "CWE-266": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-93",
-          4
-        ],
-        [
-          "CWE-125",
-          4
-        ],
-        [
-          "CWE-20",
-          3
-        ],
-        [
-          "CWE-284",
-          3
-        ],
-        [
-          "CWE-266",
           3
         ]
       ]
@@ -1159,10 +1159,64 @@
       ]
     },
     {
+      "name": "apache",
+      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
+      "count": 65,
+      "rank": 23,
+      "first_cve_date": "2026-01-01T16:14:00.837Z",
+      "last_cve_date": "2026-03-17T10:54:57.439Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Open Source"
+      ],
+      "severity_distribution": {
+        "Critical": 9,
+        "High": 24,
+        "Medium": 23,
+        "Low": 4
+      },
+      "top_cwe_types": {
+        "CWE-20": 7,
+        "CWE-532": 4,
+        "CWE-94": 3,
+        "CWE-22": 3,
+        "CWE-89": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-20",
+          7
+        ],
+        [
+          "CWE-532",
+          4
+        ],
+        [
+          "CWE-94",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ],
+        [
+          "CWE-89",
+          3
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 65,
-      "rank": 23,
+      "rank": 24,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-03-16T17:28:44.696Z",
       "years_active": 18,
@@ -1216,7 +1270,7 @@
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
       "count": 64,
-      "rank": 24,
+      "rank": 25,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
       "last_cve_date": "2026-03-12T01:33:23.543Z",
       "years_active": 7,
@@ -1263,60 +1317,6 @@
         [
           "CWE-639",
           2
-        ]
-      ]
-    },
-    {
-      "name": "apache",
-      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 61,
-      "rank": 25,
-      "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-03-14T09:01:50.486Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Open Source"
-      ],
-      "severity_distribution": {
-        "Critical": 9,
-        "High": 24,
-        "Medium": 23,
-        "Low": 4
-      },
-      "top_cwe_types": {
-        "CWE-20": 7,
-        "CWE-532": 4,
-        "CWE-94": 3,
-        "CWE-22": 3,
-        "CWE-89": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-20",
-          7
-        ],
-        [
-          "CWE-532",
-          4
-        ],
-        [
-          "CWE-94",
-          3
-        ],
-        [
-          "CWE-22",
-          3
-        ],
-        [
-          "CWE-89",
-          3
         ]
       ]
     },
@@ -2067,10 +2067,64 @@
       ]
     },
     {
+      "name": "HCL",
+      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
+      "count": 40,
+      "rank": 40,
+      "first_cve_date": "2026-01-07T06:48:19.946Z",
+      "last_cve_date": "2026-03-17T12:02:08.881Z",
+      "years_active": 8,
+      "first_cve_year": 2019,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 14,
+        "Low": 24,
+        "Critical": 1,
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-89": 3,
+        "CWE-79": 2,
+        "CWE-522": 2,
+        "CWE-693": 2,
+        "CWE-200": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-79",
+          2
+        ],
+        [
+          "CWE-522",
+          2
+        ],
+        [
+          "CWE-693",
+          2
+        ],
+        [
+          "CWE-200",
+          2
+        ]
+      ]
+    },
+    {
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 39,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-03-11T03:14:18.534Z",
       "years_active": 11,
@@ -2116,60 +2170,6 @@
         [
           "CWE-300",
           3
-        ]
-      ]
-    },
-    {
-      "name": "HCL",
-      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
-      "count": 38,
-      "rank": 41,
-      "first_cve_date": "2026-01-07T06:48:19.946Z",
-      "last_cve_date": "2026-03-16T15:30:52.165Z",
-      "years_active": 8,
-      "first_cve_year": 2019,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 13,
-        "Low": 23,
-        "Critical": 1,
-        "High": 1
-      },
-      "top_cwe_types": {
-        "CWE-89": 3,
-        "CWE-522": 2,
-        "CWE-693": 2,
-        "CWE-200": 2,
-        "CWE-613": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-522",
-          2
-        ],
-        [
-          "CWE-693",
-          2
-        ],
-        [
-          "CWE-200",
-          2
-        ],
-        [
-          "CWE-613",
-          2
         ]
       ]
     },
@@ -11743,10 +11743,10 @@
     {
       "name": "Linux",
       "assigner_org_id": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
-      "count": 480,
+      "count": 482,
       "rank": 7,
       "first_cve_date": "2026-01-05T09:32:25.534Z",
-      "last_cve_date": "2026-03-10T17:28:27.371Z",
+      "last_cve_date": "2026-03-17T09:11:04.913Z",
       "years_active": 3,
       "first_cve_year": 2024,
       "last_cve_year": 2026,
@@ -12193,10 +12193,64 @@
       ]
     },
     {
+      "name": "redhat",
+      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
+      "count": 87,
+      "rank": 16,
+      "first_cve_date": "2026-01-07T16:04:22.155Z",
+      "last_cve_date": "2026-03-17T11:14:21.284Z",
+      "years_active": 22,
+      "first_cve_year": 2005,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 20,
+        "Medium": 46,
+        "Low": 18,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-93": 6,
+        "CWE-125": 4,
+        "CWE-20": 3,
+        "CWE-284": 3,
+        "CWE-266": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-93",
+          6
+        ],
+        [
+          "CWE-125",
+          4
+        ],
+        [
+          "CWE-20",
+          3
+        ],
+        [
+          "CWE-284",
+          3
+        ],
+        [
+          "CWE-266",
+          3
+        ]
+      ]
+    },
+    {
       "name": "INCIBE",
       "assigner_org_id": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
       "count": 87,
-      "rank": 16,
+      "rank": 17,
       "first_cve_date": "2026-01-12T11:26:30.574Z",
       "last_cve_date": "2026-03-16T10:13:37.130Z",
       "years_active": 7,
@@ -12241,60 +12295,6 @@
         ],
         [
           "CWE-943",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "redhat",
-      "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 83,
-      "rank": 17,
-      "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-03-15T00:19:07.864Z",
-      "years_active": 22,
-      "first_cve_year": 2005,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 20,
-        "Medium": 45,
-        "Low": 15,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-93": 4,
-        "CWE-125": 4,
-        "CWE-20": 3,
-        "CWE-284": 3,
-        "CWE-266": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-93",
-          4
-        ],
-        [
-          "CWE-125",
-          4
-        ],
-        [
-          "CWE-20",
-          3
-        ],
-        [
-          "CWE-284",
-          3
-        ],
-        [
-          "CWE-266",
           3
         ]
       ]
@@ -12567,10 +12567,64 @@
       ]
     },
     {
+      "name": "apache",
+      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
+      "count": 65,
+      "rank": 23,
+      "first_cve_date": "2026-01-01T16:14:00.837Z",
+      "last_cve_date": "2026-03-17T10:54:57.439Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Open Source"
+      ],
+      "severity_distribution": {
+        "Critical": 9,
+        "High": 24,
+        "Medium": 23,
+        "Low": 4
+      },
+      "top_cwe_types": {
+        "CWE-20": 7,
+        "CWE-532": 4,
+        "CWE-94": 3,
+        "CWE-22": 3,
+        "CWE-89": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-20",
+          7
+        ],
+        [
+          "CWE-532",
+          4
+        ],
+        [
+          "CWE-94",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ],
+        [
+          "CWE-89",
+          3
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 65,
-      "rank": 23,
+      "rank": 24,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-03-16T17:28:44.696Z",
       "years_active": 18,
@@ -12624,7 +12678,7 @@
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
       "count": 64,
-      "rank": 24,
+      "rank": 25,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
       "last_cve_date": "2026-03-12T01:33:23.543Z",
       "years_active": 7,
@@ -12671,60 +12725,6 @@
         [
           "CWE-639",
           2
-        ]
-      ]
-    },
-    {
-      "name": "apache",
-      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 61,
-      "rank": 25,
-      "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-03-14T09:01:50.486Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Open Source"
-      ],
-      "severity_distribution": {
-        "Critical": 9,
-        "High": 24,
-        "Medium": 23,
-        "Low": 4
-      },
-      "top_cwe_types": {
-        "CWE-20": 7,
-        "CWE-532": 4,
-        "CWE-94": 3,
-        "CWE-22": 3,
-        "CWE-89": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-20",
-          7
-        ],
-        [
-          "CWE-532",
-          4
-        ],
-        [
-          "CWE-94",
-          3
-        ],
-        [
-          "CWE-22",
-          3
-        ],
-        [
-          "CWE-89",
-          3
         ]
       ]
     },
@@ -13475,10 +13475,64 @@
       ]
     },
     {
+      "name": "HCL",
+      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
+      "count": 40,
+      "rank": 40,
+      "first_cve_date": "2026-01-07T06:48:19.946Z",
+      "last_cve_date": "2026-03-17T12:02:08.881Z",
+      "years_active": 8,
+      "first_cve_year": 2019,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 14,
+        "Low": 24,
+        "Critical": 1,
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-89": 3,
+        "CWE-79": 2,
+        "CWE-522": 2,
+        "CWE-693": 2,
+        "CWE-200": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-79",
+          2
+        ],
+        [
+          "CWE-522",
+          2
+        ],
+        [
+          "CWE-693",
+          2
+        ],
+        [
+          "CWE-200",
+          2
+        ]
+      ]
+    },
+    {
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 39,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-03-11T03:14:18.534Z",
       "years_active": 11,
@@ -13524,60 +13578,6 @@
         [
           "CWE-300",
           3
-        ]
-      ]
-    },
-    {
-      "name": "HCL",
-      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
-      "count": 38,
-      "rank": 41,
-      "first_cve_date": "2026-01-07T06:48:19.946Z",
-      "last_cve_date": "2026-03-16T15:30:52.165Z",
-      "years_active": 8,
-      "first_cve_year": 2019,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 13,
-        "Low": 23,
-        "Critical": 1,
-        "High": 1
-      },
-      "top_cwe_types": {
-        "CWE-89": 3,
-        "CWE-522": 2,
-        "CWE-693": 2,
-        "CWE-200": 2,
-        "CWE-613": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-522",
-          2
-        ],
-        [
-          "CWE-693",
-          2
-        ],
-        [
-          "CWE-200",
-          2
-        ],
-        [
-          "CWE-613",
-          2
         ]
       ]
     },
