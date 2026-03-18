@@ -1,15 +1,43 @@
 {
-  "generated_at": "2026-03-18T18:29:12.247543",
+  "generated_at": "2026-03-18T21:20:29.527766",
   "year": 2026,
-  "total_unique_cpes": 6256,
-  "total_cpe_entries": 34228,
-  "total_cves_with_cpes": 6840,
-  "total_unique_vendors": 1436,
-  "total_unique_products": 3317,
+  "total_unique_cpes": 6374,
+  "total_cpe_entries": 35483,
+  "total_cves_with_cpes": 7011,
+  "total_unique_vendors": 1456,
+  "total_unique_products": 3343,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 392,
+      "count": 729,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc1:*:*:*:*:*:*",
+      "count": 156,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc2:*:*:*:*:*:*",
+      "count": 151,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc3:*:*:*:*:*:*",
+      "count": 150,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc4:*:*:*:*:*:*",
+      "count": 145,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -30,7 +58,7 @@
     },
     {
       "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
-      "count": 128,
+      "count": 131,
       "vendor": "gitlab",
       "product": "gitlab",
       "type": "Application"
@@ -65,16 +93,37 @@
     },
     {
       "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:community:*:*:*",
-      "count": 115,
+      "count": 118,
       "vendor": "gitlab",
       "product": "gitlab",
       "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc5:*:*:*:*:*:*",
+      "count": 118,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
       "count": 109,
       "vendor": "microsoft",
       "product": "windows_server_2025",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
+      "count": 104,
+      "vendor": "imagemagick",
+      "product": "imagemagick",
+      "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc6:*:*:*:*:*:*",
+      "count": 103,
+      "vendor": "linux",
+      "product": "linux_kernel",
       "type": "Operating System"
     },
     {
@@ -90,13 +139,6 @@
       "vendor": "microsoft",
       "product": "windows_10_1607",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:imagemagick:imagemagick:*:*:*:*:*:*:*:*",
-      "count": 100,
-      "vendor": "imagemagick",
-      "product": "imagemagick",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1607:*:*:*:*:*:*:x86:*",
@@ -141,13 +183,6 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc1:*:*:*:*:*:*",
-      "count": 84,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2012:r2:*:*:*:*:*:*:*",
       "count": 81,
       "vendor": "microsoft",
@@ -169,20 +204,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc2:*:*:*:*:*:*",
-      "count": 79,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc3:*:*:*:*:*:*",
-      "count": 78,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:esr:*:*:*",
       "count": 77,
       "vendor": "mozilla",
@@ -194,27 +215,6 @@
       "count": 76,
       "vendor": "microsoft",
       "product": "windows_server_2012",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_24h2:*:*:*:*:*:*:arm64:*",
-      "count": 76,
-      "vendor": "microsoft",
-      "product": "windows_11_24h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_24h2:*:*:*:*:*:*:x64:*",
-      "count": 76,
-      "vendor": "microsoft",
-      "product": "windows_11_24h2",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_11_25h2:*:*:*:*:*:*:arm64:*",
-      "count": 75,
-      "vendor": "microsoft",
-      "product": "windows_11_25h2",
       "type": "Operating System"
     }
   ],
@@ -233,7 +233,11 @@
     },
     {
       "vendor": "microsoft",
-      "count": 3064
+      "count": 3065
+    },
+    {
+      "vendor": "linux",
+      "count": 1696
     },
     {
       "vendor": "samsung",
@@ -248,10 +252,6 @@
       "count": 1129
     },
     {
-      "vendor": "linux",
-      "count": 858
-    },
-    {
       "vendor": "parseplatform",
       "count": 839
     },
@@ -261,11 +261,15 @@
     },
     {
       "vendor": "ibm",
-      "count": 579
+      "count": 591
     },
     {
       "vendor": "google",
       "count": 458
+    },
+    {
+      "vendor": "checkmk",
+      "count": 426
     },
     {
       "vendor": "apple",
@@ -274,16 +278,16 @@
     {
       "vendor": "zyxel",
       "count": 292
-    },
-    {
-      "vendor": "apache",
-      "count": 271
     }
   ],
   "top_products": [
     {
       "product": "coolify",
       "count": 4211
+    },
+    {
+      "product": "linux_kernel",
+      "count": 1696
     },
     {
       "product": "android",
@@ -306,10 +310,6 @@
       "count": 951
     },
     {
-      "product": "linux_kernel",
-      "count": 858
-    },
-    {
       "product": "rustfs",
       "count": 610
     },
@@ -326,6 +326,10 @@
       "count": 508
     },
     {
+      "product": "checkmk",
+      "count": 426
+    },
+    {
       "product": "junos_os_evolved",
       "count": 364
     },
@@ -335,23 +339,19 @@
     },
     {
       "product": "gitlab",
-      "count": 271
-    },
-    {
-      "product": "windows_10_21h2",
-      "count": 269
+      "count": 277
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 18783,
-      "percentage": 54.9
+      "count": 19200,
+      "percentage": 54.1
     },
     {
       "type": "Operating System",
-      "count": 15444,
-      "percentage": 45.1
+      "count": 16282,
+      "percentage": 45.9
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 183
     }
   ],
-  "average_cpes_per_cve": 5.0
+  "average_cpes_per_cve": 5.1
 }
