@@ -1,11 +1,11 @@
 {
   "year": 2026,
-  "total_cves": 13515,
+  "total_cves": 13612,
   "date_data": {
     "monthly_distribution": {
       "1": 4313,
       "2": 4619,
-      "3": 4583,
+      "3": 4680,
       "4": 0,
       "5": 0,
       "6": 0,
@@ -17,8 +17,8 @@
       "12": 0
     },
     "daily_analysis": {
-      "total_days": 81,
-      "avg_per_day": 166.85,
+      "total_days": 82,
+      "avg_per_day": 166.0,
       "highest_day": {
         "date": "2026-03-05",
         "count": 466
@@ -111,7 +111,7 @@
         "2026-03-22": 77,
         "2026-03-23": 182,
         "2026-03-24": 276,
-        "2026-03-25": 0
+        "2026-03-25": 97
       }
     }
   },
@@ -156,19 +156,19 @@
       }
     },
     "v3.1": {
-      "total": 7820,
+      "total": 7823,
       "severity_distribution": {
         "LOW": 230,
-        "MEDIUM": 3679,
-        "HIGH": 3000,
+        "MEDIUM": 3681,
+        "HIGH": 3001,
         "CRITICAL": 898,
         "NONE": 13
       },
       "score_distribution": {
         "3.4": 5,
         "5.3": 540,
-        "4.3": 440,
-        "6.4": 267,
+        "4.3": 441,
+        "6.4": 268,
         "8.1": 421,
         "6.5": 609,
         "9.6": 29,
@@ -210,7 +210,7 @@
         "2.0": 6,
         "2.9": 10,
         "2.2": 8,
-        "8.2": 79,
+        "8.2": 80,
         "5.8": 50,
         "10.0": 63,
         "3.1": 27,
@@ -250,17 +250,17 @@
       }
     },
     "v4.0": {
-      "total": 5274,
+      "total": 5280,
       "severity_distribution": {
-        "MEDIUM": 2553,
-        "HIGH": 1914,
+        "MEDIUM": 2557,
+        "HIGH": 1916,
         "LOW": 327,
         "CRITICAL": 448,
         "NONE": 32
       },
       "score_distribution": {
-        "6.9": 597,
-        "5.3": 539,
+        "6.9": 598,
+        "5.3": 542,
         "7.7": 63,
         "5.8": 21,
         "2.0": 41,
@@ -294,7 +294,7 @@
         "7.1": 194,
         "5.7": 29,
         "8.5": 269,
-        "8.4": 96,
+        "8.4": 98,
         "5.0": 3,
         "8.6": 140,
         "6.3": 98,
@@ -341,12 +341,12 @@
       }
     },
     "unknown": {
-      "total": 305,
+      "total": 393,
       "severity_distribution": {
-        "UNKNOWN": 305
+        "UNKNOWN": 393
       },
       "score_distribution": {
-        "0.0": 305
+        "0.0": 393
       }
     },
     "epss_summary": {
@@ -422,6 +422,10 @@
         "count": 64
       },
       {
+        "name": "Discourse",
+        "count": 62
+      },
+      {
         "name": "Fabian",
         "count": 59
       },
@@ -434,10 +438,6 @@
         "count": 57
       },
       {
-        "name": "Discourse",
-        "count": 57
-      },
-      {
         "name": "Open-Emr",
         "count": 54
       }
@@ -447,11 +447,11 @@
     "top_cwes": [
       {
         "cwe": "CWE-79",
-        "count": 1898
+        "count": 1900
       },
       {
         "cwe": "CWE-89",
-        "count": 1055
+        "count": 1059
       },
       {
         "cwe": "CWE-862",
@@ -467,7 +467,7 @@
       },
       {
         "cwe": "CWE-74",
-        "count": 424
+        "count": 428
       },
       {
         "cwe": "CWE-78",
@@ -531,7 +531,7 @@
     "vulnerability_status": [
       {
         "status": "Analyzed",
-        "count": 7245
+        "count": 7252
       },
       {
         "status": "Awaiting Analysis",
@@ -542,19 +542,19 @@
         "count": 595
       },
       {
-        "status": "Undergoing Analysis",
-        "count": 156
+        "status": "Received",
+        "count": 193
       },
       {
-        "status": "Received",
-        "count": 96
+        "status": "Undergoing Analysis",
+        "count": 149
       }
     ],
     "cve_tags": [],
     "reference_tags": [
       {
         "tag": "Vendor Advisory",
-        "count": 6078
+        "count": 6085
       },
       {
         "tag": "Third Party Advisory",
@@ -562,7 +562,7 @@
       },
       {
         "tag": "Patch",
-        "count": 4192
+        "count": 4207
       },
       {
         "tag": "Exploit",
@@ -590,7 +590,7 @@
       },
       {
         "tag": "Mitigation",
-        "count": 742
+        "count": 743
       },
       {
         "tag": "Broken Link",
@@ -623,7 +623,7 @@
     ]
   },
   "processing_stats": {
-    "processed_at": "2026-03-25T06:29:13.309655",
+    "processed_at": "2026-03-25T09:24:12.286409",
     "data_source": "data/cache/nvd.json"
   }
 }
