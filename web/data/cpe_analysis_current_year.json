@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-03-26T21:17:55.021476",
+  "generated_at": "2026-03-27T00:32:36.718237",
   "year": 2026,
-  "total_unique_cpes": 6874,
-  "total_cpe_entries": 40785,
-  "total_cves_with_cpes": 8237,
-  "total_unique_vendors": 1571,
-  "total_unique_products": 3534,
+  "total_unique_cpes": 6974,
+  "total_cpe_entries": 41115,
+  "total_cves_with_cpes": 8330,
+  "total_unique_vendors": 1582,
+  "total_unique_products": 3549,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -29,6 +29,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
+      "count": 300,
+      "vendor": "apple",
+      "product": "macos",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc3:*:*:*:*:*:*",
       "count": 300,
       "vendor": "linux",
@@ -40,13 +47,6 @@
       "count": 291,
       "vendor": "linux",
       "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
-      "count": 279,
-      "vendor": "apple",
-      "product": "macos",
       "type": "Operating System"
     },
     {
@@ -78,10 +78,31 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
+      "count": 151,
+      "vendor": "gitlab",
+      "product": "gitlab",
+      "type": "Application"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2022_23h2:*:*:*:*:*:*:*:*",
       "count": 142,
       "vendor": "microsoft",
       "product": "windows_server_2022_23h2",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
+      "count": 141,
+      "vendor": "apple",
+      "product": "ipados",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
+      "count": 141,
+      "vendor": "apple",
+      "product": "iphone_os",
       "type": "Operating System"
     },
     {
@@ -92,18 +113,18 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
-      "count": 139,
-      "vendor": "gitlab",
-      "product": "gitlab",
-      "type": "Application"
-    },
-    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc8:*:*:*:*:*:*",
       "count": 139,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:community:*:*:*",
+      "count": 132,
+      "vendor": "gitlab",
+      "product": "gitlab",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:a:mozilla:firefox:*:*:*:*:esr:*:*:*",
@@ -120,20 +141,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
-      "count": 128,
-      "vendor": "apple",
-      "product": "ipados",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
-      "count": 128,
-      "vendor": "apple",
-      "product": "iphone_os",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x64:*",
       "count": 127,
       "vendor": "microsoft",
@@ -145,13 +152,6 @@
       "count": 126,
       "vendor": "google",
       "product": "chrome",
-      "type": "Application"
-    },
-    {
-      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:community:*:*:*",
-      "count": 122,
-      "vendor": "gitlab",
-      "product": "gitlab",
       "type": "Application"
     },
     {
@@ -257,11 +257,11 @@
     },
     {
       "vendor": "ibm",
-      "count": 723
+      "count": 730
     },
     {
       "vendor": "apple",
-      "count": 661
+      "count": 728
     },
     {
       "vendor": "rustfs",
@@ -339,19 +339,19 @@
     },
     {
       "product": "gitlab",
-      "count": 295
+      "count": 328
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 21573,
-      "percentage": 52.9
+      "count": 21839,
+      "percentage": 53.1
     },
     {
       "type": "Operating System",
-      "count": 19211,
-      "percentage": 47.1
+      "count": 19275,
+      "percentage": 46.9
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 183
     }
   ],
-  "average_cpes_per_cve": 5.0
+  "average_cpes_per_cve": 4.9
 }
