@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-29T21:15:58.486704",
+  "generated_at": "2026-03-30T00:35:01.814627",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 270,
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1374,
+      "count": 1376,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-29T14:15:12.643Z",
+      "last_cve_date": "2026-03-30T00:00:20.436Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,16 +186,16 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 791,
+        "Medium": 793,
         "Critical": 220,
         "High": 331,
         "Low": 32
       },
       "top_cwe_types": {
-        "CWE-74": 423,
+        "CWE-74": 425,
         "CWE-89": 309,
         "CWE-119": 291,
-        "CWE-77": 157,
+        "CWE-77": 159,
         "CWE-94": 152
       },
       "kev_count": 0,
@@ -204,7 +204,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          423
+          425
         ],
         [
           "CWE-89",
@@ -216,7 +216,7 @@
         ],
         [
           "CWE-77",
-          157
+          159
         ],
         [
           "CWE-94",
@@ -1055,10 +1055,10 @@
     {
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
-      "count": 76,
+      "count": 77,
       "rank": 21,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
-      "last_cve_date": "2026-03-27T14:50:48.271Z",
+      "last_cve_date": "2026-03-29T23:33:44.410Z",
       "years_active": 7,
       "first_cve_year": 2020,
       "last_cve_year": 2026,
@@ -1069,7 +1069,7 @@
       ],
       "severity_distribution": {
         "Medium": 42,
-        "High": 24,
+        "High": 25,
         "Low": 8,
         "Critical": 2
       },
@@ -3079,10 +3079,63 @@
       ]
     },
     {
+      "name": "YokogawaGroup",
+      "assigner_org_id": "7168b535-132a-4efe-a076-338f829b2eb9",
+      "count": 22,
+      "rank": 59,
+      "first_cve_date": "2026-02-09T03:06:00.996Z",
+      "last_cve_date": "2026-03-30T00:01:11.948Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 5,
+        "Medium": 13,
+        "High": 4
+      },
+      "top_cwe_types": {
+        "CWE-358": 4,
+        "CWE-617": 3,
+        "CWE-191": 2,
+        "CWE-327": 2,
+        "CWE-259": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-358",
+          4
+        ],
+        [
+          "CWE-617",
+          3
+        ],
+        [
+          "CWE-191",
+          2
+        ],
+        [
+          "CWE-327",
+          2
+        ],
+        [
+          "CWE-259",
+          1
+        ]
+      ]
+    },
+    {
       "name": "@huntr_ai",
       "assigner_org_id": "c09c270a-b464-47c1-9133-acb35b22c19a",
       "count": 21,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-01T07:03:57.277Z",
       "last_cve_date": "2026-03-29T17:53:08.003Z",
       "years_active": 6,
@@ -3135,7 +3188,7 @@
       "name": "Go",
       "assigner_org_id": "1bb62c36-49e3-4200-9d77-64a1400537cc",
       "count": 21,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-01-28T19:30:30.704Z",
       "last_cve_date": "2026-03-26T19:40:52.142Z",
       "years_active": 7,
@@ -3181,59 +3234,6 @@
         [
           "CWE-295",
           2
-        ]
-      ]
-    },
-    {
-      "name": "YokogawaGroup",
-      "assigner_org_id": "7168b535-132a-4efe-a076-338f829b2eb9",
-      "count": 21,
-      "rank": 61,
-      "first_cve_date": "2026-02-09T03:06:00.996Z",
-      "last_cve_date": "2026-02-13T05:00:05.985Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 13,
-        "Low": 4,
-        "High": 4
-      },
-      "top_cwe_types": {
-        "CWE-358": 4,
-        "CWE-617": 3,
-        "CWE-191": 2,
-        "CWE-327": 2,
-        "CWE-787": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-358",
-          4
-        ],
-        [
-          "CWE-617",
-          3
-        ],
-        [
-          "CWE-191",
-          2
-        ],
-        [
-          "CWE-327",
-          2
-        ],
-        [
-          "CWE-787",
-          1
         ]
       ]
     },
@@ -12331,10 +12331,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1374,
+      "count": 1376,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-29T14:15:12.643Z",
+      "last_cve_date": "2026-03-30T00:00:20.436Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -12344,16 +12344,16 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 791,
+        "Medium": 793,
         "Critical": 220,
         "High": 331,
         "Low": 32
       },
       "top_cwe_types": {
-        "CWE-74": 423,
+        "CWE-74": 425,
         "CWE-89": 309,
         "CWE-119": 291,
-        "CWE-77": 157,
+        "CWE-77": 159,
         "CWE-94": 152
       },
       "kev_count": 0,
@@ -12362,7 +12362,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          423
+          425
         ],
         [
           "CWE-89",
@@ -12374,7 +12374,7 @@
         ],
         [
           "CWE-77",
-          157
+          159
         ],
         [
           "CWE-94",
@@ -13213,10 +13213,10 @@
     {
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
-      "count": 76,
+      "count": 77,
       "rank": 21,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
-      "last_cve_date": "2026-03-27T14:50:48.271Z",
+      "last_cve_date": "2026-03-29T23:33:44.410Z",
       "years_active": 7,
       "first_cve_year": 2020,
       "last_cve_year": 2026,
@@ -13227,7 +13227,7 @@
       ],
       "severity_distribution": {
         "Medium": 42,
-        "High": 24,
+        "High": 25,
         "Low": 8,
         "Critical": 2
       },
@@ -15237,10 +15237,63 @@
       ]
     },
     {
+      "name": "YokogawaGroup",
+      "assigner_org_id": "7168b535-132a-4efe-a076-338f829b2eb9",
+      "count": 22,
+      "rank": 59,
+      "first_cve_date": "2026-02-09T03:06:00.996Z",
+      "last_cve_date": "2026-03-30T00:01:11.948Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 5,
+        "Medium": 13,
+        "High": 4
+      },
+      "top_cwe_types": {
+        "CWE-358": 4,
+        "CWE-617": 3,
+        "CWE-191": 2,
+        "CWE-327": 2,
+        "CWE-259": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-358",
+          4
+        ],
+        [
+          "CWE-617",
+          3
+        ],
+        [
+          "CWE-191",
+          2
+        ],
+        [
+          "CWE-327",
+          2
+        ],
+        [
+          "CWE-259",
+          1
+        ]
+      ]
+    },
+    {
       "name": "@huntr_ai",
       "assigner_org_id": "c09c270a-b464-47c1-9133-acb35b22c19a",
       "count": 21,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-01T07:03:57.277Z",
       "last_cve_date": "2026-03-29T17:53:08.003Z",
       "years_active": 6,
@@ -15293,7 +15346,7 @@
       "name": "Go",
       "assigner_org_id": "1bb62c36-49e3-4200-9d77-64a1400537cc",
       "count": 21,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-01-28T19:30:30.704Z",
       "last_cve_date": "2026-03-26T19:40:52.142Z",
       "years_active": 7,
@@ -15339,59 +15392,6 @@
         [
           "CWE-295",
           2
-        ]
-      ]
-    },
-    {
-      "name": "YokogawaGroup",
-      "assigner_org_id": "7168b535-132a-4efe-a076-338f829b2eb9",
-      "count": 21,
-      "rank": 61,
-      "first_cve_date": "2026-02-09T03:06:00.996Z",
-      "last_cve_date": "2026-02-13T05:00:05.985Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 13,
-        "Low": 4,
-        "High": 4
-      },
-      "top_cwe_types": {
-        "CWE-358": 4,
-        "CWE-617": 3,
-        "CWE-191": 2,
-        "CWE-327": 2,
-        "CWE-787": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-358",
-          4
-        ],
-        [
-          "CWE-617",
-          3
-        ],
-        [
-          "CWE-191",
-          2
-        ],
-        [
-          "CWE-327",
-          2
-        ],
-        [
-          "CWE-787",
-          1
         ]
       ]
     },
