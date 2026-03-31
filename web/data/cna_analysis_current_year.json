@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-30T21:22:37.423483",
+  "generated_at": "2026-03-31T00:31:53.504698",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 270,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 2936,
+      "count": 2945,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-03-30T20:36:43.672Z",
+      "last_cve_date": "2026-03-30T21:43:49.873Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -25,8 +25,8 @@
       ],
       "severity_distribution": {
         "Low": 173,
-        "Medium": 1197,
-        "High": 1211,
+        "Medium": 1202,
+        "High": 1215,
         "Critical": 355
       },
       "top_cwe_types": {
@@ -173,10 +173,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1390,
+      "count": 1395,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-30T20:30:17.269Z",
+      "last_cve_date": "2026-03-30T23:30:18.481Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -186,17 +186,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 804,
-        "Critical": 221,
+        "Medium": 806,
+        "Critical": 224,
         "High": 333,
         "Low": 32
       },
       "top_cwe_types": {
-        "CWE-74": 431,
+        "CWE-74": 432,
         "CWE-89": 312,
-        "CWE-119": 292,
-        "CWE-77": 163,
-        "CWE-94": 153
+        "CWE-119": 295,
+        "CWE-77": 164,
+        "CWE-94": 154
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -204,7 +204,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          431
+          432
         ],
         [
           "CWE-89",
@@ -212,25 +212,25 @@
         ],
         [
           "CWE-119",
-          292
+          295
         ],
         [
           "CWE-77",
-          163
+          164
         ],
         [
           "CWE-94",
-          153
+          154
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1008,
+      "count": 1010,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-03-30T01:24:44.783Z",
+      "last_cve_date": "2026-03-30T22:24:59.607Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -240,9 +240,9 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Critical": 42,
+        "Critical": 43,
         "Medium": 768,
-        "High": 189,
+        "High": 190,
         "Low": 9
       },
       "top_cwe_types": {
@@ -1267,10 +1267,64 @@
       ]
     },
     {
+      "name": "apache",
+      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
+      "count": 67,
+      "rank": 25,
+      "first_cve_date": "2026-01-01T16:14:00.837Z",
+      "last_cve_date": "2026-03-30T21:43:38.144Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Open Source"
+      ],
+      "severity_distribution": {
+        "Critical": 9,
+        "High": 27,
+        "Low": 5,
+        "Medium": 25
+      },
+      "top_cwe_types": {
+        "CWE-20": 7,
+        "CWE-532": 4,
+        "CWE-94": 3,
+        "CWE-502": 3,
+        "CWE-22": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-20",
+          7
+        ],
+        [
+          "CWE-532",
+          4
+        ],
+        [
+          "CWE-94",
+          3
+        ],
+        [
+          "CWE-502",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 67,
-      "rank": 25,
+      "rank": 26,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-03-18T17:40:25.370Z",
       "years_active": 18,
@@ -1316,60 +1370,6 @@
         ],
         [
           "CWE-266",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "apache",
-      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 66,
-      "rank": 26,
-      "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-03-24T07:53:44.644Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Open Source"
-      ],
-      "severity_distribution": {
-        "Critical": 9,
-        "High": 27,
-        "Low": 5,
-        "Medium": 25
-      },
-      "top_cwe_types": {
-        "CWE-20": 7,
-        "CWE-532": 4,
-        "CWE-94": 3,
-        "CWE-502": 3,
-        "CWE-22": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-20",
-          7
-        ],
-        [
-          "CWE-532",
-          4
-        ],
-        [
-          "CWE-94",
-          3
-        ],
-        [
-          "CWE-502",
-          3
-        ],
-        [
-          "CWE-22",
           3
         ]
       ]
@@ -12190,10 +12190,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 2936,
+      "count": 2945,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-03-30T20:36:43.672Z",
+      "last_cve_date": "2026-03-30T21:43:49.873Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -12204,8 +12204,8 @@
       ],
       "severity_distribution": {
         "Low": 173,
-        "Medium": 1197,
-        "High": 1211,
+        "Medium": 1202,
+        "High": 1215,
         "Critical": 355
       },
       "top_cwe_types": {
@@ -12352,10 +12352,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1390,
+      "count": 1395,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-03-30T20:30:17.269Z",
+      "last_cve_date": "2026-03-30T23:30:18.481Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -12365,17 +12365,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 804,
-        "Critical": 221,
+        "Medium": 806,
+        "Critical": 224,
         "High": 333,
         "Low": 32
       },
       "top_cwe_types": {
-        "CWE-74": 431,
+        "CWE-74": 432,
         "CWE-89": 312,
-        "CWE-119": 292,
-        "CWE-77": 163,
-        "CWE-94": 153
+        "CWE-119": 295,
+        "CWE-77": 164,
+        "CWE-94": 154
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -12383,7 +12383,7 @@
       "top_cwes": [
         [
           "CWE-74",
-          431
+          432
         ],
         [
           "CWE-89",
@@ -12391,25 +12391,25 @@
         ],
         [
           "CWE-119",
-          292
+          295
         ],
         [
           "CWE-77",
-          163
+          164
         ],
         [
           "CWE-94",
-          153
+          154
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1008,
+      "count": 1010,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-03-30T01:24:44.783Z",
+      "last_cve_date": "2026-03-30T22:24:59.607Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -12419,9 +12419,9 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Critical": 42,
+        "Critical": 43,
         "Medium": 768,
-        "High": 189,
+        "High": 190,
         "Low": 9
       },
       "top_cwe_types": {
@@ -13446,10 +13446,64 @@
       ]
     },
     {
+      "name": "apache",
+      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
+      "count": 67,
+      "rank": 25,
+      "first_cve_date": "2026-01-01T16:14:00.837Z",
+      "last_cve_date": "2026-03-30T21:43:38.144Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Open Source"
+      ],
+      "severity_distribution": {
+        "Critical": 9,
+        "High": 27,
+        "Low": 5,
+        "Medium": 25
+      },
+      "top_cwe_types": {
+        "CWE-20": 7,
+        "CWE-532": 4,
+        "CWE-94": 3,
+        "CWE-502": 3,
+        "CWE-22": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-20",
+          7
+        ],
+        [
+          "CWE-532",
+          4
+        ],
+        [
+          "CWE-94",
+          3
+        ],
+        [
+          "CWE-502",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 67,
-      "rank": 25,
+      "rank": 26,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-03-18T17:40:25.370Z",
       "years_active": 18,
@@ -13495,60 +13549,6 @@
         ],
         [
           "CWE-266",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "apache",
-      "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 66,
-      "rank": 26,
-      "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-03-24T07:53:44.644Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Open Source"
-      ],
-      "severity_distribution": {
-        "Critical": 9,
-        "High": 27,
-        "Low": 5,
-        "Medium": 25
-      },
-      "top_cwe_types": {
-        "CWE-20": 7,
-        "CWE-532": 4,
-        "CWE-94": 3,
-        "CWE-502": 3,
-        "CWE-22": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-20",
-          7
-        ],
-        [
-          "CWE-532",
-          4
-        ],
-        [
-          "CWE-94",
-          3
-        ],
-        [
-          "CWE-502",
-          3
-        ],
-        [
-          "CWE-22",
           3
         ]
       ]
