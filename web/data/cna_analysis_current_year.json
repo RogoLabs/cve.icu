@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-07T00:39:19.463510",
+  "generated_at": "2026-04-07T04:04:28.399840",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 277,
@@ -119,10 +119,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1643,
+      "count": 1644,
       "rank": 3,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-04-06T23:30:11.682Z",
+      "last_cve_date": "2026-04-07T02:00:19.631Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -132,14 +132,14 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 963,
+        "Medium": 964,
         "Critical": 250,
         "High": 396,
         "Low": 34
       },
       "top_cwe_types": {
-        "CWE-74": 505,
-        "CWE-89": 370,
+        "CWE-74": 506,
+        "CWE-89": 371,
         "CWE-119": 336,
         "CWE-77": 194,
         "CWE-94": 185
@@ -150,11 +150,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          505
+          506
         ],
         [
           "CWE-89",
-          370
+          371
         ],
         [
           "CWE-119",
@@ -468,10 +468,10 @@
     {
       "name": "ibm",
       "assigner_org_id": "9a959283-ebb5-44b6-b705-dcc2bbced522",
-      "count": 185,
+      "count": 186,
       "rank": 10,
       "first_cve_date": "2026-01-20T14:50:51.912Z",
-      "last_cve_date": "2026-04-02T00:14:31.101Z",
+      "last_cve_date": "2026-04-07T01:07:38.740Z",
       "years_active": 15,
       "first_cve_year": 2012,
       "last_cve_year": 2026,
@@ -481,7 +481,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 148,
+        "Medium": 149,
         "Low": 14,
         "High": 22,
         "Critical": 1
@@ -1163,10 +1163,63 @@
       ]
     },
     {
+      "name": "MediaTek",
+      "assigner_org_id": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
+      "count": 74,
+      "rank": 23,
+      "first_cve_date": "2026-01-06T01:46:29.572Z",
+      "last_cve_date": "2026-04-07T03:25:39.747Z",
+      "years_active": 5,
+      "first_cve_year": 2022,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 19,
+        "Medium": 49,
+        "Critical": 2
+      },
+      "top_cwe_types": {
+        "CWE-787": 27,
+        "CWE-416": 15,
+        "CWE-617": 5,
+        "CWE-415": 4,
+        "CWE-125": 4
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-787",
+          27
+        ],
+        [
+          "CWE-416",
+          15
+        ],
+        [
+          "CWE-617",
+          5
+        ],
+        [
+          "CWE-415",
+          4
+        ],
+        [
+          "CWE-125",
+          4
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 71,
-      "rank": 23,
+      "rank": 24,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-04-01T12:18:38.716Z",
       "years_active": 18,
@@ -1213,59 +1266,6 @@
         [
           "CWE-266",
           3
-        ]
-      ]
-    },
-    {
-      "name": "MediaTek",
-      "assigner_org_id": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
-      "count": 70,
-      "rank": 24,
-      "first_cve_date": "2026-01-06T01:46:29.572Z",
-      "last_cve_date": "2026-03-02T08:39:45.354Z",
-      "years_active": 5,
-      "first_cve_year": 2022,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 19,
-        "Medium": 49,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-787": 24,
-        "CWE-416": 15,
-        "CWE-617": 5,
-        "CWE-415": 4,
-        "CWE-125": 4
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-787",
-          24
-        ],
-        [
-          "CWE-416",
-          15
-        ],
-        [
-          "CWE-617",
-          5
-        ],
-        [
-          "CWE-415",
-          4
-        ],
-        [
-          "CWE-125",
-          4
         ]
       ]
     },
@@ -12619,10 +12619,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 1643,
+      "count": 1644,
       "rank": 3,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-04-06T23:30:11.682Z",
+      "last_cve_date": "2026-04-07T02:00:19.631Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -12632,14 +12632,14 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 963,
+        "Medium": 964,
         "Critical": 250,
         "High": 396,
         "Low": 34
       },
       "top_cwe_types": {
-        "CWE-74": 505,
-        "CWE-89": 370,
+        "CWE-74": 506,
+        "CWE-89": 371,
         "CWE-119": 336,
         "CWE-77": 194,
         "CWE-94": 185
@@ -12650,11 +12650,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          505
+          506
         ],
         [
           "CWE-89",
-          370
+          371
         ],
         [
           "CWE-119",
@@ -12968,10 +12968,10 @@
     {
       "name": "ibm",
       "assigner_org_id": "9a959283-ebb5-44b6-b705-dcc2bbced522",
-      "count": 185,
+      "count": 186,
       "rank": 10,
       "first_cve_date": "2026-01-20T14:50:51.912Z",
-      "last_cve_date": "2026-04-02T00:14:31.101Z",
+      "last_cve_date": "2026-04-07T01:07:38.740Z",
       "years_active": 15,
       "first_cve_year": 2012,
       "last_cve_year": 2026,
@@ -12981,7 +12981,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 148,
+        "Medium": 149,
         "Low": 14,
         "High": 22,
         "Critical": 1
@@ -13663,10 +13663,63 @@
       ]
     },
     {
+      "name": "MediaTek",
+      "assigner_org_id": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
+      "count": 74,
+      "rank": 23,
+      "first_cve_date": "2026-01-06T01:46:29.572Z",
+      "last_cve_date": "2026-04-07T03:25:39.747Z",
+      "years_active": 5,
+      "first_cve_year": 2022,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 19,
+        "Medium": 49,
+        "Critical": 2
+      },
+      "top_cwe_types": {
+        "CWE-787": 27,
+        "CWE-416": 15,
+        "CWE-617": 5,
+        "CWE-415": 4,
+        "CWE-125": 4
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-787",
+          27
+        ],
+        [
+          "CWE-416",
+          15
+        ],
+        [
+          "CWE-617",
+          5
+        ],
+        [
+          "CWE-415",
+          4
+        ],
+        [
+          "CWE-125",
+          4
+        ]
+      ]
+    },
+    {
       "name": "dell",
       "assigner_org_id": "c550e75a-17ff-4988-97f0-544cde3820fe",
       "count": 71,
-      "rank": 23,
+      "rank": 24,
       "first_cve_date": "2026-01-06T15:01:17.368Z",
       "last_cve_date": "2026-04-01T12:18:38.716Z",
       "years_active": 18,
@@ -13713,59 +13766,6 @@
         [
           "CWE-266",
           3
-        ]
-      ]
-    },
-    {
-      "name": "MediaTek",
-      "assigner_org_id": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
-      "count": 70,
-      "rank": 24,
-      "first_cve_date": "2026-01-06T01:46:29.572Z",
-      "last_cve_date": "2026-03-02T08:39:45.354Z",
-      "years_active": 5,
-      "first_cve_year": 2022,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 19,
-        "Medium": 49,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-787": 24,
-        "CWE-416": 15,
-        "CWE-617": 5,
-        "CWE-415": 4,
-        "CWE-125": 4
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-787",
-          24
-        ],
-        [
-          "CWE-416",
-          15
-        ],
-        [
-          "CWE-617",
-          5
-        ],
-        [
-          "CWE-415",
-          4
-        ],
-        [
-          "CWE-125",
-          4
         ]
       ]
     },
