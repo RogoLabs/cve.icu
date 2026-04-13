@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-04-13T15:39:24.498771Z",
-  "catalog_version": "2026.04.08",
-  "total_kev_cves": 1559,
+  "generated_at": "2026-04-13T18:35:39.613577Z",
+  "catalog_version": "2026.04.13",
+  "total_kev_cves": 1566,
   "statistics": {
-    "added_last_30_days": 17,
-    "added_last_90_days": 72,
+    "added_last_30_days": 24,
+    "added_last_90_days": 79,
     "ransomware_associated": 313
   },
   "by_year_added": {
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 75
+    "2026": 82
   },
   "by_year_cve": {
     "2002": 1,
@@ -25,7 +25,7 @@
     "2009": 12,
     "2010": 21,
     "2011": 9,
-    "2012": 21,
+    "2012": 22,
     "2013": 38,
     "2014": 34,
     "2015": 44,
@@ -33,13 +33,13 @@
     "2017": 86,
     "2018": 89,
     "2019": 118,
-    "2020": 145,
+    "2020": 146,
     "2021": 213,
     "2022": 130,
-    "2023": 160,
+    "2023": 162,
     "2024": 158,
-    "2025": 175,
-    "2026": 34
+    "2025": 176,
+    "2026": 36
   },
   "by_year_published": {
     "2002": 1,
@@ -51,7 +51,7 @@
     "2009": 11,
     "2010": 21,
     "2011": 9,
-    "2012": 21,
+    "2012": 22,
     "2013": 35,
     "2014": 34,
     "2015": 43,
@@ -59,13 +59,13 @@
     "2017": 89,
     "2018": 76,
     "2019": 128,
-    "2020": 145,
+    "2020": 146,
     "2021": 213,
     "2022": 129,
-    "2023": 160,
+    "2023": 162,
     "2024": 156,
-    "2025": 186,
-    "2026": 38
+    "2025": 187,
+    "2026": 40
   },
   "timeline": {
     "2021-11": 291,
@@ -121,12 +121,12 @@
     "2026-01": 17,
     "2026-02": 28,
     "2026-03": 26,
-    "2026-04": 4
+    "2026-04": 11
   },
   "top_vendors": [
     [
       "Microsoft",
-      362
+      366
     ],
     [
       "Apple",
@@ -138,7 +138,7 @@
     ],
     [
       "Adobe",
-      76
+      78
     ],
     [
       "Google",
@@ -157,12 +157,12 @@
       33
     ],
     [
-      "VMware",
+      "Fortinet",
       26
     ],
     [
-      "Fortinet",
-      25
+      "VMware",
+      26
     ],
     [
       "D-Link",
@@ -208,7 +208,7 @@
   "top_products": [
     [
       "Microsoft - Windows",
-      166
+      168
     ],
     [
       "Apple - Multiple Products",
@@ -240,7 +240,7 @@
     ],
     [
       "Microsoft - Exchange Server",
-      16
+      17
     ],
     [
       "Adobe - ColdFusion",
@@ -259,15 +259,15 @@
       13
     ],
     [
+      "Adobe - Acrobat and Reader",
+      12
+    ],
+    [
       "Apple - iOS, iPadOS, and macOS",
       11
     ],
     [
       "Oracle - WebLogic Server",
-      11
-    ],
-    [
-      "Adobe - Acrobat and Reader",
       11
     ],
     [
@@ -302,7 +302,7 @@
     ],
     [
       "CWE-416",
-      90
+      91
     ],
     [
       "CWE-119",
@@ -314,7 +314,7 @@
     ],
     [
       "CWE-502",
-      63
+      64
     ],
     [
       "CWE-94",
@@ -354,7 +354,7 @@
     ],
     [
       "CWE-89",
-      25
+      26
     ],
     [
       "CWE-200",
@@ -370,6 +370,62 @@
     ]
   ],
   "recent_additions": [
+    {
+      "cve_id": "CVE-2012-1854",
+      "vendor": "Microsoft",
+      "product": "Visual Basic for Applications (VBA)",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-60710",
+      "vendor": "Microsoft",
+      "product": "Windows",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2023-21529",
+      "vendor": "Microsoft",
+      "product": "Exchange Server",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2023-36424",
+      "vendor": "Microsoft",
+      "product": "Windows",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2020-9715",
+      "vendor": "Adobe",
+      "product": "Acrobat",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-21643",
+      "vendor": "Fortinet",
+      "product": "FortiClient EMS",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-16",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-34621",
+      "vendor": "Adobe",
+      "product": "Acrobat and Reader",
+      "date_added": "2026-04-13",
+      "due_date": "2026-04-27",
+      "ransomware": "Unknown"
+    },
     {
       "cve_id": "CVE-2026-1340",
       "vendor": "Ivanti",
@@ -472,38 +528,6 @@
       "product": "Multiple Products",
       "date_added": "2026-03-20",
       "due_date": "2026-04-03",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-20131",
-      "vendor": "Cisco",
-      "product": "Secure Firewall Management Center (FMC)",
-      "date_added": "2026-03-19",
-      "due_date": "2026-03-22",
-      "ransomware": "Known"
-    },
-    {
-      "cve_id": "CVE-2025-66376",
-      "vendor": "Synacor",
-      "product": "Zimbra Collaboration Suite (ZCS)",
-      "date_added": "2026-03-18",
-      "due_date": "2026-04-01",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-20963",
-      "vendor": "Microsoft",
-      "product": "SharePoint",
-      "date_added": "2026-03-18",
-      "due_date": "2026-03-21",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2025-47813",
-      "vendor": "Wing FTP Server",
-      "product": "Wing FTP Server",
-      "date_added": "2026-03-16",
-      "due_date": "2026-03-30",
       "ransomware": "Unknown"
     }
   ]
