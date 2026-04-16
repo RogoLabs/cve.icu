@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-04-16T18:35:15.758737",
+  "generated_at": "2026-04-16T21:23:57.655952",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
-  "total_cnas": 290,
-  "active_cnas": 290,
+  "total_cnas": 291,
+  "active_cnas": 291,
   "inactive_cnas": 0,
-  "official_cnas": 290,
+  "official_cnas": 291,
   "unofficial_cnas": 0,
   "cna_list": [
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 3861,
+      "count": 3866,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-04-16T18:16:02.485Z",
+      "last_cve_date": "2026-04-16T20:57:45.978Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,16 +24,16 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "High": 1577,
+        "High": 1582,
         "Low": 219,
-        "Medium": 1586,
-        "Critical": 479
+        "Medium": 1588,
+        "Critical": 477
       },
       "top_cwe_types": {
         "CWE-79": 442,
         "CWE-22": 273,
         "CWE-918": 211,
-        "CWE-89": 174,
+        "CWE-89": 177,
         "CWE-862": 164
       },
       "kev_count": 2,
@@ -54,7 +54,7 @@
         ],
         [
           "CWE-89",
-          174
+          177
         ],
         [
           "CWE-862",
@@ -2445,10 +2445,63 @@
       ]
     },
     {
+      "name": "AMD",
+      "assigner_org_id": "b58fc414-a1e4-4f92-9d70-1add41838648",
+      "count": 46,
+      "rank": 47,
+      "first_cve_date": "2026-01-16T15:46:08.641Z",
+      "last_cve_date": "2026-04-16T18:46:13.377Z",
+      "years_active": 7,
+      "first_cve_year": 2020,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 3,
+        "High": 18,
+        "Medium": 25
+      },
+      "top_cwe_types": {
+        "CWE-787": 4,
+        "CWE-367": 3,
+        "CWE-190": 3,
+        "CWE-427": 3,
+        "CWE-119": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-787",
+          4
+        ],
+        [
+          "CWE-367",
+          3
+        ],
+        [
+          "CWE-190",
+          3
+        ],
+        [
+          "CWE-427",
+          3
+        ],
+        [
+          "CWE-119",
+          2
+        ]
+      ]
+    },
+    {
       "name": "drupal",
       "assigner_org_id": "2c85b837-eb8b-40ed-9d74-228c62987387",
       "count": 46,
-      "rank": 47,
+      "rank": 48,
       "first_cve_date": "2026-01-14T18:38:21.047Z",
       "last_cve_date": "2026-03-26T21:17:37.769Z",
       "years_active": 10,
@@ -2500,7 +2553,7 @@
       "name": "intel",
       "assigner_org_id": "6dda929c-bb53-4a77-a76d-48e79601a1ce",
       "count": 46,
-      "rank": 48,
+      "rank": 49,
       "first_cve_date": "2026-02-10T16:25:04.959Z",
       "last_cve_date": "2026-04-08T18:20:48.374Z",
       "years_active": 11,
@@ -2553,7 +2606,7 @@
       "name": "Tanium",
       "assigner_org_id": "3938794e-25f5-4123-a1ba-5cbd7f104512",
       "count": 45,
-      "rank": 49,
+      "rank": 50,
       "first_cve_date": "2026-01-26T17:36:33.504Z",
       "last_cve_date": "2026-02-19T23:10:33.951Z",
       "years_active": 2,
@@ -2599,59 +2652,6 @@
         [
           "CWE-863",
           3
-        ]
-      ]
-    },
-    {
-      "name": "AMD",
-      "assigner_org_id": "b58fc414-a1e4-4f92-9d70-1add41838648",
-      "count": 43,
-      "rank": 50,
-      "first_cve_date": "2026-01-16T15:46:08.641Z",
-      "last_cve_date": "2026-02-26T20:33:28.086Z",
-      "years_active": 7,
-      "first_cve_year": 2020,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 3,
-        "High": 17,
-        "Medium": 23
-      },
-      "top_cwe_types": {
-        "CWE-787": 4,
-        "CWE-367": 3,
-        "CWE-190": 3,
-        "CWE-427": 3,
-        "CWE-119": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-787",
-          4
-        ],
-        [
-          "CWE-367",
-          3
-        ],
-        [
-          "CWE-190",
-          3
-        ],
-        [
-          "CWE-427",
-          3
-        ],
-        [
-          "CWE-119",
-          2
         ]
       ]
     },
@@ -13147,10 +13147,41 @@
       ]
     },
     {
+      "name": "SNOWFLAKE",
+      "assigner_org_id": "412d305a-227d-44f9-a262-a31ba44f2aea",
+      "count": 1,
+      "rank": 290,
+      "first_cve_date": "2026-04-16T18:43:21.181Z",
+      "last_cve_date": "2026-04-16T18:43:21.181Z",
+      "years_active": 1,
+      "first_cve_year": 2026,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-1286": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-1286",
+          1
+        ]
+      ]
+    },
+    {
       "name": "OMRON",
       "assigner_org_id": "bba440f9-ef23-4224-aa62-7ac0935d18d1",
       "count": 1,
-      "rank": 290,
+      "rank": 291,
       "first_cve_date": "2026-04-15T04:11:29.716Z",
       "last_cve_date": "2026-04-15T04:11:29.716Z",
       "years_active": 2,
@@ -13182,10 +13213,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 3861,
+      "count": 3866,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-04-16T18:16:02.485Z",
+      "last_cve_date": "2026-04-16T20:57:45.978Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -13195,16 +13226,16 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "High": 1577,
+        "High": 1582,
         "Low": 219,
-        "Medium": 1586,
-        "Critical": 479
+        "Medium": 1588,
+        "Critical": 477
       },
       "top_cwe_types": {
         "CWE-79": 442,
         "CWE-22": 273,
         "CWE-918": 211,
-        "CWE-89": 174,
+        "CWE-89": 177,
         "CWE-862": 164
       },
       "kev_count": 2,
@@ -13225,7 +13256,7 @@
         ],
         [
           "CWE-89",
-          174
+          177
         ],
         [
           "CWE-862",
@@ -15616,10 +15647,63 @@
       ]
     },
     {
+      "name": "AMD",
+      "assigner_org_id": "b58fc414-a1e4-4f92-9d70-1add41838648",
+      "count": 46,
+      "rank": 47,
+      "first_cve_date": "2026-01-16T15:46:08.641Z",
+      "last_cve_date": "2026-04-16T18:46:13.377Z",
+      "years_active": 7,
+      "first_cve_year": 2020,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 3,
+        "High": 18,
+        "Medium": 25
+      },
+      "top_cwe_types": {
+        "CWE-787": 4,
+        "CWE-367": 3,
+        "CWE-190": 3,
+        "CWE-427": 3,
+        "CWE-119": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-787",
+          4
+        ],
+        [
+          "CWE-367",
+          3
+        ],
+        [
+          "CWE-190",
+          3
+        ],
+        [
+          "CWE-427",
+          3
+        ],
+        [
+          "CWE-119",
+          2
+        ]
+      ]
+    },
+    {
       "name": "drupal",
       "assigner_org_id": "2c85b837-eb8b-40ed-9d74-228c62987387",
       "count": 46,
-      "rank": 47,
+      "rank": 48,
       "first_cve_date": "2026-01-14T18:38:21.047Z",
       "last_cve_date": "2026-03-26T21:17:37.769Z",
       "years_active": 10,
@@ -15671,7 +15755,7 @@
       "name": "intel",
       "assigner_org_id": "6dda929c-bb53-4a77-a76d-48e79601a1ce",
       "count": 46,
-      "rank": 48,
+      "rank": 49,
       "first_cve_date": "2026-02-10T16:25:04.959Z",
       "last_cve_date": "2026-04-08T18:20:48.374Z",
       "years_active": 11,
@@ -15724,7 +15808,7 @@
       "name": "Tanium",
       "assigner_org_id": "3938794e-25f5-4123-a1ba-5cbd7f104512",
       "count": 45,
-      "rank": 49,
+      "rank": 50,
       "first_cve_date": "2026-01-26T17:36:33.504Z",
       "last_cve_date": "2026-02-19T23:10:33.951Z",
       "years_active": 2,
@@ -15770,59 +15854,6 @@
         [
           "CWE-863",
           3
-        ]
-      ]
-    },
-    {
-      "name": "AMD",
-      "assigner_org_id": "b58fc414-a1e4-4f92-9d70-1add41838648",
-      "count": 43,
-      "rank": 50,
-      "first_cve_date": "2026-01-16T15:46:08.641Z",
-      "last_cve_date": "2026-02-26T20:33:28.086Z",
-      "years_active": 7,
-      "first_cve_year": 2020,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 3,
-        "High": 17,
-        "Medium": 23
-      },
-      "top_cwe_types": {
-        "CWE-787": 4,
-        "CWE-367": 3,
-        "CWE-190": 3,
-        "CWE-427": 3,
-        "CWE-119": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-787",
-          4
-        ],
-        [
-          "CWE-367",
-          3
-        ],
-        [
-          "CWE-190",
-          3
-        ],
-        [
-          "CWE-427",
-          3
-        ],
-        [
-          "CWE-119",
-          2
         ]
       ]
     },
@@ -26318,10 +26349,41 @@
       ]
     },
     {
+      "name": "SNOWFLAKE",
+      "assigner_org_id": "412d305a-227d-44f9-a262-a31ba44f2aea",
+      "count": 1,
+      "rank": 290,
+      "first_cve_date": "2026-04-16T18:43:21.181Z",
+      "last_cve_date": "2026-04-16T18:43:21.181Z",
+      "years_active": 1,
+      "first_cve_year": 2026,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 1
+      },
+      "top_cwe_types": {
+        "CWE-1286": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-1286",
+          1
+        ]
+      ]
+    },
+    {
       "name": "OMRON",
       "assigner_org_id": "bba440f9-ef23-4224-aa62-7ac0935d18d1",
       "count": 1,
-      "rank": 290,
+      "rank": 291,
       "first_cve_date": "2026-04-15T04:11:29.716Z",
       "last_cve_date": "2026-04-15T04:11:29.716Z",
       "years_active": 2,
