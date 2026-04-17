@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-17T18:26:26.136344",
+  "generated_at": "2026-04-17T21:23:38.789640",
   "year": 2026,
-  "total_unique_cpes": 8262,
-  "total_cpe_entries": 48449,
-  "total_cves_with_cpes": 10618,
-  "total_unique_vendors": 1988,
-  "total_unique_products": 4372,
+  "total_unique_cpes": 8303,
+  "total_cpe_entries": 49144,
+  "total_cves_with_cpes": 10713,
+  "total_unique_vendors": 2000,
+  "total_unique_products": 4389,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -51,7 +51,7 @@
     },
     {
       "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
-      "count": 282,
+      "count": 285,
       "vendor": "openclaw",
       "product": "openclaw",
       "type": "Application"
@@ -72,7 +72,7 @@
     },
     {
       "cpe": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
-      "count": 207,
+      "count": 226,
       "vendor": "google",
       "product": "chrome",
       "type": "Application"
@@ -114,9 +114,16 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2022_23h2:*:*:*:*:*:*:*:*",
-      "count": 142,
+      "count": 144,
       "vendor": "microsoft",
       "product": "windows_server_2022_23h2",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*",
+      "count": 142,
+      "vendor": "microsoft",
+      "product": "windows_server_2022",
       "type": "Operating System"
     },
     {
@@ -124,13 +131,6 @@
       "count": 140,
       "vendor": "linux",
       "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*",
-      "count": 140,
-      "vendor": "microsoft",
-      "product": "windows_server_2022",
       "type": "Operating System"
     },
     {
@@ -149,21 +149,21 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
-      "count": 129,
+      "count": 131,
       "vendor": "microsoft",
       "product": "windows_server_2019",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x64:*",
-      "count": 127,
+      "count": 129,
       "vendor": "microsoft",
       "product": "windows_10_1809",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x86:*",
-      "count": 120,
+      "count": 122,
       "vendor": "microsoft",
       "product": "windows_10_1809",
       "type": "Operating System"
@@ -174,6 +174,13 @@
       "vendor": "mozilla",
       "product": "firefox",
       "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
+      "count": 111,
+      "vendor": "microsoft",
+      "product": "windows_server_2025",
+      "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:a:mattermost:mattermost_server:*:*:*:*:*:*:*:*",
@@ -190,22 +197,15 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2025:*:*:*:*:*:*:*:*",
-      "count": 109,
-      "vendor": "microsoft",
-      "product": "windows_server_2025",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
-      "count": 103,
+      "count": 105,
       "vendor": "microsoft",
       "product": "windows_server_2016",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1607:*:*:*:*:*:*:x64:*",
-      "count": 101,
+      "count": 103,
       "vendor": "microsoft",
       "product": "windows_10_1607",
       "type": "Operating System"
@@ -237,19 +237,19 @@
     },
     {
       "vendor": "microsoft",
-      "count": 3164
+      "count": 3214
     },
     {
       "vendor": "samsung",
       "count": 2482
     },
     {
-      "vendor": "parseplatform",
-      "count": 1700
+      "vendor": "juniper",
+      "count": 2136
     },
     {
-      "vendor": "juniper",
-      "count": 1601
+      "vendor": "parseplatform",
+      "count": 1700
     },
     {
       "vendor": "qnap",
@@ -272,12 +272,12 @@
       "count": 699
     },
     {
-      "vendor": "dlink",
-      "count": 590
+      "vendor": "google",
+      "count": 603
     },
     {
-      "vendor": "google",
-      "count": 584
+      "vendor": "dlink",
+      "count": 590
     }
   ],
   "top_products": [
@@ -294,6 +294,10 @@
       "count": 2452
     },
     {
+      "product": "junos",
+      "count": 1535
+    },
+    {
       "product": "commerce",
       "count": 1311
     },
@@ -304,10 +308,6 @@
     {
       "product": "parse-server",
       "count": 1159
-    },
-    {
-      "product": "junos",
-      "count": 1102
     },
     {
       "product": "magento",
@@ -322,6 +322,10 @@
       "count": 699
     },
     {
+      "product": "junos_os_evolved",
+      "count": 595
+    },
+    {
       "product": "quts_hero",
       "count": 566
     },
@@ -334,10 +338,6 @@
       "count": 508
     },
     {
-      "product": "junos_os_evolved",
-      "count": 493
-    },
-    {
       "product": "gitlab",
       "count": 394
     }
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 25873,
-      "percentage": 53.4
+      "count": 25983,
+      "percentage": 52.9
     },
     {
       "type": "Operating System",
-      "count": 22575,
-      "percentage": 46.6
+      "count": 23160,
+      "percentage": 47.1
     },
     {
       "type": "Hardware",
