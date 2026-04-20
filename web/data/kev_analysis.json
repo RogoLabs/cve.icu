@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-04-20T18:29:55.118823Z",
-  "catalog_version": "2026.04.16",
-  "total_kev_cves": 1569,
+  "generated_at": "2026-04-20T21:25:52.312181Z",
+  "catalog_version": "2026.04.20",
+  "total_kev_cves": 1577,
   "statistics": {
-    "added_last_30_days": 18,
-    "added_last_90_days": 81,
+    "added_last_30_days": 26,
+    "added_last_90_days": 89,
     "ransomware_associated": 313
   },
   "by_year_added": {
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 85
+    "2026": 93
   },
   "by_year_cve": {
     "2002": 1,
@@ -36,10 +36,10 @@
     "2020": 146,
     "2021": 213,
     "2022": 130,
-    "2023": 162,
-    "2024": 158,
-    "2025": 176,
-    "2026": 38
+    "2023": 163,
+    "2024": 159,
+    "2025": 179,
+    "2026": 41
   },
   "by_year_published": {
     "2002": 1,
@@ -62,10 +62,10 @@
     "2020": 146,
     "2021": 213,
     "2022": 129,
-    "2023": 162,
-    "2024": 156,
-    "2025": 187,
-    "2026": 42
+    "2023": 163,
+    "2024": 157,
+    "2025": 190,
+    "2026": 45
   },
   "timeline": {
     "2021-11": 291,
@@ -121,7 +121,7 @@
     "2026-01": 17,
     "2026-02": 28,
     "2026-03": 26,
-    "2026-04": 14
+    "2026-04": 22
   },
   "top_vendors": [
     [
@@ -134,7 +134,7 @@
     ],
     [
       "Cisco",
-      86
+      89
     ],
     [
       "Adobe",
@@ -178,7 +178,7 @@
     ],
     [
       "Synacor",
-      17
+      18
     ],
     [
       "Android",
@@ -243,12 +243,12 @@
       17
     ],
     [
-      "Adobe - ColdFusion",
+      "Synacor - Zimbra Collaboration Suite (ZCS)",
       15
     ],
     [
-      "Synacor - Zimbra Collaboration Suite (ZCS)",
-      14
+      "Adobe - ColdFusion",
+      15
     ],
     [
       "Cisco - IOS and IOS XE Software",
@@ -310,7 +310,7 @@
     ],
     [
       "CWE-22",
-      69
+      70
     ],
     [
       "CWE-502",
@@ -326,7 +326,11 @@
     ],
     [
       "CWE-287",
-      34
+      36
+    ],
+    [
+      "CWE-79",
+      32
     ],
     [
       "CWE-306",
@@ -334,10 +338,6 @@
     ],
     [
       "CWE-284",
-      31
-    ],
-    [
-      "CWE-79",
       31
     ],
     [
@@ -358,11 +358,11 @@
     ],
     [
       "CWE-200",
-      23
+      24
     ],
     [
       "CWE-434",
-      18
+      19
     ],
     [
       "CWE-918",
@@ -370,6 +370,70 @@
     ]
   ],
   "recent_additions": [
+    {
+      "cve_id": "CVE-2026-20122",
+      "vendor": "Cisco",
+      "product": "Catalyst SD-WAN Manger",
+      "date_added": "2026-04-20",
+      "due_date": "2026-04-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20133",
+      "vendor": "Cisco",
+      "product": "Catalyst SD-WAN Manager",
+      "date_added": "2026-04-20",
+      "due_date": "2026-04-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-2749",
+      "vendor": "Kentico",
+      "product": "Kentico Xperience",
+      "date_added": "2026-04-20",
+      "due_date": "2026-05-04",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2023-27351",
+      "vendor": "PaperCut",
+      "product": "NG/MF",
+      "date_added": "2026-04-20",
+      "due_date": "2026-05-04",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-48700",
+      "vendor": "Synacor",
+      "product": "Zimbra Collaboration Suite (ZCS)",
+      "date_added": "2026-04-20",
+      "due_date": "2026-04-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20128",
+      "vendor": "Cisco",
+      "product": "Catalyst SD-WAN Manager",
+      "date_added": "2026-04-20",
+      "due_date": "2026-04-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-32975",
+      "vendor": "Quest",
+      "product": "KACE Systems Management Appliance (SMA)",
+      "date_added": "2026-04-20",
+      "due_date": "2026-05-04",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2024-27199",
+      "vendor": "JetBrains",
+      "product": "TeamCity",
+      "date_added": "2026-04-20",
+      "due_date": "2026-05-04",
+      "ransomware": "Unknown"
+    },
     {
       "cve_id": "CVE-2026-34197",
       "vendor": "Apache",
@@ -464,54 +528,6 @@
       "product": "FortiClient EMS",
       "date_added": "2026-04-06",
       "due_date": "2026-04-09",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-3502",
-      "vendor": "TrueConf",
-      "product": "Client",
-      "date_added": "2026-04-02",
-      "due_date": "2026-04-16",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-5281",
-      "vendor": "Google",
-      "product": "Dawn",
-      "date_added": "2026-04-01",
-      "due_date": "2026-04-15",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-3055",
-      "vendor": "Citrix",
-      "product": "NetScaler",
-      "date_added": "2026-03-30",
-      "due_date": "2026-04-02",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2025-53521",
-      "vendor": "F5",
-      "product": "BIG-IP",
-      "date_added": "2026-03-27",
-      "due_date": "2026-03-30",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-33634",
-      "vendor": "Aquasecurity",
-      "product": "Trivy",
-      "date_added": "2026-03-26",
-      "due_date": "2026-04-09",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-33017",
-      "vendor": "Langflow",
-      "product": "Langflow",
-      "date_added": "2026-03-25",
-      "due_date": "2026-04-08",
       "ransomware": "Unknown"
     }
   ]
