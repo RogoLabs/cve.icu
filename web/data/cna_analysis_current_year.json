@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-29T09:50:09.974570",
+  "generated_at": "2026-04-29T12:41:05.687837",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 298,
@@ -173,10 +173,10 @@
     {
       "name": "Patchstack",
       "assigner_org_id": "21595511-bba5-4825-b968-b78d1f9984a3",
-      "count": 1845,
+      "count": 1853,
       "rank": 4,
       "first_cve_date": "2026-01-05T10:18:16.966Z",
-      "last_cve_date": "2026-04-29T07:51:40.734Z",
+      "last_cve_date": "2026-04-29T10:40:45.970Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -186,17 +186,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 805,
-        "High": 866,
-        "Critical": 153,
+        "Medium": 821,
+        "High": 872,
+        "Critical": 155,
         "Low": 4
       },
       "top_cwe_types": {
-        "CWE-862": 554,
-        "CWE-79": 389,
+        "CWE-862": 556,
+        "CWE-79": 391,
         "CWE-98": 372,
         "CWE-502": 110,
-        "CWE-89": 88
+        "CWE-89": 89
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -204,11 +204,11 @@
       "top_cwes": [
         [
           "CWE-862",
-          554
+          556
         ],
         [
           "CWE-79",
-          389
+          391
         ],
         [
           "CWE-98",
@@ -220,17 +220,17 @@
         ],
         [
           "CWE-89",
-          88
+          89
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1314,
+      "count": 1315,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-04-29T08:27:43.231Z",
+      "last_cve_date": "2026-04-29T11:17:35.637Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -240,13 +240,13 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 1001,
+        "Medium": 1002,
         "Critical": 55,
         "High": 247,
         "Low": 11
       },
       "top_cwe_types": {
-        "CWE-79": 525,
+        "CWE-79": 526,
         "CWE-862": 270,
         "CWE-352": 102,
         "CWE-89": 72,
@@ -258,7 +258,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          525
+          526
         ],
         [
           "CWE-862",
@@ -858,7 +858,7 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Critical": 19,
+        "Critical": 20,
         "High": 70,
         "Medium": 55,
         "Low": 6
@@ -1381,10 +1381,10 @@
     {
       "name": "CERT-PL",
       "assigner_org_id": "4bb8329e-dd38-46c1-aafb-9bf32bcb93c6",
-      "count": 78,
+      "count": 80,
       "rank": 27,
       "first_cve_date": "2026-01-07T13:00:46.715Z",
-      "last_cve_date": "2026-04-28T13:13:44.914Z",
+      "last_cve_date": "2026-04-29T11:44:39.807Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -1396,13 +1396,13 @@
       "severity_distribution": {
         "Medium": 44,
         "Critical": 10,
-        "High": 21,
+        "High": 23,
         "Low": 3
       },
       "top_cwe_types": {
         "CWE-79": 14,
         "CWE-89": 6,
-        "CWE-22": 4,
+        "CWE-22": 5,
         "CWE-306": 4,
         "CWE-798": 4
       },
@@ -1420,7 +1420,7 @@
         ],
         [
           "CWE-22",
-          4
+          5
         ],
         [
           "CWE-306",
@@ -2393,10 +2393,64 @@
       ]
     },
     {
+      "name": "vmware",
+      "assigner_org_id": "dcf2e128-44bd-42ed-91e8-88f912c1401d",
+      "count": 52,
+      "rank": 46,
+      "first_cve_date": "2026-01-14T05:10:58.485Z",
+      "last_cve_date": "2026-04-29T11:35:21.947Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 22,
+        "High": 21,
+        "Critical": 3,
+        "Low": 6
+      },
+      "top_cwe_types": {
+        "CWE-208": 3,
+        "CWE-400": 3,
+        "CWE-89": 3,
+        "CWE-284": 3,
+        "CWE-295": 3
+      },
+      "kev_count": 1,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-208",
+          3
+        ],
+        [
+          "CWE-400",
+          3
+        ],
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-284",
+          3
+        ],
+        [
+          "CWE-295",
+          3
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 52,
-      "rank": 46,
+      "rank": 47,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-04-09T21:38:52.747Z",
       "years_active": 10,
@@ -2441,60 +2495,6 @@
         ],
         [
           "CWE-755",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "vmware",
-      "assigner_org_id": "dcf2e128-44bd-42ed-91e8-88f912c1401d",
-      "count": 49,
-      "rank": 47,
-      "first_cve_date": "2026-01-14T05:10:58.485Z",
-      "last_cve_date": "2026-04-28T14:54:07.360Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 21,
-        "High": 21,
-        "Critical": 3,
-        "Low": 4
-      },
-      "top_cwe_types": {
-        "CWE-208": 3,
-        "CWE-89": 3,
-        "CWE-284": 3,
-        "CWE-295": 3,
-        "CWE-94": 2
-      },
-      "kev_count": 1,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-208",
-          3
-        ],
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-284",
-          3
-        ],
-        [
-          "CWE-295",
-          3
-        ],
-        [
-          "CWE-94",
           2
         ]
       ]
@@ -13752,10 +13752,10 @@
     {
       "name": "Patchstack",
       "assigner_org_id": "21595511-bba5-4825-b968-b78d1f9984a3",
-      "count": 1845,
+      "count": 1853,
       "rank": 4,
       "first_cve_date": "2026-01-05T10:18:16.966Z",
-      "last_cve_date": "2026-04-29T07:51:40.734Z",
+      "last_cve_date": "2026-04-29T10:40:45.970Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -13765,17 +13765,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 805,
-        "High": 866,
-        "Critical": 153,
+        "Medium": 821,
+        "High": 872,
+        "Critical": 155,
         "Low": 4
       },
       "top_cwe_types": {
-        "CWE-862": 554,
-        "CWE-79": 389,
+        "CWE-862": 556,
+        "CWE-79": 391,
         "CWE-98": 372,
         "CWE-502": 110,
-        "CWE-89": 88
+        "CWE-89": 89
       },
       "kev_count": 0,
       "epss_high_count": 0,
@@ -13783,11 +13783,11 @@
       "top_cwes": [
         [
           "CWE-862",
-          554
+          556
         ],
         [
           "CWE-79",
-          389
+          391
         ],
         [
           "CWE-98",
@@ -13799,17 +13799,17 @@
         ],
         [
           "CWE-89",
-          88
+          89
         ]
       ]
     },
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1314,
+      "count": 1315,
       "rank": 5,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-04-29T08:27:43.231Z",
+      "last_cve_date": "2026-04-29T11:17:35.637Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -13819,13 +13819,13 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 1001,
+        "Medium": 1002,
         "Critical": 55,
         "High": 247,
         "Low": 11
       },
       "top_cwe_types": {
-        "CWE-79": 525,
+        "CWE-79": 526,
         "CWE-862": 270,
         "CWE-352": 102,
         "CWE-89": 72,
@@ -13837,7 +13837,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          525
+          526
         ],
         [
           "CWE-862",
@@ -14437,7 +14437,7 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Critical": 19,
+        "Critical": 20,
         "High": 70,
         "Medium": 55,
         "Low": 6
@@ -14960,10 +14960,10 @@
     {
       "name": "CERT-PL",
       "assigner_org_id": "4bb8329e-dd38-46c1-aafb-9bf32bcb93c6",
-      "count": 78,
+      "count": 80,
       "rank": 27,
       "first_cve_date": "2026-01-07T13:00:46.715Z",
-      "last_cve_date": "2026-04-28T13:13:44.914Z",
+      "last_cve_date": "2026-04-29T11:44:39.807Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -14975,13 +14975,13 @@
       "severity_distribution": {
         "Medium": 44,
         "Critical": 10,
-        "High": 21,
+        "High": 23,
         "Low": 3
       },
       "top_cwe_types": {
         "CWE-79": 14,
         "CWE-89": 6,
-        "CWE-22": 4,
+        "CWE-22": 5,
         "CWE-306": 4,
         "CWE-798": 4
       },
@@ -14999,7 +14999,7 @@
         ],
         [
           "CWE-22",
-          4
+          5
         ],
         [
           "CWE-306",
@@ -15972,10 +15972,64 @@
       ]
     },
     {
+      "name": "vmware",
+      "assigner_org_id": "dcf2e128-44bd-42ed-91e8-88f912c1401d",
+      "count": 52,
+      "rank": 46,
+      "first_cve_date": "2026-01-14T05:10:58.485Z",
+      "last_cve_date": "2026-04-29T11:35:21.947Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 22,
+        "High": 21,
+        "Critical": 3,
+        "Low": 6
+      },
+      "top_cwe_types": {
+        "CWE-208": 3,
+        "CWE-400": 3,
+        "CWE-89": 3,
+        "CWE-284": 3,
+        "CWE-295": 3
+      },
+      "kev_count": 1,
+      "epss_high_count": 0,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-208",
+          3
+        ],
+        [
+          "CWE-400",
+          3
+        ],
+        [
+          "CWE-89",
+          3
+        ],
+        [
+          "CWE-284",
+          3
+        ],
+        [
+          "CWE-295",
+          3
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 52,
-      "rank": 46,
+      "rank": 47,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-04-09T21:38:52.747Z",
       "years_active": 10,
@@ -16020,60 +16074,6 @@
         ],
         [
           "CWE-755",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "vmware",
-      "assigner_org_id": "dcf2e128-44bd-42ed-91e8-88f912c1401d",
-      "count": 49,
-      "rank": 47,
-      "first_cve_date": "2026-01-14T05:10:58.485Z",
-      "last_cve_date": "2026-04-28T14:54:07.360Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 21,
-        "High": 21,
-        "Critical": 3,
-        "Low": 4
-      },
-      "top_cwe_types": {
-        "CWE-208": 3,
-        "CWE-89": 3,
-        "CWE-284": 3,
-        "CWE-295": 3,
-        "CWE-94": 2
-      },
-      "kev_count": 1,
-      "epss_high_count": 0,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-208",
-          3
-        ],
-        [
-          "CWE-89",
-          3
-        ],
-        [
-          "CWE-284",
-          3
-        ],
-        [
-          "CWE-295",
-          3
-        ],
-        [
-          "CWE-94",
           2
         ]
       ]
