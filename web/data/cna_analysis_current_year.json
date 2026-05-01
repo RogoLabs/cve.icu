@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-01T07:03:08.645783",
+  "generated_at": "2026-05-01T09:41:36.448267",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 301,
@@ -227,10 +227,10 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 1351,
+      "count": 1354,
       "rank": 5,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-05-01T06:42:58.858Z",
+      "last_cve_date": "2026-05-01T08:36:39.932Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -240,13 +240,13 @@
         "Program"
       ],
       "severity_distribution": {
-        "Medium": 449,
-        "High": 508,
+        "Medium": 450,
+        "High": 510,
         "Critical": 318,
         "Low": 68
       },
       "top_cwe_types": {
-        "CWE-79": 151,
+        "CWE-79": 152,
         "CWE-89": 148,
         "CWE-121": 92,
         "CWE-94": 65,
@@ -258,7 +258,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          151
+          152
         ],
         [
           "CWE-89",
@@ -852,10 +852,10 @@
     {
       "name": "apache",
       "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 153,
+      "count": 155,
       "rank": 17,
       "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-04-30T09:09:45.529Z",
+      "last_cve_date": "2026-05-01T08:54:41.427Z",
       "years_active": 11,
       "first_cve_year": 2016,
       "last_cve_year": 2026,
@@ -866,7 +866,7 @@
       ],
       "severity_distribution": {
         "Critical": 20,
-        "High": 70,
+        "High": 72,
         "Medium": 57,
         "Low": 6
       },
@@ -3090,10 +3090,64 @@
       ]
     },
     {
+      "name": "NCSC.ch",
+      "assigner_org_id": "455daabc-a392-441d-aa46-37d35189897c",
+      "count": 36,
+      "rank": 59,
+      "first_cve_date": "2026-01-22T09:24:14.634Z",
+      "last_cve_date": "2026-05-01T07:21:18.781Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Low": 1,
+        "High": 17,
+        "Medium": 15,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-20": 11,
+        "CWE-79": 3,
+        "CWE-22": 3,
+        "CWE-798": 2,
+        "CWE-347": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-20",
+          11
+        ],
+        [
+          "CWE-79",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ],
+        [
+          "CWE-798",
+          2
+        ],
+        [
+          "CWE-347",
+          2
+        ]
+      ]
+    },
+    {
       "name": "Go",
       "assigner_org_id": "1bb62c36-49e3-4200-9d77-64a1400537cc",
       "count": 35,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-28T19:30:30.704Z",
       "last_cve_date": "2026-04-21T19:21:28.556Z",
       "years_active": 7,
@@ -3147,7 +3201,7 @@
       "name": "Acronis",
       "assigner_org_id": "73dc0fef-1c66-4a72-9d2d-0a0f4012c175",
       "count": 35,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-01-27T16:43:42.575Z",
       "last_cve_date": "2026-04-29T13:43:36.083Z",
       "years_active": 6,
@@ -3193,60 +3247,6 @@
         [
           "CWE-276",
           3
-        ]
-      ]
-    },
-    {
-      "name": "NCSC.ch",
-      "assigner_org_id": "455daabc-a392-441d-aa46-37d35189897c",
-      "count": 35,
-      "rank": 61,
-      "first_cve_date": "2026-01-22T09:24:14.634Z",
-      "last_cve_date": "2026-04-23T09:45:06.146Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Low": 1,
-        "High": 16,
-        "Medium": 15,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-20": 11,
-        "CWE-79": 3,
-        "CWE-22": 3,
-        "CWE-798": 2,
-        "CWE-347": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-20",
-          11
-        ],
-        [
-          "CWE-79",
-          3
-        ],
-        [
-          "CWE-22",
-          3
-        ],
-        [
-          "CWE-798",
-          2
-        ],
-        [
-          "CWE-347",
-          2
         ]
       ]
     },
@@ -13941,10 +13941,10 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 1351,
+      "count": 1354,
       "rank": 5,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-05-01T06:42:58.858Z",
+      "last_cve_date": "2026-05-01T08:36:39.932Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -13954,13 +13954,13 @@
         "Program"
       ],
       "severity_distribution": {
-        "Medium": 449,
-        "High": 508,
+        "Medium": 450,
+        "High": 510,
         "Critical": 318,
         "Low": 68
       },
       "top_cwe_types": {
-        "CWE-79": 151,
+        "CWE-79": 152,
         "CWE-89": 148,
         "CWE-121": 92,
         "CWE-94": 65,
@@ -13972,7 +13972,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          151
+          152
         ],
         [
           "CWE-89",
@@ -14566,10 +14566,10 @@
     {
       "name": "apache",
       "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 153,
+      "count": 155,
       "rank": 17,
       "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-04-30T09:09:45.529Z",
+      "last_cve_date": "2026-05-01T08:54:41.427Z",
       "years_active": 11,
       "first_cve_year": 2016,
       "last_cve_year": 2026,
@@ -14580,7 +14580,7 @@
       ],
       "severity_distribution": {
         "Critical": 20,
-        "High": 70,
+        "High": 72,
         "Medium": 57,
         "Low": 6
       },
@@ -16804,10 +16804,64 @@
       ]
     },
     {
+      "name": "NCSC.ch",
+      "assigner_org_id": "455daabc-a392-441d-aa46-37d35189897c",
+      "count": 36,
+      "rank": 59,
+      "first_cve_date": "2026-01-22T09:24:14.634Z",
+      "last_cve_date": "2026-05-01T07:21:18.781Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Low": 1,
+        "High": 17,
+        "Medium": 15,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-20": 11,
+        "CWE-79": 3,
+        "CWE-22": 3,
+        "CWE-798": 2,
+        "CWE-347": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-20",
+          11
+        ],
+        [
+          "CWE-79",
+          3
+        ],
+        [
+          "CWE-22",
+          3
+        ],
+        [
+          "CWE-798",
+          2
+        ],
+        [
+          "CWE-347",
+          2
+        ]
+      ]
+    },
+    {
       "name": "Go",
       "assigner_org_id": "1bb62c36-49e3-4200-9d77-64a1400537cc",
       "count": 35,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-28T19:30:30.704Z",
       "last_cve_date": "2026-04-21T19:21:28.556Z",
       "years_active": 7,
@@ -16861,7 +16915,7 @@
       "name": "Acronis",
       "assigner_org_id": "73dc0fef-1c66-4a72-9d2d-0a0f4012c175",
       "count": 35,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-01-27T16:43:42.575Z",
       "last_cve_date": "2026-04-29T13:43:36.083Z",
       "years_active": 6,
@@ -16907,60 +16961,6 @@
         [
           "CWE-276",
           3
-        ]
-      ]
-    },
-    {
-      "name": "NCSC.ch",
-      "assigner_org_id": "455daabc-a392-441d-aa46-37d35189897c",
-      "count": 35,
-      "rank": 61,
-      "first_cve_date": "2026-01-22T09:24:14.634Z",
-      "last_cve_date": "2026-04-23T09:45:06.146Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Low": 1,
-        "High": 16,
-        "Medium": 15,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-20": 11,
-        "CWE-79": 3,
-        "CWE-22": 3,
-        "CWE-798": 2,
-        "CWE-347": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-20",
-          11
-        ],
-        [
-          "CWE-79",
-          3
-        ],
-        [
-          "CWE-22",
-          3
-        ],
-        [
-          "CWE-798",
-          2
-        ],
-        [
-          "CWE-347",
-          2
         ]
       ]
     },
