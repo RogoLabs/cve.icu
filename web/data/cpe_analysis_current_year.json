@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-05-04T18:42:08.570477",
+  "generated_at": "2026-05-04T21:33:35.724492",
   "year": 2026,
-  "total_unique_cpes": 9032,
-  "total_cpe_entries": 60004,
-  "total_cves_with_cpes": 13181,
-  "total_unique_vendors": 2216,
-  "total_unique_products": 4809,
+  "total_unique_cpes": 9310,
+  "total_cpe_entries": 61730,
+  "total_cves_with_cpes": 13245,
+  "total_unique_vendors": 2222,
+  "total_unique_products": 4836,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 2776,
+      "count": 2783,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -65,14 +65,14 @@
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc1:*:*:*:*:*:*",
-      "count": 266,
+      "count": 267,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc2:*:*:*:*:*:*",
-      "count": 266,
+      "count": 267,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -85,6 +85,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc3:*:*:*:*:*:*",
+      "count": 259,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2022_23h2:*:*:*:*:*:*:*:*",
       "count": 258,
       "vendor": "microsoft",
@@ -92,15 +99,8 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc3:*:*:*:*:*:*",
-      "count": 258,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc4:*:*:*:*:*:*",
-      "count": 257,
+      "count": 258,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -113,6 +113,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc5:*:*:*:*:*:*",
+      "count": 249,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc6:*:*:*:*:*:*",
       "count": 248,
       "vendor": "linux",
@@ -120,15 +127,8 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc5:*:*:*:*:*:*",
-      "count": 248,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc6:*:*:*:*:*:*",
-      "count": 245,
+      "count": 246,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -221,7 +221,7 @@
   "top_vendors": [
     {
       "vendor": "linux",
-      "count": 7093
+      "count": 7106
     },
     {
       "vendor": "qualcomm",
@@ -248,6 +248,10 @@
       "count": 2225
     },
     {
+      "vendor": "cisco",
+      "count": 2091
+    },
+    {
       "vendor": "parseplatform",
       "count": 1700
     },
@@ -269,21 +273,17 @@
     },
     {
       "vendor": "apple",
-      "count": 775
+      "count": 776
     },
     {
       "vendor": "google",
       "count": 648
-    },
-    {
-      "vendor": "dlink",
-      "count": 610
     }
   ],
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 7093
+      "count": 7106
     },
     {
       "product": "coolify",
@@ -308,6 +308,10 @@
     {
       "product": "parse-server",
       "count": 1159
+    },
+    {
+      "product": "adaptive_security_appliance_software",
+      "count": 1141
     },
     {
       "product": "magento",
@@ -336,22 +340,18 @@
     {
       "product": "quts_hero",
       "count": 566
-    },
-    {
-      "product": "parse_dashboard",
-      "count": 541
     }
   ],
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 30036,
-      "percentage": 50.1
+      "count": 31164,
+      "percentage": 50.5
     },
     {
       "type": "Application",
-      "count": 29967,
-      "percentage": 49.9
+      "count": 30565,
+      "percentage": 49.5
     },
     {
       "type": "Hardware",
@@ -409,37 +409,37 @@
       "cpe_count": 239
     },
     {
+      "cve": "CVE-2026-20022",
+      "cpe_count": 239
+    },
+    {
       "cve": "CVE-2026-21385",
       "cpe_count": 237
+    },
+    {
+      "cve": "CVE-2026-20070",
+      "cpe_count": 236
+    },
+    {
+      "cve": "CVE-2026-20023",
+      "cpe_count": 234
+    },
+    {
+      "cve": "CVE-2026-20073",
+      "cpe_count": 232
     },
     {
       "cve": "CVE-2025-47330",
       "cpe_count": 223
     },
     {
-      "cve": "CVE-2025-47383",
-      "cpe_count": 206
+      "cve": "CVE-2026-20100",
+      "cpe_count": 222
     },
     {
-      "cve": "CVE-2025-47348",
-      "cpe_count": 204
-    },
-    {
-      "cve": "CVE-2025-47373",
-      "cpe_count": 188
-    },
-    {
-      "cve": "CVE-2025-47339",
-      "cpe_count": 185
-    },
-    {
-      "cve": "CVE-2026-21282",
-      "cpe_count": 183
-    },
-    {
-      "cve": "CVE-2026-21284",
-      "cpe_count": 183
+      "cve": "CVE-2026-20020",
+      "cpe_count": 221
     }
   ],
-  "average_cpes_per_cve": 4.6
+  "average_cpes_per_cve": 4.7
 }
