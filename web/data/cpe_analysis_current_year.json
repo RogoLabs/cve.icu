@@ -1,15 +1,22 @@
 {
-  "generated_at": "2026-05-11T18:46:43.274748",
+  "generated_at": "2026-05-11T21:37:52.058367",
   "year": 2026,
-  "total_unique_cpes": 9944,
-  "total_cpe_entries": 66399,
-  "total_cves_with_cpes": 14115,
-  "total_unique_vendors": 2283,
-  "total_unique_products": 5109,
+  "total_unique_cpes": 10026,
+  "total_cpe_entries": 66905,
+  "total_cves_with_cpes": 14238,
+  "total_unique_vendors": 2292,
+  "total_unique_products": 5172,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 3800,
+      "count": 3951,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc1:*:*:*:*:*:*",
+      "count": 449,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -22,36 +29,29 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc1:*:*:*:*:*:*",
-      "count": 427,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc2:*:*:*:*:*:*",
-      "count": 424,
+      "count": 444,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc3:*:*:*:*:*:*",
-      "count": 416,
+      "count": 436,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc4:*:*:*:*:*:*",
-      "count": 416,
+      "count": 436,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc5:*:*:*:*:*:*",
-      "count": 399,
+      "count": 419,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -65,7 +65,7 @@
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc6:*:*:*:*:*:*",
-      "count": 352,
+      "count": 372,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -106,15 +106,15 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc5:*:*:*:*:*:*",
-      "count": 265,
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc7:*:*:*:*:*:*",
+      "count": 273,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc7:*:*:*:*:*:*",
-      "count": 262,
+      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc5:*:*:*:*:*:*",
+      "count": 265,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -221,7 +221,7 @@
   "top_vendors": [
     {
       "vendor": "linux",
-      "count": 9213
+      "count": 9514
     },
     {
       "vendor": "qualcomm",
@@ -268,12 +268,12 @@
       "count": 862
     },
     {
-      "vendor": "rustfs",
-      "count": 792
+      "vendor": "google",
+      "count": 805
     },
     {
-      "vendor": "google",
-      "count": 781
+      "vendor": "rustfs",
+      "count": 792
     },
     {
       "vendor": "apple",
@@ -283,7 +283,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 9213
+      "count": 9514
     },
     {
       "product": "coolify",
@@ -291,7 +291,7 @@
     },
     {
       "product": "android",
-      "count": 2534
+      "count": 2558
     },
     {
       "product": "junos",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 34966,
-      "percentage": 52.7
+      "count": 35343,
+      "percentage": 52.8
     },
     {
       "type": "Application",
-      "count": 31432,
-      "percentage": 47.3
+      "count": 31561,
+      "percentage": 47.2
     },
     {
       "type": "Hardware",
