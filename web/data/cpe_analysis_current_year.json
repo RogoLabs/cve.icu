@@ -1,25 +1,39 @@
 {
-  "generated_at": "2026-05-13T18:47:00.566143",
+  "generated_at": "2026-05-13T21:40:11.621253",
   "year": 2026,
-  "total_unique_cpes": 10132,
-  "total_cpe_entries": 68058,
-  "total_cves_with_cpes": 14516,
-  "total_unique_vendors": 2323,
-  "total_unique_products": 5227,
+  "total_unique_cpes": 10185,
+  "total_cpe_entries": 69020,
+  "total_cves_with_cpes": 14674,
+  "total_unique_vendors": 2333,
+  "total_unique_products": 5246,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 4317,
+      "count": 4369,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc1:*:*:*:*:*:*",
-      "count": 477,
+      "count": 479,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
+      "count": 465,
+      "vendor": "apple",
+      "product": "macos",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
+      "count": 464,
+      "vendor": "openclaw",
+      "product": "openclaw",
+      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc2:*:*:*:*:*:*",
@@ -43,13 +57,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
-      "count": 448,
-      "vendor": "openclaw",
-      "product": "openclaw",
-      "type": "Application"
-    },
-    {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc5:*:*:*:*:*:*",
       "count": 432,
       "vendor": "linux",
@@ -62,13 +69,6 @@
       "vendor": "google",
       "product": "chrome",
       "type": "Application"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
-      "count": 390,
-      "vendor": "apple",
-      "product": "macos",
-      "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:7.0:rc6:*:*:*:*:*:*",
@@ -141,6 +141,20 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
+      "count": 240,
+      "vendor": "apple",
+      "product": "ipados",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
+      "count": 239,
+      "vendor": "apple",
+      "product": "iphone_os",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
       "count": 232,
       "vendor": "microsoft",
@@ -202,26 +216,12 @@
       "vendor": "microsoft",
       "product": "windows_11_25h2",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:ipados:*:*:*:*:*:*:*:*",
-      "count": 188,
-      "vendor": "apple",
-      "product": "ipados",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:apple:iphone_os:*:*:*:*:*:*:*:*",
-      "count": 187,
-      "vendor": "apple",
-      "product": "iphone_os",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
     {
       "vendor": "linux",
-      "count": 10025
+      "count": 10081
     },
     {
       "vendor": "qualcomm",
@@ -229,7 +229,7 @@
     },
     {
       "vendor": "microsoft",
-      "count": 5921
+      "count": 5925
     },
     {
       "vendor": "coollabs",
@@ -237,11 +237,11 @@
     },
     {
       "vendor": "adobe",
-      "count": 4018
+      "count": 4178
     },
     {
       "vendor": "samsung",
-      "count": 2571
+      "count": 2936
     },
     {
       "vendor": "juniper",
@@ -256,16 +256,16 @@
       "count": 1700
     },
     {
+      "vendor": "apple",
+      "count": 1206
+    },
+    {
       "vendor": "qnap",
       "count": 1152
     },
     {
       "vendor": "checkmk",
       "count": 1007
-    },
-    {
-      "vendor": "apple",
-      "count": 965
     },
     {
       "vendor": "ibm",
@@ -283,7 +283,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 10025
+      "count": 10081
     },
     {
       "product": "coolify",
@@ -291,7 +291,7 @@
     },
     {
       "product": "android",
-      "count": 2558
+      "count": 2923
     },
     {
       "product": "junos",
@@ -299,11 +299,11 @@
     },
     {
       "product": "commerce",
-      "count": 1311
+      "count": 1378
     },
     {
       "product": "commerce_b2b",
-      "count": 1216
+      "count": 1267
     },
     {
       "product": "parse-server",
@@ -319,7 +319,7 @@
     },
     {
       "product": "magento",
-      "count": 955
+      "count": 991
     },
     {
       "product": "rustfs",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 36064,
-      "percentage": 53.0
+      "count": 36739,
+      "percentage": 53.2
     },
     {
       "type": "Application",
-      "count": 31993,
-      "percentage": 47.0
+      "count": 32280,
+      "percentage": 46.8
     },
     {
       "type": "Hardware",
