@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-20T16:21:10.531826Z",
-  "catalog_version": "2026.05.15",
-  "total_kev_cves": 1592,
+  "generated_at": "2026-05-20T18:58:53.116052Z",
+  "catalog_version": "2026.05.20",
+  "total_kev_cves": 1599,
   "statistics": {
-    "added_last_30_days": 23,
-    "added_last_90_days": 68,
+    "added_last_30_days": 30,
+    "added_last_90_days": 75,
     "ransomware_associated": 321
   },
   "by_year_added": {
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 108
+    "2026": 115
   },
   "by_year_cve": {
     "2002": 1,
@@ -21,9 +21,9 @@
     "2005": 1,
     "2006": 2,
     "2007": 3,
-    "2008": 4,
-    "2009": 13,
-    "2010": 21,
+    "2008": 5,
+    "2009": 15,
+    "2010": 23,
     "2011": 9,
     "2012": 22,
     "2013": 38,
@@ -39,7 +39,7 @@
     "2023": 163,
     "2024": 163,
     "2025": 180,
-    "2026": 51
+    "2026": 53
   },
   "by_year_published": {
     "2002": 1,
@@ -47,9 +47,9 @@
     "2005": 1,
     "2006": 2,
     "2007": 2,
-    "2008": 4,
-    "2009": 12,
-    "2010": 21,
+    "2008": 5,
+    "2009": 14,
+    "2010": 23,
     "2011": 9,
     "2012": 22,
     "2013": 35,
@@ -122,12 +122,12 @@
     "2026-02": 28,
     "2026-03": 26,
     "2026-04": 31,
-    "2026-05": 6
+    "2026-05": 13
   },
   "top_vendors": [
     [
       "Microsoft",
-      371
+      377
     ],
     [
       "Apple",
@@ -139,7 +139,7 @@
     ],
     [
       "Adobe",
-      78
+      79
     ],
     [
       "Google",
@@ -209,7 +209,7 @@
   "top_products": [
     [
       "Microsoft - Windows",
-      169
+      170
     ],
     [
       "Apple - Multiple Products",
@@ -221,7 +221,7 @@
     ],
     [
       "Microsoft - Internet Explorer",
-      34
+      36
     ],
     [
       "Adobe - Flash Player",
@@ -256,12 +256,12 @@
       14
     ],
     [
-      "Samsung - Mobile Devices",
+      "Adobe - Acrobat and Reader",
       13
     ],
     [
-      "Adobe - Acrobat and Reader",
-      12
+      "Samsung - Mobile Devices",
+      13
     ],
     [
       "Palo Alto Networks - PAN-OS",
@@ -303,23 +303,23 @@
     ],
     [
       "CWE-416",
-      91
+      92
     ],
     [
       "CWE-119",
-      83
+      84
     ],
     [
       "CWE-22",
       73
     ],
     [
-      "CWE-502",
+      "CWE-94",
       64
     ],
     [
-      "CWE-94",
-      63
+      "CWE-502",
+      64
     ],
     [
       "CWE-287",
@@ -366,11 +366,67 @@
       20
     ],
     [
-      "CWE-918",
-      17
+      "CWE-399",
+      18
     ]
   ],
   "recent_additions": [
+    {
+      "cve_id": "CVE-2008-4250",
+      "vendor": "Microsoft",
+      "product": "Windows",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2009-1537",
+      "vendor": "Microsoft",
+      "product": "DirectX",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2009-3459",
+      "vendor": "Adobe",
+      "product": "Acrobat and Reader",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2010-0249",
+      "vendor": "Microsoft",
+      "product": "Internet Explorer",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2010-0806",
+      "vendor": "Microsoft",
+      "product": "Internet Explorer",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-41091",
+      "vendor": "Microsoft",
+      "product": "Defender",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-45498",
+      "vendor": "Microsoft",
+      "product": "Defender",
+      "date_added": "2026-05-20",
+      "due_date": "2026-06-03",
+      "ransomware": "Unknown"
+    },
     {
       "cve_id": "CVE-2026-42897",
       "vendor": "Microsoft",
@@ -474,62 +530,6 @@
       "date_added": "2026-04-24",
       "due_date": "2026-05-08",
       "ransomware": "Known"
-    },
-    {
-      "cve_id": "CVE-2026-39987",
-      "vendor": "Marimo",
-      "product": "Marimo",
-      "date_added": "2026-04-23",
-      "due_date": "2026-05-07",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-33825",
-      "vendor": "Microsoft",
-      "product": "Defender",
-      "date_added": "2026-04-22",
-      "due_date": "2026-05-06",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-20122",
-      "vendor": "Cisco",
-      "product": "Catalyst SD-WAN Manger",
-      "date_added": "2026-04-20",
-      "due_date": "2026-04-23",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-20133",
-      "vendor": "Cisco",
-      "product": "Catalyst SD-WAN Manager",
-      "date_added": "2026-04-20",
-      "due_date": "2026-04-23",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2025-2749",
-      "vendor": "Kentico",
-      "product": "Kentico Xperience",
-      "date_added": "2026-04-20",
-      "due_date": "2026-05-04",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2023-27351",
-      "vendor": "PaperCut",
-      "product": "NG/MF",
-      "date_added": "2026-04-20",
-      "due_date": "2026-05-04",
-      "ransomware": "Known"
-    },
-    {
-      "cve_id": "CVE-2025-48700",
-      "vendor": "Synacor",
-      "product": "Zimbra Collaboration Suite (ZCS)",
-      "date_added": "2026-04-20",
-      "due_date": "2026-04-23",
-      "ransomware": "Unknown"
     }
   ]
 }
