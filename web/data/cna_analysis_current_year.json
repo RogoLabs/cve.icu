@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T00:49:58.307842",
+  "generated_at": "2026-05-20T04:35:15.781720",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 313,
@@ -119,10 +119,10 @@
     {
       "name": "VulnCheck",
       "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
-      "count": 2416,
+      "count": 2421,
       "rank": 3,
       "first_cve_date": "2026-01-03T21:18:51.053Z",
-      "last_cve_date": "2026-05-19T21:55:51.388Z",
+      "last_cve_date": "2026-05-20T00:52:38.965Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -133,9 +133,9 @@
       ],
       "severity_distribution": {
         "Critical": 302,
-        "High": 1224,
-        "Medium": 876,
-        "Low": 14
+        "High": 1226,
+        "Medium": 878,
+        "Low": 15
       },
       "top_cwe_types": {
         "CWE-79": 368,
@@ -334,10 +334,10 @@
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1523,
+      "count": 1556,
       "rank": 7,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-05-19T18:33:52.658Z",
+      "last_cve_date": "2026-05-20T02:27:48.485Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -347,17 +347,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 1136,
-        "Critical": 68,
-        "High": 308,
+        "Medium": 1162,
+        "Critical": 71,
+        "High": 312,
         "Low": 11
       },
       "top_cwe_types": {
-        "CWE-79": 595,
-        "CWE-862": 313,
-        "CWE-352": 114,
-        "CWE-89": 94,
-        "CWE-639": 61
+        "CWE-79": 605,
+        "CWE-862": 315,
+        "CWE-352": 124,
+        "CWE-89": 98,
+        "CWE-639": 62
       },
       "kev_count": 0,
       "epss_high_count": 1,
@@ -365,23 +365,23 @@
       "top_cwes": [
         [
           "CWE-79",
-          595
+          605
         ],
         [
           "CWE-862",
-          313
+          315
         ],
         [
           "CWE-352",
-          114
+          124
         ],
         [
           "CWE-89",
-          94
+          98
         ],
         [
           "CWE-639",
-          61
+          62
         ]
       ]
     },
@@ -2050,12 +2050,65 @@
       ]
     },
     {
+      "name": "nvidia",
+      "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
+      "count": 75,
+      "rank": 39,
+      "first_cve_date": "2026-01-14T18:30:41.061Z",
+      "last_cve_date": "2026-05-20T03:03:01.877Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 15,
+        "High": 57,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-502": 21,
+        "CWE-94": 7,
+        "CWE-78": 5,
+        "CWE-190": 5,
+        "CWE-77": 4
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-502",
+          21
+        ],
+        [
+          "CWE-94",
+          7
+        ],
+        [
+          "CWE-78",
+          5
+        ],
+        [
+          "CWE-190",
+          5
+        ],
+        [
+          "CWE-77",
+          4
+        ]
+      ]
+    },
+    {
       "name": "twcert",
       "assigner_org_id": "cded6c7f-6ce5-4948-8f87-aa7a3bbb6b0e",
-      "count": 74,
-      "rank": 39,
+      "count": 75,
+      "rank": 40,
       "first_cve_date": "2026-01-05T07:25:33.577Z",
-      "last_cve_date": "2026-05-02T09:14:25.760Z",
+      "last_cve_date": "2026-05-20T02:39:59.207Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -2065,12 +2118,12 @@
         "CERT"
       ],
       "severity_distribution": {
-        "High": 36,
+        "High": 37,
         "Medium": 13,
         "Critical": 25
       },
       "top_cwe_types": {
-        "CWE-89": 11,
+        "CWE-89": 12,
         "CWE-434": 8,
         "CWE-306": 8,
         "CWE-78": 7,
@@ -2082,7 +2135,7 @@
       "top_cwes": [
         [
           "CWE-89",
-          11
+          12
         ],
         [
           "CWE-434",
@@ -2106,7 +2159,7 @@
       "name": "qualcomm",
       "assigner_org_id": "2cfc7d3e-20d3-47ac-8db7-1b7285aff15f",
       "count": 73,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-06T22:48:28.547Z",
       "last_cve_date": "2026-05-04T16:43:21.430Z",
       "years_active": 10,
@@ -2159,7 +2212,7 @@
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 72,
-      "rank": 41,
+      "rank": 42,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-05-12T21:06:12.315Z",
       "years_active": 11,
@@ -2212,7 +2265,7 @@
       "name": "intel",
       "assigner_org_id": "6dda929c-bb53-4a77-a76d-48e79601a1ce",
       "count": 71,
-      "rank": 42,
+      "rank": 43,
       "first_cve_date": "2026-02-10T16:25:04.959Z",
       "last_cve_date": "2026-05-12T17:33:02.281Z",
       "years_active": 11,
@@ -2266,7 +2319,7 @@
       "name": "hackerone",
       "assigner_org_id": "36234546-b8fa-4601-9d6f-f4e334aa8ea1",
       "count": 69,
-      "rank": 43,
+      "rank": 44,
       "first_cve_date": "2026-01-05T16:47:38.510Z",
       "last_cve_date": "2026-05-19T04:43:41.777Z",
       "years_active": 11,
@@ -2320,7 +2373,7 @@
       "name": "certcc",
       "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
       "count": 67,
-      "rank": 44,
+      "rank": 45,
       "first_cve_date": "2026-01-06T14:45:29.207Z",
       "last_cve_date": "2026-05-18T10:39:52.696Z",
       "years_active": 22,
@@ -2373,7 +2426,7 @@
       "name": "canonical",
       "assigner_org_id": "cc1ad9ee-3454-478d-9317-d3e869d708bc",
       "count": 64,
-      "rank": 45,
+      "rank": 46,
       "first_cve_date": "2026-01-28T15:01:46.364Z",
       "last_cve_date": "2026-04-27T15:28:48.209Z",
       "years_active": 20,
@@ -2427,7 +2480,7 @@
       "name": "f5",
       "assigner_org_id": "9dacffd4-cb11-413f-8451-fbbfd4ddc0ab",
       "count": 64,
-      "rank": 46,
+      "rank": 47,
       "first_cve_date": "2026-02-04T15:02:04.810Z",
       "last_cve_date": "2026-05-19T14:04:18.860Z",
       "years_active": 10,
@@ -2473,59 +2526,6 @@
         ],
         [
           "CWE-77",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "nvidia",
-      "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
-      "count": 63,
-      "rank": 47,
-      "first_cve_date": "2026-01-14T18:30:41.061Z",
-      "last_cve_date": "2026-04-28T17:46:57.480Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 11,
-        "High": 50,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-502": 18,
-        "CWE-94": 7,
-        "CWE-78": 5,
-        "CWE-77": 4,
-        "CWE-190": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-502",
-          18
-        ],
-        [
-          "CWE-94",
-          7
-        ],
-        [
-          "CWE-78",
-          5
-        ],
-        [
-          "CWE-77",
-          4
-        ],
-        [
-          "CWE-190",
           3
         ]
       ]
@@ -2759,8 +2759,8 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 40,
-        "High": 14,
+        "Medium": 41,
+        "High": 13,
         "Low": 2
       },
       "top_cwe_types": {
@@ -5249,10 +5249,62 @@
       ]
     },
     {
+      "name": "Fluid Attacks",
+      "assigner_org_id": "84fe0718-d6bb-4716-a7e8-81a6d1daa869",
+      "count": 17,
+      "rank": 99,
+      "first_cve_date": "2026-01-06T15:15:30.305Z",
+      "last_cve_date": "2026-05-20T02:19:07.926Z",
+      "years_active": 5,
+      "first_cve_year": 2022,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 6,
+        "Medium": 11
+      },
+      "top_cwe_types": {
+        "CWE-79": 8,
+        "CWE-732": 2,
+        "CWE-89": 2,
+        "CWE-918": 1,
+        "CWE-639": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          8
+        ],
+        [
+          "CWE-732",
+          2
+        ],
+        [
+          "CWE-89",
+          2
+        ],
+        [
+          "CWE-918",
+          1
+        ],
+        [
+          "CWE-639",
+          1
+        ]
+      ]
+    },
+    {
       "name": "WSO2",
       "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
       "count": 16,
-      "rank": 99,
+      "rank": 100,
       "first_cve_date": "2026-02-19T10:04:47.542Z",
       "last_cve_date": "2026-05-11T10:16:52.358Z",
       "years_active": 4,
@@ -5306,7 +5358,7 @@
       "name": "NCSC-FI",
       "assigner_org_id": "db4dfee8-a97e-4877-bfae-eba6d14a2166",
       "count": 16,
-      "rank": 100,
+      "rank": 101,
       "first_cve_date": "2026-01-13T13:39:02.370Z",
       "last_cve_date": "2026-04-27T13:00:10.309Z",
       "years_active": 3,
@@ -5359,7 +5411,7 @@
       "name": "DSF",
       "assigner_org_id": "6a34fbeb-21d4-45e7-8e0a-62b95bc12c92",
       "count": 16,
-      "rank": 101,
+      "rank": 102,
       "first_cve_date": "2026-02-03T14:32:26.240Z",
       "last_cve_date": "2026-05-05T14:50:29.984Z",
       "years_active": 2,
@@ -5405,58 +5457,6 @@
         ],
         [
           "CWE-770",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "Fluid Attacks",
-      "assigner_org_id": "84fe0718-d6bb-4716-a7e8-81a6d1daa869",
-      "count": 16,
-      "rank": 102,
-      "first_cve_date": "2026-01-06T15:15:30.305Z",
-      "last_cve_date": "2026-05-11T14:03:05.663Z",
-      "years_active": 5,
-      "first_cve_year": 2022,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 5,
-        "Medium": 11
-      },
-      "top_cwe_types": {
-        "CWE-79": 7,
-        "CWE-732": 2,
-        "CWE-89": 2,
-        "CWE-918": 1,
-        "CWE-639": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          7
-        ],
-        [
-          "CWE-732",
-          2
-        ],
-        [
-          "CWE-89",
-          2
-        ],
-        [
-          "CWE-918",
-          1
-        ],
-        [
-          "CWE-639",
           1
         ]
       ]
@@ -14486,10 +14486,10 @@
     {
       "name": "VulnCheck",
       "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
-      "count": 2416,
+      "count": 2421,
       "rank": 3,
       "first_cve_date": "2026-01-03T21:18:51.053Z",
-      "last_cve_date": "2026-05-19T21:55:51.388Z",
+      "last_cve_date": "2026-05-20T00:52:38.965Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -14500,9 +14500,9 @@
       ],
       "severity_distribution": {
         "Critical": 302,
-        "High": 1224,
-        "Medium": 876,
-        "Low": 14
+        "High": 1226,
+        "Medium": 878,
+        "Low": 15
       },
       "top_cwe_types": {
         "CWE-79": 368,
@@ -14701,10 +14701,10 @@
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 1523,
+      "count": 1556,
       "rank": 7,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-05-19T18:33:52.658Z",
+      "last_cve_date": "2026-05-20T02:27:48.485Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -14714,17 +14714,17 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 1136,
-        "Critical": 68,
-        "High": 308,
+        "Medium": 1162,
+        "Critical": 71,
+        "High": 312,
         "Low": 11
       },
       "top_cwe_types": {
-        "CWE-79": 595,
-        "CWE-862": 313,
-        "CWE-352": 114,
-        "CWE-89": 94,
-        "CWE-639": 61
+        "CWE-79": 605,
+        "CWE-862": 315,
+        "CWE-352": 124,
+        "CWE-89": 98,
+        "CWE-639": 62
       },
       "kev_count": 0,
       "epss_high_count": 1,
@@ -14732,23 +14732,23 @@
       "top_cwes": [
         [
           "CWE-79",
-          595
+          605
         ],
         [
           "CWE-862",
-          313
+          315
         ],
         [
           "CWE-352",
-          114
+          124
         ],
         [
           "CWE-89",
-          94
+          98
         ],
         [
           "CWE-639",
-          61
+          62
         ]
       ]
     },
@@ -16417,12 +16417,65 @@
       ]
     },
     {
+      "name": "nvidia",
+      "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
+      "count": 75,
+      "rank": 39,
+      "first_cve_date": "2026-01-14T18:30:41.061Z",
+      "last_cve_date": "2026-05-20T03:03:01.877Z",
+      "years_active": 11,
+      "first_cve_year": 2016,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 15,
+        "High": 57,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-502": 21,
+        "CWE-94": 7,
+        "CWE-78": 5,
+        "CWE-190": 5,
+        "CWE-77": 4
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-502",
+          21
+        ],
+        [
+          "CWE-94",
+          7
+        ],
+        [
+          "CWE-78",
+          5
+        ],
+        [
+          "CWE-190",
+          5
+        ],
+        [
+          "CWE-77",
+          4
+        ]
+      ]
+    },
+    {
       "name": "twcert",
       "assigner_org_id": "cded6c7f-6ce5-4948-8f87-aa7a3bbb6b0e",
-      "count": 74,
-      "rank": 39,
+      "count": 75,
+      "rank": 40,
       "first_cve_date": "2026-01-05T07:25:33.577Z",
-      "last_cve_date": "2026-05-02T09:14:25.760Z",
+      "last_cve_date": "2026-05-20T02:39:59.207Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -16432,12 +16485,12 @@
         "CERT"
       ],
       "severity_distribution": {
-        "High": 36,
+        "High": 37,
         "Medium": 13,
         "Critical": 25
       },
       "top_cwe_types": {
-        "CWE-89": 11,
+        "CWE-89": 12,
         "CWE-434": 8,
         "CWE-306": 8,
         "CWE-78": 7,
@@ -16449,7 +16502,7 @@
       "top_cwes": [
         [
           "CWE-89",
-          11
+          12
         ],
         [
           "CWE-434",
@@ -16473,7 +16526,7 @@
       "name": "qualcomm",
       "assigner_org_id": "2cfc7d3e-20d3-47ac-8db7-1b7285aff15f",
       "count": 73,
-      "rank": 40,
+      "rank": 41,
       "first_cve_date": "2026-01-06T22:48:28.547Z",
       "last_cve_date": "2026-05-04T16:43:21.430Z",
       "years_active": 10,
@@ -16526,7 +16579,7 @@
       "name": "hpe",
       "assigner_org_id": "eb103674-0d28-4225-80f8-39fb86215de0",
       "count": 72,
-      "rank": 41,
+      "rank": 42,
       "first_cve_date": "2026-01-13T17:40:56.557Z",
       "last_cve_date": "2026-05-12T21:06:12.315Z",
       "years_active": 11,
@@ -16579,7 +16632,7 @@
       "name": "intel",
       "assigner_org_id": "6dda929c-bb53-4a77-a76d-48e79601a1ce",
       "count": 71,
-      "rank": 42,
+      "rank": 43,
       "first_cve_date": "2026-02-10T16:25:04.959Z",
       "last_cve_date": "2026-05-12T17:33:02.281Z",
       "years_active": 11,
@@ -16633,7 +16686,7 @@
       "name": "hackerone",
       "assigner_org_id": "36234546-b8fa-4601-9d6f-f4e334aa8ea1",
       "count": 69,
-      "rank": 43,
+      "rank": 44,
       "first_cve_date": "2026-01-05T16:47:38.510Z",
       "last_cve_date": "2026-05-19T04:43:41.777Z",
       "years_active": 11,
@@ -16687,7 +16740,7 @@
       "name": "certcc",
       "assigner_org_id": "37e5125f-f79b-445b-8fad-9564f167944b",
       "count": 67,
-      "rank": 44,
+      "rank": 45,
       "first_cve_date": "2026-01-06T14:45:29.207Z",
       "last_cve_date": "2026-05-18T10:39:52.696Z",
       "years_active": 22,
@@ -16740,7 +16793,7 @@
       "name": "canonical",
       "assigner_org_id": "cc1ad9ee-3454-478d-9317-d3e869d708bc",
       "count": 64,
-      "rank": 45,
+      "rank": 46,
       "first_cve_date": "2026-01-28T15:01:46.364Z",
       "last_cve_date": "2026-04-27T15:28:48.209Z",
       "years_active": 20,
@@ -16794,7 +16847,7 @@
       "name": "f5",
       "assigner_org_id": "9dacffd4-cb11-413f-8451-fbbfd4ddc0ab",
       "count": 64,
-      "rank": 46,
+      "rank": 47,
       "first_cve_date": "2026-02-04T15:02:04.810Z",
       "last_cve_date": "2026-05-19T14:04:18.860Z",
       "years_active": 10,
@@ -16840,59 +16893,6 @@
         ],
         [
           "CWE-77",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "nvidia",
-      "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
-      "count": 63,
-      "rank": 47,
-      "first_cve_date": "2026-01-14T18:30:41.061Z",
-      "last_cve_date": "2026-04-28T17:46:57.480Z",
-      "years_active": 11,
-      "first_cve_year": 2016,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 11,
-        "High": 50,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-502": 18,
-        "CWE-94": 7,
-        "CWE-78": 5,
-        "CWE-77": 4,
-        "CWE-190": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-502",
-          18
-        ],
-        [
-          "CWE-94",
-          7
-        ],
-        [
-          "CWE-78",
-          5
-        ],
-        [
-          "CWE-77",
-          4
-        ],
-        [
-          "CWE-190",
           3
         ]
       ]
@@ -17126,8 +17126,8 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 40,
-        "High": 14,
+        "Medium": 41,
+        "High": 13,
         "Low": 2
       },
       "top_cwe_types": {
@@ -19616,10 +19616,62 @@
       ]
     },
     {
+      "name": "Fluid Attacks",
+      "assigner_org_id": "84fe0718-d6bb-4716-a7e8-81a6d1daa869",
+      "count": 17,
+      "rank": 99,
+      "first_cve_date": "2026-01-06T15:15:30.305Z",
+      "last_cve_date": "2026-05-20T02:19:07.926Z",
+      "years_active": 5,
+      "first_cve_year": 2022,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 6,
+        "Medium": 11
+      },
+      "top_cwe_types": {
+        "CWE-79": 8,
+        "CWE-732": 2,
+        "CWE-89": 2,
+        "CWE-918": 1,
+        "CWE-639": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          8
+        ],
+        [
+          "CWE-732",
+          2
+        ],
+        [
+          "CWE-89",
+          2
+        ],
+        [
+          "CWE-918",
+          1
+        ],
+        [
+          "CWE-639",
+          1
+        ]
+      ]
+    },
+    {
       "name": "WSO2",
       "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
       "count": 16,
-      "rank": 99,
+      "rank": 100,
       "first_cve_date": "2026-02-19T10:04:47.542Z",
       "last_cve_date": "2026-05-11T10:16:52.358Z",
       "years_active": 4,
@@ -19673,7 +19725,7 @@
       "name": "NCSC-FI",
       "assigner_org_id": "db4dfee8-a97e-4877-bfae-eba6d14a2166",
       "count": 16,
-      "rank": 100,
+      "rank": 101,
       "first_cve_date": "2026-01-13T13:39:02.370Z",
       "last_cve_date": "2026-04-27T13:00:10.309Z",
       "years_active": 3,
@@ -19726,7 +19778,7 @@
       "name": "DSF",
       "assigner_org_id": "6a34fbeb-21d4-45e7-8e0a-62b95bc12c92",
       "count": 16,
-      "rank": 101,
+      "rank": 102,
       "first_cve_date": "2026-02-03T14:32:26.240Z",
       "last_cve_date": "2026-05-05T14:50:29.984Z",
       "years_active": 2,
@@ -19772,58 +19824,6 @@
         ],
         [
           "CWE-770",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "Fluid Attacks",
-      "assigner_org_id": "84fe0718-d6bb-4716-a7e8-81a6d1daa869",
-      "count": 16,
-      "rank": 102,
-      "first_cve_date": "2026-01-06T15:15:30.305Z",
-      "last_cve_date": "2026-05-11T14:03:05.663Z",
-      "years_active": 5,
-      "first_cve_year": 2022,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 5,
-        "Medium": 11
-      },
-      "top_cwe_types": {
-        "CWE-79": 7,
-        "CWE-732": 2,
-        "CWE-89": 2,
-        "CWE-918": 1,
-        "CWE-639": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          7
-        ],
-        [
-          "CWE-732",
-          2
-        ],
-        [
-          "CWE-89",
-          2
-        ],
-        [
-          "CWE-918",
-          1
-        ],
-        [
-          "CWE-639",
           1
         ]
       ]
