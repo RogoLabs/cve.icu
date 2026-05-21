@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T21:42:25.556003",
+  "generated_at": "2026-05-21T00:50:03.032738",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 314,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 5229,
+      "count": 5231,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-05-20T21:27:40.862Z",
+      "last_cve_date": "2026-05-20T23:35:18.309Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -25,8 +25,8 @@
       ],
       "severity_distribution": {
         "Low": 291,
-        "Medium": 2117,
-        "High": 2150,
+        "Medium": 2118,
+        "High": 2151,
         "Critical": 671
       },
       "top_cwe_types": {
@@ -657,10 +657,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 221,
+      "count": 223,
       "rank": 13,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-05-20T16:13:03.022Z",
+      "last_cve_date": "2026-05-20T23:34:56.473Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -671,7 +671,7 @@
       ],
       "severity_distribution": {
         "High": 66,
-        "Medium": 118,
+        "Medium": 120,
         "Low": 31,
         "Critical": 6
       },
@@ -1141,10 +1141,10 @@
     {
       "name": "jpcert",
       "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 116,
+      "count": 117,
       "rank": 22,
       "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-05-20T05:28:14.892Z",
+      "last_cve_date": "2026-05-20T22:54:20.562Z",
       "years_active": 17,
       "first_cve_year": 2010,
       "last_cve_year": 2026,
@@ -1154,7 +1154,7 @@
         "CERT"
       ],
       "severity_distribution": {
-        "Medium": 46,
+        "Medium": 47,
         "High": 59,
         "Critical": 11
       },
@@ -1783,10 +1783,63 @@
       ]
     },
     {
+      "name": "CPANSec",
+      "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
+      "count": 80,
+      "rank": 34,
+      "first_cve_date": "2026-01-06T00:22:50.114Z",
+      "last_cve_date": "2026-05-20T22:08:12.703Z",
+      "years_active": 2,
+      "first_cve_year": 2025,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Critical": 29,
+        "Medium": 23,
+        "High": 26
+      },
+      "top_cwe_types": {
+        "CWE-338": 24,
+        "CWE-340": 14,
+        "CWE-1395": 9,
+        "CWE-122": 6,
+        "CWE-190": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-338",
+          24
+        ],
+        [
+          "CWE-340",
+          14
+        ],
+        [
+          "CWE-1395",
+          9
+        ],
+        [
+          "CWE-122",
+          6
+        ],
+        [
+          "CWE-190",
+          3
+        ]
+      ]
+    },
+    {
       "name": "wikimedia-foundation",
       "assigner_org_id": "c4f26cc8-17ff-4c99-b5e2-38fc1793eacc",
       "count": 80,
-      "rank": 34,
+      "rank": 35,
       "first_cve_date": "2026-01-07T17:36:19.258Z",
       "last_cve_date": "2026-05-11T16:55:55.171Z",
       "years_active": 3,
@@ -1831,59 +1884,6 @@
         ],
         [
           "CWE-80",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "CPANSec",
-      "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
-      "count": 79,
-      "rank": 35,
-      "first_cve_date": "2026-01-06T00:22:50.114Z",
-      "last_cve_date": "2026-05-20T20:25:49.785Z",
-      "years_active": 2,
-      "first_cve_year": 2025,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Critical": 29,
-        "Medium": 23,
-        "High": 26
-      },
-      "top_cwe_types": {
-        "CWE-338": 23,
-        "CWE-340": 14,
-        "CWE-1395": 9,
-        "CWE-122": 6,
-        "CWE-190": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-338",
-          23
-        ],
-        [
-          "CWE-340",
-          14
-        ],
-        [
-          "CWE-1395",
-          9
-        ],
-        [
-          "CWE-122",
-          6
-        ],
-        [
-          "CWE-190",
           3
         ]
       ]
@@ -14466,10 +14466,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 5229,
+      "count": 5231,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-05-20T21:27:40.862Z",
+      "last_cve_date": "2026-05-20T23:35:18.309Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -14480,8 +14480,8 @@
       ],
       "severity_distribution": {
         "Low": 291,
-        "Medium": 2117,
-        "High": 2150,
+        "Medium": 2118,
+        "High": 2151,
         "Critical": 671
       },
       "top_cwe_types": {
@@ -15112,10 +15112,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 221,
+      "count": 223,
       "rank": 13,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-05-20T16:13:03.022Z",
+      "last_cve_date": "2026-05-20T23:34:56.473Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -15126,7 +15126,7 @@
       ],
       "severity_distribution": {
         "High": 66,
-        "Medium": 118,
+        "Medium": 120,
         "Low": 31,
         "Critical": 6
       },
@@ -15596,10 +15596,10 @@
     {
       "name": "jpcert",
       "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 116,
+      "count": 117,
       "rank": 22,
       "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-05-20T05:28:14.892Z",
+      "last_cve_date": "2026-05-20T22:54:20.562Z",
       "years_active": 17,
       "first_cve_year": 2010,
       "last_cve_year": 2026,
@@ -15609,7 +15609,7 @@
         "CERT"
       ],
       "severity_distribution": {
-        "Medium": 46,
+        "Medium": 47,
         "High": 59,
         "Critical": 11
       },
@@ -16238,10 +16238,63 @@
       ]
     },
     {
+      "name": "CPANSec",
+      "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
+      "count": 80,
+      "rank": 34,
+      "first_cve_date": "2026-01-06T00:22:50.114Z",
+      "last_cve_date": "2026-05-20T22:08:12.703Z",
+      "years_active": 2,
+      "first_cve_year": 2025,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Critical": 29,
+        "Medium": 23,
+        "High": 26
+      },
+      "top_cwe_types": {
+        "CWE-338": 24,
+        "CWE-340": 14,
+        "CWE-1395": 9,
+        "CWE-122": 6,
+        "CWE-190": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-338",
+          24
+        ],
+        [
+          "CWE-340",
+          14
+        ],
+        [
+          "CWE-1395",
+          9
+        ],
+        [
+          "CWE-122",
+          6
+        ],
+        [
+          "CWE-190",
+          3
+        ]
+      ]
+    },
+    {
       "name": "wikimedia-foundation",
       "assigner_org_id": "c4f26cc8-17ff-4c99-b5e2-38fc1793eacc",
       "count": 80,
-      "rank": 34,
+      "rank": 35,
       "first_cve_date": "2026-01-07T17:36:19.258Z",
       "last_cve_date": "2026-05-11T16:55:55.171Z",
       "years_active": 3,
@@ -16286,59 +16339,6 @@
         ],
         [
           "CWE-80",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "CPANSec",
-      "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
-      "count": 79,
-      "rank": 35,
-      "first_cve_date": "2026-01-06T00:22:50.114Z",
-      "last_cve_date": "2026-05-20T20:25:49.785Z",
-      "years_active": 2,
-      "first_cve_year": 2025,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Critical": 29,
-        "Medium": 23,
-        "High": 26
-      },
-      "top_cwe_types": {
-        "CWE-338": 23,
-        "CWE-340": 14,
-        "CWE-1395": 9,
-        "CWE-122": 6,
-        "CWE-190": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-338",
-          23
-        ],
-        [
-          "CWE-340",
-          14
-        ],
-        [
-          "CWE-1395",
-          9
-        ],
-        [
-          "CWE-122",
-          6
-        ],
-        [
-          "CWE-190",
           3
         ]
       ]
