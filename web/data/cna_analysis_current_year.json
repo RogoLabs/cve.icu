@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-10T00:54:41.423808",
+  "generated_at": "2026-06-10T04:39:25.681081",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 330,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 5860,
+      "count": 5866,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-06-09T23:59:31.113Z",
+      "last_cve_date": "2026-06-10T00:35:30.465Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,10 +24,10 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 2373,
-        "High": 2415,
+        "Medium": 2375,
+        "High": 2418,
         "Low": 320,
-        "Critical": 752
+        "Critical": 753
       },
       "top_cwe_types": {
         "CWE-79": 627,
@@ -133,8 +133,8 @@
       ],
       "severity_distribution": {
         "Critical": 328,
-        "Medium": 962,
-        "High": 1432,
+        "Medium": 964,
+        "High": 1430,
         "Low": 17
       },
       "top_cwe_types": {
@@ -1354,10 +1354,64 @@
       ]
     },
     {
+      "name": "qnap",
+      "assigner_org_id": "2fd009eb-170a-4625-932b-17a53af1051f",
+      "count": 121,
+      "rank": 26,
+      "first_cve_date": "2026-01-02T14:51:49.742Z",
+      "last_cve_date": "2026-06-10T03:15:27.445Z",
+      "years_active": 10,
+      "first_cve_year": 2017,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 64,
+        "Medium": 36,
+        "High": 18,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-476": 26,
+        "CWE-22": 14,
+        "CWE-770": 12,
+        "CWE-120": 10,
+        "CWE-78": 9
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-476",
+          26
+        ],
+        [
+          "CWE-22",
+          14
+        ],
+        [
+          "CWE-770",
+          12
+        ],
+        [
+          "CWE-120",
+          10
+        ],
+        [
+          "CWE-78",
+          9
+        ]
+      ]
+    },
+    {
       "name": "jpcert",
       "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
       "count": 119,
-      "rank": 26,
+      "rank": 27,
       "first_cve_date": "2026-01-06T06:34:11.329Z",
       "last_cve_date": "2026-06-01T07:17:31.045Z",
       "years_active": 17,
@@ -1410,7 +1464,7 @@
       "name": "zdi",
       "assigner_org_id": "99f1926a-a320-47d8-bbb5-42feb611262e",
       "count": 115,
-      "rank": 27,
+      "rank": 28,
       "first_cve_date": "2026-01-23T02:47:05.205Z",
       "last_cve_date": "2026-04-11T00:17:40.509Z",
       "years_active": 12,
@@ -1463,7 +1517,7 @@
       "name": "HCL",
       "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
       "count": 114,
-      "rank": 28,
+      "rank": 29,
       "first_cve_date": "2026-01-07T06:48:19.946Z",
       "last_cve_date": "2026-06-05T06:03:11.053Z",
       "years_active": 8,
@@ -1517,7 +1571,7 @@
       "name": "CPANSec",
       "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
       "count": 112,
-      "rank": 29,
+      "rank": 30,
       "first_cve_date": "2026-01-06T00:22:50.114Z",
       "last_cve_date": "2026-06-09T07:34:51.909Z",
       "years_active": 2,
@@ -1570,7 +1624,7 @@
       "name": "TR-CERT",
       "assigner_org_id": "ca940d4e-fea4-4aa2-9a58-591a58b1ce21",
       "count": 105,
-      "rank": 30,
+      "rank": 31,
       "first_cve_date": "2026-01-22T09:10:16.989Z",
       "last_cve_date": "2026-06-09T14:31:10.013Z",
       "years_active": 6,
@@ -1623,7 +1677,7 @@
       "name": "sap",
       "assigner_org_id": "e4686d1a-f260-4930-ac4c-2f5c992778dd",
       "count": 105,
-      "rank": 31,
+      "rank": 32,
       "first_cve_date": "2026-01-13T01:12:53.331Z",
       "last_cve_date": "2026-06-09T00:21:50.279Z",
       "years_active": 10,
@@ -1670,60 +1724,6 @@
         [
           "CWE-94",
           6
-        ]
-      ]
-    },
-    {
-      "name": "qnap",
-      "assigner_org_id": "2fd009eb-170a-4625-932b-17a53af1051f",
-      "count": 103,
-      "rank": 32,
-      "first_cve_date": "2026-01-02T14:51:49.742Z",
-      "last_cve_date": "2026-06-09T06:20:47.247Z",
-      "years_active": 10,
-      "first_cve_year": 2017,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 64,
-        "Medium": 26,
-        "High": 11,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-476": 22,
-        "CWE-22": 12,
-        "CWE-770": 11,
-        "CWE-120": 10,
-        "CWE-125": 7
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-476",
-          22
-        ],
-        [
-          "CWE-22",
-          12
-        ],
-        [
-          "CWE-770",
-          11
-        ],
-        [
-          "CWE-120",
-          10
-        ],
-        [
-          "CWE-125",
-          7
         ]
       ]
     },
@@ -15408,10 +15408,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 5860,
+      "count": 5866,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-06-09T23:59:31.113Z",
+      "last_cve_date": "2026-06-10T00:35:30.465Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -15421,10 +15421,10 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 2373,
-        "High": 2415,
+        "Medium": 2375,
+        "High": 2418,
         "Low": 320,
-        "Critical": 752
+        "Critical": 753
       },
       "top_cwe_types": {
         "CWE-79": 627,
@@ -15530,8 +15530,8 @@
       ],
       "severity_distribution": {
         "Critical": 328,
-        "Medium": 962,
-        "High": 1432,
+        "Medium": 964,
+        "High": 1430,
         "Low": 17
       },
       "top_cwe_types": {
@@ -16751,10 +16751,64 @@
       ]
     },
     {
+      "name": "qnap",
+      "assigner_org_id": "2fd009eb-170a-4625-932b-17a53af1051f",
+      "count": 121,
+      "rank": 26,
+      "first_cve_date": "2026-01-02T14:51:49.742Z",
+      "last_cve_date": "2026-06-10T03:15:27.445Z",
+      "years_active": 10,
+      "first_cve_year": 2017,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 64,
+        "Medium": 36,
+        "High": 18,
+        "Critical": 3
+      },
+      "top_cwe_types": {
+        "CWE-476": 26,
+        "CWE-22": 14,
+        "CWE-770": 12,
+        "CWE-120": 10,
+        "CWE-78": 9
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-476",
+          26
+        ],
+        [
+          "CWE-22",
+          14
+        ],
+        [
+          "CWE-770",
+          12
+        ],
+        [
+          "CWE-120",
+          10
+        ],
+        [
+          "CWE-78",
+          9
+        ]
+      ]
+    },
+    {
       "name": "jpcert",
       "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
       "count": 119,
-      "rank": 26,
+      "rank": 27,
       "first_cve_date": "2026-01-06T06:34:11.329Z",
       "last_cve_date": "2026-06-01T07:17:31.045Z",
       "years_active": 17,
@@ -16807,7 +16861,7 @@
       "name": "zdi",
       "assigner_org_id": "99f1926a-a320-47d8-bbb5-42feb611262e",
       "count": 115,
-      "rank": 27,
+      "rank": 28,
       "first_cve_date": "2026-01-23T02:47:05.205Z",
       "last_cve_date": "2026-04-11T00:17:40.509Z",
       "years_active": 12,
@@ -16860,7 +16914,7 @@
       "name": "HCL",
       "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
       "count": 114,
-      "rank": 28,
+      "rank": 29,
       "first_cve_date": "2026-01-07T06:48:19.946Z",
       "last_cve_date": "2026-06-05T06:03:11.053Z",
       "years_active": 8,
@@ -16914,7 +16968,7 @@
       "name": "CPANSec",
       "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
       "count": 112,
-      "rank": 29,
+      "rank": 30,
       "first_cve_date": "2026-01-06T00:22:50.114Z",
       "last_cve_date": "2026-06-09T07:34:51.909Z",
       "years_active": 2,
@@ -16967,7 +17021,7 @@
       "name": "TR-CERT",
       "assigner_org_id": "ca940d4e-fea4-4aa2-9a58-591a58b1ce21",
       "count": 105,
-      "rank": 30,
+      "rank": 31,
       "first_cve_date": "2026-01-22T09:10:16.989Z",
       "last_cve_date": "2026-06-09T14:31:10.013Z",
       "years_active": 6,
@@ -17020,7 +17074,7 @@
       "name": "sap",
       "assigner_org_id": "e4686d1a-f260-4930-ac4c-2f5c992778dd",
       "count": 105,
-      "rank": 31,
+      "rank": 32,
       "first_cve_date": "2026-01-13T01:12:53.331Z",
       "last_cve_date": "2026-06-09T00:21:50.279Z",
       "years_active": 10,
@@ -17067,60 +17121,6 @@
         [
           "CWE-94",
           6
-        ]
-      ]
-    },
-    {
-      "name": "qnap",
-      "assigner_org_id": "2fd009eb-170a-4625-932b-17a53af1051f",
-      "count": 103,
-      "rank": 32,
-      "first_cve_date": "2026-01-02T14:51:49.742Z",
-      "last_cve_date": "2026-06-09T06:20:47.247Z",
-      "years_active": 10,
-      "first_cve_year": 2017,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 64,
-        "Medium": 26,
-        "High": 11,
-        "Critical": 2
-      },
-      "top_cwe_types": {
-        "CWE-476": 22,
-        "CWE-22": 12,
-        "CWE-770": 11,
-        "CWE-120": 10,
-        "CWE-125": 7
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-476",
-          22
-        ],
-        [
-          "CWE-22",
-          12
-        ],
-        [
-          "CWE-770",
-          11
-        ],
-        [
-          "CWE-120",
-          10
-        ],
-        [
-          "CWE-125",
-          7
         ]
       ]
     },
