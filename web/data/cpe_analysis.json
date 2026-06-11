@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-11T19:08:28.729369",
-  "total_unique_cpes": 370469,
-  "total_cpe_entries": 2507615,
-  "total_cves_with_cpes": 301093,
-  "total_unique_vendors": 36471,
-  "total_unique_products": 113728,
+  "generated_at": "2026-06-11T21:49:51.836121",
+  "total_unique_cpes": 370477,
+  "total_cpe_entries": 2508525,
+  "total_cves_with_cpes": 301205,
+  "total_unique_vendors": 36472,
+  "total_unique_products": 113729,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 45889,
+      "count": 45891,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -43,7 +43,14 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2012:r2:*:*:*:*:*:*:*",
-      "count": 3652,
+      "count": 3667,
+      "vendor": "microsoft",
+      "product": "windows_server_2012",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2012:-:*:*:*:*:*:*:*",
+      "count": 3482,
       "vendor": "microsoft",
       "product": "windows_server_2012",
       "type": "Operating System"
@@ -56,13 +63,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2012:-:*:*:*:*:*:*:*",
-      "count": 3467,
-      "vendor": "microsoft",
-      "product": "windows_server_2012",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:debian:debian_linux:10.0:*:*:*:*:*:*:*",
       "count": 3435,
       "vendor": "debian",
@@ -71,7 +71,14 @@
     },
     {
       "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:enterprise:*:*:*",
-      "count": 3160,
+      "count": 3181,
+      "vendor": "gitlab",
+      "product": "gitlab",
+      "type": "Application"
+    },
+    {
+      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:community:*:*:*",
+      "count": 2738,
       "vendor": "gitlab",
       "product": "gitlab",
       "type": "Application"
@@ -82,13 +89,6 @@
       "vendor": "apple",
       "product": "mac_os_x",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:a:gitlab:gitlab:*:*:*:*:community:*:*:*",
-      "count": 2717,
-      "vendor": "gitlab",
-      "product": "gitlab",
-      "type": "Application"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2019:-:*:*:*:*:*:*:*",
@@ -217,6 +217,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*",
+      "count": 1782,
+      "vendor": "microsoft",
+      "product": "windows_server_2022",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:google:android:12.0:*:*:*:*:*:*:*",
       "count": 1781,
       "vendor": "google",
@@ -245,13 +252,6 @@
       "type": "Operating System"
     },
     {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*",
-      "count": 1755,
-      "vendor": "microsoft",
-      "product": "windows_server_2022",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:apple:watchos:*:*:*:*:*:*:*:*",
       "count": 1750,
       "vendor": "apple",
@@ -260,7 +260,7 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
-      "count": 1687,
+      "count": 1709,
       "vendor": "microsoft",
       "product": "windows_server_2019",
       "type": "Operating System"
@@ -274,7 +274,7 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
-      "count": 1624,
+      "count": 1641,
       "vendor": "microsoft",
       "product": "windows_server_2016",
       "type": "Operating System"
@@ -368,11 +368,11 @@
     },
     {
       "vendor": "linux",
-      "count": 153905
+      "count": 153911
     },
     {
       "vendor": "microsoft",
-      "count": 128198
+      "count": 128932
     },
     {
       "vendor": "apple",
@@ -380,7 +380,7 @@
     },
     {
       "vendor": "adobe",
-      "count": 89656
+      "count": 89677
     },
     {
       "vendor": "mozilla",
@@ -420,7 +420,7 @@
     },
     {
       "vendor": "redhat",
-      "count": 33436
+      "count": 33440
     },
     {
       "vendor": "hp",
@@ -442,7 +442,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 153667
+      "count": 153673
     },
     {
       "product": "ios",
@@ -524,12 +524,12 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 1314424,
+      "count": 1314772,
       "percentage": 52.4
     },
     {
       "type": "Operating System",
-      "count": 1138137,
+      "count": 1138699,
       "percentage": 45.4
     },
     {
