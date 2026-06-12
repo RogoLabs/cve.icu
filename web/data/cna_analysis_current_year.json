@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T21:49:30.446590",
+  "generated_at": "2026-06-12T00:56:35.554523",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 331,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 6015,
+      "count": 6020,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-06-11T20:52:50.980Z",
+      "last_cve_date": "2026-06-11T22:55:17.738Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,17 +24,17 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 2435,
-        "High": 2484,
+        "Medium": 2437,
+        "High": 2485,
         "Low": 329,
-        "Critical": 767
+        "Critical": 769
       },
       "top_cwe_types": {
         "CWE-79": 633,
         "CWE-22": 411,
         "CWE-918": 352,
         "CWE-862": 282,
-        "CWE-863": 260
+        "CWE-863": 261
       },
       "kev_count": 7,
       "epss_high_count": 6,
@@ -58,7 +58,7 @@
         ],
         [
           "CWE-863",
-          260
+          261
         ]
       ]
     },
@@ -3119,10 +3119,64 @@
       ]
     },
     {
+      "name": "palo_alto",
+      "assigner_org_id": "d6c1279f-00f6-4ef7-9217-f89ffe703ec0",
+      "count": 54,
+      "rank": 59,
+      "first_cve_date": "2026-01-15T18:45:08.579Z",
+      "last_cve_date": "2026-06-11T21:55:27.337Z",
+      "years_active": 9,
+      "first_cve_year": 2018,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 31,
+        "High": 15,
+        "Low": 4,
+        "Critical": 4
+      },
+      "top_cwe_types": {
+        "CWE-754": 7,
+        "CWE-295": 6,
+        "CWE-78": 4,
+        "CWE-497": 3,
+        "CWE-787": 3
+      },
+      "kev_count": 2,
+      "epss_high_count": 1,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-754",
+          7
+        ],
+        [
+          "CWE-295",
+          6
+        ],
+        [
+          "CWE-78",
+          4
+        ],
+        [
+          "CWE-497",
+          3
+        ],
+        [
+          "CWE-787",
+          3
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 52,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-04-09T21:38:52.747Z",
       "years_active": 10,
@@ -3175,7 +3229,7 @@
       "name": "ConcreteCMS",
       "assigner_org_id": "ff5b8ace-8b95-4078-9743-eac1ca5451de",
       "count": 52,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-03-04T01:49:27.027Z",
       "last_cve_date": "2026-06-10T06:59:03.161Z",
       "years_active": 3,
@@ -3229,7 +3283,7 @@
       "name": "@huntr_ai",
       "assigner_org_id": "c09c270a-b464-47c1-9133-acb35b22c19a",
       "count": 51,
-      "rank": 61,
+      "rank": 62,
       "first_cve_date": "2026-01-01T07:03:57.277Z",
       "last_cve_date": "2026-06-11T13:31:52.492Z",
       "years_active": 6,
@@ -3282,7 +3336,7 @@
       "name": "Tanium",
       "assigner_org_id": "3938794e-25f5-4123-a1ba-5cbd7f104512",
       "count": 51,
-      "rank": 62,
+      "rank": 63,
       "first_cve_date": "2026-01-26T17:36:33.504Z",
       "last_cve_date": "2026-05-27T20:59:43.199Z",
       "years_active": 2,
@@ -3327,60 +3381,6 @@
         ],
         [
           "CWE-863",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "palo_alto",
-      "assigner_org_id": "d6c1279f-00f6-4ef7-9217-f89ffe703ec0",
-      "count": 51,
-      "rank": 63,
-      "first_cve_date": "2026-01-15T18:45:08.579Z",
-      "last_cve_date": "2026-06-11T21:22:13.066Z",
-      "years_active": 9,
-      "first_cve_year": 2018,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 31,
-        "High": 13,
-        "Low": 4,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-754": 7,
-        "CWE-295": 6,
-        "CWE-497": 3,
-        "CWE-787": 3,
-        "CWE-78": 3
-      },
-      "kev_count": 2,
-      "epss_high_count": 1,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-754",
-          7
-        ],
-        [
-          "CWE-295",
-          6
-        ],
-        [
-          "CWE-497",
-          3
-        ],
-        [
-          "CWE-787",
-          3
-        ],
-        [
-          "CWE-78",
           3
         ]
       ]
@@ -15473,10 +15473,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 6015,
+      "count": 6020,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-06-11T20:52:50.980Z",
+      "last_cve_date": "2026-06-11T22:55:17.738Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -15486,17 +15486,17 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 2435,
-        "High": 2484,
+        "Medium": 2437,
+        "High": 2485,
         "Low": 329,
-        "Critical": 767
+        "Critical": 769
       },
       "top_cwe_types": {
         "CWE-79": 633,
         "CWE-22": 411,
         "CWE-918": 352,
         "CWE-862": 282,
-        "CWE-863": 260
+        "CWE-863": 261
       },
       "kev_count": 7,
       "epss_high_count": 6,
@@ -15520,7 +15520,7 @@
         ],
         [
           "CWE-863",
-          260
+          261
         ]
       ]
     },
@@ -18581,10 +18581,64 @@
       ]
     },
     {
+      "name": "palo_alto",
+      "assigner_org_id": "d6c1279f-00f6-4ef7-9217-f89ffe703ec0",
+      "count": 54,
+      "rank": 59,
+      "first_cve_date": "2026-01-15T18:45:08.579Z",
+      "last_cve_date": "2026-06-11T21:55:27.337Z",
+      "years_active": 9,
+      "first_cve_year": 2018,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 31,
+        "High": 15,
+        "Low": 4,
+        "Critical": 4
+      },
+      "top_cwe_types": {
+        "CWE-754": 7,
+        "CWE-295": 6,
+        "CWE-78": 4,
+        "CWE-497": 3,
+        "CWE-787": 3
+      },
+      "kev_count": 2,
+      "epss_high_count": 1,
+      "epss_elevated_count": 1,
+      "top_cwes": [
+        [
+          "CWE-754",
+          7
+        ],
+        [
+          "CWE-295",
+          6
+        ],
+        [
+          "CWE-78",
+          4
+        ],
+        [
+          "CWE-497",
+          3
+        ],
+        [
+          "CWE-787",
+          3
+        ]
+      ]
+    },
+    {
       "name": "juniper",
       "assigner_org_id": "8cbe9d5a-a066-4c94-8978-4b15efeae968",
       "count": 52,
-      "rank": 59,
+      "rank": 60,
       "first_cve_date": "2026-01-15T20:10:44.846Z",
       "last_cve_date": "2026-04-09T21:38:52.747Z",
       "years_active": 10,
@@ -18637,7 +18691,7 @@
       "name": "ConcreteCMS",
       "assigner_org_id": "ff5b8ace-8b95-4078-9743-eac1ca5451de",
       "count": 52,
-      "rank": 60,
+      "rank": 61,
       "first_cve_date": "2026-03-04T01:49:27.027Z",
       "last_cve_date": "2026-06-10T06:59:03.161Z",
       "years_active": 3,
@@ -18691,7 +18745,7 @@
       "name": "@huntr_ai",
       "assigner_org_id": "c09c270a-b464-47c1-9133-acb35b22c19a",
       "count": 51,
-      "rank": 61,
+      "rank": 62,
       "first_cve_date": "2026-01-01T07:03:57.277Z",
       "last_cve_date": "2026-06-11T13:31:52.492Z",
       "years_active": 6,
@@ -18744,7 +18798,7 @@
       "name": "Tanium",
       "assigner_org_id": "3938794e-25f5-4123-a1ba-5cbd7f104512",
       "count": 51,
-      "rank": 62,
+      "rank": 63,
       "first_cve_date": "2026-01-26T17:36:33.504Z",
       "last_cve_date": "2026-05-27T20:59:43.199Z",
       "years_active": 2,
@@ -18789,60 +18843,6 @@
         ],
         [
           "CWE-863",
-          3
-        ]
-      ]
-    },
-    {
-      "name": "palo_alto",
-      "assigner_org_id": "d6c1279f-00f6-4ef7-9217-f89ffe703ec0",
-      "count": 51,
-      "rank": 63,
-      "first_cve_date": "2026-01-15T18:45:08.579Z",
-      "last_cve_date": "2026-06-11T21:22:13.066Z",
-      "years_active": 9,
-      "first_cve_year": 2018,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 31,
-        "High": 13,
-        "Low": 4,
-        "Critical": 3
-      },
-      "top_cwe_types": {
-        "CWE-754": 7,
-        "CWE-295": 6,
-        "CWE-497": 3,
-        "CWE-787": 3,
-        "CWE-78": 3
-      },
-      "kev_count": 2,
-      "epss_high_count": 1,
-      "epss_elevated_count": 1,
-      "top_cwes": [
-        [
-          "CWE-754",
-          7
-        ],
-        [
-          "CWE-295",
-          6
-        ],
-        [
-          "CWE-497",
-          3
-        ],
-        [
-          "CWE-787",
-          3
-        ],
-        [
-          "CWE-78",
           3
         ]
       ]
