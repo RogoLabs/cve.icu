@@ -1,28 +1,28 @@
 {
   "stats": {
-    "total_cnas_in_analysis": 453,
+    "total_cnas_in_analysis": 403,
     "official_cna_registry_count": 525,
-    "exact_matches": 410,
+    "exact_matches": 357,
     "case_mismatches": 1,
-    "org_name_matches": 6,
+    "org_name_matches": 5,
     "normalized_matches": 6,
     "partial_matches": 4,
-    "unmatched": 26,
-    "exact_match_cves": 340273,
-    "case_mismatch_cves": 119,
-    "org_name_match_cves": 690,
-    "normalized_match_cves": 1505,
-    "partial_match_cves": 59,
-    "unmatched_cves": 1018,
-    "exact_match_pct": 99.01,
-    "issues_pct": 0.99
+    "unmatched": 30,
+    "exact_match_cves": 289698,
+    "case_mismatch_cves": 96,
+    "org_name_match_cves": 547,
+    "normalized_match_cves": 1325,
+    "partial_match_cves": 41,
+    "unmatched_cves": 1117,
+    "exact_match_pct": 98.93,
+    "issues_pct": 1.07
   },
   "exact_matches": [
     {
       "cna_name": "mitre",
-      "cve_count": 113863,
-      "kev_count": 317,
-      "epss_high_count": 1726,
+      "cve_count": 109814,
+      "kev_count": 296,
+      "epss_high_count": 2993,
       "official_short_name": "mitre",
       "official_org_name": "MITRE Corporation",
       "official_id": "CNA-1999-0001",
@@ -31,9 +31,9 @@
     },
     {
       "cna_name": "Patchstack",
-      "cve_count": 16812,
+      "cve_count": 11739,
       "kev_count": 0,
-      "epss_high_count": 12,
+      "epss_high_count": 47,
       "official_short_name": "Patchstack",
       "official_org_name": "Patchstack",
       "official_id": "CNA-2021-0025",
@@ -41,43 +41,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "GitHub_M",
-      "cve_count": 16333,
-      "kev_count": 35,
-      "epss_high_count": 173,
-      "official_short_name": "GitHub_M",
-      "official_org_name": "GitHub, Inc.",
-      "official_id": "CNA-2019-0009",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "VulDB",
-      "cve_count": 14834,
-      "kev_count": 4,
-      "epss_high_count": 31,
-      "official_short_name": "VulDB",
-      "official_org_name": "VulDB",
-      "official_id": "CNA-2001-0063",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "Linux",
-      "cve_count": 12480,
-      "kev_count": 7,
-      "epss_high_count": 4,
-      "official_short_name": "Linux",
-      "official_org_name": "kernel.org",
-      "official_id": "CNA-2024-0016",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "microsoft",
-      "cve_count": 12361,
-      "kev_count": 368,
-      "epss_high_count": 551,
+      "cve_count": 10992,
+      "kev_count": 338,
+      "epss_high_count": 1232,
       "official_short_name": "microsoft",
       "official_org_name": "Microsoft Corporation",
       "official_id": "CNA-2005-0005",
@@ -86,9 +53,9 @@
     },
     {
       "cna_name": "redhat",
-      "cve_count": 11062,
-      "kev_count": 30,
-      "epss_high_count": 187,
+      "cve_count": 10609,
+      "kev_count": 28,
+      "epss_high_count": 257,
       "official_short_name": "redhat",
       "official_org_name": "Red Hat, Inc.",
       "official_id": "CNA-2005-0006",
@@ -96,21 +63,43 @@
       "confidence": "high"
     },
     {
-      "cna_name": "Wordfence",
-      "cve_count": 10114,
-      "kev_count": 0,
-      "epss_high_count": 51,
-      "official_short_name": "Wordfence",
-      "official_org_name": "Wordfence",
-      "official_id": "CNA-2021-0022",
+      "cna_name": "VulDB",
+      "cve_count": 9222,
+      "kev_count": 4,
+      "epss_high_count": 66,
+      "official_short_name": "VulDB",
+      "official_org_name": "VulDB",
+      "official_id": "CNA-2001-0063",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "Linux",
+      "cve_count": 8833,
+      "kev_count": 6,
+      "epss_high_count": 0,
+      "official_short_name": "Linux",
+      "official_org_name": "kernel.org",
+      "official_id": "CNA-2024-0016",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "GitHub_M",
+      "cve_count": 8309,
+      "kev_count": 21,
+      "epss_high_count": 216,
+      "official_short_name": "GitHub_M",
+      "official_org_name": "GitHub, Inc.",
+      "official_id": "CNA-2019-0009",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
       "cna_name": "oracle",
-      "cve_count": 8687,
-      "kev_count": 42,
-      "epss_high_count": 112,
+      "cve_count": 8164,
+      "kev_count": 37,
+      "epss_high_count": 132,
       "official_short_name": "oracle",
       "official_org_name": "Oracle",
       "official_id": "CNA-2008-0001",
@@ -118,10 +107,21 @@
       "confidence": "high"
     },
     {
+      "cna_name": "Wordfence",
+      "cve_count": 6707,
+      "kev_count": 0,
+      "epss_high_count": 125,
+      "official_short_name": "Wordfence",
+      "official_org_name": "Wordfence",
+      "official_id": "CNA-2021-0022",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "adobe",
-      "cve_count": 7151,
-      "kev_count": 73,
-      "epss_high_count": 111,
+      "cve_count": 6464,
+      "kev_count": 68,
+      "epss_high_count": 197,
       "official_short_name": "adobe",
       "official_org_name": "Adobe Systems Incorporated",
       "official_id": "CNA-2009-0001",
@@ -130,9 +130,9 @@
     },
     {
       "cna_name": "ibm",
-      "cve_count": 6871,
+      "cve_count": 6422,
       "kev_count": 7,
-      "epss_high_count": 18,
+      "epss_high_count": 29,
       "official_short_name": "ibm",
       "official_org_name": "IBM Corporation",
       "official_id": "CNA-2011-0007",
@@ -141,9 +141,9 @@
     },
     {
       "cna_name": "apple",
-      "cve_count": 6848,
-      "kev_count": 93,
-      "epss_high_count": 11,
+      "cve_count": 6269,
+      "kev_count": 84,
+      "epss_high_count": 36,
       "official_short_name": "apple",
       "official_org_name": "Apple Inc.",
       "official_id": "CNA-2009-0002",
@@ -152,9 +152,9 @@
     },
     {
       "cna_name": "cisco",
-      "cve_count": 6251,
-      "kev_count": 93,
-      "epss_high_count": 72,
+      "cve_count": 5938,
+      "kev_count": 77,
+      "epss_high_count": 66,
       "official_short_name": "cisco",
       "official_org_name": "Cisco Systems, Inc.",
       "official_id": "CNA-2007-0001",
@@ -163,9 +163,9 @@
     },
     {
       "cna_name": "google_android",
-      "cve_count": 5140,
-      "kev_count": 14,
-      "epss_high_count": 7,
+      "cve_count": 4790,
+      "kev_count": 10,
+      "epss_high_count": 5,
       "official_short_name": "google_android",
       "official_org_name": "Android (associated with Google Inc. or Open Handset Alliance)",
       "official_id": "CNA-2011-0002",
@@ -173,21 +173,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "Chrome",
-      "cve_count": 4678,
-      "kev_count": 74,
-      "epss_high_count": 18,
-      "official_short_name": "Chrome",
-      "official_org_name": "Chrome",
-      "official_id": "CNA-2011-0003",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "WPScan",
-      "cve_count": 4323,
+      "cve_count": 4099,
       "kev_count": 0,
-      "epss_high_count": 34,
+      "epss_high_count": 163,
       "official_short_name": "WPScan",
       "official_org_name": "WPScan",
       "official_id": "CNA-2021-0002",
@@ -195,21 +184,21 @@
       "confidence": "high"
     },
     {
-      "cna_name": "VulnCheck",
-      "cve_count": 4282,
-      "kev_count": 18,
-      "epss_high_count": 30,
-      "official_short_name": "VulnCheck",
-      "official_org_name": "VulnCheck",
-      "official_id": "CNA-2023-0021",
+      "cna_name": "Chrome",
+      "cve_count": 3366,
+      "kev_count": 66,
+      "epss_high_count": 32,
+      "official_short_name": "Chrome",
+      "official_org_name": "Chrome",
+      "official_id": "CNA-2011-0003",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
       "cna_name": "icscert",
-      "cve_count": 3616,
-      "kev_count": 7,
-      "epss_high_count": 26,
+      "cve_count": 3251,
+      "kev_count": 5,
+      "epss_high_count": 40,
       "official_short_name": "icscert",
       "official_org_name": "Cybersecurity and Infrastructure Security Agency (CISA) Industrial Control Systems (ICS)",
       "official_id": "CNA-2012-0001",
@@ -218,9 +207,9 @@
     },
     {
       "cna_name": "zdi",
-      "cve_count": 3344,
-      "kev_count": 5,
-      "epss_high_count": 83,
+      "cve_count": 3007,
+      "kev_count": 4,
+      "epss_high_count": 48,
       "official_short_name": "zdi",
       "official_org_name": "Zero Day Initiative",
       "official_id": "CNA-2017-0018",
@@ -228,21 +217,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "jpcert",
-      "cve_count": 3109,
-      "kev_count": 6,
-      "epss_high_count": 7,
-      "official_short_name": "jpcert",
-      "official_org_name": "JPCERT/CC",
-      "official_id": "CNA-2010-0001",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "certcc",
-      "cve_count": 3051,
+      "cve_count": 2932,
       "kev_count": 7,
-      "epss_high_count": 66,
+      "epss_high_count": 120,
       "official_short_name": "certcc",
       "official_org_name": "CERT/CC",
       "official_id": "CNA-2005-0002",
@@ -250,9 +228,20 @@
       "confidence": "high"
     },
     {
+      "cna_name": "jpcert",
+      "cve_count": 2857,
+      "kev_count": 4,
+      "epss_high_count": 8,
+      "official_short_name": "jpcert",
+      "official_org_name": "JPCERT/CC",
+      "official_id": "CNA-2010-0001",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "qualcomm",
-      "cve_count": 3022,
-      "kev_count": 12,
+      "cve_count": 2837,
+      "kev_count": 11,
       "epss_high_count": 0,
       "official_short_name": "qualcomm",
       "official_org_name": "Qualcomm, Inc.",
@@ -261,32 +250,21 @@
       "confidence": "high"
     },
     {
-      "cna_name": "mozilla",
-      "cve_count": 2459,
-      "kev_count": 12,
-      "epss_high_count": 13,
-      "official_short_name": "mozilla",
-      "official_org_name": "Mozilla Corporation",
-      "official_id": "CNA-2012-0002",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "talos",
-      "cve_count": 2418,
-      "kev_count": 2,
-      "epss_high_count": 27,
-      "official_short_name": "talos",
-      "official_org_name": "Talos",
-      "official_id": "CNA-2016-0017",
+      "cna_name": "VulnCheck",
+      "cve_count": 2487,
+      "kev_count": 10,
+      "epss_high_count": 144,
+      "official_short_name": "VulnCheck",
+      "official_org_name": "VulnCheck",
+      "official_id": "CNA-2023-0021",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
       "cna_name": "@huntr_ai",
-      "cve_count": 2386,
+      "cve_count": 2302,
       "kev_count": 0,
-      "epss_high_count": 31,
+      "epss_high_count": 54,
       "official_short_name": "@huntr_ai",
       "official_org_name": "Protect AI (formerly huntr.dev)",
       "official_id": "CNA-2021-0018",
@@ -294,8 +272,30 @@
       "confidence": "high"
     },
     {
+      "cna_name": "talos",
+      "cve_count": 2265,
+      "kev_count": 2,
+      "epss_high_count": 31,
+      "official_short_name": "talos",
+      "official_org_name": "Talos",
+      "official_id": "CNA-2016-0017",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "mozilla",
+      "cve_count": 2107,
+      "kev_count": 12,
+      "epss_high_count": 22,
+      "official_short_name": "mozilla",
+      "official_org_name": "Mozilla Corporation",
+      "official_id": "CNA-2012-0002",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "huawei",
-      "cve_count": 2176,
+      "cve_count": 1964,
       "kev_count": 0,
       "epss_high_count": 1,
       "official_short_name": "huawei",
@@ -306,7 +306,7 @@
     },
     {
       "cna_name": "intel",
-      "cve_count": 2152,
+      "cve_count": 1953,
       "kev_count": 1,
       "epss_high_count": 5,
       "official_short_name": "intel",
@@ -316,21 +316,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "apache",
-      "cve_count": 2101,
-      "kev_count": 34,
-      "epss_high_count": 183,
-      "official_short_name": "apache",
-      "official_org_name": "Apache Software Foundation",
-      "official_id": "CNA-2016-0004",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "dell",
-      "cve_count": 2091,
-      "kev_count": 3,
-      "epss_high_count": 12,
+      "cve_count": 1831,
+      "kev_count": 2,
+      "epss_high_count": 18,
       "official_short_name": "dell",
       "official_org_name": "Dell",
       "official_id": "CNA-2011-0004",
@@ -338,8 +327,19 @@
       "confidence": "high"
     },
     {
+      "cna_name": "apache",
+      "cve_count": 1678,
+      "kev_count": 33,
+      "epss_high_count": 172,
+      "official_short_name": "apache",
+      "official_org_name": "Apache Software Foundation",
+      "official_id": "CNA-2016-0004",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "siemens",
-      "cve_count": 1800,
+      "cve_count": 1676,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "siemens",
@@ -350,9 +350,9 @@
     },
     {
       "cna_name": "hackerone",
-      "cve_count": 1654,
-      "kev_count": 27,
-      "epss_high_count": 69,
+      "cve_count": 1495,
+      "kev_count": 24,
+      "epss_high_count": 68,
       "official_short_name": "hackerone",
       "official_org_name": "HackerOne",
       "official_id": "CNA-2016-0011",
@@ -361,9 +361,9 @@
     },
     {
       "cna_name": "jenkins",
-      "cve_count": 1516,
+      "cve_count": 1419,
       "kev_count": 3,
-      "epss_high_count": 32,
+      "epss_high_count": 17,
       "official_short_name": "jenkins",
       "official_org_name": "Jenkins Project",
       "official_id": "CNA-2018-0015",
@@ -372,9 +372,9 @@
     },
     {
       "cna_name": "sap",
-      "cve_count": 1495,
+      "cve_count": 1314,
       "kev_count": 8,
-      "epss_high_count": 8,
+      "epss_high_count": 10,
       "official_short_name": "sap",
       "official_org_name": "SAP SE",
       "official_id": "CNA-2017-0038",
@@ -383,9 +383,9 @@
     },
     {
       "cna_name": "hpe",
-      "cve_count": 1323,
-      "kev_count": 2,
-      "epss_high_count": 18,
+      "cve_count": 1213,
+      "kev_count": 1,
+      "epss_high_count": 35,
       "official_short_name": "hpe",
       "official_org_name": "Hewlett Packard Enterprise (HPE)",
       "official_id": "CNA-2016-0003",
@@ -394,9 +394,9 @@
     },
     {
       "cna_name": "GitLab",
-      "cve_count": 1246,
-      "kev_count": 5,
-      "epss_high_count": 23,
+      "cve_count": 966,
+      "kev_count": 3,
+      "epss_high_count": 15,
       "official_short_name": "GitLab",
       "official_org_name": "GitLab Inc.",
       "official_id": "CNA-2020-0018",
@@ -404,21 +404,21 @@
       "confidence": "high"
     },
     {
-      "cna_name": "INCIBE",
-      "cve_count": 1088,
-      "kev_count": 0,
-      "epss_high_count": 1,
-      "official_short_name": "INCIBE",
-      "official_org_name": "Spanish National Cybersecurity Institute, S.A. (INCIBE)",
-      "official_id": "CNA-2020-0002",
+      "cna_name": "hp",
+      "cve_count": 878,
+      "kev_count": 1,
+      "epss_high_count": 71,
+      "official_short_name": "hp",
+      "official_org_name": "HP Inc.",
+      "official_id": "CNA-2009-0003",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
       "cna_name": "fortinet",
-      "cve_count": 1008,
-      "kev_count": 26,
-      "epss_high_count": 24,
+      "cve_count": 859,
+      "kev_count": 20,
+      "epss_high_count": 21,
       "official_short_name": "fortinet",
       "official_org_name": "Fortinet, Inc.",
       "official_id": "CNA-2016-0010",
@@ -426,10 +426,32 @@
       "confidence": "high"
     },
     {
+      "cna_name": "snyk",
+      "cve_count": 824,
+      "kev_count": 1,
+      "epss_high_count": 11,
+      "official_short_name": "snyk",
+      "official_org_name": "Snyk",
+      "official_id": "CNA-2017-0029",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "juniper",
+      "cve_count": 815,
+      "kev_count": 7,
+      "epss_high_count": 5,
+      "official_short_name": "juniper",
+      "official_org_name": "Juniper Networks, Inc.",
+      "official_id": "CNA-2016-0001",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "MediaTek",
-      "cve_count": 960,
+      "cve_count": 793,
       "kev_count": 0,
-      "epss_high_count": 0,
+      "epss_high_count": 1,
       "official_short_name": "MediaTek",
       "official_org_name": "MediaTek, Inc.",
       "official_id": "CNA-2021-0043",
@@ -437,8 +459,30 @@
       "confidence": "high"
     },
     {
+      "cna_name": "INCIBE",
+      "cve_count": 723,
+      "kev_count": 0,
+      "epss_high_count": 2,
+      "official_short_name": "INCIBE",
+      "official_org_name": "Spanish National Cybersecurity Institute, S.A. (INCIBE)",
+      "official_id": "CNA-2020-0002",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "twcert",
+      "cve_count": 696,
+      "kev_count": 2,
+      "epss_high_count": 6,
+      "official_short_name": "twcert",
+      "official_org_name": "TWCERT/CC",
+      "official_id": "CNA-2018-0012",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
       "cna_name": "nvidia",
-      "cve_count": 911,
+      "cve_count": 688,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "nvidia",
@@ -448,54 +492,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "hp",
-      "cve_count": 908,
-      "kev_count": 1,
-      "epss_high_count": 54,
-      "official_short_name": "hp",
-      "official_org_name": "HP Inc.",
-      "official_id": "CNA-2009-0003",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "juniper",
-      "cve_count": 907,
-      "kev_count": 7,
-      "epss_high_count": 4,
-      "official_short_name": "juniper",
-      "official_org_name": "Juniper Networks, Inc.",
-      "official_id": "CNA-2016-0001",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "twcert",
-      "cve_count": 872,
-      "kev_count": 3,
-      "epss_high_count": 1,
-      "official_short_name": "twcert",
-      "official_org_name": "TWCERT/CC",
-      "official_id": "CNA-2018-0012",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
-      "cna_name": "snyk",
-      "cve_count": 865,
-      "kev_count": 1,
-      "epss_high_count": 4,
-      "official_short_name": "snyk",
-      "official_org_name": "Snyk",
-      "official_id": "CNA-2017-0029",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "f5",
-      "cve_count": 808,
-      "kev_count": 7,
-      "epss_high_count": 12,
+      "cve_count": 686,
+      "kev_count": 6,
+      "epss_high_count": 14,
       "official_short_name": "F5",
       "official_org_name": "F5, Inc.",
       "official_id": "CNA-2016-0009",
@@ -503,21 +503,10 @@
       "confidence": "high"
     },
     {
-      "cna_name": "vmware",
-      "cve_count": 760,
-      "kev_count": 31,
-      "epss_high_count": 27,
-      "official_short_name": "vmware",
-      "official_org_name": "VMware by Broadcom",
-      "official_id": "CNA-2016-0025",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "schneider",
-      "cve_count": 726,
+      "cve_count": 681,
       "kev_count": 1,
-      "epss_high_count": 3,
+      "epss_high_count": 4,
       "official_short_name": "schneider",
       "official_org_name": "Schneider Electric",
       "official_id": "CNA-2017-0009",
@@ -525,19 +514,19 @@
       "confidence": "high"
     },
     {
-      "cna_name": "CERTVDE",
-      "cve_count": 659,
-      "kev_count": 0,
-      "epss_high_count": 7,
-      "official_short_name": "CERTVDE",
-      "official_org_name": "CERT@VDE",
-      "official_id": "CNA-2020-0010",
+      "cna_name": "debian",
+      "cve_count": 642,
+      "kev_count": 3,
+      "epss_high_count": 14,
+      "official_short_name": "debian",
+      "official_org_name": "Debian GNU/Linux",
+      "official_id": "CNA-2005-0003",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
       "cna_name": "Unisoc",
-      "cve_count": 647,
+      "cve_count": 616,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "Unisoc",
@@ -547,24 +536,35 @@
       "confidence": "high"
     },
     {
-      "cna_name": "debian",
-      "cve_count": 645,
-      "kev_count": 3,
-      "epss_high_count": 8,
-      "official_short_name": "debian",
-      "official_org_name": "Debian GNU/Linux",
-      "official_id": "CNA-2005-0003",
+      "cna_name": "vmware",
+      "cve_count": 597,
+      "kev_count": 27,
+      "epss_high_count": 50,
+      "official_short_name": "vmware",
+      "official_org_name": "VMware by Broadcom",
+      "official_id": "CNA-2016-0025",
       "match_type": "exact_short",
       "confidence": "high"
     },
     {
-      "cna_name": "TR-CERT",
-      "cve_count": 642,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "official_short_name": "TR-CERT",
-      "official_org_name": "TR-CERT (Computer Emergency Response Team of the Republic of T\u00fcrkiye)",
-      "official_id": "CNA-2021-0034",
+      "cna_name": "OpenText",
+      "cve_count": 575,
+      "kev_count": 2,
+      "epss_high_count": 8,
+      "official_short_name": "OpenText",
+      "official_org_name": "OpenText (formerly Micro Focus)",
+      "official_id": "CNA-2014-0002",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "tenable",
+      "cve_count": 520,
+      "kev_count": 8,
+      "epss_high_count": 51,
+      "official_short_name": "tenable",
+      "official_org_name": "Tenable Network Security, Inc.",
+      "official_id": "CNA-2017-0023",
       "match_type": "exact_short",
       "confidence": "high"
     }
@@ -572,9 +572,9 @@
   "case_mismatches": [
     {
       "cna_name": "JFROG",
-      "cve_count": 119,
-      "kev_count": 1,
-      "epss_high_count": 4,
+      "cve_count": 96,
+      "kev_count": 0,
+      "epss_high_count": 2,
       "official_short_name": "JFrog",
       "official_org_name": "JFrog",
       "official_id": "CNA-2021-0039",
@@ -585,9 +585,9 @@
   "org_name_matches": [
     {
       "cna_name": "Fluid Attacks",
-      "cve_count": 323,
+      "cve_count": 261,
       "kev_count": 1,
-      "epss_high_count": 0,
+      "epss_high_count": 2,
       "official_short_name": "Fluid_Attacks",
       "official_org_name": "Fluid Attacks",
       "official_id": "CNA-2021-0020",
@@ -596,7 +596,7 @@
     },
     {
       "cna_name": "SICK AG",
-      "cve_count": 160,
+      "cve_count": 120,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "SICK_AG",
@@ -607,7 +607,7 @@
     },
     {
       "cna_name": "Hitachi Energy",
-      "cve_count": 110,
+      "cve_count": 99,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "Hitachi_Energy",
@@ -618,7 +618,7 @@
     },
     {
       "cna_name": "M-Files Corporation",
-      "cve_count": 57,
+      "cve_count": 49,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "M-Files",
@@ -629,7 +629,7 @@
     },
     {
       "cna_name": "NLnet Labs",
-      "cve_count": 39,
+      "cve_count": 18,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "NLnet_Labs",
@@ -637,24 +637,13 @@
       "official_id": "CNA-2020-0033",
       "match_type": "exact_org",
       "confidence": "high"
-    },
-    {
-      "cna_name": "SNOWFLAKE",
-      "cve_count": 1,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "official_short_name": "SNOW",
-      "official_org_name": "Snowflake",
-      "official_id": "CNA-2026-0021",
-      "match_type": "case_org",
-      "confidence": "high"
     }
   ],
   "normalized_matches": [
     {
       "cna_name": "SamsungMobile",
-      "cve_count": 1317,
-      "kev_count": 13,
+      "cve_count": 1160,
+      "kev_count": 11,
       "epss_high_count": 0,
       "official_short_name": "Samsung_Mobile",
       "official_org_name": "Samsung Mobile",
@@ -663,8 +652,19 @@
       "confidence": "medium"
     },
     {
+      "cna_name": "WDC PSIRT",
+      "cve_count": 47,
+      "kev_count": 0,
+      "epss_high_count": 1,
+      "official_short_name": "WDC_PSIRT",
+      "official_org_name": "Western Digital",
+      "official_id": "CNA-2021-0051",
+      "match_type": "normalized",
+      "confidence": "medium"
+    },
+    {
       "cna_name": "Ping Identity",
-      "cve_count": 49,
+      "cve_count": 45,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "PingIdentity",
@@ -674,21 +674,10 @@
       "confidence": "medium"
     },
     {
-      "cna_name": "WDC PSIRT",
-      "cve_count": 49,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "official_short_name": "WDC_PSIRT",
-      "official_org_name": "Western Digital",
-      "official_id": "CNA-2021-0051",
-      "match_type": "normalized",
-      "confidence": "medium"
-    },
-    {
       "cna_name": "Document Fdn.",
-      "cve_count": 44,
+      "cve_count": 35,
       "kev_count": 0,
-      "epss_high_count": 1,
+      "epss_high_count": 2,
       "official_short_name": "Document_Fdn.",
       "official_org_name": "Document Foundation, The",
       "official_id": "CNA-2019-0002",
@@ -697,7 +686,7 @@
     },
     {
       "cna_name": "ZUSO ART",
-      "cve_count": 38,
+      "cve_count": 30,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "ZUSO_ART",
@@ -710,7 +699,7 @@
       "cna_name": "Silver Peak",
       "cve_count": 8,
       "kev_count": 0,
-      "epss_high_count": 0,
+      "epss_high_count": 1,
       "official_short_name": "Silver_Peak",
       "official_org_name": "Silver Peak Systems, Inc.",
       "official_id": "CNA-2020-0011",
@@ -720,19 +709,8 @@
   ],
   "partial_matches": [
     {
-      "cna_name": "ASUSTOR1",
-      "cve_count": 28,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "official_short_name": "ASUSTOR",
-      "official_org_name": "ASUSTOR, Inc.",
-      "official_id": "CNA-2021-0048",
-      "match_type": "partial",
-      "confidence": "low"
-    },
-    {
       "cna_name": "crafter",
-      "cve_count": 19,
+      "cve_count": 18,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "Crafter_CMS",
@@ -742,8 +720,19 @@
       "confidence": "low"
     },
     {
+      "cna_name": "ASUSTOR1",
+      "cve_count": 16,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "official_short_name": "ASUSTOR",
+      "official_org_name": "ASUSTOR, Inc.",
+      "official_id": "CNA-2021-0048",
+      "match_type": "partial",
+      "confidence": "low"
+    },
+    {
       "cna_name": "redhat-cnalr",
-      "cve_count": 8,
+      "cve_count": 4,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "redhat",
@@ -754,7 +743,7 @@
     },
     {
       "cna_name": "Milestone",
-      "cve_count": 4,
+      "cve_count": 3,
       "kev_count": 0,
       "epss_high_count": 0,
       "official_short_name": "milestonesys",
@@ -765,6 +754,14 @@
     }
   ],
   "unmatched": [
+    {
+      "cna_name": "facebook",
+      "cve_count": 161,
+      "kev_count": 3,
+      "epss_high_count": 3,
+      "match_type": null,
+      "confidence": null
+    },
     {
       "cna_name": "dwf",
       "cve_count": 157,
@@ -777,15 +774,7 @@
       "cna_name": "Mend",
       "cve_count": 150,
       "kev_count": 0,
-      "epss_high_count": 3,
-      "match_type": null,
-      "confidence": null
-    },
-    {
-      "cna_name": "GovTech CSG",
-      "cve_count": 124,
-      "kev_count": 0,
-      "epss_high_count": 0,
+      "epss_high_count": 2,
       "match_type": null,
       "confidence": null
     },
@@ -793,15 +782,15 @@
       "cna_name": "Splunk",
       "cve_count": 110,
       "kev_count": 0,
-      "epss_high_count": 2,
+      "epss_high_count": 3,
       "match_type": null,
       "confidence": null
     },
     {
       "cna_name": "3DS",
-      "cve_count": 98,
-      "kev_count": 3,
-      "epss_high_count": 3,
+      "cve_count": 72,
+      "kev_count": 1,
+      "epss_high_count": 0,
       "match_type": null,
       "confidence": null
     },
@@ -809,22 +798,22 @@
       "cna_name": "pivotal",
       "cve_count": 58,
       "kev_count": 1,
-      "epss_high_count": 3,
+      "epss_high_count": 5,
       "match_type": null,
       "confidence": null
     },
     {
       "cna_name": "TML",
-      "cve_count": 58,
+      "cve_count": 57,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
       "confidence": null
     },
     {
-      "cna_name": "HITVAN",
-      "cve_count": 52,
-      "kev_count": 2,
+      "cna_name": "SNPS",
+      "cve_count": 53,
+      "kev_count": 0,
       "epss_high_count": 2,
       "match_type": null,
       "confidence": null
@@ -838,8 +827,24 @@
       "confidence": null
     },
     {
-      "cna_name": "TV",
-      "cve_count": 38,
+      "cna_name": "HITVAN",
+      "cve_count": 45,
+      "kev_count": 2,
+      "epss_high_count": 2,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "GovTech CSG",
+      "cve_count": 36,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "NLOK",
+      "cve_count": 25,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
@@ -854,16 +859,16 @@
       "confidence": null
     },
     {
-      "cna_name": "SWI",
-      "cve_count": 16,
+      "cna_name": "PureStorage",
+      "cve_count": 17,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
       "confidence": null
     },
     {
-      "cna_name": "HW",
-      "cve_count": 16,
+      "cna_name": "SWI",
+      "cve_count": 13,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
@@ -879,6 +884,22 @@
     },
     {
       "cna_name": "VDOO",
+      "cve_count": 11,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "HW",
+      "cve_count": 11,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "TV",
       "cve_count": 11,
       "kev_count": 0,
       "epss_high_count": 0,
