@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-06-26T17:12:01.067363Z",
-  "catalog_version": "2026.01.07",
-  "total_kev_cves": 1486,
+  "generated_at": "2026-06-26T18:47:53.529820Z",
+  "catalog_version": "2026.06.25",
+  "total_kev_cves": 1629,
   "statistics": {
-    "added_last_30_days": 0,
-    "added_last_90_days": 0,
-    "ransomware_associated": 304
+    "added_last_30_days": 26,
+    "added_last_90_days": 75,
+    "ransomware_associated": 327
   },
   "by_year_added": {
     "2021": 311,
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 2
+    "2026": 145
   },
   "by_year_cve": {
     "2002": 1,
@@ -21,24 +21,25 @@
     "2005": 1,
     "2006": 2,
     "2007": 3,
-    "2008": 3,
-    "2009": 12,
-    "2010": 21,
+    "2008": 5,
+    "2009": 15,
+    "2010": 23,
     "2011": 9,
-    "2012": 21,
+    "2012": 22,
     "2013": 38,
     "2014": 34,
     "2015": 44,
     "2016": 59,
-    "2017": 85,
-    "2018": 88,
-    "2019": 117,
-    "2020": 144,
-    "2021": 208,
-    "2022": 129,
-    "2023": 158,
-    "2024": 155,
-    "2025": 152
+    "2017": 86,
+    "2018": 89,
+    "2019": 118,
+    "2020": 146,
+    "2021": 213,
+    "2022": 131,
+    "2023": 163,
+    "2024": 164,
+    "2025": 183,
+    "2026": 78
   },
   "by_year_published": {
     "2002": 1,
@@ -46,24 +47,25 @@
     "2005": 1,
     "2006": 2,
     "2007": 2,
-    "2008": 4,
-    "2009": 10,
-    "2010": 21,
+    "2008": 5,
+    "2009": 14,
+    "2010": 23,
     "2011": 9,
-    "2012": 21,
+    "2012": 22,
     "2013": 35,
     "2014": 34,
     "2015": 43,
     "2016": 53,
-    "2017": 88,
-    "2018": 75,
-    "2019": 127,
-    "2020": 144,
-    "2021": 208,
-    "2022": 128,
-    "2023": 160,
-    "2024": 152,
-    "2025": 166
+    "2017": 89,
+    "2018": 76,
+    "2019": 128,
+    "2020": 146,
+    "2021": 213,
+    "2022": 130,
+    "2023": 163,
+    "2024": 160,
+    "2025": 194,
+    "2026": 84
   },
   "timeline": {
     "2021-11": 291,
@@ -116,76 +118,85 @@
     "2025-10": 31,
     "2025-11": 11,
     "2025-12": 20,
-    "2026-01": 2
+    "2026-01": 17,
+    "2026-02": 28,
+    "2026-03": 26,
+    "2026-04": 31,
+    "2026-05": 21,
+    "2026-06": 22
   },
   "top_vendors": [
     [
       "Microsoft",
-      351
-    ],
-    [
-      "Apple",
-      86
+      377
     ],
     [
       "Cisco",
-      82
+      93
+    ],
+    [
+      "Apple",
+      93
     ],
     [
       "Adobe",
-      76
+      79
     ],
     [
       "Google",
-      67
+      72
     ],
     [
       "Oracle",
-      42
+      44
     ],
     [
       "Apache",
-      38
+      39
     ],
     [
       "Ivanti",
-      30
+      35
+    ],
+    [
+      "Linux",
+      26
+    ],
+    [
+      "D-Link",
+      26
+    ],
+    [
+      "Fortinet",
+      26
     ],
     [
       "VMware",
       26
     ],
     [
-      "D-Link",
-      25
-    ],
-    [
-      "Fortinet",
-      23
-    ],
-    [
-      "Linux",
-      23
-    ],
-    [
       "Citrix",
-      21
+      22
+    ],
+    [
+      "Synacor",
+      18
     ],
     [
       "Android",
-      16
+      17
     ],
     [
-      "SonicWall",
+      "Palo Alto Networks",
       15
     ],
     [
       "Samsung",
-      14
+      15
     ],
     [
-      "Synacor",
-      14
+      "SonicWall",
+      15
     ],
     [
       "SAP",
@@ -194,28 +205,24 @@
     [
       "Mozilla",
       13
-    ],
-    [
-      "Palo Alto Networks",
-      13
     ]
   ],
   "top_products": [
     [
       "Microsoft - Windows",
-      159
+      170
     ],
     [
       "Apple - Multiple Products",
-      47
+      53
     ],
     [
       "Google - Chromium V8",
-      37
+      39
     ],
     [
       "Microsoft - Internet Explorer",
-      34
+      36
     ],
     [
       "Adobe - Flash Player",
@@ -223,6 +230,10 @@
     ],
     [
       "Microsoft - Office",
+      29
+    ],
+    [
+      "Linux - Kernel",
       26
     ],
     [
@@ -230,12 +241,12 @@
       25
     ],
     [
-      "Linux - Kernel",
-      23
+      "Microsoft - Exchange Server",
+      17
     ],
     [
-      "Microsoft - Exchange Server",
-      16
+      "Synacor - Zimbra Collaboration Suite (ZCS)",
+      15
     ],
     [
       "Adobe - ColdFusion",
@@ -246,36 +257,32 @@
       14
     ],
     [
+      "Adobe - Acrobat and Reader",
+      13
+    ],
+    [
       "Samsung - Mobile Devices",
       13
     ],
     [
-      "Synacor - Zimbra Collaboration Suite (ZCS)",
-      13
+      "Oracle - WebLogic Server",
+      12
+    ],
+    [
+      "Palo Alto Networks - PAN-OS",
+      12
     ],
     [
       "Apple - iOS, iPadOS, and macOS",
       11
     ],
     [
-      "Oracle - WebLogic Server",
-      11
-    ],
-    [
-      "Adobe - Acrobat and Reader",
-      11
+      "Qualcomm - Multiple Chipsets",
+      10
     ],
     [
       "SAP - NetWeaver",
       10
-    ],
-    [
-      "Palo Alto Networks - PAN-OS",
-      10
-    ],
-    [
-      "Qualcomm - Multiple Chipsets",
-      9
     ],
     [
       "VMware - vCenter Server",
@@ -285,84 +292,245 @@
   "top_cwes": [
     [
       "CWE-20",
-      113
+      118
     ],
     [
       "CWE-78",
-      97
+      104
     ],
     [
       "CWE-787",
-      96
+      100
     ],
     [
       "CWE-416",
-      86
+      92
     ],
     [
       "CWE-119",
-      80
+      84
     ],
     [
       "CWE-22",
-      68
+      75
     ],
     [
       "CWE-502",
-      58
+      66
     ],
     [
       "CWE-94",
-      55
-    ],
-    [
-      "CWE-843",
-      36
+      65
     ],
     [
       "CWE-287",
-      31
+      39
+    ],
+    [
+      "CWE-843",
+      37
+    ],
+    [
+      "CWE-306",
+      36
+    ],
+    [
+      "CWE-284",
+      33
+    ],
+    [
+      "CWE-79",
+      33
     ],
     [
       "CWE-264",
       31
     ],
     [
-      "CWE-306",
-      30
-    ],
-    [
       "CWE-122",
       30
     ],
     [
-      "CWE-79",
-      29
-    ],
-    [
-      "CWE-284",
-      29
-    ],
-    [
       "CWE-77",
-      26
+      29
     ],
     [
       "CWE-89",
-      24
+      28
     ],
     [
       "CWE-200",
-      21
-    ],
-    [
-      "CWE-399",
-      17
+      24
     ],
     [
       "CWE-434",
-      16
+      20
+    ],
+    [
+      "CWE-918",
+      18
     ]
   ],
-  "recent_additions": []
+  "recent_additions": [
+    {
+      "cve_id": "CVE-2026-12569",
+      "vendor": "PTC",
+      "product": "Windchill and FlexPLM",
+      "date_added": "2026-06-25",
+      "due_date": "2026-06-28",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20230",
+      "vendor": "Cisco",
+      "product": "Unified Communications Manager",
+      "date_added": "2026-06-25",
+      "due_date": "2026-06-28",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2025-67038",
+      "vendor": "Lantronix",
+      "product": "EDS5000",
+      "date_added": "2026-06-23",
+      "due_date": "2026-06-26",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-34910",
+      "vendor": "Ubiquiti",
+      "product": "UniFi OS",
+      "date_added": "2026-06-23",
+      "due_date": "2026-06-26",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-34909",
+      "vendor": "Ubiquiti",
+      "product": "UniFi OS",
+      "date_added": "2026-06-23",
+      "due_date": "2026-06-26",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-34908",
+      "vendor": "Ubiquiti",
+      "product": "UniFi OS",
+      "date_added": "2026-06-23",
+      "due_date": "2026-06-26",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20253",
+      "vendor": "Splunk",
+      "product": "Enterprise",
+      "date_added": "2026-06-18",
+      "due_date": "2026-06-21",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-48907",
+      "vendor": "Widget Factory",
+      "product": "Joomla Content Editor ",
+      "date_added": "2026-06-16",
+      "due_date": "2026-06-19",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-54420",
+      "vendor": "LiteSpeed",
+      "product": "cPanel Plugin",
+      "date_added": "2026-06-15",
+      "due_date": "2026-06-18",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20262",
+      "vendor": "Cisco",
+      "product": "Catalyst SD-WAN Manager",
+      "date_added": "2026-06-15",
+      "due_date": "2026-06-29",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-35273",
+      "vendor": "Oracle",
+      "product": " PeopleSoft Enterprise PeopleTools",
+      "date_added": "2026-06-12",
+      "due_date": "2026-06-15",
+      "ransomware": "Known"
+    },
+    {
+      "cve_id": "CVE-2026-10520",
+      "vendor": "Ivanti",
+      "product": "Sentry",
+      "date_added": "2026-06-11",
+      "due_date": "2026-06-14",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-11645",
+      "vendor": "Google",
+      "product": "Chromium V8",
+      "date_added": "2026-06-09",
+      "due_date": "2026-06-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-7473",
+      "vendor": "Arista",
+      "product": "Extensible Operating System",
+      "date_added": "2026-06-09",
+      "due_date": "2026-06-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-20245",
+      "vendor": "Cisco",
+      "product": "Catalyst SD-WAN Manager",
+      "date_added": "2026-06-09",
+      "due_date": "2026-06-23",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-42271",
+      "vendor": "BerriAI",
+      "product": "LiteLLM",
+      "date_added": "2026-06-08",
+      "due_date": "2026-06-22",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-50751",
+      "vendor": "Check Point",
+      "product": "Security Gateway",
+      "date_added": "2026-06-08",
+      "due_date": "2026-06-11",
+      "ransomware": "Known"
+    },
+    {
+      "cve_id": "CVE-2026-28318",
+      "vendor": "SolarWinds",
+      "product": "Serv-U",
+      "date_added": "2026-06-05",
+      "due_date": "2026-06-19",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-45247",
+      "vendor": "Mirasvit",
+      "product": "Mirasvit Full Page Cache Warmer",
+      "date_added": "2026-06-03",
+      "due_date": "2026-06-06",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2022-0492",
+      "vendor": "Linux",
+      "product": "Kernel",
+      "date_added": "2026-06-02",
+      "due_date": "2026-06-05",
+      "ransomware": "Unknown"
+    }
+  ]
 }
