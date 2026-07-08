@@ -1066,6 +1066,12 @@ class CVESiteBuilder:
                 logger.error("❌ No year data generated, cannot continue build")
                 return False
 
+            # Step 3.5: Guard against truncated/incomplete upstream feeds.
+            # A complete historical year that comes back with zero CVEs means the
+            # source feed was partial when downloaded. Fail loudly here so bad
+            # data is never published or committed.
+            self.verify_historical_year_coverage(all_year_data)
+
             # Step 4: Generate combined analysis JSON files
             combined_analysis = self.generate_combined_analysis_json(all_year_data)
 
@@ -1110,6 +1116,31 @@ class CVESiteBuilder:
             self._set_output_dirs(self.output_root_dir)
             if staged_web_dir.exists():
                 shutil.rmtree(staged_web_dir, ignore_errors=True)
+
+    def verify_historical_year_coverage(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Fail the build if any complete historical year has zero CVEs.
+
+        A truncated or partially-served upstream feed can silently drop an
+        entire year to zero records (this happened to 1999 on 2026-07-08).
+        Complete historical years never legitimately have zero CVEs, so treat
+        that as a fatal error rather than publishing a summary with a missing
+        year. The current year is excluded since it is still accumulating data.
+        """
+        counts = {int(d["year"]): d.get("total_cves", 0) for d in all_year_data if "year" in d}
+        earliest_year = self.available_years[0]
+        empty_years = [
+            year for year in range(earliest_year, self.current_year) if counts.get(year, 0) <= 0
+        ]
+        if empty_years:
+            raise RuntimeError(
+                f"Historical year(s) with zero CVEs detected: {', '.join(map(str, empty_years))}. "
+                "This usually means the upstream CVE feed was truncated or incomplete when "
+                "downloaded. Aborting build to avoid publishing or committing partial data."
+            )
+        logger.info(
+            f"    ✅ Historical year coverage verified ({earliest_year}-{self.current_year - 1}, "
+            "all years non-empty)"
+        )
 
 
 def main() -> None:

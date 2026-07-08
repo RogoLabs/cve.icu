@@ -253,6 +253,59 @@ class TestDataValidation:
             assert isinstance(result, bool)
 
 
+class TestHistoricalYearCoverageGuard:
+    """Tests for the truncated-feed guardrail (verify_historical_year_coverage)."""
+
+    def _year_data(self, years):
+        """Build a minimal all_year_data list from a {year: total_cves} mapping."""
+        return [{"year": y, "total_cves": c} for y, c in years.items()]
+
+    def test_passes_when_all_historical_years_present(self):
+        """A complete set of non-empty historical years should not raise."""
+        from build import CVESiteBuilder
+
+        builder = CVESiteBuilder(quiet=True)
+        data = self._year_data(dict.fromkeys(range(1999, builder.current_year + 1), 1000))
+
+        # Should not raise
+        builder.verify_historical_year_coverage(data)
+
+    def test_raises_when_historical_year_missing(self):
+        """A missing historical year (the 1999 outage) must abort the build."""
+        from build import CVESiteBuilder
+
+        builder = CVESiteBuilder(quiet=True)
+        # Drop 1999 entirely, mimicking the truncated feed on 2026-07-08.
+        data = self._year_data(dict.fromkeys(range(2000, builder.current_year + 1), 1000))
+
+        with pytest.raises(RuntimeError, match="1999"):
+            builder.verify_historical_year_coverage(data)
+
+    def test_raises_when_historical_year_zero(self):
+        """A historical year present but with zero CVEs must abort the build."""
+        from build import CVESiteBuilder
+
+        builder = CVESiteBuilder(quiet=True)
+        years = dict.fromkeys(range(1999, builder.current_year + 1), 1000)
+        years[1999] = 0
+        data = self._year_data(years)
+
+        with pytest.raises(RuntimeError, match="1999"):
+            builder.verify_historical_year_coverage(data)
+
+    def test_allows_empty_current_year(self):
+        """The still-accumulating current year is exempt from the guard."""
+        from build import CVESiteBuilder
+
+        builder = CVESiteBuilder(quiet=True)
+        years = dict.fromkeys(range(1999, builder.current_year), 1000)
+        years[builder.current_year] = 0
+        data = self._year_data(years)
+
+        # Should not raise — current year is allowed to be empty.
+        builder.verify_historical_year_coverage(data)
+
+
 class TestAsyncFunctionality:
     """Tests for async functionality (requires pytest-asyncio)."""
 
