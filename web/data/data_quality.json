@@ -1,21 +1,21 @@
 {
   "stats": {
     "total_cnas_in_analysis": 455,
-    "official_cna_registry_count": 528,
-    "exact_matches": 412,
+    "official_cna_registry_count": 484,
+    "exact_matches": 400,
     "case_mismatches": 1,
-    "org_name_matches": 6,
-    "normalized_matches": 6,
-    "partial_matches": 4,
-    "unmatched": 26,
-    "exact_match_cves": 343062,
+    "org_name_matches": 5,
+    "normalized_matches": 7,
+    "partial_matches": 5,
+    "unmatched": 37,
+    "exact_match_cves": 342983,
     "case_mismatch_cves": 119,
-    "org_name_match_cves": 701,
-    "normalized_match_cves": 1505,
-    "partial_match_cves": 59,
-    "unmatched_cves": 1025,
-    "exact_match_pct": 99.02,
-    "issues_pct": 0.98
+    "org_name_match_cves": 691,
+    "normalized_match_cves": 1629,
+    "partial_match_cves": 69,
+    "unmatched_cves": 994,
+    "exact_match_pct": 98.99,
+    "issues_pct": 1.01
   },
   "exact_matches": [
     {
@@ -97,7 +97,7 @@
     },
     {
       "cna_name": "Wordfence",
-      "cve_count": 10263,
+      "cve_count": 10264,
       "kev_count": 0,
       "epss_high_count": 51,
       "official_short_name": "Wordfence",
@@ -196,7 +196,7 @@
     },
     {
       "cna_name": "WPScan",
-      "cve_count": 4355,
+      "cve_count": 4361,
       "kev_count": 0,
       "epss_high_count": 34,
       "official_short_name": "WPScan",
@@ -504,7 +504,7 @@
     },
     {
       "cna_name": "vmware",
-      "cve_count": 760,
+      "cve_count": 767,
       "kev_count": 31,
       "epss_high_count": 28,
       "official_short_name": "vmware",
@@ -637,17 +637,6 @@
       "official_id": "CNA-2020-0033",
       "match_type": "exact_org",
       "confidence": "high"
-    },
-    {
-      "cna_name": "SNOWFLAKE",
-      "cve_count": 10,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "official_short_name": "SNOW",
-      "official_org_name": "Snowflake",
-      "official_id": "CNA-2026-0021",
-      "match_type": "case_org",
-      "confidence": "high"
     }
   ],
   "normalized_matches": [
@@ -659,6 +648,17 @@
       "official_short_name": "Samsung_Mobile",
       "official_org_name": "Samsung Mobile",
       "official_id": "CNA-2021-0001",
+      "match_type": "normalized",
+      "confidence": "medium"
+    },
+    {
+      "cna_name": "GovTech CSG",
+      "cve_count": 124,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "official_short_name": "GovTech_CSG",
+      "official_org_name": "Government Technology Agency of Singapore Cyber Security Group (GovTech CSG)",
+      "official_id": "CNA-2021-0044",
       "match_type": "normalized",
       "confidence": "medium"
     },
@@ -742,6 +742,17 @@
       "confidence": "low"
     },
     {
+      "cna_name": "SNOWFLAKE",
+      "cve_count": 10,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "official_short_name": "Snow",
+      "official_org_name": "Snow Software",
+      "official_id": "CNA-2021-0036",
+      "match_type": "partial",
+      "confidence": "low"
+    },
+    {
       "cna_name": "redhat-cnalr",
       "cve_count": 8,
       "kev_count": 0,
@@ -782,22 +793,6 @@
       "confidence": null
     },
     {
-      "cna_name": "GovTech CSG",
-      "cve_count": 124,
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "match_type": null,
-      "confidence": null
-    },
-    {
-      "cna_name": "Splunk",
-      "cve_count": 110,
-      "kev_count": 0,
-      "epss_high_count": 2,
-      "match_type": null,
-      "confidence": null
-    },
-    {
       "cna_name": "3DS",
       "cve_count": 100,
       "kev_count": 3,
@@ -830,8 +825,24 @@
       "confidence": null
     },
     {
+      "cna_name": "GEN",
+      "cve_count": 49,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
       "cna_name": "F-SecureUS",
       "cve_count": 46,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "CIRCL",
+      "cve_count": 45,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
@@ -846,6 +857,30 @@
       "confidence": null
     },
     {
+      "cna_name": "Acer",
+      "cve_count": 37,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "TuranSec",
+      "cve_count": 32,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "Everpure",
+      "cve_count": 22,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
       "cna_name": "Teradici",
       "cve_count": 20,
       "kev_count": 0,
@@ -854,7 +889,7 @@
       "confidence": null
     },
     {
-      "cna_name": "SWI",
+      "cna_name": "HW",
       "cve_count": 16,
       "kev_count": 0,
       "epss_high_count": 0,
@@ -862,8 +897,8 @@
       "confidence": null
     },
     {
-      "cna_name": "HW",
-      "cve_count": 16,
+      "cna_name": "PRJBLK",
+      "cve_count": 12,
       "kev_count": 0,
       "epss_high_count": 0,
       "match_type": null,
@@ -942,7 +977,63 @@
       "confidence": null
     },
     {
+      "cna_name": "Secur0",
+      "cve_count": 4,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "linqi",
+      "cve_count": 4,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "ThinkstAppliedResearch",
+      "cve_count": 4,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "Cribl",
+      "cve_count": 3,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
       "cna_name": "Cybellum",
+      "cve_count": 2,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "CODRA",
+      "cve_count": 2,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "OAI",
+      "cve_count": 2,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "BombadilSystems",
       "cve_count": 2,
       "kev_count": 0,
       "epss_high_count": 0,
@@ -967,6 +1058,14 @@
     },
     {
       "cna_name": "OpenCloudOS",
+      "cve_count": 1,
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "match_type": null,
+      "confidence": null
+    },
+    {
+      "cna_name": "Hackrate",
       "cve_count": 1,
       "kev_count": 0,
       "epss_high_count": 0,
