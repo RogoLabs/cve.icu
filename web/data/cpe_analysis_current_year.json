@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-07-14T19:19:55.867705",
+  "generated_at": "2026-07-14T22:03:42.661280",
   "year": 2026,
-  "total_unique_cpes": 13683,
-  "total_cpe_entries": 112297,
-  "total_cves_with_cpes": 22776,
-  "total_unique_vendors": 2662,
-  "total_unique_products": 6849,
+  "total_unique_cpes": 13735,
+  "total_cpe_entries": 114313,
+  "total_cves_with_cpes": 22862,
+  "total_unique_vendors": 2663,
+  "total_unique_products": 6855,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 9756,
+      "count": 9955,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -58,7 +58,7 @@
     },
     {
       "cpe": "cpe:2.3:a:openclaw:openclaw:*:*:*:*:*:node.js:*:*",
-      "count": 530,
+      "count": 533,
       "vendor": "openclaw",
       "product": "openclaw",
       "type": "Application"
@@ -85,17 +85,17 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.1:rc1:*:*:*:*:*:*",
+      "count": 405,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
       "count": 370,
       "vendor": "microsoft",
       "product": "windows_server_2019",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:7.1:rc1:*:*:*:*:*:*",
-      "count": 368,
-      "vendor": "linux",
-      "product": "linux_kernel",
       "type": "Operating System"
     },
     {
@@ -169,6 +169,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:linux:linux_kernel:7.1:rc2:*:*:*:*:*:*",
+      "count": 326,
+      "vendor": "linux",
+      "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_21h2:*:*:*:*:*:*:x64:*",
       "count": 324,
       "vendor": "microsoft",
@@ -209,19 +216,12 @@
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:linux:linux_kernel:6.19:rc3:*:*:*:*:*:*",
-      "count": 319,
-      "vendor": "linux",
-      "product": "linux_kernel",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
     {
       "vendor": "linux",
-      "count": 19099
+      "count": 19417
     },
     {
       "vendor": "qualcomm",
@@ -233,11 +233,15 @@
     },
     {
       "vendor": "adobe",
-      "count": 7416
+      "count": 7478
     },
     {
       "vendor": "coollabs",
       "count": 4211
+    },
+    {
+      "vendor": "paloaltonetworks",
+      "count": 3856
     },
     {
       "vendor": "samsung",
@@ -249,7 +253,7 @@
     },
     {
       "vendor": "juniper",
-      "count": 2943
+      "count": 3121
     },
     {
       "vendor": "cisco",
@@ -258,10 +262,6 @@
     {
       "vendor": "google",
       "count": 2548
-    },
-    {
-      "vendor": "paloaltonetworks",
-      "count": 2435
     },
     {
       "vendor": "checkmk",
@@ -283,7 +283,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 19099
+      "count": 19417
     },
     {
       "product": "coolify",
@@ -294,16 +294,16 @@
       "count": 3776
     },
     {
+      "product": "pan-os",
+      "count": 3683
+    },
+    {
       "product": "commerce",
       "count": 2386
     },
     {
-      "product": "pan-os",
-      "count": 2381
-    },
-    {
       "product": "junos",
-      "count": 1996
+      "count": 2174
     },
     {
       "product": "commerce_b2b",
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 60188,
-      "percentage": 53.6
+      "count": 61996,
+      "percentage": 54.2
     },
     {
       "type": "Application",
-      "count": 52108,
-      "percentage": 46.4
+      "count": 52316,
+      "percentage": 45.8
     },
     {
       "type": "Hardware",
@@ -441,5 +441,5 @@
       "cpe_count": 249
     }
   ],
-  "average_cpes_per_cve": 4.9
+  "average_cpes_per_cve": 5.0
 }
