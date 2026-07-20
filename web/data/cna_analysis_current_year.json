@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-20T06:21:12.953521",
+  "generated_at": "2026-07-20T11:48:52.784210",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 349,
@@ -550,10 +550,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 449,
+      "count": 452,
       "rank": 11,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-07-17T19:44:40.562Z",
+      "last_cve_date": "2026-07-20T10:42:02.327Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -564,12 +564,12 @@
       ],
       "severity_distribution": {
         "High": 151,
-        "Medium": 237,
+        "Medium": 239,
         "Low": 41,
-        "Critical": 20
+        "Critical": 21
       },
       "top_cwe_types": {
-        "CWE-125": 28,
+        "CWE-125": 29,
         "CWE-190": 18,
         "CWE-639": 17,
         "CWE-122": 16,
@@ -581,7 +581,7 @@
       "top_cwes": [
         [
           "CWE-125",
-          28
+          29
         ],
         [
           "CWE-190",
@@ -925,10 +925,64 @@
       ]
     },
     {
+      "name": "WPScan",
+      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
+      "count": 230,
+      "rank": 18,
+      "first_cve_date": "2026-01-01T06:00:03.091Z",
+      "last_cve_date": "2026-07-20T06:00:05.477Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 72,
+        "Low": 14,
+        "Medium": 107,
+        "Critical": 19
+      },
+      "top_cwe_types": {
+        "CWE-79": 55,
+        "CWE-862": 29,
+        "CWE-200": 21,
+        "CWE-89": 18,
+        "CWE-639": 17
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          55
+        ],
+        [
+          "CWE-862",
+          29
+        ],
+        [
+          "CWE-200",
+          21
+        ],
+        [
+          "CWE-89",
+          18
+        ],
+        [
+          "CWE-639",
+          17
+        ]
+      ]
+    },
+    {
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
       "count": 227,
-      "rank": 18,
+      "rank": 19,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
       "last_cve_date": "2026-07-08T21:47:19.856Z",
       "years_active": 7,
@@ -975,60 +1029,6 @@
         [
           "CWE-835",
           14
-        ]
-      ]
-    },
-    {
-      "name": "WPScan",
-      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
-      "count": 212,
-      "rank": 19,
-      "first_cve_date": "2026-01-01T06:00:03.091Z",
-      "last_cve_date": "2026-07-17T19:14:12.910Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 72,
-        "Low": 14,
-        "Medium": 107,
-        "Critical": 19
-      },
-      "top_cwe_types": {
-        "CWE-79": 51,
-        "CWE-862": 25,
-        "CWE-200": 20,
-        "CWE-89": 17,
-        "CWE-639": 17
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          51
-        ],
-        [
-          "CWE-862",
-          25
-        ],
-        [
-          "CWE-200",
-          20
-        ],
-        [
-          "CWE-89",
-          17
-        ],
-        [
-          "CWE-639",
-          17
         ]
       ]
     },
@@ -1197,10 +1197,10 @@
     {
       "name": "CPANSec",
       "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
-      "count": 181,
+      "count": 184,
       "rank": 23,
       "first_cve_date": "2026-01-06T00:22:50.114Z",
-      "last_cve_date": "2026-07-17T15:29:58.088Z",
+      "last_cve_date": "2026-07-20T07:11:10.403Z",
       "years_active": 2,
       "first_cve_year": 2025,
       "last_cve_year": 2026,
@@ -1216,8 +1216,8 @@
         "Low": 1
       },
       "top_cwe_types": {
-        "CWE-338": 32,
-        "CWE-340": 17,
+        "CWE-338": 34,
+        "CWE-340": 18,
         "CWE-125": 16,
         "CWE-150": 14,
         "CWE-93": 13
@@ -1228,11 +1228,11 @@
       "top_cwes": [
         [
           "CWE-338",
-          32
+          34
         ],
         [
           "CWE-340",
-          17
+          18
         ],
         [
           "CWE-125",
@@ -6278,10 +6278,64 @@
       ]
     },
     {
+      "name": "WSO2",
+      "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
+      "count": 22,
+      "rank": 118,
+      "first_cve_date": "2026-02-19T10:04:47.542Z",
+      "last_cve_date": "2026-07-20T08:06:39.095Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 12,
+        "Low": 2,
+        "High": 7,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-79": 6,
+        "CWE-611": 2,
+        "CWE-863": 2,
+        "CWE-204": 1,
+        "CWE-290": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          6
+        ],
+        [
+          "CWE-611",
+          2
+        ],
+        [
+          "CWE-863",
+          2
+        ],
+        [
+          "CWE-204",
+          1
+        ],
+        [
+          "CWE-290",
+          1
+        ]
+      ]
+    },
+    {
       "name": "rami.io",
       "assigner_org_id": "655498c3-6ec5-4f0b-aea6-853b334d05a6",
       "count": 22,
-      "rank": 118,
+      "rank": 119,
       "first_cve_date": "2026-02-16T10:15:09.149Z",
       "last_cve_date": "2026-07-01T13:45:30.615Z",
       "years_active": 3,
@@ -6335,7 +6389,7 @@
       "name": "autodesk",
       "assigner_org_id": "7e40ea87-bc65-4944-9723-dd79dd760601",
       "count": 22,
-      "rank": 119,
+      "rank": 120,
       "first_cve_date": "2026-01-22T16:58:43.084Z",
       "last_cve_date": "2026-06-22T17:15:25.546Z",
       "years_active": 8,
@@ -6388,7 +6442,7 @@
       "name": "Checkmk",
       "assigner_org_id": "f7d6281c-4801-44ce-ace2-493291dedb0f",
       "count": 21,
-      "rank": 120,
+      "rank": 121,
       "first_cve_date": "2026-02-09T15:29:16.780Z",
       "last_cve_date": "2026-07-14T09:26:28.525Z",
       "years_active": 4,
@@ -6433,60 +6487,6 @@
         ],
         [
           "CWE-427",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "WSO2",
-      "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
-      "count": 21,
-      "rank": 121,
-      "first_cve_date": "2026-02-19T10:04:47.542Z",
-      "last_cve_date": "2026-07-06T10:16:56.055Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 11,
-        "Low": 2,
-        "High": 7,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-79": 5,
-        "CWE-611": 2,
-        "CWE-863": 2,
-        "CWE-204": 1,
-        "CWE-290": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          5
-        ],
-        [
-          "CWE-611",
-          2
-        ],
-        [
-          "CWE-863",
-          2
-        ],
-        [
-          "CWE-204",
-          1
-        ],
-        [
-          "CWE-290",
           1
         ]
       ]
@@ -17112,10 +17112,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 449,
+      "count": 452,
       "rank": 11,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-07-17T19:44:40.562Z",
+      "last_cve_date": "2026-07-20T10:42:02.327Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -17126,12 +17126,12 @@
       ],
       "severity_distribution": {
         "High": 151,
-        "Medium": 237,
+        "Medium": 239,
         "Low": 41,
-        "Critical": 20
+        "Critical": 21
       },
       "top_cwe_types": {
-        "CWE-125": 28,
+        "CWE-125": 29,
         "CWE-190": 18,
         "CWE-639": 17,
         "CWE-122": 16,
@@ -17143,7 +17143,7 @@
       "top_cwes": [
         [
           "CWE-125",
-          28
+          29
         ],
         [
           "CWE-190",
@@ -17487,10 +17487,64 @@
       ]
     },
     {
+      "name": "WPScan",
+      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
+      "count": 230,
+      "rank": 18,
+      "first_cve_date": "2026-01-01T06:00:03.091Z",
+      "last_cve_date": "2026-07-20T06:00:05.477Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 72,
+        "Low": 14,
+        "Medium": 107,
+        "Critical": 19
+      },
+      "top_cwe_types": {
+        "CWE-79": 55,
+        "CWE-862": 29,
+        "CWE-200": 21,
+        "CWE-89": 18,
+        "CWE-639": 17
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          55
+        ],
+        [
+          "CWE-862",
+          29
+        ],
+        [
+          "CWE-200",
+          21
+        ],
+        [
+          "CWE-89",
+          18
+        ],
+        [
+          "CWE-639",
+          17
+        ]
+      ]
+    },
+    {
       "name": "GitLab",
       "assigner_org_id": "ceab7361-8a18-47b1-92ba-4d7d25f6715a",
       "count": 227,
-      "rank": 18,
+      "rank": 19,
       "first_cve_date": "2026-01-09T10:03:51.554Z",
       "last_cve_date": "2026-07-08T21:47:19.856Z",
       "years_active": 7,
@@ -17537,60 +17591,6 @@
         [
           "CWE-835",
           14
-        ]
-      ]
-    },
-    {
-      "name": "WPScan",
-      "assigner_org_id": "1bfdd5d7-9bf6-4a53-96ea-42e2716d7a81",
-      "count": 212,
-      "rank": 19,
-      "first_cve_date": "2026-01-01T06:00:03.091Z",
-      "last_cve_date": "2026-07-17T19:14:12.910Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 72,
-        "Low": 14,
-        "Medium": 107,
-        "Critical": 19
-      },
-      "top_cwe_types": {
-        "CWE-79": 51,
-        "CWE-862": 25,
-        "CWE-200": 20,
-        "CWE-89": 17,
-        "CWE-639": 17
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          51
-        ],
-        [
-          "CWE-862",
-          25
-        ],
-        [
-          "CWE-200",
-          20
-        ],
-        [
-          "CWE-89",
-          17
-        ],
-        [
-          "CWE-639",
-          17
         ]
       ]
     },
@@ -17759,10 +17759,10 @@
     {
       "name": "CPANSec",
       "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
-      "count": 181,
+      "count": 184,
       "rank": 23,
       "first_cve_date": "2026-01-06T00:22:50.114Z",
-      "last_cve_date": "2026-07-17T15:29:58.088Z",
+      "last_cve_date": "2026-07-20T07:11:10.403Z",
       "years_active": 2,
       "first_cve_year": 2025,
       "last_cve_year": 2026,
@@ -17778,8 +17778,8 @@
         "Low": 1
       },
       "top_cwe_types": {
-        "CWE-338": 32,
-        "CWE-340": 17,
+        "CWE-338": 34,
+        "CWE-340": 18,
         "CWE-125": 16,
         "CWE-150": 14,
         "CWE-93": 13
@@ -17790,11 +17790,11 @@
       "top_cwes": [
         [
           "CWE-338",
-          32
+          34
         ],
         [
           "CWE-340",
-          17
+          18
         ],
         [
           "CWE-125",
@@ -22840,10 +22840,64 @@
       ]
     },
     {
+      "name": "WSO2",
+      "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
+      "count": 22,
+      "rank": 118,
+      "first_cve_date": "2026-02-19T10:04:47.542Z",
+      "last_cve_date": "2026-07-20T08:06:39.095Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 12,
+        "Low": 2,
+        "High": 7,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-79": 6,
+        "CWE-611": 2,
+        "CWE-863": 2,
+        "CWE-204": 1,
+        "CWE-290": 1
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          6
+        ],
+        [
+          "CWE-611",
+          2
+        ],
+        [
+          "CWE-863",
+          2
+        ],
+        [
+          "CWE-204",
+          1
+        ],
+        [
+          "CWE-290",
+          1
+        ]
+      ]
+    },
+    {
       "name": "rami.io",
       "assigner_org_id": "655498c3-6ec5-4f0b-aea6-853b334d05a6",
       "count": 22,
-      "rank": 118,
+      "rank": 119,
       "first_cve_date": "2026-02-16T10:15:09.149Z",
       "last_cve_date": "2026-07-01T13:45:30.615Z",
       "years_active": 3,
@@ -22897,7 +22951,7 @@
       "name": "autodesk",
       "assigner_org_id": "7e40ea87-bc65-4944-9723-dd79dd760601",
       "count": 22,
-      "rank": 119,
+      "rank": 120,
       "first_cve_date": "2026-01-22T16:58:43.084Z",
       "last_cve_date": "2026-06-22T17:15:25.546Z",
       "years_active": 8,
@@ -22950,7 +23004,7 @@
       "name": "Checkmk",
       "assigner_org_id": "f7d6281c-4801-44ce-ace2-493291dedb0f",
       "count": 21,
-      "rank": 120,
+      "rank": 121,
       "first_cve_date": "2026-02-09T15:29:16.780Z",
       "last_cve_date": "2026-07-14T09:26:28.525Z",
       "years_active": 4,
@@ -22995,60 +23049,6 @@
         ],
         [
           "CWE-427",
-          1
-        ]
-      ]
-    },
-    {
-      "name": "WSO2",
-      "assigner_org_id": "ed10eef1-636d-4fbe-9993-6890dfa878f8",
-      "count": 21,
-      "rank": 121,
-      "first_cve_date": "2026-02-19T10:04:47.542Z",
-      "last_cve_date": "2026-07-06T10:16:56.055Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 11,
-        "Low": 2,
-        "High": 7,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-79": 5,
-        "CWE-611": 2,
-        "CWE-863": 2,
-        "CWE-204": 1,
-        "CWE-290": 1
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          5
-        ],
-        [
-          "CWE-611",
-          2
-        ],
-        [
-          "CWE-863",
-          2
-        ],
-        [
-          "CWE-204",
-          1
-        ],
-        [
-          "CWE-290",
           1
         ]
       ]
