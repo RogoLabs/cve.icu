@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T22:09:10.215981",
+  "generated_at": "2026-07-23T02:31:11.076631",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 351,
@@ -119,10 +119,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 3734,
+      "count": 3738,
       "rank": 3,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-07-22T21:15:10.595Z",
+      "last_cve_date": "2026-07-23T01:15:11.052Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -132,8 +132,8 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 2194,
-        "High": 904,
+        "Medium": 2197,
+        "High": 905,
         "Critical": 563,
         "Low": 73
       },
@@ -141,7 +141,7 @@
         "CWE-74": 1057,
         "CWE-89": 787,
         "CWE-119": 648,
-        "CWE-77": 470,
+        "CWE-77": 472,
         "CWE-94": 400
       },
       "kev_count": 0,
@@ -162,7 +162,7 @@
         ],
         [
           "CWE-77",
-          470
+          472
         ],
         [
           "CWE-94",
@@ -334,7 +334,7 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 2274,
+      "count": 2277,
       "rank": 7,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
       "last_cve_date": "2026-07-22T17:07:58.988Z",
@@ -442,10 +442,10 @@
     {
       "name": "oracle",
       "assigner_org_id": "43595867-4340-4103-b7a2-9a5208d29a85",
-      "count": 1541,
+      "count": 1552,
       "rank": 9,
       "first_cve_date": "2026-01-20T21:56:19.994Z",
-      "last_cve_date": "2026-07-21T21:39:51.149Z",
+      "last_cve_date": "2026-07-22T22:24:27.765Z",
       "years_active": 19,
       "first_cve_year": 2008,
       "last_cve_year": 2026,
@@ -456,9 +456,9 @@
       ],
       "severity_distribution": {
         "Medium": 435,
-        "High": 684,
+        "High": 691,
         "Low": 75,
-        "Critical": 347
+        "Critical": 351
       },
       "top_cwe_types": {
         "CWE-284": 360,
@@ -4729,10 +4729,64 @@
       ]
     },
     {
+      "name": "GRAFANA",
+      "assigner_org_id": "57da9224-a3e2-4646-9d0e-c4dc2e05e7da",
+      "count": 42,
+      "rank": 89,
+      "first_cve_date": "2026-01-27T09:07:04.758Z",
+      "last_cve_date": "2026-07-23T01:48:16.245Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 4,
+        "Critical": 3,
+        "Medium": 21,
+        "High": 14
+      },
+      "top_cwe_types": {
+        "CWE-400": 10,
+        "CWE-770": 6,
+        "CWE-284": 5,
+        "CWE-22": 4,
+        "CWE-79": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-400",
+          10
+        ],
+        [
+          "CWE-770",
+          6
+        ],
+        [
+          "CWE-284",
+          5
+        ],
+        [
+          "CWE-22",
+          4
+        ],
+        [
+          "CWE-79",
+          3
+        ]
+      ]
+    },
+    {
       "name": "PostgreSQL",
       "assigner_org_id": "f86ef6dc-4d3a-42ad-8f28-e6d5547a5007",
       "count": 42,
-      "rank": 89,
+      "rank": 90,
       "first_cve_date": "2026-02-05T17:30:05.089Z",
       "last_cve_date": "2026-06-30T15:19:57.657Z",
       "years_active": 3,
@@ -4779,60 +4833,6 @@
         [
           "CWE-61",
           2
-        ]
-      ]
-    },
-    {
-      "name": "GRAFANA",
-      "assigner_org_id": "57da9224-a3e2-4646-9d0e-c4dc2e05e7da",
-      "count": 41,
-      "rank": 90,
-      "first_cve_date": "2026-01-27T09:07:04.758Z",
-      "last_cve_date": "2026-07-16T03:12:07.912Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 4,
-        "Critical": 3,
-        "Medium": 20,
-        "High": 14
-      },
-      "top_cwe_types": {
-        "CWE-400": 10,
-        "CWE-770": 6,
-        "CWE-284": 5,
-        "CWE-22": 4,
-        "CWE-79": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-400",
-          10
-        ],
-        [
-          "CWE-770",
-          6
-        ],
-        [
-          "CWE-284",
-          5
-        ],
-        [
-          "CWE-22",
-          4
-        ],
-        [
-          "CWE-79",
-          3
         ]
       ]
     },
@@ -16824,10 +16824,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 3734,
+      "count": 3738,
       "rank": 3,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-07-22T21:15:10.595Z",
+      "last_cve_date": "2026-07-23T01:15:11.052Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -16837,8 +16837,8 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 2194,
-        "High": 904,
+        "Medium": 2197,
+        "High": 905,
         "Critical": 563,
         "Low": 73
       },
@@ -16846,7 +16846,7 @@
         "CWE-74": 1057,
         "CWE-89": 787,
         "CWE-119": 648,
-        "CWE-77": 470,
+        "CWE-77": 472,
         "CWE-94": 400
       },
       "kev_count": 0,
@@ -16867,7 +16867,7 @@
         ],
         [
           "CWE-77",
-          470
+          472
         ],
         [
           "CWE-94",
@@ -17039,7 +17039,7 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 2274,
+      "count": 2277,
       "rank": 7,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
       "last_cve_date": "2026-07-22T17:07:58.988Z",
@@ -17147,10 +17147,10 @@
     {
       "name": "oracle",
       "assigner_org_id": "43595867-4340-4103-b7a2-9a5208d29a85",
-      "count": 1541,
+      "count": 1552,
       "rank": 9,
       "first_cve_date": "2026-01-20T21:56:19.994Z",
-      "last_cve_date": "2026-07-21T21:39:51.149Z",
+      "last_cve_date": "2026-07-22T22:24:27.765Z",
       "years_active": 19,
       "first_cve_year": 2008,
       "last_cve_year": 2026,
@@ -17161,9 +17161,9 @@
       ],
       "severity_distribution": {
         "Medium": 435,
-        "High": 684,
+        "High": 691,
         "Low": 75,
-        "Critical": 347
+        "Critical": 351
       },
       "top_cwe_types": {
         "CWE-284": 360,
@@ -21434,10 +21434,64 @@
       ]
     },
     {
+      "name": "GRAFANA",
+      "assigner_org_id": "57da9224-a3e2-4646-9d0e-c4dc2e05e7da",
+      "count": 42,
+      "rank": 89,
+      "first_cve_date": "2026-01-27T09:07:04.758Z",
+      "last_cve_date": "2026-07-23T01:48:16.245Z",
+      "years_active": 4,
+      "first_cve_year": 2023,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 4,
+        "Critical": 3,
+        "Medium": 21,
+        "High": 14
+      },
+      "top_cwe_types": {
+        "CWE-400": 10,
+        "CWE-770": 6,
+        "CWE-284": 5,
+        "CWE-22": 4,
+        "CWE-79": 3
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-400",
+          10
+        ],
+        [
+          "CWE-770",
+          6
+        ],
+        [
+          "CWE-284",
+          5
+        ],
+        [
+          "CWE-22",
+          4
+        ],
+        [
+          "CWE-79",
+          3
+        ]
+      ]
+    },
+    {
       "name": "PostgreSQL",
       "assigner_org_id": "f86ef6dc-4d3a-42ad-8f28-e6d5547a5007",
       "count": 42,
-      "rank": 89,
+      "rank": 90,
       "first_cve_date": "2026-02-05T17:30:05.089Z",
       "last_cve_date": "2026-06-30T15:19:57.657Z",
       "years_active": 3,
@@ -21484,60 +21538,6 @@
         [
           "CWE-61",
           2
-        ]
-      ]
-    },
-    {
-      "name": "GRAFANA",
-      "assigner_org_id": "57da9224-a3e2-4646-9d0e-c4dc2e05e7da",
-      "count": 41,
-      "rank": 90,
-      "first_cve_date": "2026-01-27T09:07:04.758Z",
-      "last_cve_date": "2026-07-16T03:12:07.912Z",
-      "years_active": 4,
-      "first_cve_year": 2023,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 4,
-        "Critical": 3,
-        "Medium": 20,
-        "High": 14
-      },
-      "top_cwe_types": {
-        "CWE-400": 10,
-        "CWE-770": 6,
-        "CWE-284": 5,
-        "CWE-22": 4,
-        "CWE-79": 3
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-400",
-          10
-        ],
-        [
-          "CWE-770",
-          6
-        ],
-        [
-          "CWE-284",
-          5
-        ],
-        [
-          "CWE-22",
-          4
-        ],
-        [
-          "CWE-79",
-          3
         ]
       ]
     },
