@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-28T19:24:58.221874",
+  "generated_at": "2026-07-28T22:09:11.604011",
   "year": 2026,
-  "total_unique_cpes": 14079,
-  "total_cpe_entries": 128947,
-  "total_cves_with_cpes": 24755,
+  "total_unique_cpes": 14092,
+  "total_cpe_entries": 129527,
+  "total_cves_with_cpes": 24933,
   "total_unique_vendors": 2684,
-  "total_unique_products": 6967,
+  "total_unique_products": 6977,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
@@ -26,6 +26,13 @@
       "count": 813,
       "vendor": "linux",
       "product": "linux_kernel",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
+      "count": 792,
+      "vendor": "apple",
+      "product": "macos",
       "type": "Operating System"
     },
     {
@@ -176,13 +183,6 @@
       "type": "Application"
     },
     {
-      "cpe": "cpe:2.3:o:apple:macos:*:*:*:*:*:*:*:*",
-      "count": 559,
-      "vendor": "apple",
-      "product": "macos",
-      "type": "Operating System"
-    },
-    {
       "cpe": "cpe:2.3:o:microsoft:windows_10_1607:*:*:*:*:*:*:x64:*",
       "count": 533,
       "vendor": "microsoft",
@@ -265,7 +265,11 @@
     },
     {
       "vendor": "oracle",
-      "count": 1960
+      "count": 2050
+    },
+    {
+      "vendor": "apple",
+      "count": 1946
     },
     {
       "vendor": "checkmk",
@@ -274,10 +278,6 @@
     {
       "vendor": "parseplatform",
       "count": 1702
-    },
-    {
-      "vendor": "apple",
-      "count": 1481
     }
   ],
   "top_products": [
@@ -345,13 +345,13 @@
   "cpe_type_distribution": [
     {
       "type": "Operating System",
-      "count": 69754,
-      "percentage": 54.1
+      "count": 70213,
+      "percentage": 54.2
     },
     {
       "type": "Application",
-      "count": 59192,
-      "percentage": 45.9
+      "count": 59313,
+      "percentage": 45.8
     },
     {
       "type": "Hardware",
