@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T10:47:07.141248Z",
+  "generated_at": "2026-08-01T13:19:12.170235Z",
   "current_year": 2026,
   "yearly_summary": {
     "years": {
@@ -113,7 +113,7 @@
       },
       "2026": {
         "year": 2026,
-        "total_cves": 45632
+        "total_cves": 45698
       }
     }
   },
@@ -337,15 +337,15 @@
       },
       {
         "year": 2026,
-        "cves": 45632,
-        "growth_rate": 65.8,
-        "growth_absolute": 18104,
+        "cves": 45698,
+        "growth_rate": 66.0,
+        "growth_absolute": 18170,
         "is_ytd": true,
-        "projected_full_year": 78195,
-        "ytd_vs_prev_full": -5.3,
-        "ytd_vs_prev_ytd": 65.8,
+        "projected_full_year": 78308,
+        "ytd_vs_prev_full": -5.1,
+        "ytd_vs_prev_ytd": 66.0,
         "prev_year_ytd_actual": 27528,
-        "growth_rate_3yr_avg": 65.8
+        "growth_rate_3yr_avg": 66.0
       }
     ]
   },
@@ -515,17 +515,17 @@
       "v3.1": {
         "7.3": 4920,
         "7.5": 20592,
-        "9.8": 19324,
+        "9.8": 19325,
         "8.2": 2063,
         "7.8": 18614,
         "5.5": 16526,
         "7.1": 6222,
-        "8.8": 16842,
-        "5.3": 9625,
+        "8.8": 16844,
+        "5.3": 9629,
         "9.1": 2938,
         "3.3": 1774,
-        "6.5": 16557,
-        "6.1": 9853,
+        "6.5": 16560,
+        "6.1": 9855,
         "4.8": 2854,
         "7.0": 1370,
         "5.9": 3457,
@@ -534,12 +534,12 @@
         "4.7": 2111,
         "7.4": 1052,
         "4.5": 231,
-        "4.3": 10527,
+        "4.3": 10530,
         "5.0": 806,
         "6.3": 5568,
         "5.6": 396,
-        "8.1": 4740,
-        "7.2": 4441,
+        "8.1": 4742,
+        "7.2": 4442,
         "5.4": 10191,
         "4.6": 944,
         "6.8": 1905,
@@ -555,13 +555,13 @@
         "10.0": 1120,
         "9.3": 756,
         "7.6": 1012,
-        "4.9": 2036,
+        "4.9": 2040,
         "4.2": 540,
         "4.0": 628,
         "3.4": 116,
         "8.0": 1227,
-        "6.6": 667,
-        "6.4": 3870,
+        "6.6": 668,
+        "6.4": 3882,
         "8.6": 1317,
         "6.2": 1034,
         "5.1": 378,
@@ -746,13 +746,13 @@
       {
         "id": "79",
         "name": "CWE-79: Cross-site Scripting (XSS)",
-        "count": 52319,
+        "count": 52334,
         "description": "Cross-site Scripting (XSS)"
       },
       {
         "id": "89",
         "name": "CWE-89: SQL Injection",
-        "count": 23684,
+        "count": 23690,
         "description": "SQL Injection"
       },
       {
@@ -776,13 +776,13 @@
       {
         "id": "22",
         "name": "CWE-22: Path Traversal",
-        "count": 10928,
+        "count": 10930,
         "description": "Path Traversal"
       },
       {
         "id": "200",
         "name": "CWE-200: Information Exposure",
-        "count": 10836,
+        "count": 10838,
         "description": "Information Exposure"
       },
       {
@@ -945,7 +945,7 @@
         "last_cve_year": 2026,
         "first_cve_date": "2022-03-28T18:00:15.000Z",
         "last_cve_date": "2026-07-28T12:45:11.475Z",
-        "days_since_last_cve": 3,
+        "days_since_last_cve": 4,
         "activity_status": "Active",
         "is_official": true,
         "cna_types": [
@@ -1419,6 +1419,39 @@
         "rank": 14
       },
       {
+        "name": "VulnCheck",
+        "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
+        "count": 5160,
+        "years_active": 4,
+        "first_cve_year": 2023,
+        "last_cve_year": 2026,
+        "first_cve_date": "2023-04-19T19:10:12.523Z",
+        "last_cve_date": "2026-08-01T12:22:18.324Z",
+        "days_since_last_cve": 0,
+        "activity_status": "Active",
+        "is_official": true,
+        "cna_types": [
+          "Vendor"
+        ],
+        "cves_by_year": {
+          "2025": 1073,
+          "2026": 4039,
+          "2023": 10,
+          "2024": 38
+        },
+        "years_active_list": [
+          2023,
+          2026
+        ],
+        "severity_distribution": {},
+        "top_cwe_types": {},
+        "kev_count": 19,
+        "epss_high_count": 30,
+        "epss_elevated_count": 70,
+        "top_cwes": [],
+        "rank": 15
+      },
+      {
         "name": "google_android",
         "assigner_org_id": "baff130e-b8d5-4e15-b3d3-c3cf5d5545c6",
         "count": 5140,
@@ -1456,39 +1489,6 @@
         "kev_count": 14,
         "epss_high_count": 6,
         "epss_elevated_count": 14,
-        "top_cwes": [],
-        "rank": 15
-      },
-      {
-        "name": "VulnCheck",
-        "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
-        "count": 5094,
-        "years_active": 4,
-        "first_cve_year": 2023,
-        "last_cve_year": 2026,
-        "first_cve_date": "2023-04-19T19:10:12.523Z",
-        "last_cve_date": "2026-07-31T21:16:09.970Z",
-        "days_since_last_cve": 0,
-        "activity_status": "Active",
-        "is_official": true,
-        "cna_types": [
-          "Vendor"
-        ],
-        "cves_by_year": {
-          "2025": 1073,
-          "2026": 3973,
-          "2023": 10,
-          "2024": 38
-        },
-        "years_active_list": [
-          2023,
-          2026
-        ],
-        "severity_distribution": {},
-        "top_cwe_types": {},
-        "kev_count": 19,
-        "epss_high_count": 30,
-        "epss_elevated_count": 70,
         "top_cwes": [],
         "rank": 16
       },
@@ -3311,9 +3311,9 @@
       },
       {
         "date": "2026-08-01",
-        "value": 6,
-        "avg_cvss": 7.2,
-        "cvss_count": 6
+        "value": 72,
+        "avg_cvss": 6.4,
+        "cvss_count": 41
       }
     ]
   }
