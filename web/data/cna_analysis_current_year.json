@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T01:27:14.190085",
+  "generated_at": "2026-08-11T04:24:24.177148",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 360,
@@ -173,7 +173,7 @@
     {
       "name": "Linux",
       "assigner_org_id": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
-      "count": 3792,
+      "count": 3788,
       "rank": 4,
       "first_cve_date": "2026-01-05T09:32:25.534Z",
       "last_cve_date": "2026-08-10T12:04:48.905Z",
@@ -186,7 +186,7 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "High": 1162,
+        "High": 1160,
         "Critical": 217,
         "Medium": 3
       },
@@ -604,10 +604,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 620,
+      "count": 622,
       "rank": 12,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-08-10T21:22:29.414Z",
+      "last_cve_date": "2026-08-11T02:35:22.539Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -619,7 +619,7 @@
       "severity_distribution": {
         "High": 217,
         "Critical": 26,
-        "Medium": 320,
+        "Medium": 322,
         "Low": 57
       },
       "top_cwe_types": {
@@ -2589,10 +2589,10 @@
     {
       "name": "twcert",
       "assigner_org_id": "cded6c7f-6ce5-4948-8f87-aa7a3bbb6b0e",
-      "count": 102,
+      "count": 103,
       "rank": 49,
       "first_cve_date": "2026-01-05T07:25:33.577Z",
-      "last_cve_date": "2026-07-31T05:54:55.052Z",
+      "last_cve_date": "2026-08-11T01:56:10.206Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -2603,7 +2603,7 @@
       ],
       "severity_distribution": {
         "Medium": 23,
-        "High": 49,
+        "High": 50,
         "Critical": 30
       },
       "top_cwe_types": {
@@ -6442,10 +6442,64 @@
       ]
     },
     {
+      "name": "ASUS",
+      "assigner_org_id": "54bf65a7-a193-42d2-b1ba-8e150d3c35e1",
+      "count": 27,
+      "rank": 121,
+      "first_cve_date": "2026-01-06T02:14:37.216Z",
+      "last_cve_date": "2026-08-11T02:00:08.248Z",
+      "years_active": 3,
+      "first_cve_year": 2024,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 16,
+        "Medium": 9,
+        "Low": 1,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-125": 3,
+        "CWE-732": 3,
+        "CWE-782": 2,
+        "CWE-1284": 2,
+        "CWE-367": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-125",
+          3
+        ],
+        [
+          "CWE-732",
+          3
+        ],
+        [
+          "CWE-782",
+          2
+        ],
+        [
+          "CWE-1284",
+          2
+        ],
+        [
+          "CWE-367",
+          2
+        ]
+      ]
+    },
+    {
       "name": "synology",
       "assigner_org_id": "db201096-a0cc-46c7-9a55-61d9e221bf01",
       "count": 27,
-      "rank": 121,
+      "rank": 122,
       "first_cve_date": "2026-02-24T02:31:20.298Z",
       "last_cve_date": "2026-08-03T06:00:39.179Z",
       "years_active": 10,
@@ -6499,7 +6553,7 @@
       "name": "Silabs",
       "assigner_org_id": "030b2754-1501-44a4-bef8-48be86a33bf4",
       "count": 27,
-      "rank": 122,
+      "rank": 123,
       "first_cve_date": "2026-01-05T17:07:32.807Z",
       "last_cve_date": "2026-07-23T21:05:22.113Z",
       "years_active": 5,
@@ -6545,60 +6599,6 @@
         ],
         [
           "CWE-369",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "ASUS",
-      "assigner_org_id": "54bf65a7-a193-42d2-b1ba-8e150d3c35e1",
-      "count": 26,
-      "rank": 123,
-      "first_cve_date": "2026-01-06T02:14:37.216Z",
-      "last_cve_date": "2026-07-30T02:00:07.781Z",
-      "years_active": 3,
-      "first_cve_year": 2024,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 15,
-        "Medium": 9,
-        "Low": 1,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-125": 3,
-        "CWE-732": 3,
-        "CWE-782": 2,
-        "CWE-1284": 2,
-        "CWE-367": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-125",
-          3
-        ],
-        [
-          "CWE-732",
-          3
-        ],
-        [
-          "CWE-782",
-          2
-        ],
-        [
-          "CWE-1284",
-          2
-        ],
-        [
-          "CWE-367",
           2
         ]
       ]
@@ -17392,7 +17392,7 @@
     {
       "name": "Linux",
       "assigner_org_id": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
-      "count": 3792,
+      "count": 3788,
       "rank": 4,
       "first_cve_date": "2026-01-05T09:32:25.534Z",
       "last_cve_date": "2026-08-10T12:04:48.905Z",
@@ -17405,7 +17405,7 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "High": 1162,
+        "High": 1160,
         "Critical": 217,
         "Medium": 3
       },
@@ -17823,10 +17823,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 620,
+      "count": 622,
       "rank": 12,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-08-10T21:22:29.414Z",
+      "last_cve_date": "2026-08-11T02:35:22.539Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -17838,7 +17838,7 @@
       "severity_distribution": {
         "High": 217,
         "Critical": 26,
-        "Medium": 320,
+        "Medium": 322,
         "Low": 57
       },
       "top_cwe_types": {
@@ -19808,10 +19808,10 @@
     {
       "name": "twcert",
       "assigner_org_id": "cded6c7f-6ce5-4948-8f87-aa7a3bbb6b0e",
-      "count": 102,
+      "count": 103,
       "rank": 49,
       "first_cve_date": "2026-01-05T07:25:33.577Z",
-      "last_cve_date": "2026-07-31T05:54:55.052Z",
+      "last_cve_date": "2026-08-11T01:56:10.206Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -19822,7 +19822,7 @@
       ],
       "severity_distribution": {
         "Medium": 23,
-        "High": 49,
+        "High": 50,
         "Critical": 30
       },
       "top_cwe_types": {
@@ -23661,10 +23661,64 @@
       ]
     },
     {
+      "name": "ASUS",
+      "assigner_org_id": "54bf65a7-a193-42d2-b1ba-8e150d3c35e1",
+      "count": 27,
+      "rank": 121,
+      "first_cve_date": "2026-01-06T02:14:37.216Z",
+      "last_cve_date": "2026-08-11T02:00:08.248Z",
+      "years_active": 3,
+      "first_cve_year": 2024,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "High": 16,
+        "Medium": 9,
+        "Low": 1,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-125": 3,
+        "CWE-732": 3,
+        "CWE-782": 2,
+        "CWE-1284": 2,
+        "CWE-367": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-125",
+          3
+        ],
+        [
+          "CWE-732",
+          3
+        ],
+        [
+          "CWE-782",
+          2
+        ],
+        [
+          "CWE-1284",
+          2
+        ],
+        [
+          "CWE-367",
+          2
+        ]
+      ]
+    },
+    {
       "name": "synology",
       "assigner_org_id": "db201096-a0cc-46c7-9a55-61d9e221bf01",
       "count": 27,
-      "rank": 121,
+      "rank": 122,
       "first_cve_date": "2026-02-24T02:31:20.298Z",
       "last_cve_date": "2026-08-03T06:00:39.179Z",
       "years_active": 10,
@@ -23718,7 +23772,7 @@
       "name": "Silabs",
       "assigner_org_id": "030b2754-1501-44a4-bef8-48be86a33bf4",
       "count": 27,
-      "rank": 122,
+      "rank": 123,
       "first_cve_date": "2026-01-05T17:07:32.807Z",
       "last_cve_date": "2026-07-23T21:05:22.113Z",
       "years_active": 5,
@@ -23764,60 +23818,6 @@
         ],
         [
           "CWE-369",
-          2
-        ]
-      ]
-    },
-    {
-      "name": "ASUS",
-      "assigner_org_id": "54bf65a7-a193-42d2-b1ba-8e150d3c35e1",
-      "count": 26,
-      "rank": 123,
-      "first_cve_date": "2026-01-06T02:14:37.216Z",
-      "last_cve_date": "2026-07-30T02:00:07.781Z",
-      "years_active": 3,
-      "first_cve_year": 2024,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "High": 15,
-        "Medium": 9,
-        "Low": 1,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-125": 3,
-        "CWE-732": 3,
-        "CWE-782": 2,
-        "CWE-1284": 2,
-        "CWE-367": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-125",
-          3
-        ],
-        [
-          "CWE-732",
-          3
-        ],
-        [
-          "CWE-782",
-          2
-        ],
-        [
-          "CWE-1284",
-          2
-        ],
-        [
-          "CWE-367",
           2
         ]
       ]
