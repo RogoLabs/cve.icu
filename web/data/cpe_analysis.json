@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-08-13T16:03:42.326968",
-  "total_unique_cpes": 372043,
-  "total_cpe_entries": 2556958,
-  "total_cves_with_cpes": 309820,
-  "total_unique_vendors": 36534,
-  "total_unique_products": 114232,
+  "generated_at": "2026-08-13T19:06:00.346547",
+  "total_unique_cpes": 372045,
+  "total_cpe_entries": 2558824,
+  "total_cves_with_cpes": 310003,
+  "total_unique_vendors": 36535,
+  "total_unique_products": 114234,
   "top_cpes": [
     {
       "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*",
-      "count": 50524,
+      "count": 50729,
       "vendor": "linux",
       "product": "linux_kernel",
       "type": "Operating System"
@@ -43,14 +43,14 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2012:r2:*:*:*:*:*:*:*",
-      "count": 3886,
+      "count": 3921,
       "vendor": "microsoft",
       "product": "windows_server_2012",
       "type": "Operating System"
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2012:-:*:*:*:*:*:*:*",
-      "count": 3696,
+      "count": 3730,
       "vendor": "microsoft",
       "product": "windows_server_2012",
       "type": "Operating System"
@@ -141,7 +141,7 @@
     },
     {
       "cpe": "cpe:2.3:o:microsoft:windows_server_2022:*:*:*:*:*:*:*:*",
-      "count": 2095,
+      "count": 2153,
       "vendor": "microsoft",
       "product": "windows_server_2022",
       "type": "Operating System"
@@ -151,6 +151,13 @@
       "count": 2070,
       "vendor": "apple",
       "product": "tvos",
+      "type": "Operating System"
+    },
+    {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
+      "count": 2058,
+      "vendor": "microsoft",
+      "product": "windows_server_2019",
       "type": "Operating System"
     },
     {
@@ -165,13 +172,6 @@
       "count": 2055,
       "vendor": "debian",
       "product": "debian_linux",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2019:*:*:*:*:*:*:*:*",
-      "count": 2006,
-      "vendor": "microsoft",
-      "product": "windows_server_2019",
       "type": "Operating System"
     },
     {
@@ -203,6 +203,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
+      "count": 1925,
+      "vendor": "microsoft",
+      "product": "windows_server_2016",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:o:microsoft:windows_10:1607:*:*:*:*:*:*:*",
       "count": 1914,
       "vendor": "microsoft",
@@ -214,13 +221,6 @@
       "count": 1886,
       "vendor": "microsoft",
       "product": "windows_10",
-      "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_server_2016:*:*:*:*:*:*:*:*",
-      "count": 1881,
-      "vendor": "microsoft",
-      "product": "windows_server_2016",
       "type": "Operating System"
     },
     {
@@ -308,6 +308,13 @@
       "type": "Operating System"
     },
     {
+      "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x64:*",
+      "count": 1560,
+      "vendor": "microsoft",
+      "product": "windows_10_1809",
+      "type": "Operating System"
+    },
+    {
       "cpe": "cpe:2.3:a:mozilla:thunderbird:*:*:*:*:*:*:*:*",
       "count": 1552,
       "vendor": "mozilla",
@@ -348,13 +355,6 @@
       "vendor": "microsoft",
       "product": "windows_8.1",
       "type": "Operating System"
-    },
-    {
-      "cpe": "cpe:2.3:o:microsoft:windows_10_1809:*:*:*:*:*:*:x64:*",
-      "count": 1508,
-      "vendor": "microsoft",
-      "product": "windows_10_1809",
-      "type": "Operating System"
     }
   ],
   "top_vendors": [
@@ -368,11 +368,11 @@
     },
     {
       "vendor": "linux",
-      "count": 161071
+      "count": 161458
     },
     {
       "vendor": "microsoft",
-      "count": 138916
+      "count": 140334
     },
     {
       "vendor": "apple",
@@ -380,7 +380,7 @@
     },
     {
       "vendor": "adobe",
-      "count": 93462
+      "count": 93473
     },
     {
       "vendor": "mozilla",
@@ -396,7 +396,7 @@
     },
     {
       "vendor": "oracle",
-      "count": 69741
+      "count": 69751
     },
     {
       "vendor": "google",
@@ -432,7 +432,7 @@
     },
     {
       "vendor": "apache",
-      "count": 21594
+      "count": 21597
     },
     {
       "vendor": "opera",
@@ -442,7 +442,7 @@
   "top_products": [
     {
       "product": "linux_kernel",
-      "count": 160833
+      "count": 161220
     },
     {
       "product": "ios",
@@ -524,12 +524,12 @@
   "cpe_type_distribution": [
     {
       "type": "Application",
-      "count": 1336271,
-      "percentage": 52.3
+      "count": 1336380,
+      "percentage": 52.2
     },
     {
       "type": "Operating System",
-      "count": 1165633,
+      "count": 1167390,
       "percentage": 45.6
     },
     {
