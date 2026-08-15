@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-14T21:29:21.874766",
+  "generated_at": "2026-08-15T01:05:33.961352",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 361,
@@ -65,10 +65,10 @@
     {
       "name": "VulnCheck",
       "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
-      "count": 4446,
+      "count": 4447,
       "rank": 2,
       "first_cve_date": "2026-01-03T21:18:51.053Z",
-      "last_cve_date": "2026-08-14T21:06:36.069Z",
+      "last_cve_date": "2026-08-14T21:32:18.055Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -78,7 +78,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Critical": 629,
+        "Critical": 630,
         "Medium": 1484,
         "High": 2291,
         "Low": 42
@@ -334,10 +334,10 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 2428,
+      "count": 2429,
       "rank": 7,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-08-14T20:20:31.446Z",
+      "last_cve_date": "2026-08-14T22:53:18.274Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -347,7 +347,7 @@
         "Program"
       ],
       "severity_distribution": {
-        "Medium": 785,
+        "Medium": 786,
         "High": 991,
         "Critical": 534,
         "Low": 117
@@ -442,10 +442,10 @@
     {
       "name": "microsoft",
       "assigner_org_id": "f38d906d-7342-40ea-92c1-6c4a2c6478c8",
-      "count": 1928,
+      "count": 1929,
       "rank": 9,
       "first_cve_date": "2026-01-07T22:54:54.800Z",
-      "last_cve_date": "2026-08-14T21:05:20.277Z",
+      "last_cve_date": "2026-08-14T21:50:58.641Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -456,7 +456,7 @@
       ],
       "severity_distribution": {
         "Medium": 479,
-        "High": 1318,
+        "High": 1319,
         "Critical": 122,
         "Low": 9
       },
@@ -604,10 +604,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 681,
+      "count": 688,
       "rank": 12,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-08-14T15:02:26.469Z",
+      "last_cve_date": "2026-08-14T22:43:15.488Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -619,14 +619,14 @@
       "severity_distribution": {
         "High": 240,
         "Low": 57,
-        "Medium": 351,
+        "Medium": 358,
         "Critical": 33
       },
       "top_cwe_types": {
         "CWE-125": 45,
         "CWE-190": 26,
-        "CWE-639": 23,
-        "CWE-918": 23,
+        "CWE-639": 24,
+        "CWE-918": 24,
         "CWE-787": 20
       },
       "kev_count": 0,
@@ -643,11 +643,11 @@
         ],
         [
           "CWE-639",
-          23
+          24
         ],
         [
           "CWE-918",
-          23
+          24
         ],
         [
           "CWE-787",
@@ -940,8 +940,8 @@
         "CERT"
       ],
       "severity_distribution": {
-        "Medium": 66,
-        "Critical": 87,
+        "Medium": 67,
+        "Critical": 86,
         "High": 169,
         "Low": 3
       },
@@ -8500,10 +8500,64 @@
       ]
     },
     {
+      "name": "OpenVPN",
+      "assigner_org_id": "36a55730-e66d-4d39-8ca6-3c3b3017965e",
+      "count": 16,
+      "rank": 160,
+      "first_cve_date": "2026-01-30T18:06:07.499Z",
+      "last_cve_date": "2026-08-14T22:13:26.656Z",
+      "years_active": 7,
+      "first_cve_year": 2020,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 11,
+        "Low": 2,
+        "High": 2,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-617": 3,
+        "CWE-125": 3,
+        "CWE-416": 3,
+        "CWE-401": 2,
+        "CWE-787": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-617",
+          3
+        ],
+        [
+          "CWE-125",
+          3
+        ],
+        [
+          "CWE-416",
+          3
+        ],
+        [
+          "CWE-401",
+          2
+        ],
+        [
+          "CWE-787",
+          2
+        ]
+      ]
+    },
+    {
       "name": "NCSC-FI",
       "assigner_org_id": "db4dfee8-a97e-4877-bfae-eba6d14a2166",
       "count": 16,
-      "rank": 160,
+      "rank": 161,
       "first_cve_date": "2026-01-13T13:39:02.370Z",
       "last_cve_date": "2026-04-27T13:00:10.309Z",
       "years_active": 3,
@@ -8556,7 +8610,7 @@
       "name": "Docker",
       "assigner_org_id": "686469e6-3ff6-451b-ab8b-cf5b9e89401e",
       "count": 15,
-      "rank": 161,
+      "rank": 162,
       "first_cve_date": "2026-02-04T13:57:23.002Z",
       "last_cve_date": "2026-08-12T14:47:24.572Z",
       "years_active": 4,
@@ -8609,7 +8663,7 @@
       "name": "Axis",
       "assigner_org_id": "f2daf9a0-02c2-4b83-a01d-63b3b304b807",
       "count": 15,
-      "rank": 162,
+      "rank": 163,
       "first_cve_date": "2026-02-10T05:32:19.555Z",
       "last_cve_date": "2026-08-11T05:52:33.481Z",
       "years_active": 6,
@@ -8661,7 +8715,7 @@
       "name": "checkpoint",
       "assigner_org_id": "897c38be-0345-43cd-b6cf-fe179e0c4f45",
       "count": 15,
-      "rank": 163,
+      "rank": 164,
       "first_cve_date": "2026-01-14T14:30:48.630Z",
       "last_cve_date": "2026-08-03T12:07:33.976Z",
       "years_active": 10,
@@ -8714,7 +8768,7 @@
       "name": "SNOWFLAKE",
       "assigner_org_id": "412d305a-227d-44f9-a262-a31ba44f2aea",
       "count": 15,
-      "rank": 164,
+      "rank": 165,
       "first_cve_date": "2026-04-16T18:43:21.181Z",
       "last_cve_date": "2026-08-12T05:22:07.386Z",
       "years_active": 1,
@@ -8768,7 +8822,7 @@
       "name": "ERIC",
       "assigner_org_id": "85b1779b-6ecd-4f52-bcc5-73eac4659dcf",
       "count": 14,
-      "rank": 165,
+      "rank": 166,
       "first_cve_date": "2026-03-25T12:54:46.406Z",
       "last_cve_date": "2026-07-27T14:21:48.696Z",
       "years_active": 3,
@@ -8821,7 +8875,7 @@
       "name": "php",
       "assigner_org_id": "dd77f84a-d19a-4638-8c3d-a322d820ed2b",
       "count": 14,
-      "rank": 166,
+      "rank": 167,
       "first_cve_date": "2026-05-10T03:27:00.607Z",
       "last_cve_date": "2026-07-30T11:22:53.918Z",
       "years_active": 8,
@@ -8868,60 +8922,6 @@
         [
           "CWE-122",
           1
-        ]
-      ]
-    },
-    {
-      "name": "OpenVPN",
-      "assigner_org_id": "36a55730-e66d-4d39-8ca6-3c3b3017965e",
-      "count": 14,
-      "rank": 167,
-      "first_cve_date": "2026-01-30T18:06:07.499Z",
-      "last_cve_date": "2026-07-30T16:42:03.164Z",
-      "years_active": 7,
-      "first_cve_year": 2020,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 10,
-        "Low": 1,
-        "High": 2,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-617": 3,
-        "CWE-125": 3,
-        "CWE-416": 3,
-        "CWE-401": 2,
-        "CWE-787": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-617",
-          3
-        ],
-        [
-          "CWE-125",
-          3
-        ],
-        [
-          "CWE-416",
-          3
-        ],
-        [
-          "CWE-401",
-          2
-        ],
-        [
-          "CWE-787",
-          2
         ]
       ]
     },
@@ -17379,10 +17379,10 @@
     {
       "name": "VulnCheck",
       "assigner_org_id": "83251b91-4cc7-4094-a5c7-464a1b83ea10",
-      "count": 4446,
+      "count": 4447,
       "rank": 2,
       "first_cve_date": "2026-01-03T21:18:51.053Z",
-      "last_cve_date": "2026-08-14T21:06:36.069Z",
+      "last_cve_date": "2026-08-14T21:32:18.055Z",
       "years_active": 4,
       "first_cve_year": 2023,
       "last_cve_year": 2026,
@@ -17392,7 +17392,7 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Critical": 629,
+        "Critical": 630,
         "Medium": 1484,
         "High": 2291,
         "Low": 42
@@ -17648,10 +17648,10 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 2428,
+      "count": 2429,
       "rank": 7,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
-      "last_cve_date": "2026-08-14T20:20:31.446Z",
+      "last_cve_date": "2026-08-14T22:53:18.274Z",
       "years_active": 28,
       "first_cve_year": 1999,
       "last_cve_year": 2026,
@@ -17661,7 +17661,7 @@
         "Program"
       ],
       "severity_distribution": {
-        "Medium": 785,
+        "Medium": 786,
         "High": 991,
         "Critical": 534,
         "Low": 117
@@ -17756,10 +17756,10 @@
     {
       "name": "microsoft",
       "assigner_org_id": "f38d906d-7342-40ea-92c1-6c4a2c6478c8",
-      "count": 1928,
+      "count": 1929,
       "rank": 9,
       "first_cve_date": "2026-01-07T22:54:54.800Z",
-      "last_cve_date": "2026-08-14T21:05:20.277Z",
+      "last_cve_date": "2026-08-14T21:50:58.641Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -17770,7 +17770,7 @@
       ],
       "severity_distribution": {
         "Medium": 479,
-        "High": 1318,
+        "High": 1319,
         "Critical": 122,
         "Low": 9
       },
@@ -17918,10 +17918,10 @@
     {
       "name": "redhat",
       "assigner_org_id": "53f830b8-0a3f-465b-8143-3b8a9948e749",
-      "count": 681,
+      "count": 688,
       "rank": 12,
       "first_cve_date": "2026-01-07T16:04:22.155Z",
-      "last_cve_date": "2026-08-14T15:02:26.469Z",
+      "last_cve_date": "2026-08-14T22:43:15.488Z",
       "years_active": 22,
       "first_cve_year": 2005,
       "last_cve_year": 2026,
@@ -17933,14 +17933,14 @@
       "severity_distribution": {
         "High": 240,
         "Low": 57,
-        "Medium": 351,
+        "Medium": 358,
         "Critical": 33
       },
       "top_cwe_types": {
         "CWE-125": 45,
         "CWE-190": 26,
-        "CWE-639": 23,
-        "CWE-918": 23,
+        "CWE-639": 24,
+        "CWE-918": 24,
         "CWE-787": 20
       },
       "kev_count": 0,
@@ -17957,11 +17957,11 @@
         ],
         [
           "CWE-639",
-          23
+          24
         ],
         [
           "CWE-918",
-          23
+          24
         ],
         [
           "CWE-787",
@@ -18254,8 +18254,8 @@
         "CERT"
       ],
       "severity_distribution": {
-        "Medium": 66,
-        "Critical": 87,
+        "Medium": 67,
+        "Critical": 86,
         "High": 169,
         "Low": 3
       },
@@ -25814,10 +25814,64 @@
       ]
     },
     {
+      "name": "OpenVPN",
+      "assigner_org_id": "36a55730-e66d-4d39-8ca6-3c3b3017965e",
+      "count": 16,
+      "rank": 160,
+      "first_cve_date": "2026-01-30T18:06:07.499Z",
+      "last_cve_date": "2026-08-14T22:13:26.656Z",
+      "years_active": 7,
+      "first_cve_year": 2020,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Medium": 11,
+        "Low": 2,
+        "High": 2,
+        "Critical": 1
+      },
+      "top_cwe_types": {
+        "CWE-617": 3,
+        "CWE-125": 3,
+        "CWE-416": 3,
+        "CWE-401": 2,
+        "CWE-787": 2
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-617",
+          3
+        ],
+        [
+          "CWE-125",
+          3
+        ],
+        [
+          "CWE-416",
+          3
+        ],
+        [
+          "CWE-401",
+          2
+        ],
+        [
+          "CWE-787",
+          2
+        ]
+      ]
+    },
+    {
       "name": "NCSC-FI",
       "assigner_org_id": "db4dfee8-a97e-4877-bfae-eba6d14a2166",
       "count": 16,
-      "rank": 160,
+      "rank": 161,
       "first_cve_date": "2026-01-13T13:39:02.370Z",
       "last_cve_date": "2026-04-27T13:00:10.309Z",
       "years_active": 3,
@@ -25870,7 +25924,7 @@
       "name": "Docker",
       "assigner_org_id": "686469e6-3ff6-451b-ab8b-cf5b9e89401e",
       "count": 15,
-      "rank": 161,
+      "rank": 162,
       "first_cve_date": "2026-02-04T13:57:23.002Z",
       "last_cve_date": "2026-08-12T14:47:24.572Z",
       "years_active": 4,
@@ -25923,7 +25977,7 @@
       "name": "Axis",
       "assigner_org_id": "f2daf9a0-02c2-4b83-a01d-63b3b304b807",
       "count": 15,
-      "rank": 162,
+      "rank": 163,
       "first_cve_date": "2026-02-10T05:32:19.555Z",
       "last_cve_date": "2026-08-11T05:52:33.481Z",
       "years_active": 6,
@@ -25975,7 +26029,7 @@
       "name": "checkpoint",
       "assigner_org_id": "897c38be-0345-43cd-b6cf-fe179e0c4f45",
       "count": 15,
-      "rank": 163,
+      "rank": 164,
       "first_cve_date": "2026-01-14T14:30:48.630Z",
       "last_cve_date": "2026-08-03T12:07:33.976Z",
       "years_active": 10,
@@ -26028,7 +26082,7 @@
       "name": "SNOWFLAKE",
       "assigner_org_id": "412d305a-227d-44f9-a262-a31ba44f2aea",
       "count": 15,
-      "rank": 164,
+      "rank": 165,
       "first_cve_date": "2026-04-16T18:43:21.181Z",
       "last_cve_date": "2026-08-12T05:22:07.386Z",
       "years_active": 1,
@@ -26082,7 +26136,7 @@
       "name": "ERIC",
       "assigner_org_id": "85b1779b-6ecd-4f52-bcc5-73eac4659dcf",
       "count": 14,
-      "rank": 165,
+      "rank": 166,
       "first_cve_date": "2026-03-25T12:54:46.406Z",
       "last_cve_date": "2026-07-27T14:21:48.696Z",
       "years_active": 3,
@@ -26135,7 +26189,7 @@
       "name": "php",
       "assigner_org_id": "dd77f84a-d19a-4638-8c3d-a322d820ed2b",
       "count": 14,
-      "rank": 166,
+      "rank": 167,
       "first_cve_date": "2026-05-10T03:27:00.607Z",
       "last_cve_date": "2026-07-30T11:22:53.918Z",
       "years_active": 8,
@@ -26182,60 +26236,6 @@
         [
           "CWE-122",
           1
-        ]
-      ]
-    },
-    {
-      "name": "OpenVPN",
-      "assigner_org_id": "36a55730-e66d-4d39-8ca6-3c3b3017965e",
-      "count": 14,
-      "rank": 167,
-      "first_cve_date": "2026-01-30T18:06:07.499Z",
-      "last_cve_date": "2026-07-30T16:42:03.164Z",
-      "years_active": 7,
-      "first_cve_year": 2020,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Medium": 10,
-        "Low": 1,
-        "High": 2,
-        "Critical": 1
-      },
-      "top_cwe_types": {
-        "CWE-617": 3,
-        "CWE-125": 3,
-        "CWE-416": 3,
-        "CWE-401": 2,
-        "CWE-787": 2
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-617",
-          3
-        ],
-        [
-          "CWE-125",
-          3
-        ],
-        [
-          "CWE-416",
-          3
-        ],
-        [
-          "CWE-401",
-          2
-        ],
-        [
-          "CWE-787",
-          2
         ]
       ]
     },
