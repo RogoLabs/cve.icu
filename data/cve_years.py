@@ -24,6 +24,7 @@ from urllib.parse import urlparse
 
 from download_cve_data import CVEDataDownloader
 
+
 # Import optimized utilities if available
 try:
     from data.fast_json import load_json_fast, normalize_severity, parse_iso_date_cached
@@ -106,7 +107,7 @@ class CVEYearsAnalyzer:
         """Initialize downloader and log startup."""
         self.downloader = CVEDataDownloader(quiet=self.quiet)
         if not self.quiet:
-            logger.info(f"📊 CVE Years Analyzer Initialized")
+            logger.info("📊 CVE Years Analyzer Initialized")
             logger.info(f"📅 Target coverage: 1999-{datetime.now().year}")
 
     def extract_severity_info(self, cve_data: dict[str, Any]) -> dict[str, Any]:
@@ -308,7 +309,7 @@ class CVEYearsAnalyzer:
                 if not self.quiet:
                     logger.debug(f"  📊 Loaded {len(self.all_cves_cache)} CVE records (using fast_json)")
             else:
-                with open(self.data_file, "r", encoding="utf-8") as f:
+                with open(self.data_file, encoding="utf-8") as f:
                     self.all_cves_cache = json.load(f)
                 if not self.quiet:
                     logger.debug(f"  📊 Loaded {len(self.all_cves_cache)} CVE records")
@@ -360,7 +361,7 @@ class CVEYearsAnalyzer:
             if not epss_json.exists():
                 epss_json = self.downloader.parse_epss_csv()
             if epss_json and Path(epss_json).exists():
-                with open(epss_json, "r", encoding="utf-8") as ef:
+                with open(epss_json, encoding="utf-8") as ef:
                     self.epss_mapping = json.load(ef)
             else:
                 self.epss_mapping = {}
@@ -373,7 +374,7 @@ class CVEYearsAnalyzer:
             if not kev_json.exists():
                 kev_json = self.downloader.parse_kev_json()
             if kev_json and Path(kev_json).exists():
-                with open(kev_json, "r", encoding="utf-8") as kf:
+                with open(kev_json, encoding="utf-8") as kf:
                     raw = json.load(kf)
                     self.kev_mapping = {k: bool(v) for k, v in raw.items()}
             else:
@@ -809,7 +810,7 @@ class CVEYearsAnalyzer:
         if self.data_file is None:
             return {}
 
-        with open(self.data_file, "r", encoding="utf-8") as f:
+        with open(self.data_file, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:

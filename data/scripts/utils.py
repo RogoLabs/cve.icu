@@ -2,12 +2,14 @@
 """
 Shared utilities for rebuild scripts
 """
+
 from __future__ import annotations
 
 import json
 import sys
 from datetime import datetime
 from pathlib import Path
+
 
 # Logging setup
 try:
@@ -29,7 +31,7 @@ logger = get_logger(__name__)
 def setup_paths() -> tuple[Path, Path, Path]:
     """
     Set up paths and ensure parent modules are importable.
-    
+
     Returns:
         tuple: (project_root, cache_dir, data_dir)
     """
@@ -37,43 +39,43 @@ def setup_paths() -> tuple[Path, Path, Path]:
     scripts_dir = Path(__file__).parent
     data_module_dir = scripts_dir.parent
     project_root = data_module_dir.parent
-    
+
     # Add data/ to path for importing analysis modules
     if str(data_module_dir) not in sys.path:
         sys.path.insert(0, str(data_module_dir))
-    
-    cache_dir = data_module_dir / 'cache'
-    web_data_dir = project_root / 'web' / 'data'
-    
+
+    cache_dir = data_module_dir / "cache"
+    web_data_dir = project_root / "web" / "data"
+
     # Ensure directories exist
     web_data_dir.mkdir(parents=True, exist_ok=True)
-    
+
     return project_root, cache_dir, web_data_dir
 
 
 def load_all_year_data(data_dir: Path) -> list[dict]:
     """
     Load all existing year data files.
-    
+
     Args:
         data_dir: Path to web/data directory containing cve_YYYY.json files
-        
+
     Returns:
         List of year data dictionaries
     """
     all_year_data: list[dict] = []
     current_year = datetime.now().year
-    
+
     for year in range(1999, current_year + 1):
-        year_file = data_dir / f'cve_{year}.json'
+        year_file = data_dir / f"cve_{year}.json"
         if year_file.exists():
             try:
-                with open(year_file, 'r') as f:
+                with open(year_file) as f:
                     year_data = json.load(f)
                 all_year_data.append(year_data)
             except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
                 logger.warning(f"Error loading {year_file}: {e}")
-    
+
     return all_year_data
 
 

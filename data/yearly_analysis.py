@@ -3,13 +3,15 @@
 Yearly Analysis Module
 Handles year-by-year data processing and aggregation
 """
+
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
+
 
 # Logging setup
 try:
@@ -23,103 +25,106 @@ logger = get_logger(__name__)
 @dataclass
 class YearlyAnalyzer:
     """Handles yearly data processing and aggregation"""
+
     base_dir: Path
     cache_dir: Path
     data_dir: Path
     quiet: bool = False
     current_year: int = field(default_factory=lambda: datetime.now().year)
     available_years: list[int] = field(init=False)
-    
+
     def __post_init__(self) -> None:
         """Convert path arguments and set up derived attributes."""
         self.base_dir = Path(self.base_dir)
         self.cache_dir = Path(self.cache_dir)
         self.data_dir = Path(self.data_dir)
         self.available_years = list(range(1999, self.current_year + 1))
-    
+
     def calculate_actual_ytd_count(self, year: int, day_of_year: int) -> int:
         """Calculate actual YTD CVE count for a given year up to specific day of year"""
         try:
             # Use the already-generated year data file which contains daily counts
-            year_file = self.data_dir / f'cve_{year}.json'
-            
+            year_file = self.data_dir / f"cve_{year}.json"
+
             if not year_file.exists():
                 if not self.quiet:
                     print(f"⚠️  Warning: Year file for {year} not found")
                 return 0
-            
+
             import json
-            with open(year_file, 'r') as f:
+
+            with open(year_file) as f:
                 year_data = json.load(f)
-            
+
             # Get daily counts from the pre-processed data
-            daily_counts = year_data.get('date_data', {}).get('daily_analysis', {}).get('daily_counts', {})
-            
+            daily_counts = year_data.get("date_data", {}).get("daily_analysis", {}).get("daily_counts", {})
+
             # Sum up CVEs from Jan 1 to the target day of year
             ytd_count = 0
             for day_num in range(1, day_of_year + 1):
-                date_key = (datetime(year, 1, 1) + timedelta(days=day_num - 1)).strftime('%Y-%m-%d')
+                date_key = (datetime(year, 1, 1) + timedelta(days=day_num - 1)).strftime("%Y-%m-%d")
                 ytd_count += daily_counts.get(date_key, 0)
-            
+
             return ytd_count
-            
+
         except (FileNotFoundError, json.JSONDecodeError, OSError, ImportError) as e:
             if not self.quiet:
                 print(f"⚠️  Warning: Could not calculate actual YTD for {year}: {e}")
             # Fallback: try to use uniform distribution if we have the year data file
             try:
-                year_file = self.data_dir / f'cve_{year}.json'
+                year_file = self.data_dir / f"cve_{year}.json"
                 if year_file.exists():
                     import json
-                    with open(year_file, 'r') as f:
+
+                    with open(year_file) as f:
                         year_data = json.load(f)
-                    total_cves = year_data.get('total_cves', 0)
+                    total_cves = year_data.get("total_cves", 0)
                     days_in_year = 366 if year % 4 == 0 else 365
                     return int((total_cves / days_in_year) * day_of_year)
             except (OSError, json.JSONDecodeError, TypeError, ValueError):
                 pass
             return 0
-    
+
     def generate_year_data_json(self) -> list[dict[str, Any]]:
         """Generate JSON data files for all available years"""
         if not self.quiet:
             logger.info("Generating year data JSON files...")
-        
+
         try:
             # Import the years analyzer
             from cve_years import CVEYearsAnalyzer
-            
+
             if not self.quiet:
                 logger.info("Initializing CVE data processing...")
             analyzer = CVEYearsAnalyzer(quiet=self.quiet)
-            
+
             # Generate data for all years
             all_year_data = []
-            
+
             for year in self.available_years:
                 logger.debug(f"Processing {year}...")
-                
+
                 try:
                     year_data = analyzer.get_year_data(year)
-                    
+
                     if year_data:
                         # Save individual year file
-                        year_file = self.data_dir / f'cve_{year}.json'
-                        with open(year_file, 'w') as f:
+                        year_file = self.data_dir / f"cve_{year}.json"
+                        with open(year_file, "w") as f:
                             json.dump(year_data, f, indent=2)
-                        
+
                         all_year_data.append(year_data)
                         logger.info(f"Generated cve_{year}.json ({year_data.get('total_cves', 0):,} CVEs)")
                     else:
                         logger.warning(f"No data available for {year}")
-                        
+
                 except (KeyError, json.JSONDecodeError, OSError) as e:
                     logger.error(f"Failed to process {year}: {e}")
                     continue
-            
+
             logger.info(f"Generated {len(all_year_data)} year data files")
             return all_year_data
-            
+
         except ImportError as e:
             logger.error(f"Failed to import CVE years analyzer: {e}")
             logger.info("Creating placeholder data for development...")
@@ -127,254 +132,264 @@ class YearlyAnalyzer:
         except (json.JSONDecodeError, OSError, KeyError) as e:
             logger.error(f"Error generating year data: {e}")
             return []
-    
+
     def create_placeholder_year_data(self) -> list[dict[str, Any]]:
         """Create placeholder year data for development/testing"""
         logger.info("Creating placeholder year data...")
-        
+
         all_year_data = []
-        
+
         for year in self.available_years:
             # Create basic placeholder data structure
             year_data = {
-                'year': year,
-                'total_cves': max(100, (year - 1999) * 500),  # Increasing trend
-                'date_data': {
-                    'monthly_distribution': {str(i): max(10, (year - 1999) * 5) for i in range(1, 13)},
-                    'daily_analysis': {
-                        'total_days': 365,
-                        'days_with_cves': min(365, max(50, (year - 1999) * 10)),
-                        'avg_cves_per_day': max(1, (year - 1999) * 1.5),
-                        'max_cves_in_day': max(5, (year - 1999) * 3),
-                        'daily_counts': {}
-                    }
+                "year": year,
+                "total_cves": max(100, (year - 1999) * 500),  # Increasing trend
+                "date_data": {
+                    "monthly_distribution": {str(i): max(10, (year - 1999) * 5) for i in range(1, 13)},
+                    "daily_analysis": {
+                        "total_days": 365,
+                        "days_with_cves": min(365, max(50, (year - 1999) * 10)),
+                        "avg_cves_per_day": max(1, (year - 1999) * 1.5),
+                        "max_cves_in_day": max(5, (year - 1999) * 3),
+                        "daily_counts": {},
+                    },
                 },
-                'vendors': {
-                    'total_cves_with_vendors': max(80, (year - 1999) * 400),
-                    'cpe_vendors': [
-                        {'name': 'Microsoft Corporation', 'count': max(20, (year - 1999) * 50)},
-                        {'name': 'Adobe Inc.', 'count': max(15, (year - 1999) * 30)},
-                        {'name': 'Oracle Corporation', 'count': max(10, (year - 1999) * 25)},
-                        {'name': 'Google LLC', 'count': max(8, (year - 1999) * 20)},
-                        {'name': 'Apple Inc.', 'count': max(5, (year - 1999) * 15)}
+                "vendors": {
+                    "total_cves_with_vendors": max(80, (year - 1999) * 400),
+                    "cpe_vendors": [
+                        {"name": "Microsoft Corporation", "count": max(20, (year - 1999) * 50)},
+                        {"name": "Adobe Inc.", "count": max(15, (year - 1999) * 30)},
+                        {"name": "Oracle Corporation", "count": max(10, (year - 1999) * 25)},
+                        {"name": "Google LLC", "count": max(8, (year - 1999) * 20)},
+                        {"name": "Apple Inc.", "count": max(5, (year - 1999) * 15)},
                     ],
-                    'cna_assigners': [
-                        {'name': 'MITRE Corporation', 'count': max(50, (year - 1999) * 100)},
-                        {'name': 'Patchstack', 'count': max(20, (year - 1999) * 40)},
-                        {'name': 'Microsoft Corporation', 'count': max(15, (year - 1999) * 30)},
-                        {'name': 'Adobe Inc.', 'count': max(10, (year - 1999) * 25)},
-                        {'name': 'Wordfence', 'count': max(8, (year - 1999) * 20)}
-                    ]
+                    "cna_assigners": [
+                        {"name": "MITRE Corporation", "count": max(50, (year - 1999) * 100)},
+                        {"name": "Patchstack", "count": max(20, (year - 1999) * 40)},
+                        {"name": "Microsoft Corporation", "count": max(15, (year - 1999) * 30)},
+                        {"name": "Adobe Inc.", "count": max(10, (year - 1999) * 25)},
+                        {"name": "Wordfence", "count": max(8, (year - 1999) * 20)},
+                    ],
                 },
-                'cvss': {
-                    'total_cves_with_cvss': max(70, (year - 1999) * 350),
-                    'v2.0': {
-                        'severity': {'LOW': 10, 'MEDIUM': 30, 'HIGH': 20},
-                        'scores': {'2.1': 5, '5.0': 15, '7.5': 10, '9.3': 8}
+                "cvss": {
+                    "total_cves_with_cvss": max(70, (year - 1999) * 350),
+                    "v2.0": {
+                        "severity": {"LOW": 10, "MEDIUM": 30, "HIGH": 20},
+                        "scores": {"2.1": 5, "5.0": 15, "7.5": 10, "9.3": 8},
                     },
-                    'v3.0': {
-                        'severity': {'LOW': 15, 'MEDIUM': 40, 'HIGH': 25, 'CRITICAL': 10},
-                        'scores': {'3.1': 8, '5.4': 20, '7.8': 15, '9.8': 12}
+                    "v3.0": {
+                        "severity": {"LOW": 15, "MEDIUM": 40, "HIGH": 25, "CRITICAL": 10},
+                        "scores": {"3.1": 8, "5.4": 20, "7.8": 15, "9.8": 12},
                     },
-                    'v3.1': {
-                        'severity': {'LOW': 20, 'MEDIUM': 50, 'HIGH': 30, 'CRITICAL': 15},
-                        'scores': {'2.7': 10, '5.9': 25, '8.1': 18, '9.9': 15}
-                    }
+                    "v3.1": {
+                        "severity": {"LOW": 20, "MEDIUM": 50, "HIGH": 30, "CRITICAL": 15},
+                        "scores": {"2.7": 10, "5.9": 25, "8.1": 18, "9.9": 15},
+                    },
                 },
-                'cwe': {
-                    'total_cves_with_cwe': max(60, (year - 1999) * 300),
-                    'top_cwes': [
-                        {'id': '79', 'name': 'Cross-site Scripting (XSS)', 'count': max(10, (year - 1999) * 20)},
-                        {'id': '89', 'name': 'SQL Injection', 'count': max(8, (year - 1999) * 15)},
-                        {'id': '20', 'name': 'Improper Input Validation', 'count': max(6, (year - 1999) * 12)},
-                        {'id': '22', 'name': 'Path Traversal', 'count': max(5, (year - 1999) * 10)},
-                        {'id': '352', 'name': 'Cross-Site Request Forgery (CSRF)', 'count': max(4, (year - 1999) * 8)}
-                    ]
-                }
+                "cwe": {
+                    "total_cves_with_cwe": max(60, (year - 1999) * 300),
+                    "top_cwes": [
+                        {"id": "79", "name": "Cross-site Scripting (XSS)", "count": max(10, (year - 1999) * 20)},
+                        {"id": "89", "name": "SQL Injection", "count": max(8, (year - 1999) * 15)},
+                        {"id": "20", "name": "Improper Input Validation", "count": max(6, (year - 1999) * 12)},
+                        {"id": "22", "name": "Path Traversal", "count": max(5, (year - 1999) * 10)},
+                        {"id": "352", "name": "Cross-Site Request Forgery (CSRF)", "count": max(4, (year - 1999) * 8)},
+                    ],
+                },
             }
-            
+
             # Save individual year file
-            year_file = self.data_dir / f'cve_{year}.json'
-            with open(year_file, 'w') as f:
+            year_file = self.data_dir / f"cve_{year}.json"
+            with open(year_file, "w") as f:
                 json.dump(year_data, f, indent=2)
-            
+
             all_year_data.append(year_data)
             logger.debug(f"Created placeholder cve_{year}.json")
-        
+
         logger.info(f"Created {len(all_year_data)} placeholder year files")
         return all_year_data
-    
+
     def generate_cve_all_json(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate overall CVE statistics across all years"""
         logger.info("Generating overall CVE statistics...")
-        
+
         # Calculate totals and trends
-        total_cves = sum(year['total_cves'] for year in all_year_data)
+        total_cves = sum(year["total_cves"] for year in all_year_data)
         years_with_data = len(all_year_data)
-        
+
         # Find peak year
-        peak_year_data = max(all_year_data, key=lambda x: x['total_cves'])
-        peak_year = peak_year_data['year']
-        peak_count = peak_year_data['total_cves']
-        
+        peak_year_data = max(all_year_data, key=lambda x: x["total_cves"])
+        peak_year = peak_year_data["year"]
+        peak_count = peak_year_data["total_cves"]
+
         # Calculate current year stats
-        current_year_data = next((year for year in all_year_data if year['year'] == self.current_year), None)
-        current_year_count = current_year_data['total_cves'] if current_year_data else 0
-        
+        current_year_data = next((year for year in all_year_data if year["year"] == self.current_year), None)
+        current_year_count = current_year_data["total_cves"] if current_year_data else 0
+
         # Calculate YoY growth (current vs previous year)
-        previous_year_data = next((year for year in all_year_data if year['year'] == self.current_year - 1), None)
-        previous_year_count = previous_year_data['total_cves'] if previous_year_data else 0
-        
+        previous_year_data = next((year for year in all_year_data if year["year"] == self.current_year - 1), None)
+        previous_year_count = previous_year_data["total_cves"] if previous_year_data else 0
+
         yoy_growth = 0
         if previous_year_count > 0:
             yoy_growth = ((current_year_count - previous_year_count) / previous_year_count) * 100
-        
+
         # Calculate average CVEs per day for current year
         avg_cves_per_day = 0
         if current_year_data:
             days_elapsed = datetime.now().timetuple().tm_yday
             avg_cves_per_day = current_year_count / days_elapsed if days_elapsed > 0 else 0
-        
+
         # Create yearly trend data for charts
         yearly_data = []
-        for year_data in sorted(all_year_data, key=lambda x: x['year']):
-            yearly_data.append({
-                'year': year_data['year'],
-                'count': year_data['total_cves']
-            })
-        
+        for year_data in sorted(all_year_data, key=lambda x: x["year"]):
+            yearly_data.append({"year": year_data["year"], "count": year_data["total_cves"]})
+
         cve_all_data = {
-            'generated_at': datetime.now().isoformat(),
-            'total_cves': total_cves,
-            'years_covered': years_with_data,
-            'current_year': self.current_year,
-            'current_year_cves': current_year_count,
-            'peak_year': peak_year,
-            'peak_count': peak_count,
-            'yoy_growth_rate': round(yoy_growth, 1),
-            'avg_cves_per_day': round(avg_cves_per_day, 1),
-            'yearly_trend': yearly_data
+            "generated_at": datetime.now().isoformat(),
+            "total_cves": total_cves,
+            "years_covered": years_with_data,
+            "current_year": self.current_year,
+            "current_year_cves": current_year_count,
+            "peak_year": peak_year,
+            "peak_count": peak_count,
+            "yoy_growth_rate": round(yoy_growth, 1),
+            "avg_cves_per_day": round(avg_cves_per_day, 1),
+            "yearly_trend": yearly_data,
         }
-        
+
         # Save to file
-        output_file = self.data_dir / 'cve_all.json'
-        with open(output_file, 'w') as f:
+        output_file = self.data_dir / "cve_all.json"
+        with open(output_file, "w") as f:
             json.dump(cve_all_data, f, indent=2)
-        
+
         logger.info(f"Generated cve_all.json with {total_cves:,} total CVEs")
         return cve_all_data
-    
+
     def generate_growth_analysis(self, all_year_data: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate growth trend analysis across all years"""
         logger.info("Generating growth trend analysis...")
-        
+
         # Get current date for year-to-date calculations
         current_date = datetime.now()
         current_year = current_date.year
         day_of_year = current_date.timetuple().tm_yday
-        
+
         # Calculate year-over-year growth rates
         growth_data = []
-        
-        for i, year_data in enumerate(sorted(all_year_data, key=lambda x: x['year'])):
+
+        for i, year_data in enumerate(sorted(all_year_data, key=lambda x: x["year"])):
             if i == 0:
                 # First year, no previous data for comparison
-                growth_data.append({
-                    'year': year_data['year'],
-                    'cves': year_data['total_cves'],
-                    'growth_rate': 0,
-                    'growth_absolute': 0,
-                    'is_ytd': year_data['year'] == current_year
-                })
+                growth_data.append(
+                    {
+                        "year": year_data["year"],
+                        "cves": year_data["total_cves"],
+                        "growth_rate": 0,
+                        "growth_absolute": 0,
+                        "is_ytd": year_data["year"] == current_year,
+                    }
+                )
             else:
-                prev_year_data = sorted(all_year_data, key=lambda x: x['year'])[i-1]
-                prev_count = prev_year_data['total_cves']
-                current_count = year_data['total_cves']
-                
+                prev_year_data = sorted(all_year_data, key=lambda x: x["year"])[i - 1]
+                prev_count = prev_year_data["total_cves"]
+                current_count = year_data["total_cves"]
+
                 # For current year, we need to calculate YTD comparison
-                if year_data['year'] == current_year:
+                if year_data["year"] == current_year:
                     # Calculate proper YTD comparison: current YTD vs same period last year
                     # We need to get CVEs from previous year up to the same day of year
-                    
+
                     # First, calculate projected full year for growth rate
                     days_in_year = 366 if current_year % 4 == 0 else 365
                     projected_full_year = (current_count / day_of_year) * days_in_year
-                    
+
                     # Calculate ACTUAL YTD count for previous year using same date filtering
                     # This fixes the major bug of using uniform distribution assumption
                     prev_year_ytd_actual = self.calculate_actual_ytd_count(current_year - 1, day_of_year)
-                    
+
                     # Calculate true YTD comparison (current YTD vs previous year actual same period)
                     # This should be the PRIMARY growth rate for YTD data
                     ytd_comparison = 0
                     if prev_year_ytd_actual > 0:
                         ytd_comparison = ((current_count - prev_year_ytd_actual) / prev_year_ytd_actual) * 100
-                    
+
                     # Calculate projected full year for reference but don't use as main growth rate
                     projected_full_year = (current_count / day_of_year) * days_in_year
-                    
-                    growth_data.append({
-                        'year': year_data['year'],
-                        'cves': current_count,
-                        'growth_rate': round(ytd_comparison, 1),  # Use YTD comparison as main growth rate!
-                        'growth_absolute': int(current_count - prev_year_ytd_actual),  # YTD absolute change
-                        'is_ytd': True,
-                        'projected_full_year': int(projected_full_year),
-                        'ytd_vs_prev_full': round(((current_count - prev_count) / prev_count) * 100, 1) if prev_count > 0 else 0,
-                        'ytd_vs_prev_ytd': round(ytd_comparison, 1),
-                        'prev_year_ytd_actual': int(prev_year_ytd_actual)
-                    })
+
+                    growth_data.append(
+                        {
+                            "year": year_data["year"],
+                            "cves": current_count,
+                            "growth_rate": round(ytd_comparison, 1),  # Use YTD comparison as main growth rate!
+                            "growth_absolute": int(current_count - prev_year_ytd_actual),  # YTD absolute change
+                            "is_ytd": True,
+                            "projected_full_year": int(projected_full_year),
+                            "ytd_vs_prev_full": round(((current_count - prev_count) / prev_count) * 100, 1)
+                            if prev_count > 0
+                            else 0,
+                            "ytd_vs_prev_ytd": round(ytd_comparison, 1),
+                            "prev_year_ytd_actual": int(prev_year_ytd_actual),
+                        }
+                    )
                 else:
                     # Normal year-over-year calculation for completed years
                     growth_rate = 0
                     if prev_count > 0:
                         growth_rate = ((current_count - prev_count) / prev_count) * 100
-                    
-                    growth_data.append({
-                        'year': year_data['year'],
-                        'cves': current_count,
-                        'growth_rate': round(growth_rate, 1),
-                        'growth_absolute': current_count - prev_count,
-                        'is_ytd': False
-                    })
-        
+
+                    growth_data.append(
+                        {
+                            "year": year_data["year"],
+                            "cves": current_count,
+                            "growth_rate": round(growth_rate, 1),
+                            "growth_absolute": current_count - prev_count,
+                            "is_ytd": False,
+                        }
+                    )
+
         # Calculate moving averages (exclude current year from averages since it's YTD)
         window_size = 3
         for i, entry in enumerate(growth_data):
-            if entry.get('is_ytd', False):
+            if entry.get("is_ytd", False):
                 # For YTD data, don't calculate moving average
-                entry['growth_rate_3yr_avg'] = entry['growth_rate']
+                entry["growth_rate_3yr_avg"] = entry["growth_rate"]
             elif i >= window_size - 1:
                 # Only include completed years in moving average
-                window_rates = [growth_data[j]['growth_rate'] for j in range(i - window_size + 1, i + 1) 
-                               if not growth_data[j].get('is_ytd', False)]
+                window_rates = [
+                    growth_data[j]["growth_rate"]
+                    for j in range(i - window_size + 1, i + 1)
+                    if not growth_data[j].get("is_ytd", False)
+                ]
                 if window_rates:
-                    entry['growth_rate_3yr_avg'] = round(sum(window_rates) / len(window_rates), 1)
+                    entry["growth_rate_3yr_avg"] = round(sum(window_rates) / len(window_rates), 1)
                 else:
-                    entry['growth_rate_3yr_avg'] = entry['growth_rate']
+                    entry["growth_rate_3yr_avg"] = entry["growth_rate"]
             else:
-                entry['growth_rate_3yr_avg'] = entry['growth_rate']
-        
+                entry["growth_rate_3yr_avg"] = entry["growth_rate"]
+
         # Filter out YTD data for aggregate statistics since it's not comparable
-        completed_years = [entry for entry in growth_data[1:] if not entry.get('is_ytd', False)]
-        
+        completed_years = [entry for entry in growth_data[1:] if not entry.get("is_ytd", False)]
+
         # Get current year data for YTD comparison
-        current_year_data = next((entry for entry in growth_data if entry.get('is_ytd', False)), None)
-        
+        current_year_data = next((entry for entry in growth_data if entry.get("is_ytd", False)), None)
+
         growth_analysis = {
-            'generated_at': datetime.now().isoformat(),
-            'growth_data': growth_data,
-            'avg_annual_growth': round(sum(entry['growth_rate'] for entry in completed_years) / len(completed_years), 1) if completed_years else 0,
-            'highest_growth_year': max(completed_years, key=lambda x: x['growth_rate']) if completed_years else None,
-            'lowest_growth_year': min(completed_years, key=lambda x: x['growth_rate']) if completed_years else None,
-            'current_year_ytd': current_year_data
+            "generated_at": datetime.now().isoformat(),
+            "growth_data": growth_data,
+            "avg_annual_growth": round(sum(entry["growth_rate"] for entry in completed_years) / len(completed_years), 1)
+            if completed_years
+            else 0,
+            "highest_growth_year": max(completed_years, key=lambda x: x["growth_rate"]) if completed_years else None,
+            "lowest_growth_year": min(completed_years, key=lambda x: x["growth_rate"]) if completed_years else None,
+            "current_year_ytd": current_year_data,
         }
-        
+
         # Save to file
-        output_file = self.data_dir / 'growth_analysis.json'
-        with open(output_file, 'w') as f:
+        output_file = self.data_dir / "growth_analysis.json"
+        with open(output_file, "w") as f:
             json.dump(growth_analysis, f, indent=2)
-        
+
         if not self.quiet:
             logger.info(f"Generated growth analysis with {len(growth_data)} years of data")
         return growth_analysis

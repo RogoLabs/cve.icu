@@ -5,6 +5,7 @@ These tests cover the gates that stand between that manifest and a build:
 health (degraded / API fallback / completeness), regression against the last
 accepted snapshot, and integrity of the downloaded object.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -169,9 +170,7 @@ class TestVerifyDownloadAgainstManifest:
         d = CVEDataDownloader(cache_dir=real_cache, quiet=True, http_client=FakeHttpClient())
         payload = b"payload"
         d.cache_file.write_bytes(payload)
-        d.verify_download_against_manifest(
-            make_manifest(sha256=hashlib.sha256(payload).hexdigest()), len(payload)
-        )
+        d.verify_download_against_manifest(make_manifest(sha256=hashlib.sha256(payload).hexdigest()), len(payload))
 
 
 class TestStreamingHash:
@@ -182,9 +181,7 @@ class TestStreamingHash:
         payload = b"x" * (3 * 1024 * 1024)
         target.write_bytes(payload)
         d = CVEDataDownloader(cache_dir=tmp_path, quiet=True, http_client=FakeHttpClient())
-        assert d.calculate_file_hash_streaming(target, chunk_size=64 * 1024) == (
-            hashlib.sha256(payload).hexdigest()
-        )
+        assert d.calculate_file_hash_streaming(target, chunk_size=64 * 1024) == (hashlib.sha256(payload).hexdigest())
 
 
 class TestBaselineManifest:
@@ -204,9 +201,7 @@ class TestBaselineManifest:
 class TestPersistAcceptedManifest:
     def test_writes_manifest(self, tmp_path):
         writer = FakeDataWriter()
-        d = CVEDataDownloader(
-            cache_dir=tmp_path, quiet=True, http_client=FakeHttpClient(), data_writer=writer
-        )
+        d = CVEDataDownloader(cache_dir=tmp_path, quiet=True, http_client=FakeHttpClient(), data_writer=writer)
         manifest = make_manifest()
         d.persist_accepted_manifest(manifest)
         assert writer.get_json(d.manifest_file) == manifest
