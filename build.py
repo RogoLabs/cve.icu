@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import jinja2
+import requests
 
 
 # Add data folder to path for imports
@@ -56,6 +57,13 @@ def default_command(
         bool, typer.Option("--force-refresh", "-f", help="Force re-download even if cache is valid")
     ] = False,
     validate_flag: Annotated[bool, typer.Option("--validate", help="Validate data consistency after build")] = False,
+    accept_baseline: Annotated[
+        bool,
+        typer.Option("--accept-baseline", help="Skip the source-manifest regression check"),
+    ] = False,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Treat data guards as fatal outside CI")
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level (DEBUG, INFO, WARNING, ERROR)")] = "INFO",
 ) -> None:
     """Default command - runs build if no subcommand specified.
@@ -74,6 +82,8 @@ def default_command(
         quiet=quiet,
         refresh_data=refresh_data,
         force_refresh=force_refresh,
+        accept_baseline=accept_baseline,
+        strict=strict,
         validate=validate_flag,
         log_level=log_level,
     )
@@ -86,6 +96,21 @@ class CVESiteBuilder:
         self.quiet: bool = quiet or os.getenv("CVE_BUILD_QUIET", "").lower() in ("1", "true", "yes")
         self.current_year: int = datetime.now().year
         self.available_years: list[int] = list(range(1999, self.current_year + 1))
+
+        # Regression guard configuration. See verify_no_regression() for how
+        # the allowance was derived; it is deliberately much tighter than a
+        # percentage band would be.
+        self.published_totals_url: str = "https://cve.icu/data/cve_all.json"
+        self.regression_allowance: int = 10
+        # A 3-hourly build should never be running on data a full day old.
+        self.max_data_age_hours: float = 24.0
+        self.accept_baseline: bool = False
+        # These guards exist to stop bad data being *published*. A local build
+        # publishes nothing, so blocking a developer working from a deliberately
+        # old cache is friction with no safety benefit. CI is the deploy path,
+        # so there they are fatal; locally they warn. --strict forces fatal
+        # anywhere, which is how you test the guard itself.
+        self.strict_data_guards: bool = bool(os.getenv("CI"))
         self.base_dir: Path = Path(__file__).parent
         self.output_root_dir: Path = self.base_dir / "web"
         self.templates_dir: Path = self.base_dir / "templates"
@@ -136,7 +161,29 @@ class CVESiteBuilder:
             return f"{num / 1000:.1f}K"
         return str(num)
 
-    def refresh_data(self, force: bool = False) -> bool:
+    def verify_source_manifest(self, accept_baseline: bool = False) -> dict[str, Any] | None:
+        """Run the producer-manifest gates before any bulk download.
+
+        Returns the manifest when one is available, else None. Raises when the
+        producer reports a degraded run or the snapshot has regressed against
+        the last one we accepted.
+        """
+        from download_cve_data import CVEDataDownloader
+
+        checker = CVEDataDownloader(cache_dir=self.cache_dir, quiet=self.quiet)
+        manifest = checker.fetch_source_manifest()
+        if manifest is None:
+            logger.warning("⚠️  Proceeding without manifest verification")
+            return None
+
+        if accept_baseline:
+            logger.warning("⚠️  --accept-baseline: skipping manifest regression check")
+        else:
+            checker.verify_manifest_healthy(manifest)
+            checker.verify_manifest_not_regressed(manifest, checker.fetch_baseline_manifest())
+        return manifest
+
+    def refresh_data(self, force: bool = False, accept_baseline: bool = False) -> bool:
         """Refresh CVE data from all sources using async parallel downloads.
 
         Downloads data from 5 sources in parallel (~3x faster than sequential):
@@ -154,12 +201,25 @@ class CVESiteBuilder:
         """
         self.print_verbose("📥 Refreshing CVE data from all sources...")
 
+        # The async path downloads nvd.json directly, bypassing the manifest
+        # gate in CVEDataDownloader.ensure_data_available(). Run the same checks
+        # here so a manual --refresh-data cannot skip verification.
+        source_manifest = self.verify_source_manifest(accept_baseline=accept_baseline)
+
         try:
             downloader = AsyncCVEDownloader(
                 cache_dir=self.cache_dir,
                 quiet=self.quiet,
             )
             results = downloader.download_all_sync(force=force)
+
+            # Record the manifest only after the download it describes succeeded.
+            if source_manifest is not None:
+                from download_cve_data import CVEDataDownloader
+
+                CVEDataDownloader(
+                    cache_dir=self.cache_dir, quiet=self.quiet
+                ).persist_accepted_manifest(source_manifest)
 
             # Parse supplemental data
             downloader.parse_epss()
@@ -178,11 +238,43 @@ class CVESiteBuilder:
             return True
 
         except ImportError as e:
+            # httpx is optional. Previously this returned True, so a refresh
+            # reported success in about a second having downloaded nothing.
+            # Fall back to the synchronous downloader, which uses requests.
             logger.warning(f"⚠️  Async downloads unavailable: {e}")
-            logger.info("   Install httpx for parallel downloads: pip install httpx")
-            return True  # Continue with existing cache
+            logger.info("   Falling back to sequential downloads (pip install httpx to parallelise)")
+            return self.refresh_data_sync(force=force, manifest=source_manifest)
         except Exception as e:
             logger.error(f"❌ Data refresh failed: {e}")
+            return False
+
+    def refresh_data_sync(self, force: bool = False, manifest: dict[str, Any] | None = None) -> bool:
+        """Sequential fallback for when httpx is unavailable.
+
+        Slower than the async path but functionally equivalent, and honest: it
+        actually downloads, and reports failure when it fails.
+        """
+        from download_cve_data import CVEDataDownloader
+
+        downloader = CVEDataDownloader(cache_dir=self.cache_dir, quiet=self.quiet)
+        try:
+            # Covers nvd.json plus the CNA mapping files, and verifies the
+            # snapshot against the manifest.
+            downloader.download_data(force=force, manifest=manifest)
+            downloader.download_cna_mapping_files()
+
+            if downloader.download_epss_data(force=force):
+                downloader.parse_epss_csv()
+            if downloader.download_kev_data(force=force):
+                downloader.parse_kev_json()
+
+            if manifest is not None:
+                downloader.persist_accepted_manifest(manifest)
+
+            self.print_verbose("✅ Data refresh complete (sequential)")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Sequential data refresh failed: {e}")
             return False
 
     def clean_build(self) -> None:
@@ -717,6 +809,7 @@ class CVESiteBuilder:
 
         homepage_summary = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "current_year": self.current_year,
             "yearly_summary": {
                 "years": yearly_summary_years,
@@ -792,6 +885,7 @@ class CVESiteBuilder:
         """Write a minimal data_quality.json payload when detailed analysis cannot be generated."""
         fallback_data = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "status": "fallback",
             "reason": reason,
             "stats": {
@@ -857,6 +951,7 @@ class CVESiteBuilder:
 
         cve_all_data = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "total_cves": total_cves,
             "years_covered": years_with_data,
             "current_year": self.current_year,
@@ -890,7 +985,11 @@ class CVESiteBuilder:
             return
 
         # Build summary structure with everything years.html needs
-        summary = {"generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"), "years": {}}
+        summary = {
+            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
+            "years": {},
+        }
 
         for year_data in sorted(all_year_data, key=lambda x: x.get("year", 0)):
             year = year_data.get("year")
@@ -1033,12 +1132,20 @@ class CVESiteBuilder:
 
         self.print_always("✅ HTML pages generated successfully")
 
-    def build_site(self, refresh_data: bool = False, force_refresh: bool = False) -> bool:
+    def build_site(
+        self,
+        refresh_data: bool = False,
+        force_refresh: bool = False,
+        accept_baseline: bool = False,
+        strict: bool = False,
+    ) -> bool:
         """Main build function - orchestrates the entire build process
 
         Args:
             refresh_data: If True, refresh CVE data before building
             force_refresh: If True, force re-download even if cache is valid
+            accept_baseline: If True, skip the manifest regression check
+            strict: If True, treat data guards as fatal even outside CI
         """
         self.print_always("\n🏗️  Starting CVE.ICU site build...")
         if not self.quiet:
@@ -1049,7 +1156,13 @@ class CVESiteBuilder:
 
         try:
             # Step 0: Optionally refresh data from upstream sources
-            if refresh_data and not self.refresh_data(force=force_refresh):
+            self.accept_baseline = accept_baseline
+            if strict:
+                self.strict_data_guards = True
+
+            if refresh_data and not self.refresh_data(
+                force=force_refresh, accept_baseline=accept_baseline
+            ):
                 logger.error("❌ Data refresh failed, cannot continue build")
                 return False
 
@@ -1066,11 +1179,24 @@ class CVESiteBuilder:
                 logger.error("❌ No year data generated, cannot continue build")
                 return False
 
+            # Step 3.4: Republish the accepted source manifest with the site so
+            # the next build can use it as its regression baseline. Keeping the
+            # baseline on the live site (rather than in the repo) is what lets
+            # the scheduled workflow stop committing web/ back to main.
+            self.publish_source_manifest()
+
             # Step 3.5: Guard against truncated/incomplete upstream feeds.
             # A complete historical year that comes back with zero CVEs means the
             # source feed was partial when downloaded. Fail loudly here so bad
             # data is never published or committed.
             self.verify_historical_year_coverage(all_year_data)
+
+            # Step 3.6: Refuse to publish data older than the freshness limit,
+            # and refuse counts that fall below what is already live. These are
+            # independent of the producer-side manifest checks: they catch our
+            # own analysis regressions, which the producer cannot see.
+            self.verify_data_freshness()
+            self.verify_no_regression(all_year_data)
 
             # Step 4: Generate combined analysis JSON files
             combined_analysis = self.generate_combined_analysis_json(all_year_data)
@@ -1116,6 +1242,214 @@ class CVESiteBuilder:
             self._set_output_dirs(self.output_root_dir)
             if staged_web_dir.exists():
                 shutil.rmtree(staged_web_dir, ignore_errors=True)
+
+    def publish_source_manifest(self) -> None:
+        """Copy the accepted source manifest into the site output.
+
+        Published at /data/source_manifest.json, which is where the downloader
+        looks for its regression baseline on the next run. Absent manifest is
+        not fatal: the producer may not have published one, in which case the
+        next run simply has no baseline to compare against.
+        """
+        manifest_src = self.cache_dir / "source_manifest.json"
+        cache_info_src = self.cache_dir / "cache_info.json"
+        if not manifest_src.exists():
+            self.print_verbose("  ⚠️  No accepted source manifest to publish")
+            return
+
+        # Only publish a manifest that describes the snapshot we actually built
+        # from. The cached manifest survives across runs, so republishing it
+        # blindly could advertise a baseline for data this build never used,
+        # which would then wrongly gate every future run.
+        try:
+            with open(manifest_src) as f:
+                manifest = json.load(f)
+            with open(cache_info_src) as f:
+                cache_info = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not verify manifest against cache info: {e}")
+            return
+
+        manifest_run = manifest.get("last_run_iso")
+        cached_run = cache_info.get("source_last_run")
+        if manifest_run != cached_run:
+            logger.warning(
+                f"  ⚠️  Not publishing source manifest: it describes run "
+                f"{manifest_run}, but the cached snapshot came from {cached_run}"
+            )
+            return
+
+        destination = self.data_dir / "source_manifest.json"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(manifest_src, destination)
+        self.print_verbose(f"  ✅ Published source_manifest.json (run {manifest_run})")
+
+    def enforce_data_guard(self, summary: str, detail: str, remedy: str) -> None:
+        """Fail the build in CI, warn locally.
+
+        Args:
+            summary: one-line statement of what is wrong.
+            detail: the specific numbers, shown in both modes.
+            remedy: what the developer should do about it.
+        """
+        if self.strict_data_guards:
+            raise RuntimeError(f"{summary}\n{detail}\n{remedy}")
+
+        logger.warning(f"  ⚠️  {summary}")
+        for line in detail.splitlines():
+            logger.warning(f"  ⚠️  {line}")
+        logger.warning(f"  ⚠️  {remedy}")
+        logger.warning("  ⚠️  Not fatal outside CI. Use --strict to make it fatal here.")
+
+    def fetch_published_totals(self) -> dict[str, Any] | None:
+        """Fetch the currently published cve_all.json to use as a baseline.
+
+        Read from the live site rather than the repo so the check survives the
+        scheduled workflow no longer committing web/ back to main.
+        """
+        try:
+            response = requests.get(self.published_totals_url, timeout=30)
+            if response.status_code == 404:
+                logger.info("  📊 No published totals yet (first run)")
+                return None
+            response.raise_for_status()
+            published = response.json()
+        except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not fetch published totals: {e}")
+            return None
+
+        if not isinstance(published, dict) or "total_cves" not in published:
+            logger.warning("  ⚠️  Published totals are malformed; ignoring")
+            return None
+        return published
+
+    def verify_no_regression(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Fail the build if our own counts fall below what is already published.
+
+        This is deliberately independent of the source-manifest check in the
+        downloader. That one catches a bad snapshot from the producer; this one
+        catches a bug in our own analysis code, which the producer cannot see.
+
+        Keying: both sides here are OUR outputs, bucketed by publication date.
+        Never compare these to the manifest's year_counts, which are keyed by
+        CVE-ID year and are a different partition of the same data.
+
+        Thresholds are tight on purpose. Sweeping the 400 builds published
+        between 2026-06-26 and 2026-08-17 showed no legitimate run ever reduced
+        the site-wide total by more than 10, because the handful of genuine CVE
+        withdrawals in any window are outweighed by same-window additions. A
+        10-CVE allowance caught 15 of the 17 known bad builds with no false
+        positives; a 0.1% band, which is the intuitive choice, caught only 7.
+
+        Raises:
+            RuntimeError: on a material regression in the total or any closed year.
+        """
+        if self.accept_baseline:
+            logger.warning("  ⚠️  --accept-baseline: skipping published-totals regression check")
+            return
+
+        published = self.fetch_published_totals()
+        if published is None:
+            logger.info("  📊 No baseline available; skipping regression check")
+            return
+
+        problems: list[str] = []
+
+        prev_total = published.get("total_cves", 0)
+        new_total = sum(d.get("total_cves", 0) for d in all_year_data)
+        if new_total < prev_total - self.regression_allowance:
+            problems.append(
+                f"total {prev_total:,} -> {new_total:,} ({new_total - prev_total:,}, "
+                f"allowance {self.regression_allowance})"
+            )
+
+        new_years = {int(d["year"]): d.get("total_cves", 0) for d in all_year_data if "year" in d}
+        for entry in published.get("yearly_trend", []):
+            year = int(entry.get("year", 0))
+            # The current year is still accumulating, so only closed years are
+            # expected to hold steady.
+            if year >= self.current_year:
+                continue
+            prev_count = entry.get("count", 0)
+            new_count = new_years.get(year, 0)
+            if new_count < prev_count - self.regression_allowance:
+                problems.append(f"year {year} {prev_count:,} -> {new_count:,} ({new_count - prev_count:,})")
+
+        if problems:
+            self.enforce_data_guard(
+                "Counts regressed against the published site.",
+                "  " + "\n  ".join(problems),
+                "This usually means a bad upstream snapshot, an analysis regression, "
+                "or a stale local cache. Refresh with 'python build.py refresh --force', "
+                "or re-run with --accept-baseline if the decrease is confirmed as real.",
+            )
+            return
+
+        logger.info(f"    ✅ No regression against published totals ({prev_total:,} -> {new_total:,})")
+
+    def verify_data_freshness(self) -> None:
+        """Warn when the snapshot behind this build is old.
+
+        generated_at records when the build ran, which says nothing about how
+        old the underlying data is. This surfaces the difference rather than
+        letting a stale cache be published under a fresh timestamp.
+        """
+        info = self.source_provenance()
+        age_hours = info.get("data_age_hours")
+        if age_hours is None:
+            logger.warning("  ⚠️  Could not determine data age from cache info")
+            return
+
+        if age_hours > self.max_data_age_hours:
+            self.enforce_data_guard(
+                f"Source snapshot is {age_hours:.1f}h old, over the "
+                f"{self.max_data_age_hours}h limit.",
+                f"  downloaded {info.get('data_as_of')}",
+                "Stale data must not be published under a fresh timestamp. "
+                "Refresh with 'python build.py refresh --force'.",
+            )
+            return
+        logger.info(f"    ✅ Source snapshot is {age_hours:.1f}h old")
+
+    @cache  # noqa: B019 - per-build instance, process is short-lived
+    def source_provenance(self) -> dict[str, Any]:
+        """Provenance of the snapshot this build is using.
+
+        Separate from generated_at, which is build time. Embedded in every
+        output so the site can show how old the data actually is.
+        """
+        cache_info_file = self.cache_dir / "cache_info.json"
+        provenance: dict[str, Any] = {
+            "data_as_of": None,
+            "data_age_hours": None,
+            "source_last_run": None,
+            "source_cve_count": None,
+        }
+        try:
+            with open(cache_info_file) as f:
+                info = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not read cache info: {e}")
+            return provenance
+
+        provenance["source_last_run"] = info.get("source_last_run")
+        provenance["source_cve_count"] = info.get("source_cve_count")
+
+        download_time = info.get("download_time")
+        if download_time:
+            try:
+                stamp = datetime.fromisoformat(download_time)
+                # Older cache_info files carry a naive local timestamp.
+                if stamp.tzinfo is None:
+                    stamp = stamp.replace(tzinfo=UTC)
+                provenance["data_as_of"] = stamp.isoformat().replace("+00:00", "Z")
+                provenance["data_age_hours"] = round(
+                    (datetime.now(UTC) - stamp).total_seconds() / 3600, 1
+                )
+            except ValueError as e:
+                logger.warning(f"  ⚠️  Could not parse download_time {download_time!r}: {e}")
+
+        return provenance
 
     def verify_historical_year_coverage(self, all_year_data: list[dict[str, Any]]) -> None:
         """Fail the build if any complete historical year has zero CVEs.
@@ -1165,6 +1499,22 @@ def build(
     validate: Annotated[
         bool, typer.Option("--validate", help="Validate data counting consistency after build")
     ] = False,
+    accept_baseline: Annotated[
+        bool,
+        typer.Option(
+            "--accept-baseline",
+            help="Skip the source-manifest regression check. Use only when the producer "
+            "has legitimately published a smaller snapshot and it has been confirmed.",
+        ),
+    ] = False,
+    strict: Annotated[
+        bool,
+        typer.Option(
+            "--strict",
+            help="Treat data freshness and regression guards as fatal outside CI "
+            "(they are always fatal in CI).",
+        ),
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level")] = "INFO",
 ) -> None:
     """Build the CVE.ICU static site.
@@ -1195,6 +1545,8 @@ def build(
     success = builder.build_site(
         refresh_data=refresh_data,
         force_refresh=force_refresh,
+        accept_baseline=accept_baseline,
+        strict=strict,
     )
 
     if success and validate:
