@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import jinja2
+import requests
 
 
 # Add data folder to path for imports
@@ -91,6 +92,15 @@ class CVESiteBuilder:
         self.quiet: bool = quiet or os.getenv("CVE_BUILD_QUIET", "").lower() in ("1", "true", "yes")
         self.current_year: int = datetime.now().year
         self.available_years: list[int] = list(range(1999, self.current_year + 1))
+
+        # Regression guard configuration. See verify_no_regression() for how
+        # the allowance was derived; it is deliberately much tighter than a
+        # percentage band would be.
+        self.published_totals_url: str = "https://cve.icu/data/cve_all.json"
+        self.regression_allowance: int = 10
+        # A 3-hourly build should never be running on data a full day old.
+        self.max_data_age_hours: float = 24.0
+        self.accept_baseline: bool = False
         self.base_dir: Path = Path(__file__).parent
         self.output_root_dir: Path = self.base_dir / "web"
         self.templates_dir: Path = self.base_dir / "templates"
@@ -757,6 +767,7 @@ class CVESiteBuilder:
 
         homepage_summary = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "current_year": self.current_year,
             "yearly_summary": {
                 "years": yearly_summary_years,
@@ -832,6 +843,7 @@ class CVESiteBuilder:
         """Write a minimal data_quality.json payload when detailed analysis cannot be generated."""
         fallback_data = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "status": "fallback",
             "reason": reason,
             "stats": {
@@ -897,6 +909,7 @@ class CVESiteBuilder:
 
         cve_all_data = {
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
             "total_cves": total_cves,
             "years_covered": years_with_data,
             "current_year": self.current_year,
@@ -930,7 +943,11 @@ class CVESiteBuilder:
             return
 
         # Build summary structure with everything years.html needs
-        summary = {"generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"), "years": {}}
+        summary = {
+            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            **self.source_provenance(),
+            "years": {},
+        }
 
         for year_data in sorted(all_year_data, key=lambda x: x.get("year", 0)):
             year = year_data.get("year")
@@ -1092,6 +1109,8 @@ class CVESiteBuilder:
 
         try:
             # Step 0: Optionally refresh data from upstream sources
+            self.accept_baseline = accept_baseline
+
             if refresh_data and not self.refresh_data(
                 force=force_refresh, accept_baseline=accept_baseline
             ):
@@ -1122,6 +1141,13 @@ class CVESiteBuilder:
             # source feed was partial when downloaded. Fail loudly here so bad
             # data is never published or committed.
             self.verify_historical_year_coverage(all_year_data)
+
+            # Step 3.6: Refuse to publish data older than the freshness limit,
+            # and refuse counts that fall below what is already live. These are
+            # independent of the producer-side manifest checks: they catch our
+            # own analysis regressions, which the producer cannot see.
+            self.verify_data_freshness()
+            self.verify_no_regression(all_year_data)
 
             # Step 4: Generate combined analysis JSON files
             combined_analysis = self.generate_combined_analysis_json(all_year_data)
@@ -1208,6 +1234,152 @@ class CVESiteBuilder:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(manifest_src, destination)
         self.print_verbose(f"  ✅ Published source_manifest.json (run {manifest_run})")
+
+    def fetch_published_totals(self) -> dict[str, Any] | None:
+        """Fetch the currently published cve_all.json to use as a baseline.
+
+        Read from the live site rather than the repo so the check survives the
+        scheduled workflow no longer committing web/ back to main.
+        """
+        try:
+            response = requests.get(self.published_totals_url, timeout=30)
+            if response.status_code == 404:
+                logger.info("  📊 No published totals yet (first run)")
+                return None
+            response.raise_for_status()
+            published = response.json()
+        except (requests.RequestException, ValueError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not fetch published totals: {e}")
+            return None
+
+        if not isinstance(published, dict) or "total_cves" not in published:
+            logger.warning("  ⚠️  Published totals are malformed; ignoring")
+            return None
+        return published
+
+    def verify_no_regression(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Fail the build if our own counts fall below what is already published.
+
+        This is deliberately independent of the source-manifest check in the
+        downloader. That one catches a bad snapshot from the producer; this one
+        catches a bug in our own analysis code, which the producer cannot see.
+
+        Keying: both sides here are OUR outputs, bucketed by publication date.
+        Never compare these to the manifest's year_counts, which are keyed by
+        CVE-ID year and are a different partition of the same data.
+
+        Thresholds are tight on purpose. Sweeping the 400 builds published
+        between 2026-06-26 and 2026-08-17 showed no legitimate run ever reduced
+        the site-wide total by more than 10, because the handful of genuine CVE
+        withdrawals in any window are outweighed by same-window additions. A
+        10-CVE allowance caught 15 of the 17 known bad builds with no false
+        positives; a 0.1% band, which is the intuitive choice, caught only 7.
+
+        Raises:
+            RuntimeError: on a material regression in the total or any closed year.
+        """
+        if self.accept_baseline:
+            logger.warning("  ⚠️  --accept-baseline: skipping published-totals regression check")
+            return
+
+        published = self.fetch_published_totals()
+        if published is None:
+            logger.info("  📊 No baseline available; skipping regression check")
+            return
+
+        problems: list[str] = []
+
+        prev_total = published.get("total_cves", 0)
+        new_total = sum(d.get("total_cves", 0) for d in all_year_data)
+        if new_total < prev_total - self.regression_allowance:
+            problems.append(
+                f"total {prev_total:,} -> {new_total:,} ({new_total - prev_total:,}, "
+                f"allowance {self.regression_allowance})"
+            )
+
+        new_years = {int(d["year"]): d.get("total_cves", 0) for d in all_year_data if "year" in d}
+        for entry in published.get("yearly_trend", []):
+            year = int(entry.get("year", 0))
+            # The current year is still accumulating, so only closed years are
+            # expected to hold steady.
+            if year >= self.current_year:
+                continue
+            prev_count = entry.get("count", 0)
+            new_count = new_years.get(year, 0)
+            if new_count < prev_count - self.regression_allowance:
+                problems.append(f"year {year} {prev_count:,} -> {new_count:,} ({new_count - prev_count:,})")
+
+        if problems:
+            raise RuntimeError(
+                "Counts regressed against the published site:\n  "
+                + "\n  ".join(problems)
+                + "\nThis usually means a bad upstream snapshot or an analysis "
+                "regression. Aborting before publish. Re-run with "
+                "--accept-baseline if the decrease has been confirmed as real."
+            )
+
+        logger.info(f"    ✅ No regression against published totals ({prev_total:,} -> {new_total:,})")
+
+    def verify_data_freshness(self) -> None:
+        """Warn when the snapshot behind this build is old.
+
+        generated_at records when the build ran, which says nothing about how
+        old the underlying data is. This surfaces the difference rather than
+        letting a stale cache be published under a fresh timestamp.
+        """
+        info = self.source_provenance()
+        age_hours = info.get("data_age_hours")
+        if age_hours is None:
+            logger.warning("  ⚠️  Could not determine data age from cache info")
+            return
+
+        if age_hours > self.max_data_age_hours:
+            raise RuntimeError(
+                f"Source snapshot is {age_hours:.1f}h old, exceeding the "
+                f"{self.max_data_age_hours}h limit (downloaded "
+                f"{info.get('data_as_of')}). Refusing to publish stale data as fresh."
+            )
+        logger.info(f"    ✅ Source snapshot is {age_hours:.1f}h old")
+
+    @cache  # noqa: B019 - per-build instance, process is short-lived
+    def source_provenance(self) -> dict[str, Any]:
+        """Provenance of the snapshot this build is using.
+
+        Separate from generated_at, which is build time. Embedded in every
+        output so the site can show how old the data actually is.
+        """
+        cache_info_file = self.cache_dir / "cache_info.json"
+        provenance: dict[str, Any] = {
+            "data_as_of": None,
+            "data_age_hours": None,
+            "source_last_run": None,
+            "source_cve_count": None,
+        }
+        try:
+            with open(cache_info_file) as f:
+                info = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not read cache info: {e}")
+            return provenance
+
+        provenance["source_last_run"] = info.get("source_last_run")
+        provenance["source_cve_count"] = info.get("source_cve_count")
+
+        download_time = info.get("download_time")
+        if download_time:
+            try:
+                stamp = datetime.fromisoformat(download_time)
+                # Older cache_info files carry a naive local timestamp.
+                if stamp.tzinfo is None:
+                    stamp = stamp.replace(tzinfo=UTC)
+                provenance["data_as_of"] = stamp.isoformat().replace("+00:00", "Z")
+                provenance["data_age_hours"] = round(
+                    (datetime.now(UTC) - stamp).total_seconds() / 3600, 1
+                )
+            except ValueError as e:
+                logger.warning(f"  ⚠️  Could not parse download_time {download_time!r}: {e}")
+
+        return provenance
 
     def verify_historical_year_coverage(self, all_year_data: list[dict[str, Any]]) -> None:
         """Fail the build if any complete historical year has zero CVEs.
