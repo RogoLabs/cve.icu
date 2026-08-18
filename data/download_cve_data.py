@@ -10,7 +10,7 @@ import csv
 import gzip
 import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -70,6 +70,23 @@ class CVEDataDownloader:
         self.cache_file: Path = self.cache_dir / "nvd.json"
         self.cache_info_file: Path = self.cache_dir / "cache_info.json"
         self.cache_duration: timedelta = timedelta(hours=4)  # Cache for 4 hours to match build schedule
+
+        # Producer-published manifest describing the snapshot behind nvd.json.
+        # Small (~2KB), no-cache, and written *after* the data object, so a
+        # manifest that names a snapshot implies that snapshot is fully uploaded.
+        self.manifest_url: str = "https://nvd.handsonhacking.org/metadata.json"
+        # The last manifest we accepted, republished with the site so the next
+        # build has a baseline without needing repo state. See docs in
+        # verify_manifest_not_regressed().
+        self.manifest_baseline_url: str = "https://cve.icu/data/source_manifest.json"
+        self.manifest_file: Path = self.cache_dir / "source_manifest.json"
+        # Producer reports its own completeness_ratio. This is a catastrophe
+        # backstop only, NOT the primary defence: the regression check against
+        # the last accepted manifest is. Calibration caveat: the only healthy
+        # value observed so far is 0.9992, so the normal variance of this field
+        # is unknown and the threshold is deliberately loose. Tighten it once
+        # there is a distribution to set it from, rather than from one sample.
+        self.min_completeness_ratio: float = 0.995
         
         # CNA mapping files for proper name resolution
         self.cna_list_url: str = "https://raw.githubusercontent.com/CVEProject/cve-website/dev/src/assets/data/CNAsList.json"
@@ -105,7 +122,11 @@ class CVEDataDownloader:
             cache_info = self._data_reader.read_json(self.cache_info_file)
             
             cache_time = datetime.fromisoformat(cache_info['download_time'])
-            if datetime.now() - cache_time > self.cache_duration:
+            # Older cache_info files carry a naive local timestamp; treat those
+            # as UTC so the comparison below stays valid across the format change.
+            if cache_time.tzinfo is None:
+                cache_time = cache_time.replace(tzinfo=UTC)
+            if datetime.now(UTC) - cache_time > self.cache_duration:
                 if not self.quiet:
                     logger.info(f"⏰ Cache expired (older than {self.cache_duration})")
                 return False
@@ -119,8 +140,15 @@ class CVEDataDownloader:
                 logger.warning(f"⚠️  Cache info corrupted: {e}")
             return False
     
-    def download_data(self, force: bool = False) -> Path:
-        """Download CVE data from NVD source"""
+    def download_data(self, force: bool = False, manifest: dict[str, Any] | None = None) -> Path:
+        """Download CVE data from NVD source.
+
+        Args:
+            force: bypass the local cache-validity check.
+            manifest: producer manifest for this snapshot. When it carries
+                'bytes' or 'sha256', the downloaded object is verified against
+                them before being accepted.
+        """
         if not force and self.is_cache_valid():
             if not self.quiet:
                 logger.info("📋 Using cached data")
@@ -151,18 +179,36 @@ class CVEDataDownloader:
                             progress = (downloaded_size / total_size) * 100
                             logger.debug(f"  📥 Downloaded {downloaded_size // (1024*1024)}MB / {total_size // (1024*1024)}MB ({progress:.1f}%)")
             
+            # A dropped connection previously produced a short file that was
+            # written and reported as a success. content-length is advisory,
+            # but when the server sends one, a mismatch means truncation.
+            if total_size and downloaded_size != total_size:
+                raise OSError(
+                    f"Truncated download: received {downloaded_size:,} of "
+                    f"{total_size:,} bytes declared by content-length"
+                )
+
             # Write using data writer
             self._data_writer.write_bytes(self.cache_file, b''.join(chunks))
             
+            # Verify the object against the producer's manifest before we
+            # treat it as usable. Raises on any mismatch.
+            self.verify_download_against_manifest(manifest, downloaded_size)
+
             # Calculate file hash for integrity check
-            file_hash = self.calculate_file_hash(self.cache_file)
+            file_hash = self.calculate_file_hash_streaming(self.cache_file)
             
             # Save cache info using data writer
             cache_info = {
-                'download_time': datetime.now().isoformat(),
+                # UTC: this value is compared against build time to derive data
+                # age, and a naive local timestamp made that comparison wrong.
+                'download_time': datetime.now(UTC).isoformat(),
                 'file_size': downloaded_size,
                 'file_hash': file_hash,
-                'source_url': self.nvd_url
+                'source_url': self.nvd_url,
+                'source_last_run': (manifest or {}).get('last_run_iso'),
+                'source_cve_count': (manifest or {}).get('cve_count'),
+                'source_commit_sha': (manifest or {}).get('commit_sha'),
             }
             
             self._data_writer.write_json(self.cache_info_file, cache_info)
@@ -214,6 +260,198 @@ class CVEDataDownloader:
         except (OSError, json.JSONDecodeError) as e:
             logger.warning(f"⚠️  Warning: File or JSON error downloading CNA files: {e}")
     
+    # ------------------------------------------------------------------
+    # Source manifest handling
+    #
+    # The producer publishes metadata.json alongside nvd.json describing the
+    # snapshot it just uploaded. Checking it before pulling the ~1.8GB object
+    # turns several count heuristics into exact checks, and catches a short
+    # snapshot before we spend the bandwidth on it.
+    #
+    # Keying note: manifest year_counts are keyed by CVE-ID year, while this
+    # site buckets by publication date. The two are different partitions of
+    # the same data (year 1999 is 1,579 by ID and 923 by publication date), so
+    # manifest counts are only ever compared to *previous manifest* counts,
+    # never to our own per-year outputs.
+    # ------------------------------------------------------------------
+
+    def fetch_source_manifest(self) -> dict[str, Any] | None:
+        """Fetch the producer's manifest for the current snapshot.
+
+        Returns None when the manifest cannot be retrieved or parsed, which
+        callers treat as "unverified" rather than as a failure, so a producer
+        that has not yet deployed the manifest does not break the build.
+        """
+        try:
+            response = self._http_client.get(self.manifest_url, timeout=30)
+            status = getattr(response, "status_code", 200)
+            if status >= 400:
+                logger.warning(f"⚠️  Source manifest returned HTTP {status}")
+                return None
+            manifest = response.json()
+        except (requests.RequestException, ValueError, json.JSONDecodeError, OSError) as e:
+            logger.warning(f"⚠️  Could not fetch source manifest: {e}")
+            return None
+
+        if not isinstance(manifest, dict) or "cve_count" not in manifest:
+            logger.warning("⚠️  Source manifest is malformed; ignoring")
+            return None
+
+        logger.info(
+            f"📄 Source manifest: {manifest['cve_count']:,} CVEs, "
+            f"run {manifest.get('last_run_iso', 'unknown')}"
+        )
+        return manifest
+
+    def fetch_baseline_manifest(self) -> dict[str, Any] | None:
+        """Fetch the last manifest we accepted, as republished with the site."""
+        try:
+            response = self._http_client.get(self.manifest_baseline_url, timeout=30)
+            status = getattr(response, "status_code", 200)
+            if status == 404:
+                logger.info("📄 No published baseline manifest yet (first run)")
+                return None
+            if status >= 400:
+                logger.warning(f"⚠️  Baseline manifest returned HTTP {status}")
+                return None
+            baseline = response.json()
+        except (requests.RequestException, ValueError, json.JSONDecodeError, OSError) as e:
+            logger.warning(f"⚠️  Could not fetch baseline manifest: {e}")
+            return None
+
+        if not isinstance(baseline, dict) or "cve_count" not in baseline:
+            logger.warning("⚠️  Baseline manifest is malformed; ignoring")
+            return None
+        return baseline
+
+    def verify_manifest_healthy(self, manifest: dict[str, Any]) -> None:
+        """Reject a snapshot the producer itself reports as incomplete.
+
+        Raises:
+            ValueError: if the run was degraded, fell back to the API for any
+                year, or came in under the completeness threshold.
+        """
+        if manifest.get("degraded"):
+            raise ValueError(
+                f"Producer reported a degraded run "
+                f"(last_run_iso={manifest.get('last_run_iso')}). Refusing to ingest."
+            )
+
+        years_via_api = manifest.get("years_via_api") or []
+        if years_via_api:
+            raise ValueError(
+                f"Producer fell back to the REST API for year(s) {years_via_api}. "
+                "That fallback drops records whose CVE-ID year and publication "
+                "year differ. Refusing to ingest."
+            )
+
+        ratio = manifest.get("completeness_ratio")
+        if ratio is not None and ratio < self.min_completeness_ratio:
+            raise ValueError(
+                f"Producer completeness_ratio {ratio} is below "
+                f"{self.min_completeness_ratio} "
+                f"({manifest.get('cve_count'):,} of an expected "
+                f"{manifest.get('expected_total')}). Refusing to ingest."
+            )
+
+    def verify_manifest_not_regressed(
+        self,
+        manifest: dict[str, Any],
+        baseline: dict[str, Any] | None,
+    ) -> None:
+        """Reject a snapshot smaller than the last one we accepted.
+
+        Both sides are CVE-ID keyed, so this is a like-for-like comparison.
+        CVEs are withdrawn occasionally, but a genuine withdrawal is a handful
+        of records; every regression observed in this feed's history has been a
+        producer-side fault of hundreds to thousands.
+
+        Raises:
+            ValueError: on any decrease in the total or in any per-year count.
+        """
+        if baseline is None:
+            logger.info("📄 No baseline to compare against; accepting manifest")
+            return
+
+        problems: list[str] = []
+
+        prev_total = baseline.get("cve_count", 0)
+        new_total = manifest.get("cve_count", 0)
+        if new_total < prev_total:
+            problems.append(f"total {prev_total:,} -> {new_total:,} ({new_total - prev_total:,})")
+
+        new_years = manifest.get("year_counts") or {}
+        for year, prev_count in sorted((baseline.get("year_counts") or {}).items()):
+            new_count = new_years.get(year, 0)
+            if new_count < prev_count:
+                problems.append(f"year {year} {prev_count:,} -> {new_count:,} ({new_count - prev_count:,})")
+
+        if problems:
+            raise ValueError(
+                "Source manifest regressed against the last accepted snapshot:\n  "
+                + "\n  ".join(problems)
+                + "\nRefusing to ingest. Re-run once the producer publishes a "
+                "complete snapshot, or pass --accept-baseline to override."
+            )
+
+        logger.info(f"✅ Manifest not regressed (total {prev_total:,} -> {new_total:,})")
+
+    def verify_download_against_manifest(
+        self,
+        manifest: dict[str, Any] | None,
+        downloaded_size: int,
+    ) -> None:
+        """Verify the downloaded object against the manifest's size and digest.
+
+        Both fields are optional: they appear only from the first producer run
+        after the integrity work landed, so their absence is logged, not fatal.
+
+        Raises:
+            OSError: on a size or digest mismatch.
+        """
+        if not manifest:
+            return
+
+        expected_bytes = manifest.get("bytes")
+        if expected_bytes is None:
+            logger.warning("⚠️  Manifest has no 'bytes' field; skipping size verification")
+        elif downloaded_size != expected_bytes:
+            raise OSError(
+                f"Size mismatch: downloaded {downloaded_size:,} bytes, "
+                f"manifest declares {expected_bytes:,}. Snapshot is incomplete."
+            )
+        else:
+            logger.info(f"✅ Size verified against manifest ({downloaded_size:,} bytes)")
+
+        expected_sha = manifest.get("sha256")
+        if expected_sha is None:
+            logger.warning("⚠️  Manifest has no 'sha256' field; skipping digest verification")
+            return
+
+        actual_sha = self.calculate_file_hash_streaming(self.cache_file)
+        if actual_sha != expected_sha:
+            raise OSError(
+                f"SHA-256 mismatch: computed {actual_sha}, manifest declares {expected_sha}."
+            )
+        logger.info("✅ SHA-256 verified against manifest")
+
+    def persist_accepted_manifest(self, manifest: dict[str, Any]) -> None:
+        """Record the manifest we accepted so the site can republish it."""
+        self._data_writer.write_json(self.manifest_file, manifest)
+        logger.debug(f"  📄 Accepted manifest saved to {self.manifest_file.name}")
+
+    def calculate_file_hash_streaming(self, file_path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
+        """SHA-256 a file without loading it into memory.
+
+        calculate_file_hash() reads the whole file, which is not viable for the
+        ~1.8GB snapshot on a CI runner.
+        """
+        hash_sha256 = hashlib.sha256()
+        with open(file_path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(chunk_size), b""):
+                hash_sha256.update(chunk)
+        return hash_sha256.hexdigest()
+
     def calculate_file_hash(self, file_path: Path) -> str:
         """Calculate SHA256 hash of file for integrity checking"""
         hash_sha256 = hashlib.sha256()
@@ -314,14 +552,46 @@ class CVEDataDownloader:
             logger.warning(f"⚠️  Could not get data stats: {e}")
             return None
     
-    def ensure_data_available(self, force_download: bool = False) -> Path:
-        """Main method to ensure CVE data is available and valid"""
+    def ensure_data_available(
+        self, force_download: bool = False, accept_baseline: bool = False
+    ) -> Path:
+        """Main method to ensure CVE data is available and valid.
+
+        Args:
+            force_download: bypass the local cache-validity check.
+            accept_baseline: skip the manifest regression check. For the rare
+                case where the producer legitimately publishes a smaller
+                snapshot (a genuine mass withdrawal) and a human has confirmed it.
+        """
         logger.info("\n🔽 Ensuring CVE data is available...")
         logger.info("=" * 50)
         
         try:
+            # Check the producer's manifest before pulling ~1.8GB. A degraded or
+            # regressed snapshot is rejected here, at zero bandwidth cost.
+            manifest = self.fetch_source_manifest()
+            if manifest is not None:
+                if accept_baseline:
+                    logger.warning(
+                        "⚠️  --accept-baseline: skipping manifest regression check"
+                    )
+                else:
+                    self.verify_manifest_healthy(manifest)
+                    self.verify_manifest_not_regressed(manifest, self.fetch_baseline_manifest())
+            else:
+                logger.warning(
+                    "⚠️  Proceeding without manifest verification "
+                    "(producer manifest unavailable)"
+                )
+
             # Download data if needed
-            data_file = self.download_data(force=force_download)
+            data_file = self.download_data(force=force_download, manifest=manifest)
+
+            # Only record the manifest once the object it describes has been
+            # downloaded and verified, so the published baseline can never name
+            # a snapshot we did not actually accept.
+            if manifest is not None:
+                self.persist_accepted_manifest(manifest)
             
             # Download CNA mapping files
             self.download_cna_mapping_files()

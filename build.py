@@ -56,6 +56,10 @@ def default_command(
         bool, typer.Option("--force-refresh", "-f", help="Force re-download even if cache is valid")
     ] = False,
     validate_flag: Annotated[bool, typer.Option("--validate", help="Validate data consistency after build")] = False,
+    accept_baseline: Annotated[
+        bool,
+        typer.Option("--accept-baseline", help="Skip the source-manifest regression check"),
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level (DEBUG, INFO, WARNING, ERROR)")] = "INFO",
 ) -> None:
     """Default command - runs build if no subcommand specified.
@@ -74,6 +78,7 @@ def default_command(
         quiet=quiet,
         refresh_data=refresh_data,
         force_refresh=force_refresh,
+        accept_baseline=accept_baseline,
         validate=validate_flag,
         log_level=log_level,
     )
@@ -136,7 +141,29 @@ class CVESiteBuilder:
             return f"{num / 1000:.1f}K"
         return str(num)
 
-    def refresh_data(self, force: bool = False) -> bool:
+    def verify_source_manifest(self, accept_baseline: bool = False) -> dict[str, Any] | None:
+        """Run the producer-manifest gates before any bulk download.
+
+        Returns the manifest when one is available, else None. Raises when the
+        producer reports a degraded run or the snapshot has regressed against
+        the last one we accepted.
+        """
+        from download_cve_data import CVEDataDownloader
+
+        checker = CVEDataDownloader(cache_dir=self.cache_dir, quiet=self.quiet)
+        manifest = checker.fetch_source_manifest()
+        if manifest is None:
+            logger.warning("⚠️  Proceeding without manifest verification")
+            return None
+
+        if accept_baseline:
+            logger.warning("⚠️  --accept-baseline: skipping manifest regression check")
+        else:
+            checker.verify_manifest_healthy(manifest)
+            checker.verify_manifest_not_regressed(manifest, checker.fetch_baseline_manifest())
+        return manifest
+
+    def refresh_data(self, force: bool = False, accept_baseline: bool = False) -> bool:
         """Refresh CVE data from all sources using async parallel downloads.
 
         Downloads data from 5 sources in parallel (~3x faster than sequential):
@@ -154,12 +181,25 @@ class CVESiteBuilder:
         """
         self.print_verbose("📥 Refreshing CVE data from all sources...")
 
+        # The async path downloads nvd.json directly, bypassing the manifest
+        # gate in CVEDataDownloader.ensure_data_available(). Run the same checks
+        # here so a manual --refresh-data cannot skip verification.
+        source_manifest = self.verify_source_manifest(accept_baseline=accept_baseline)
+
         try:
             downloader = AsyncCVEDownloader(
                 cache_dir=self.cache_dir,
                 quiet=self.quiet,
             )
             results = downloader.download_all_sync(force=force)
+
+            # Record the manifest only after the download it describes succeeded.
+            if source_manifest is not None:
+                from download_cve_data import CVEDataDownloader
+
+                CVEDataDownloader(
+                    cache_dir=self.cache_dir, quiet=self.quiet
+                ).persist_accepted_manifest(source_manifest)
 
             # Parse supplemental data
             downloader.parse_epss()
@@ -1033,12 +1073,15 @@ class CVESiteBuilder:
 
         self.print_always("✅ HTML pages generated successfully")
 
-    def build_site(self, refresh_data: bool = False, force_refresh: bool = False) -> bool:
+    def build_site(
+        self, refresh_data: bool = False, force_refresh: bool = False, accept_baseline: bool = False
+    ) -> bool:
         """Main build function - orchestrates the entire build process
 
         Args:
             refresh_data: If True, refresh CVE data before building
             force_refresh: If True, force re-download even if cache is valid
+            accept_baseline: If True, skip the manifest regression check
         """
         self.print_always("\n🏗️  Starting CVE.ICU site build...")
         if not self.quiet:
@@ -1049,7 +1092,9 @@ class CVESiteBuilder:
 
         try:
             # Step 0: Optionally refresh data from upstream sources
-            if refresh_data and not self.refresh_data(force=force_refresh):
+            if refresh_data and not self.refresh_data(
+                force=force_refresh, accept_baseline=accept_baseline
+            ):
                 logger.error("❌ Data refresh failed, cannot continue build")
                 return False
 
@@ -1065,6 +1110,12 @@ class CVESiteBuilder:
             if not all_year_data:
                 logger.error("❌ No year data generated, cannot continue build")
                 return False
+
+            # Step 3.4: Republish the accepted source manifest with the site so
+            # the next build can use it as its regression baseline. Keeping the
+            # baseline on the live site (rather than in the repo) is what lets
+            # the scheduled workflow stop committing web/ back to main.
+            self.publish_source_manifest()
 
             # Step 3.5: Guard against truncated/incomplete upstream feeds.
             # A complete historical year that comes back with zero CVEs means the
@@ -1117,6 +1168,47 @@ class CVESiteBuilder:
             if staged_web_dir.exists():
                 shutil.rmtree(staged_web_dir, ignore_errors=True)
 
+    def publish_source_manifest(self) -> None:
+        """Copy the accepted source manifest into the site output.
+
+        Published at /data/source_manifest.json, which is where the downloader
+        looks for its regression baseline on the next run. Absent manifest is
+        not fatal: the producer may not have published one, in which case the
+        next run simply has no baseline to compare against.
+        """
+        manifest_src = self.cache_dir / "source_manifest.json"
+        cache_info_src = self.cache_dir / "cache_info.json"
+        if not manifest_src.exists():
+            self.print_verbose("  ⚠️  No accepted source manifest to publish")
+            return
+
+        # Only publish a manifest that describes the snapshot we actually built
+        # from. The cached manifest survives across runs, so republishing it
+        # blindly could advertise a baseline for data this build never used,
+        # which would then wrongly gate every future run.
+        try:
+            with open(manifest_src) as f:
+                manifest = json.load(f)
+            with open(cache_info_src) as f:
+                cache_info = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"  ⚠️  Could not verify manifest against cache info: {e}")
+            return
+
+        manifest_run = manifest.get("last_run_iso")
+        cached_run = cache_info.get("source_last_run")
+        if manifest_run != cached_run:
+            logger.warning(
+                f"  ⚠️  Not publishing source manifest: it describes run "
+                f"{manifest_run}, but the cached snapshot came from {cached_run}"
+            )
+            return
+
+        destination = self.data_dir / "source_manifest.json"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(manifest_src, destination)
+        self.print_verbose(f"  ✅ Published source_manifest.json (run {manifest_run})")
+
     def verify_historical_year_coverage(self, all_year_data: list[dict[str, Any]]) -> None:
         """Fail the build if any complete historical year has zero CVEs.
 
@@ -1165,6 +1257,14 @@ def build(
     validate: Annotated[
         bool, typer.Option("--validate", help="Validate data counting consistency after build")
     ] = False,
+    accept_baseline: Annotated[
+        bool,
+        typer.Option(
+            "--accept-baseline",
+            help="Skip the source-manifest regression check. Use only when the producer "
+            "has legitimately published a smaller snapshot and it has been confirmed.",
+        ),
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level")] = "INFO",
 ) -> None:
     """Build the CVE.ICU static site.
@@ -1195,6 +1295,7 @@ def build(
     success = builder.build_site(
         refresh_data=refresh_data,
         force_refresh=force_refresh,
+        accept_baseline=accept_baseline,
     )
 
     if success and validate:
