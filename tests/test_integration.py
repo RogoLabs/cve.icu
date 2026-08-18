@@ -312,7 +312,10 @@ class TestAsyncFunctionality:
     @pytest.mark.asyncio
     async def test_async_http_session_concept(self):
         """Test that httpx is available and can create async clients."""
-        import httpx
+        # httpx is an optional dependency: the downloader falls back to a
+        # sequential requests-based path without it. Skip rather than fail so a
+        # clean checkout is green.
+        httpx = pytest.importorskip("httpx")
         
         # Basic smoke test - module should be importable
         assert httpx is not None
