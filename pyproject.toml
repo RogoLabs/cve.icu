@@ -98,6 +98,14 @@ ignore = [
     "ARG001", # Unused function argument (needed for callbacks)
     "ARG002", # Unused method argument
     "PTH123", # open() should use Path.open()
+    # The rules below are style preferences this codebase deliberately does not
+    # follow. They are listed explicitly rather than suppressed at the command
+    # line, so that `ruff check` can fail on everything else.
+    "SIM102", # Nested ifs are often clearer than one compound condition here,
+              # since the branches carry separate explanatory comments.
+    "SIM105", # try/except/pass reads more plainly than contextlib.suppress.
+    "TC003",  # Moving stdlib imports into TYPE_CHECKING blocks is ceremony
+              # that costs more readability than the import time it saves.
 ]
 
 # Allow autofix for all enabled rules

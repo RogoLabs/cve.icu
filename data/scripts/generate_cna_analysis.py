@@ -20,7 +20,10 @@ except ImportError:
 
 logger = get_logger(__name__)
 
-from download_cve_data import CVEDataDownloader
+from download_cve_data import CVEDataDownloader  # noqa: E402 - requires the
+
+
+# sys.path entry added above, so it cannot move to the top of the file.
 
 
 class ComprehensiveCNAAnalyzer:

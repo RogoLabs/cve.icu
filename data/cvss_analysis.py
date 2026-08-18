@@ -79,7 +79,7 @@ class CVSSAnalyzer:
                     temporal_data[year] = {"v2.0": 0, "v3.0": 0, "v3.1": 0, "v4.0": 0}
 
                 # Process each CVSS version that exists in the data
-                for version in cvss_data.keys():
+                for version in cvss_data:
                     if version in combined_cvss:  # Only process known versions
                         version_data = cvss_data[version]
 

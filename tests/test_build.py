@@ -143,7 +143,7 @@ class TestBuildOutputValidity:
         years = data.get("years", {})
 
         # Convert keys to integers for comparison
-        year_ints = [int(y) for y in years.keys()]
+        year_ints = [int(y) for y in years]
 
         assert min(year_ints) == 1999, "Missing early years"
         assert max(year_ints) >= 2024, "Missing recent years"

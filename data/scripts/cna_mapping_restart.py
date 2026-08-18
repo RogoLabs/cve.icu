@@ -68,7 +68,7 @@ with open(cache_dir / "cna_list.json") as f:
     cna_list = cna_list_raw["data"] if isinstance(cna_list_raw, dict) and "data" in cna_list_raw else cna_list_raw
 
 # Build official CNA lookup by UUID and normalized name
-uuid_to_name = {uuid: name for uuid, name in uuid_map.items()}
+uuid_to_name = dict(uuid_map)
 official_names = {normalize_name(name): uuid for uuid, name in uuid_map.items()}
 # Build contact email and domain lookup from cna_list.json
 email_to_cna = {}

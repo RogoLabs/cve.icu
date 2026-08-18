@@ -34,6 +34,7 @@ from tests.fakes import (
     FakeDataReader,
     FakeDataWriter,
     FakeHttpClient,
+    FakeHttpError,
 )
 
 
@@ -77,7 +78,7 @@ class TestFakeHttpClient:
 
         response = client.get("https://example.com/error")
 
-        with pytest.raises(Exception):
+        with pytest.raises(FakeHttpError):
             response.raise_for_status()
 
     def test_iter_content_yields_chunks(self):

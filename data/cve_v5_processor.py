@@ -32,9 +32,7 @@ from download_cve_data import CVEDataDownloader
 try:
     from data.fast_json import dump_json_fast, load_json_fast
     from data.optimized_processing import (
-        classify_cna_type_fast,
         collect_cve_files,
-        parse_cve_record_fast,
         process_cve_batch,
     )
 
@@ -43,9 +41,7 @@ except ImportError:
     try:
         from fast_json import dump_json_fast, load_json_fast
         from optimized_processing import (
-            classify_cna_type_fast,
             collect_cve_files,
-            parse_cve_record_fast,
             process_cve_batch,
         )
 
@@ -964,9 +960,7 @@ class CVEV5Processor:
         cna_list = []
         total_cnas = len(all_cna_stats)
         print(f"  📊 Building CNA list from {total_cnas} CNAs...")
-        processed_cnas = 0
-        for org_id, stats in all_cna_stats.items():
-            processed_cnas += 1
+        for processed_cnas, (org_id, stats) in enumerate(all_cna_stats.items(), start=1):
             if processed_cnas % 50 == 0:
                 print(f"    📈 Processing CNA {processed_cnas}/{total_cnas}...")
             # Calculate years active using publication dates

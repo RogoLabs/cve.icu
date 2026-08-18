@@ -139,7 +139,7 @@ class ScoringAnalyzer:
                         count += 1
             else:
                 # Old format: dict keyed by CVE ID
-                for cve_id, cve_data in nvd_data.items():
+                for cve_data in nvd_data.values():
                     if cve_data.get("cvss_v3") or cve_data.get("cvss_v2"):
                         count += 1
 
