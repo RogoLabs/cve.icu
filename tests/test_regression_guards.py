@@ -32,11 +32,24 @@ def published(total: int, **counts: int) -> dict:
 
 @pytest.fixture
 def builder(tmp_path):
+    """A builder in strict mode, i.e. how it behaves in CI.
+
+    Strict is set explicitly rather than inherited from the environment so the
+    suite behaves identically whether or not CI is set in the shell running it.
+    """
     b = CVESiteBuilder(quiet=True)
     b.cache_dir = tmp_path
     b.current_year = 2026
     b.accept_baseline = False
+    b.strict_data_guards = True
     return b
+
+
+@pytest.fixture
+def lenient_builder(builder):
+    """A builder outside CI, where guards warn instead of aborting."""
+    builder.strict_data_guards = False
+    return builder
 
 
 class TestVerifyNoRegression:
@@ -110,7 +123,7 @@ class TestVerifyDataFreshness:
 
     def test_rejects_stale_data(self, builder):
         self._write_cache_info(builder, datetime.now(UTC) - timedelta(days=50))
-        with pytest.raises(RuntimeError, match="exceeding"):
+        with pytest.raises(RuntimeError, match="over the 24.0h limit"):
             builder.verify_data_freshness()
 
     def test_missing_cache_info_warns_but_passes(self, builder):
@@ -147,3 +160,32 @@ class TestSourceProvenance:
         p = builder.source_provenance()
         assert p["data_as_of"] is None
         assert p["data_age_hours"] is None
+
+
+class TestGuardEnforcementMode:
+    """The guards exist to stop bad data being published.
+
+    A local build publishes nothing, so it warns rather than blocking a
+    developer working from a deliberately old cache. CI is the deploy path.
+    """
+
+    def test_regression_warns_instead_of_raising_outside_ci(self, lenient_builder):
+        with patch.object(CVESiteBuilder, "fetch_published_totals",
+                          return_value=published(10000, **{"1999": 894, "2026": 9106})):
+            lenient_builder.verify_no_regression(year_data(**{"2026": 9106}))
+
+    def test_stale_data_warns_instead_of_raising_outside_ci(self, lenient_builder):
+        stale = datetime.now(UTC) - timedelta(days=53)
+        (lenient_builder.cache_dir / "cache_info.json").write_text(
+            json.dumps({"download_time": stale.isoformat()})
+        )
+        lenient_builder.source_provenance.cache_clear()
+        lenient_builder.verify_data_freshness()
+
+    def test_strict_mode_is_inferred_from_ci_env(self, monkeypatch):
+        monkeypatch.setenv("CI", "true")
+        assert CVESiteBuilder(quiet=True).strict_data_guards is True
+
+    def test_not_strict_without_ci_env(self, monkeypatch):
+        monkeypatch.delenv("CI", raising=False)
+        assert CVESiteBuilder(quiet=True).strict_data_guards is False

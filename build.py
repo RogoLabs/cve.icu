@@ -61,6 +61,9 @@ def default_command(
         bool,
         typer.Option("--accept-baseline", help="Skip the source-manifest regression check"),
     ] = False,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Treat data guards as fatal outside CI")
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level (DEBUG, INFO, WARNING, ERROR)")] = "INFO",
 ) -> None:
     """Default command - runs build if no subcommand specified.
@@ -80,6 +83,7 @@ def default_command(
         refresh_data=refresh_data,
         force_refresh=force_refresh,
         accept_baseline=accept_baseline,
+        strict=strict,
         validate=validate_flag,
         log_level=log_level,
     )
@@ -101,6 +105,12 @@ class CVESiteBuilder:
         # A 3-hourly build should never be running on data a full day old.
         self.max_data_age_hours: float = 24.0
         self.accept_baseline: bool = False
+        # These guards exist to stop bad data being *published*. A local build
+        # publishes nothing, so blocking a developer working from a deliberately
+        # old cache is friction with no safety benefit. CI is the deploy path,
+        # so there they are fatal; locally they warn. --strict forces fatal
+        # anywhere, which is how you test the guard itself.
+        self.strict_data_guards: bool = bool(os.getenv("CI"))
         self.base_dir: Path = Path(__file__).parent
         self.output_root_dir: Path = self.base_dir / "web"
         self.templates_dir: Path = self.base_dir / "templates"
@@ -1091,7 +1101,11 @@ class CVESiteBuilder:
         self.print_always("✅ HTML pages generated successfully")
 
     def build_site(
-        self, refresh_data: bool = False, force_refresh: bool = False, accept_baseline: bool = False
+        self,
+        refresh_data: bool = False,
+        force_refresh: bool = False,
+        accept_baseline: bool = False,
+        strict: bool = False,
     ) -> bool:
         """Main build function - orchestrates the entire build process
 
@@ -1099,6 +1113,7 @@ class CVESiteBuilder:
             refresh_data: If True, refresh CVE data before building
             force_refresh: If True, force re-download even if cache is valid
             accept_baseline: If True, skip the manifest regression check
+            strict: If True, treat data guards as fatal even outside CI
         """
         self.print_always("\n🏗️  Starting CVE.ICU site build...")
         if not self.quiet:
@@ -1110,6 +1125,8 @@ class CVESiteBuilder:
         try:
             # Step 0: Optionally refresh data from upstream sources
             self.accept_baseline = accept_baseline
+            if strict:
+                self.strict_data_guards = True
 
             if refresh_data and not self.refresh_data(
                 force=force_refresh, accept_baseline=accept_baseline
@@ -1235,6 +1252,23 @@ class CVESiteBuilder:
         shutil.copy2(manifest_src, destination)
         self.print_verbose(f"  ✅ Published source_manifest.json (run {manifest_run})")
 
+    def enforce_data_guard(self, summary: str, detail: str, remedy: str) -> None:
+        """Fail the build in CI, warn locally.
+
+        Args:
+            summary: one-line statement of what is wrong.
+            detail: the specific numbers, shown in both modes.
+            remedy: what the developer should do about it.
+        """
+        if self.strict_data_guards:
+            raise RuntimeError(f"{summary}\n{detail}\n{remedy}")
+
+        logger.warning(f"  ⚠️  {summary}")
+        for line in detail.splitlines():
+            logger.warning(f"  ⚠️  {line}")
+        logger.warning(f"  ⚠️  {remedy}")
+        logger.warning("  ⚠️  Not fatal outside CI. Use --strict to make it fatal here.")
+
     def fetch_published_totals(self) -> dict[str, Any] | None:
         """Fetch the currently published cve_all.json to use as a baseline.
 
@@ -1310,13 +1344,14 @@ class CVESiteBuilder:
                 problems.append(f"year {year} {prev_count:,} -> {new_count:,} ({new_count - prev_count:,})")
 
         if problems:
-            raise RuntimeError(
-                "Counts regressed against the published site:\n  "
-                + "\n  ".join(problems)
-                + "\nThis usually means a bad upstream snapshot or an analysis "
-                "regression. Aborting before publish. Re-run with "
-                "--accept-baseline if the decrease has been confirmed as real."
+            self.enforce_data_guard(
+                "Counts regressed against the published site.",
+                "  " + "\n  ".join(problems),
+                "This usually means a bad upstream snapshot, an analysis regression, "
+                "or a stale local cache. Refresh with 'python build.py refresh --force', "
+                "or re-run with --accept-baseline if the decrease is confirmed as real.",
             )
+            return
 
         logger.info(f"    ✅ No regression against published totals ({prev_total:,} -> {new_total:,})")
 
@@ -1334,11 +1369,14 @@ class CVESiteBuilder:
             return
 
         if age_hours > self.max_data_age_hours:
-            raise RuntimeError(
-                f"Source snapshot is {age_hours:.1f}h old, exceeding the "
-                f"{self.max_data_age_hours}h limit (downloaded "
-                f"{info.get('data_as_of')}). Refusing to publish stale data as fresh."
+            self.enforce_data_guard(
+                f"Source snapshot is {age_hours:.1f}h old, over the "
+                f"{self.max_data_age_hours}h limit.",
+                f"  downloaded {info.get('data_as_of')}",
+                "Stale data must not be published under a fresh timestamp. "
+                "Refresh with 'python build.py refresh --force'.",
             )
+            return
         logger.info(f"    ✅ Source snapshot is {age_hours:.1f}h old")
 
     @cache  # noqa: B019 - per-build instance, process is short-lived
@@ -1437,6 +1475,14 @@ def build(
             "has legitimately published a smaller snapshot and it has been confirmed.",
         ),
     ] = False,
+    strict: Annotated[
+        bool,
+        typer.Option(
+            "--strict",
+            help="Treat data freshness and regression guards as fatal outside CI "
+            "(they are always fatal in CI).",
+        ),
+    ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level")] = "INFO",
 ) -> None:
     """Build the CVE.ICU static site.
@@ -1468,6 +1514,7 @@ def build(
         refresh_data=refresh_data,
         force_refresh=force_refresh,
         accept_baseline=accept_baseline,
+        strict=strict,
     )
 
     if success and validate:
