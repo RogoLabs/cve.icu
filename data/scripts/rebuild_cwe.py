@@ -5,6 +5,7 @@ Quick rebuild script for CWE analysis only - much faster than full site rebuild
 """
 from __future__ import annotations
 
+import json
 import sys
 from datetime import datetime
 from pathlib import Path

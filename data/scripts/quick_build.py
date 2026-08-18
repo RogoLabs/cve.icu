@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import jinja2
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 class CVEQuickBuilder:

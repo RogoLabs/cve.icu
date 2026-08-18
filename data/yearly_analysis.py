@@ -55,9 +55,6 @@ class YearlyAnalyzer:
             # Get daily counts from the pre-processed data
             daily_counts = year_data.get('date_data', {}).get('daily_analysis', {}).get('daily_counts', {})
             
-            # Calculate target date (same day of year in the target year)
-            target_date = datetime(year, 1, 1) + timedelta(days=day_of_year - 1)
-            
             # Sum up CVEs from Jan 1 to the target day of year
             ytd_count = 0
             for day_num in range(1, day_of_year + 1):
@@ -79,7 +76,7 @@ class YearlyAnalyzer:
                     total_cves = year_data.get('total_cves', 0)
                     days_in_year = 366 if year % 4 == 0 else 365
                     return int((total_cves / days_in_year) * day_of_year)
-            except:
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
                 pass
             return 0
     

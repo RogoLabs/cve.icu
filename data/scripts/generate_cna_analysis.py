@@ -134,7 +134,6 @@ class ComprehensiveCNAAnalyzer:
                 'kubernetes.io': 'Cloud Native Computing Foundation',
                 'openssl.org': 'OpenSSL Software Foundation',
                 'nginx.org': 'Nginx Inc.',
-                'apache.org': 'Apache Software Foundation',
                 'eclipse.org': 'Eclipse Foundation',
                 'qt.io': 'The Qt Company',
                 'gnome.org': 'GNOME Foundation',

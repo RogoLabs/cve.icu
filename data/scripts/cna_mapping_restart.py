@@ -19,6 +19,14 @@ from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
 
+# Logging setup, matching the sibling rebuild scripts.
+try:
+    from data.logging_config import get_logger
+except ImportError:
+    from logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Utility: Normalize CNA names for fuzzy matching
 
 def normalize_name(name):

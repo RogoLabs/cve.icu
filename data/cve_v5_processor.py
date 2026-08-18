@@ -516,8 +516,8 @@ class CVEV5Processor:
                     if not isinstance(description, dict):
                         continue
 
-                    for field in ("cweId", "cweID", "value", "description"):
-                        value = description.get(field)
+                    for key in ("cweId", "cweID", "value", "description"):
+                        value = description.get(key)
                         if not isinstance(value, str):
                             continue
                         if match := cwe_pattern.search(value):
@@ -749,7 +749,7 @@ class CVEV5Processor:
                 if pub_date:
                     try:
                         pub_year = datetime.fromisoformat(pub_date.replace('Z', '+00:00')).year
-                    except:
+                    except (AttributeError, TypeError, ValueError):
                         pass
                 
                 # Update CNA statistics
