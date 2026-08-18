@@ -238,11 +238,43 @@ class CVESiteBuilder:
             return True
 
         except ImportError as e:
+            # httpx is optional. Previously this returned True, so a refresh
+            # reported success in about a second having downloaded nothing.
+            # Fall back to the synchronous downloader, which uses requests.
             logger.warning(f"⚠️  Async downloads unavailable: {e}")
-            logger.info("   Install httpx for parallel downloads: pip install httpx")
-            return True  # Continue with existing cache
+            logger.info("   Falling back to sequential downloads (pip install httpx to parallelise)")
+            return self.refresh_data_sync(force=force, manifest=source_manifest)
         except Exception as e:
             logger.error(f"❌ Data refresh failed: {e}")
+            return False
+
+    def refresh_data_sync(self, force: bool = False, manifest: dict[str, Any] | None = None) -> bool:
+        """Sequential fallback for when httpx is unavailable.
+
+        Slower than the async path but functionally equivalent, and honest: it
+        actually downloads, and reports failure when it fails.
+        """
+        from download_cve_data import CVEDataDownloader
+
+        downloader = CVEDataDownloader(cache_dir=self.cache_dir, quiet=self.quiet)
+        try:
+            # Covers nvd.json plus the CNA mapping files, and verifies the
+            # snapshot against the manifest.
+            downloader.download_data(force=force, manifest=manifest)
+            downloader.download_cna_mapping_files()
+
+            if downloader.download_epss_data(force=force):
+                downloader.parse_epss_csv()
+            if downloader.download_kev_data(force=force):
+                downloader.parse_kev_json()
+
+            if manifest is not None:
+                downloader.persist_accepted_manifest(manifest)
+
+            self.print_verbose("✅ Data refresh complete (sequential)")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Sequential data refresh failed: {e}")
             return False
 
     def clean_build(self) -> None:
