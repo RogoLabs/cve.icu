@@ -16,8 +16,8 @@ from typing import Any
 
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 
@@ -61,7 +61,8 @@ class CNAAnalyzer:
         if epss_file.exists():
             try:
                 with open(epss_file) as f:
-                    return json.load(f)
+                    data: dict[str, dict[str, float]] = json.load(f)
+                    return data
             except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
                 logger.warning(f"    ⚠️ Error loading EPSS data: {e}")
         return {}
@@ -455,11 +456,11 @@ class CNAAnalyzer:
         else:
             logger.warning("    ⚠️ No comprehensive CNA analysis found, generating from scratch...")
             # Generate comprehensive analysis if it doesn't exist
-            comprehensive_data = self.generate_comprehensive_cna_analysis({})
+            comprehensive_data = self.generate_comprehensive_cna_analysis([])
 
         # Filter comprehensive data for current year CNAs
-        current_year_cnas = []
-        cna_counts = {}
+        current_year_cnas: list[dict[str, Any]] = []
+        cna_counts: dict[str, int] = {}
 
         # Process all CNAs from comprehensive analysis
         for cna in comprehensive_data.get("cna_list", []):
@@ -504,7 +505,7 @@ class CNAAnalyzer:
 
                 # Count current year CVEs by CNA
                 mappings = self.load_cna_name_mappings()
-                actual_counts = {}
+                actual_counts: dict[str, int] = {}
 
                 for cve_entry in cve_data:
                     try:

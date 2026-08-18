@@ -139,6 +139,10 @@ python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+# Without this, mypy aborts with "Source file found twice under different module
+# names" because data/ is importable both as `data.x` and as bare `x`. It was
+# failing that way before it checked anything, so the CI job never type-checked.
+explicit_package_bases = true
 exclude = [
     "data/cache/",
     "web/",
@@ -147,6 +151,20 @@ exclude = [
 
 [[tool.mypy.overrides]]
 module = "tests.*"
+ignore_errors = true
+
+# Ratchet list. These three modules carry 123 of the errors between them and are
+# exempt so the rest of the tree can be gated now rather than never. Remove an
+# entry once its module is clean; do not add to this list.
+[[tool.mypy.overrides]]
+module = [
+    "cve_v5_processor",
+    "cve_years",
+    "scoring_analysis",
+    "data.cve_v5_processor",
+    "data.cve_years",
+    "data.scoring_analysis",
+]
 ignore_errors = true
 
 # ============================================================================

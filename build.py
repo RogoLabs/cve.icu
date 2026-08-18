@@ -15,7 +15,7 @@ import tempfile
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 
 import jinja2
 import requests
@@ -30,7 +30,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from data.async_downloader import AsyncCVEDownloader
-from data.logging_config import get_logger, setup_logging
+from data.logging_config import LogLevel, get_logger, setup_logging
 
 
 logger = get_logger(__name__)
@@ -44,6 +44,18 @@ app = typer.Typer(
     rich_markup_mode="rich",
     invoke_without_command=True,  # Allow running without subcommand
 )
+
+
+def _validated_log_level(value: str) -> LogLevel:
+    """Coerce a free-form --log-level string to the accepted literal set.
+
+    Typer hands us an arbitrary str, so an unrecognised value would otherwise
+    reach setup_logging and be silently accepted.
+    """
+    level = value.upper()
+    if level not in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
+        raise typer.BadParameter(f"Invalid log level {value!r}. Choose from DEBUG, INFO, WARNING, ERROR, CRITICAL.")
+    return cast("LogLevel", level)
 
 
 @app.callback(invoke_without_command=True)
@@ -179,7 +191,7 @@ class CVESiteBuilder:
         else:
             checker.verify_manifest_healthy(manifest)
             checker.verify_manifest_not_regressed(manifest, checker.fetch_baseline_manifest())
-        return manifest
+        return dict(manifest)
 
     def refresh_data(self, force: bool = False, accept_baseline: bool = False) -> bool:
         """Refresh CVE data from all sources using async parallel downloads.
@@ -597,11 +609,13 @@ class CVESiteBuilder:
 
         # Generate current year CVSS analysis
         try:
-            current_year_data = next((d for d in all_year_data if d.get("year") == self.current_year), None)
-            if current_year_data:
+            current_year_entry: dict[str, Any] | None = next(
+                (d for d in all_year_data if d.get("year") == self.current_year), None
+            )
+            if current_year_entry:
                 if not self.quiet:
                     logger.info("  📅 Generating current year CVSS analysis...")
-                current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_data)
+                current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_entry)
 
                 if current_year_cvss_analysis:
                     if not self.quiet:
@@ -644,11 +658,11 @@ class CVESiteBuilder:
 
         # Generate current year CWE analysis
         try:
-            current_year_data = next((d for d in all_year_data if d.get("year") == self.current_year), None)
-            if current_year_data:
+            current_year_entry = next((d for d in all_year_data if d.get("year") == self.current_year), None)
+            if current_year_entry:
                 if not self.quiet:
                     logger.info("  📅 Generating current year CWE analysis...")
-                current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_data)
+                current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_entry)
 
                 if current_year_cwe_analysis:
                     if not self.quiet:
@@ -1527,7 +1541,7 @@ def build(
     if quiet:
         setup_logging(level="WARNING")
     else:
-        setup_logging(level=log_level.upper())
+        setup_logging(level=_validated_log_level(log_level))
 
     builder = CVESiteBuilder(quiet=quiet)
     success = builder.build_site(

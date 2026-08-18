@@ -44,6 +44,7 @@ pytest-cov>=4.0.0  # For coverage reports
 
 # Code quality
 mypy>=1.0.0  # Type checking
+types-requests>=2.31.0  # Stubs so mypy can check requests call sites
 ruff>=0.1.0  # Fast Python linter (replaces flake8, black, isort)
 
 # Pre-commit hooks

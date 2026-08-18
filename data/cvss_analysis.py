@@ -15,8 +15,8 @@ from typing import Any
 
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 
@@ -43,7 +43,7 @@ class CVSSAnalyzer:
             logger.info("  📊 Generating CVSS analysis...")
 
         # Initialize combined CVSS data structure for available versions
-        combined_cvss = {
+        combined_cvss: dict[str, dict[str, dict[str, Any]]] = {
             "v2.0": {"severity": {}, "scores": {}},
             "v3.0": {"severity": {}, "scores": {}},
             "v3.1": {"severity": {}, "scores": {}},
@@ -129,7 +129,7 @@ class CVSSAnalyzer:
             kev_global_count += kev_count
 
         # Create binned score distributions (0-0.99, 1-1.99, etc.)
-        binned_scores = {}
+        binned_scores: dict[str, dict[str, int]] = {}
         for version in ["v2.0", "v3.0", "v3.1", "v4.0"]:
             binned_scores[version] = {}
 
@@ -203,7 +203,7 @@ class CVSSAnalyzer:
             return {}
 
         # Create binned score distributions for current year
-        binned_scores = {}
+        binned_scores: dict[str, dict[str, int]] = {}
         total_cves_with_cvss = 0
 
         for version in ["v2.0", "v3.0", "v3.1", "v4.0"]:

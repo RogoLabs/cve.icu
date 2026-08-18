@@ -38,8 +38,8 @@ except ImportError:
 
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 
@@ -279,7 +279,7 @@ class AsyncCVEDownloader:
         results_dict: dict[str, DownloadResult] = {}
 
         for name, result in zip(source_names, results):
-            if isinstance(result, Exception):
+            if isinstance(result, BaseException):
                 results_dict[name] = DownloadResult(
                     source=name,
                     success=False,
@@ -429,9 +429,11 @@ async def main_async() -> None:
 
     args = parser.parse_args()
 
-    cache_dir = Path(args.cache_dir) if args.cache_dir else None
+    # cache_dir is typed Path and passed through Path() in __post_init__, so
+    # None would fail there. Fall back to the dataclass default instead.
+    downloader = AsyncCVEDownloader(cache_dir=Path(args.cache_dir)) if args.cache_dir else AsyncCVEDownloader()
 
-    async with AsyncCVEDownloader(cache_dir=cache_dir) as downloader:
+    async with downloader:
         results = await downloader.download_all_sources(force=args.force)
 
         # Parse supplemental data

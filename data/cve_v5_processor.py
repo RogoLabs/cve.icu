@@ -53,8 +53,8 @@ except ImportError:
 
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 

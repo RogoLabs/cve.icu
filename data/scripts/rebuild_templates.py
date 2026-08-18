@@ -21,8 +21,8 @@ web_dir = project_root / "web"
 sys.path.insert(0, str(project_root / "data"))
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 

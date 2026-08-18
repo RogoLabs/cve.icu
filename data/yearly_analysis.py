@@ -16,8 +16,8 @@ from typing import Any
 # Logging setup
 try:
     from data.logging_config import get_logger
-except ImportError:
-    from logging_config import get_logger
+except ImportError:  # pragma: no cover - depends on how the module is imported
+    from logging_config import get_logger  # type: ignore[no-redef]
 
 logger = get_logger(__name__)
 
@@ -230,12 +230,12 @@ class YearlyAnalyzer:
         previous_year_data = next((year for year in all_year_data if year["year"] == self.current_year - 1), None)
         previous_year_count = previous_year_data["total_cves"] if previous_year_data else 0
 
-        yoy_growth = 0
+        yoy_growth: float = 0.0
         if previous_year_count > 0:
             yoy_growth = ((current_year_count - previous_year_count) / previous_year_count) * 100
 
         # Calculate average CVEs per day for current year
-        avg_cves_per_day = 0
+        avg_cves_per_day: float = 0.0
         if current_year_data:
             days_elapsed = datetime.now().timetuple().tm_yday
             avg_cves_per_day = current_year_count / days_elapsed if days_elapsed > 0 else 0
