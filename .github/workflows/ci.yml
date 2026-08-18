@@ -39,17 +39,16 @@ jobs:
     - name: Install linting dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ruff mypy
         pip install -r requirements.txt
         
     - name: Run Ruff linter
-      run: ruff check . --output-format=github --exit-zero
+      run: ruff check . --output-format=github
         
     - name: Run Ruff formatter check
-      run: ruff format --check . || true
+      run: ruff format --check .
         
     - name: Run mypy type checker
-      run: mypy build.py data/*.py --ignore-missing-imports --no-error-summary || true
+      run: mypy build.py data/*.py
 
   test:
     name: Tests (Python ${{ matrix.python-version }})
@@ -123,7 +122,7 @@ jobs:
         echo "✅ Build outputs verified"
         
     - name: Validate data consistency
-      run: python build.py validate --quiet || echo "Validation completed"
+      run: python build.py validate --quiet
 
   security:
     name: Security Scan
@@ -143,4 +142,4 @@ jobs:
       run: pip install pip-audit
       
     - name: Run security audit
-      run: pip-audit -r requirements.txt || true
+      run: pip-audit -r requirements.txt
