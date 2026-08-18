@@ -149,10 +149,6 @@ exclude = [
     "tests/",
 ]
 
-[[tool.mypy.overrides]]
-module = "tests.*"
-ignore_errors = true
-
 # Ratchet list. These three modules carry 123 of the errors between them and are
 # exempt so the rest of the tree can be gated now rather than never. Remove an
 # entry once its module is clean; do not add to this list.

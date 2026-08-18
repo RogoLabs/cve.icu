@@ -124,6 +124,7 @@ def analyze(nvd_data, current_year_only=False):
     # Process data
     # Return analysis dict
 
+
 def main():
     """Command-line entry point."""
     # Load cache
