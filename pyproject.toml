@@ -98,6 +98,14 @@ ignore = [
     "ARG001", # Unused function argument (needed for callbacks)
     "ARG002", # Unused method argument
     "PTH123", # open() should use Path.open()
+    # The rules below are style preferences this codebase deliberately does not
+    # follow. They are listed explicitly rather than suppressed at the command
+    # line, so that `ruff check` can fail on everything else.
+    "SIM102", # Nested ifs are often clearer than one compound condition here,
+              # since the branches carry separate explanatory comments.
+    "SIM105", # try/except/pass reads more plainly than contextlib.suppress.
+    "TC003",  # Moving stdlib imports into TYPE_CHECKING blocks is ceremony
+              # that costs more readability than the import time it saves.
 ]
 
 # Allow autofix for all enabled rules
@@ -131,14 +139,28 @@ python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+# Without this, mypy aborts with "Source file found twice under different module
+# names" because data/ is importable both as `data.x` and as bare `x`. It was
+# failing that way before it checked anything, so the CI job never type-checked.
+explicit_package_bases = true
 exclude = [
     "data/cache/",
     "web/",
     "tests/",
 ]
 
+# Ratchet list. These three modules carry 123 of the errors between them and are
+# exempt so the rest of the tree can be gated now rather than never. Remove an
+# entry once its module is clean; do not add to this list.
 [[tool.mypy.overrides]]
-module = "tests.*"
+module = [
+    "cve_v5_processor",
+    "cve_years",
+    "scoring_analysis",
+    "data.cve_v5_processor",
+    "data.cve_years",
+    "data.scoring_analysis",
+]
 ignore_errors = true
 
 # ============================================================================
@@ -161,6 +183,9 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
 ]
+# Without this, pytest-asyncio leaves async tests unrecognised and they error
+# out on a clean checkout, which trains everyone to ignore a red suite.
+asyncio_mode = "auto"
 
 # ============================================================================
 # Coverage Configuration

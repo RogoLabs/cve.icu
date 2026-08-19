@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 from typing import Literal
 
+
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 # Default format includes emoji-style indicators for visual scanning

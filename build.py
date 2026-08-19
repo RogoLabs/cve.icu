@@ -15,7 +15,7 @@ import tempfile
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 
 import jinja2
 import requests
@@ -30,7 +30,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from data.async_downloader import AsyncCVEDownloader
-from data.logging_config import get_logger, setup_logging
+from data.logging_config import LogLevel, get_logger, setup_logging
 
 
 logger = get_logger(__name__)
@@ -44,6 +44,18 @@ app = typer.Typer(
     rich_markup_mode="rich",
     invoke_without_command=True,  # Allow running without subcommand
 )
+
+
+def _validated_log_level(value: str) -> LogLevel:
+    """Coerce a free-form --log-level string to the accepted literal set.
+
+    Typer hands us an arbitrary str, so an unrecognised value would otherwise
+    reach setup_logging and be silently accepted.
+    """
+    level = value.upper()
+    if level not in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
+        raise typer.BadParameter(f"Invalid log level {value!r}. Choose from DEBUG, INFO, WARNING, ERROR, CRITICAL.")
+    return cast("LogLevel", level)
 
 
 @app.callback(invoke_without_command=True)
@@ -61,9 +73,7 @@ def default_command(
         bool,
         typer.Option("--accept-baseline", help="Skip the source-manifest regression check"),
     ] = False,
-    strict: Annotated[
-        bool, typer.Option("--strict", help="Treat data guards as fatal outside CI")
-    ] = False,
+    strict: Annotated[bool, typer.Option("--strict", help="Treat data guards as fatal outside CI")] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level (DEBUG, INFO, WARNING, ERROR)")] = "INFO",
 ) -> None:
     """Default command - runs build if no subcommand specified.
@@ -181,7 +191,7 @@ class CVESiteBuilder:
         else:
             checker.verify_manifest_healthy(manifest)
             checker.verify_manifest_not_regressed(manifest, checker.fetch_baseline_manifest())
-        return manifest
+        return dict(manifest)
 
     def refresh_data(self, force: bool = False, accept_baseline: bool = False) -> bool:
         """Refresh CVE data from all sources using async parallel downloads.
@@ -217,9 +227,7 @@ class CVESiteBuilder:
             if source_manifest is not None:
                 from download_cve_data import CVEDataDownloader
 
-                CVEDataDownloader(
-                    cache_dir=self.cache_dir, quiet=self.quiet
-                ).persist_accepted_manifest(source_manifest)
+                CVEDataDownloader(cache_dir=self.cache_dir, quiet=self.quiet).persist_accepted_manifest(source_manifest)
 
             # Parse supplemental data
             downloader.parse_epss()
@@ -522,9 +530,10 @@ class CVESiteBuilder:
             logger.warning("  ⚠️  Current year CNA analysis will be missing")
 
         # Fall back to NVD-based CNA analysis if CVE V5 artifacts are unavailable.
-        if not (self.data_dir / "cna_analysis.json").exists() or not (
-            self.data_dir / "cna_analysis_current_year.json"
-        ).exists():
+        if (
+            not (self.data_dir / "cna_analysis.json").exists()
+            or not (self.data_dir / "cna_analysis_current_year.json").exists()
+        ):
             self.generate_cna_analysis_fallback(all_year_data)
 
         # Generate CPE analysis
@@ -600,11 +609,13 @@ class CVESiteBuilder:
 
         # Generate current year CVSS analysis
         try:
-            current_year_data = next((d for d in all_year_data if d.get("year") == self.current_year), None)
-            if current_year_data:
+            current_year_entry: dict[str, Any] | None = next(
+                (d for d in all_year_data if d.get("year") == self.current_year), None
+            )
+            if current_year_entry:
                 if not self.quiet:
                     logger.info("  📅 Generating current year CVSS analysis...")
-                current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_data)
+                current_year_cvss_analysis = cvss_analyzer.generate_current_year_cvss_analysis(current_year_entry)
 
                 if current_year_cvss_analysis:
                     if not self.quiet:
@@ -647,11 +658,11 @@ class CVESiteBuilder:
 
         # Generate current year CWE analysis
         try:
-            current_year_data = next((d for d in all_year_data if d.get("year") == self.current_year), None)
-            if current_year_data:
+            current_year_entry = next((d for d in all_year_data if d.get("year") == self.current_year), None)
+            if current_year_entry:
                 if not self.quiet:
                     logger.info("  📅 Generating current year CWE analysis...")
-                current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_data)
+                current_year_cwe_analysis = cwe_analyzer.generate_current_year_cwe_analysis(current_year_entry)
 
                 if current_year_cwe_analysis:
                     if not self.quiet:
@@ -777,7 +788,7 @@ class CVESiteBuilder:
             return default
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 return json.load(f)
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"  ⚠️  Could not read {file_name} ({e}), using defaults for homepage summary")
@@ -1160,9 +1171,7 @@ class CVESiteBuilder:
             if strict:
                 self.strict_data_guards = True
 
-            if refresh_data and not self.refresh_data(
-                force=force_refresh, accept_baseline=accept_baseline
-            ):
+            if refresh_data and not self.refresh_data(force=force_refresh, accept_baseline=accept_baseline):
                 logger.error("❌ Data refresh failed, cannot continue build")
                 return False
 
@@ -1402,8 +1411,7 @@ class CVESiteBuilder:
 
         if age_hours > self.max_data_age_hours:
             self.enforce_data_guard(
-                f"Source snapshot is {age_hours:.1f}h old, over the "
-                f"{self.max_data_age_hours}h limit.",
+                f"Source snapshot is {age_hours:.1f}h old, over the {self.max_data_age_hours}h limit.",
                 f"  downloaded {info.get('data_as_of')}",
                 "Stale data must not be published under a fresh timestamp. "
                 "Refresh with 'python build.py refresh --force'.",
@@ -1443,9 +1451,7 @@ class CVESiteBuilder:
                 if stamp.tzinfo is None:
                     stamp = stamp.replace(tzinfo=UTC)
                 provenance["data_as_of"] = stamp.isoformat().replace("+00:00", "Z")
-                provenance["data_age_hours"] = round(
-                    (datetime.now(UTC) - stamp).total_seconds() / 3600, 1
-                )
+                provenance["data_age_hours"] = round((datetime.now(UTC) - stamp).total_seconds() / 3600, 1)
             except ValueError as e:
                 logger.warning(f"  ⚠️  Could not parse download_time {download_time!r}: {e}")
 
@@ -1462,9 +1468,7 @@ class CVESiteBuilder:
         """
         counts = {int(d["year"]): d.get("total_cves", 0) for d in all_year_data if "year" in d}
         earliest_year = self.available_years[0]
-        empty_years = [
-            year for year in range(earliest_year, self.current_year) if counts.get(year, 0) <= 0
-        ]
+        empty_years = [year for year in range(earliest_year, self.current_year) if counts.get(year, 0) <= 0]
         if empty_years:
             raise RuntimeError(
                 f"Historical year(s) with zero CVEs detected: {', '.join(map(str, empty_years))}. "
@@ -1472,8 +1476,7 @@ class CVESiteBuilder:
                 "downloaded. Aborting build to avoid publishing or committing partial data."
             )
         logger.info(
-            f"    ✅ Historical year coverage verified ({earliest_year}-{self.current_year - 1}, "
-            "all years non-empty)"
+            f"    ✅ Historical year coverage verified ({earliest_year}-{self.current_year - 1}, all years non-empty)"
         )
 
 
@@ -1511,8 +1514,7 @@ def build(
         bool,
         typer.Option(
             "--strict",
-            help="Treat data freshness and regression guards as fatal outside CI "
-            "(they are always fatal in CI).",
+            help="Treat data freshness and regression guards as fatal outside CI (they are always fatal in CI).",
         ),
     ] = False,
     log_level: Annotated[str, typer.Option("--log-level", help="Logging level")] = "INFO",
@@ -1539,7 +1541,7 @@ def build(
     if quiet:
         setup_logging(level="WARNING")
     else:
-        setup_logging(level=log_level.upper())
+        setup_logging(level=_validated_log_level(log_level))
 
     builder = CVESiteBuilder(quiet=quiet)
     success = builder.build_site(

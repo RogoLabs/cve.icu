@@ -29,18 +29,11 @@ jobs:
         fetch-depth: 0
       
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.13'
-        
-    - name: Cache Python dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-          
+        cache: 'pip'
+
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
@@ -65,6 +58,9 @@ jobs:
       run: |
         python build.py --quiet
         
+    - name: Validate build output
+      run: python build.py validate --quiet
+
     - name: Copy CNAME for GitHub Pages
       run: cp CNAME web/CNAME
       
