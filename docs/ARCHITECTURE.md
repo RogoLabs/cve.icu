@@ -198,7 +198,7 @@ Run with: `pytest tests/ -v`
 
 The `--validate` flag checks data consistency:
 
-- CNA total ≈ cve_all total (within 1000)
+- CNA total ≈ cve_all total (within max(1000, 0.5% of cve_all))
 - Year totals sum correctly
 - No duplicate CVE IDs
 

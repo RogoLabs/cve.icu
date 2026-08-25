@@ -1703,13 +1703,15 @@ def validate_data_counts(builder: CVESiteBuilder) -> bool:
         else:
             logger.info(f"    ✅ CNA counts consistent: {cna_sum:,}")
 
-        # CNA and cve_all should now be close (both exclude REJECTED)
-        # Small difference expected due to pre-1999 CVEs (~700) and source variance
+        # CNA and cve_all should now be close (both exclude REJECTED).
+        # Allow a small fixed floor plus a tiny percentage to absorb source drift
+        # as the overall CVE corpus grows over time.
         diff = abs(repo_total - cve_all_total) if cve_all_file.exists() else 0
-        if diff <= 1000:
+        allowed_diff = max(1000, int(cve_all_total * 0.005))
+        if diff <= allowed_diff:
             logger.info(f"    ✅ CNA total ({repo_total:,}) ≈ cve_all ({cve_all_total:,}) [diff: {diff}]")
         else:
-            errors.append(f"CNA vs cve_all difference ({diff:,}) too large (expected <1000)")
+            errors.append(f"CNA vs cve_all difference ({diff:,}) too large (expected <={allowed_diff:,})")
     else:
         warnings.append("cna_analysis.json not found")
 
