@@ -763,6 +763,19 @@ class CVEYearsAnalyzer:
 
         return list(vendors)
 
+    def count_excluded_pre_1999(self) -> int:
+        """Count non-rejected CVEs whose publication date predates the CVE program.
+
+        These are legacy CVEs backdated to their original 1988-1998 disclosure
+        (e.g. CVE-1999-0001, published 1997-12-01). ``cve_all.json`` is assembled
+        from the 1999+ year files, so these records are dropped there, while
+        ``cna_analysis.json`` counts every non-rejected V5 record regardless of
+        date. Reporting the number lets validation subtract a *known* offset
+        instead of absorbing it into a tolerance. See docs/COUNTING.md.
+        """
+        self._ensure_year_buckets()
+        return sum(len(bucket) for year, bucket in self.year_cve_buckets.items() if year < 1999)
+
     def get_year_data(self, year: int) -> dict[str, Any]:
         """Main method to get processed data for a specific year"""
         current_year = datetime.now().year

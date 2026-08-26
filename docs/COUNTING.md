@@ -86,19 +86,40 @@ Total V5 files:       319,485
 
 ### CNA Total vs cve_all Total
 
-The CNA analysis and cve_all.json have a small difference (~728 CVEs). This is expected due to:
+`cna_analysis.json` (V5) always runs ahead of `cve_all.json` (NVD, 1999+). The gap is
+**two independent terms**, and they behave completely differently:
 
 ```text
-CNA total (V5):       ~303,297  (V5 repo, no rejected)
-cve_all total (NVD):  ~302,569  (NVD, no rejected, 1999+)
-Difference:               ~728
-
-Breakdown:
-- Pre-1999 CVEs:          ~679  (excluded from NVD year files)
-- Source variance:         ~49  (minor V5 vs NVD timing diff)
+gap = pre_1999_offset + nvd_ingestion_lag
 ```
 
-Both sources now consistently exclude REJECTED CVEs (~16,188).
+| Term | Size | Behaviour |
+|------|------|-----------|
+| **Pre-1999 offset** | 679 (measured 2026-08-26) | **Frozen.** Legacy CVEs backdated to their original 1988-1998 disclosure date (1997: 252, 1998: 246). `cve_all.json` is assembled from the 1999+ year files, so they are dropped there; `cna_analysis.json` counts every non-rejected V5 record. Does not grow with the corpus. |
+| **NVD ingestion lag** | 100-1,500, spiky | **Varies with _daily publication volume_, not corpus size.** cvelistV5 has a CVE the instant the CNA publishes; NVD ingests behind. One Oracle CPU day lands 1,100-1,400 CVEs at once. |
+
+Both sources consistently exclude REJECTED CVEs.
+
+The build measures the pre-1999 term rather than assuming it, and publishes it as
+`cve_all.json:excluded_pre_1999`. `reconcile_cna_vs_year_totals()` in `build.py`
+subtracts it and bounds only the lag term, in both directions:
+
+- **Lag > `MAX_INGESTION_LAG` (3,000)** — two heavy publication days with no ingestion.
+  The NVD feed has stalled. Fails the build.
+- **Lag < `-MAX_NVD_LEAD` (-100)** — NVD is *ahead* of cvelistV5, which cannot legitimately
+  happen. One of the feeds is wrong. Fails the build.
+
+#### Why not a single tolerance?
+
+This check previously compared `abs(CNA - cve_all)` against a flat `< 1000`, which measured
+both terms together. The fixed 679-record offset consumed two thirds of the budget, leaving
+only ~321 CVEs of headroom for the term that actually moves. On **2026-08-25** a busy but
+unremarkable publication day (787 CVEs, 327 of them one Chrome batch) pushed the gap to
+1,196 and failed the scheduled deploy.
+
+Widening the tolerance to a percentage of corpus size does not fix this — it scales the
+budget against a number that has no relationship to either term. Subtracting the known
+offset is what restores the full budget to the lag.
 
 ## Validation
 
