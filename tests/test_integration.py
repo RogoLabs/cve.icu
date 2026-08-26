@@ -250,6 +250,72 @@ class TestDataValidation:
             assert isinstance(result, bool)
 
 
+class TestCnaVsCveAllReconciliation:
+    """Tests for reconcile_cna_vs_year_totals().
+
+    Regression cover for the 2026-08-25 deploy failure: the old check compared
+    abs(CNA - cve_all) against a flat 1,000, so the permanent 679-record pre-1999
+    offset consumed most of the budget and a normal busy publication day
+    (diff 1,196) failed the build.
+    """
+
+    def test_real_2026_08_25_numbers_now_pass(self):
+        """The exact totals that broke the deploy should reconcile cleanly."""
+        from build import reconcile_cna_vs_year_totals
+
+        # diff was 1,196 = 679 pre-1999 + 517 NVD ingestion lag
+        result = reconcile_cna_vs_year_totals(repo_total=364_000, cve_all_total=362_804, excluded_pre_1999=679)
+
+        assert result.ok
+        assert result.lag == 517
+
+    def test_pre_1999_offset_does_not_consume_lag_budget(self):
+        """Growing the pre-1999 offset must not shrink the room for lag."""
+        from build import MAX_INGESTION_LAG, reconcile_cna_vs_year_totals
+
+        small = reconcile_cna_vs_year_totals(300_000 + MAX_INGESTION_LAG, 300_000, 0)
+        large = reconcile_cna_vs_year_totals(300_000 + MAX_INGESTION_LAG + 5_000, 300_000, 5_000)
+
+        assert small.ok and large.ok
+        assert small.lag == large.lag == MAX_INGESTION_LAG
+
+    def test_heavy_publication_day_passes(self):
+        """An Oracle-CPU-sized day of un-ingested CVEs is normal, not a failure."""
+        from build import reconcile_cna_vs_year_totals
+
+        # 2026-07-21 published 1,474 CVEs; NVD trailing a full such day is fine.
+        result = reconcile_cna_vs_year_totals(364_000 + 1_474, 364_000, excluded_pre_1999=0)
+        assert result.ok
+
+    def test_stalled_nvd_feed_fails(self):
+        """Lag beyond two heavy publication days means NVD has stopped ingesting."""
+        from build import MAX_INGESTION_LAG, reconcile_cna_vs_year_totals
+
+        result = reconcile_cna_vs_year_totals(364_000 + MAX_INGESTION_LAG + 1, 364_000, excluded_pre_1999=0)
+
+        assert not result.ok
+        assert "ingestion lag" in result.message
+
+    def test_nvd_leading_v5_fails(self):
+        """NVD ahead of cvelistV5 is impossible; the old abs() check was blind to it."""
+        from build import reconcile_cna_vs_year_totals
+
+        result = reconcile_cna_vs_year_totals(repo_total=360_000, cve_all_total=365_000, excluded_pre_1999=679)
+
+        assert not result.ok
+        assert "should never be ahead" in result.message
+
+    def test_missing_offset_uses_documented_fallback(self):
+        """A cve_all.json predating the field still reconciles via the constant."""
+        from build import PRE_1999_FALLBACK, reconcile_cna_vs_year_totals
+
+        result = reconcile_cna_vs_year_totals(364_000, 364_000 - PRE_1999_FALLBACK)
+
+        assert result.ok
+        assert result.pre_1999 == PRE_1999_FALLBACK
+        assert result.lag == 0
+
+
 class TestHistoricalYearCoverageGuard:
     """Tests for the truncated-feed guardrail (verify_historical_year_coverage)."""
 

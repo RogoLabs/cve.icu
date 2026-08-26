@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
@@ -111,6 +112,10 @@ class CVESiteBuilder:
         # the allowance was derived; it is deliberately much tighter than a
         # percentage band would be.
         self.published_totals_url: str = "https://cve.icu/data/cve_all.json"
+        # Count of non-rejected CVEs published before 1999, measured during the
+        # year-data pass and emitted into cve_all.json so validation can subtract
+        # a real number instead of guessing. See docs/COUNTING.md.
+        self.excluded_pre_1999: int | None = None
         self.regression_allowance: int = 10
         # A 3-hourly build should never be running on data a full day old.
         self.max_data_age_hours: float = 24.0
@@ -433,6 +438,13 @@ class CVESiteBuilder:
                 except (KeyError, json.JSONDecodeError, OSError) as e:
                     self.print_always(f"  ❌ Failed to process {year}: {e}")
                     continue
+
+            # The buckets are populated by now, so this is a cheap lookup rather
+            # than a second pass over the feed.
+            self.excluded_pre_1999 = analyzer.count_excluded_pre_1999()
+            self.print_verbose(
+                f"  📅 {self.excluded_pre_1999:,} non-rejected CVEs published pre-1999 (excluded from year files)"
+            )
 
             self.print_always(f"✅ Generated {len(all_year_data)} year data files")
             return all_year_data
@@ -970,6 +982,9 @@ class CVESiteBuilder:
             "peak_year": peak_year,
             "peak_count": peak_count,
             "yoy_growth_rate": round(yoy_growth, 1),
+            # Records this file deliberately omits, so downstream consumers can
+            # reconcile against V5-sourced totals without a magic number.
+            "excluded_pre_1999": self.excluded_pre_1999,
             "yearly_trend": yearly_data,
         }
 
@@ -1652,6 +1667,98 @@ def info() -> None:
         console.print("\n  [yellow]⚠️  No cache info found - run 'build --refresh-data'[/yellow]")
 
 
+# --- CNA vs cve_all reconciliation -------------------------------------------
+#
+# cve_all.json is assembled from the 1999+ year files (NVD-sourced);
+# cna_analysis.json counts every non-rejected cvelistV5 record. The gap between
+# them is two independent terms, and only one of them can indicate a problem:
+#
+#   1. Pre-1999 publications - legacy CVEs backdated to their original 1988-1998
+#      disclosure date. Frozen history: it does not grow with the corpus. The
+#      exact count is measured during the build and published as
+#      cve_all.json:excluded_pre_1999.
+#   2. NVD ingestion lag - cvelistV5 has a CVE the moment the CNA publishes it;
+#      NVD ingests behind. This scales with DAILY publication volume, not corpus
+#      size - one Oracle CPU day alone lands 1,100-1,400 CVEs.
+#
+# Bounding (2) is the only useful check here, but it used to be measured as
+# abs((1) + (2)) against a flat 1,000. The fixed 679-record offset ate two thirds
+# of that budget, leaving ~321 CVEs of lag headroom, and the first busy
+# publication day tipped it over (2026-08-25: diff 1,196, deploy failed).
+# Subtracting (1) explicitly restores the full budget to the term that varies.
+
+# Used only when cve_all.json predates the excluded_pre_1999 field. Measured
+# 2026-08-26 against the NVD feed; it moves only if NVD re-dates legacy records.
+PRE_1999_FALLBACK = 679
+
+# Largest single publication day observed through 2026-08 is 1,474 (2026-07-21,
+# Oracle CPU). Two consecutive days of that with no ingestion is a stalled NVD
+# feed worth failing the deploy over; less than that is NVD catching up normally.
+MAX_INGESTION_LAG = 3000
+
+# V5 leads NVD, always. NVD pulling ahead by more than a rounding margin means a
+# feed is wrong - a real bug the previous abs() comparison could not see.
+MAX_NVD_LEAD = 100
+
+
+@dataclass(frozen=True)
+class ReconciliationResult:
+    """Outcome of comparing the V5-sourced CNA total against NVD-sourced cve_all."""
+
+    ok: bool
+    lag: int
+    pre_1999: int
+    message: str
+
+
+def reconcile_cna_vs_year_totals(
+    repo_total: int,
+    cve_all_total: int,
+    excluded_pre_1999: int | None = None,
+) -> ReconciliationResult:
+    """Reconcile the CNA (V5) total against the cve_all (NVD, 1999+) total.
+
+    Subtracts the known pre-1999 offset, then bounds what remains - NVD
+    ingestion lag - in both directions. See the module comment above and
+    docs/COUNTING.md for where the thresholds come from.
+    """
+    pre_1999 = PRE_1999_FALLBACK if excluded_pre_1999 is None else excluded_pre_1999
+    lag = repo_total - cve_all_total - pre_1999
+
+    if lag < -MAX_NVD_LEAD:
+        return ReconciliationResult(
+            ok=False,
+            lag=lag,
+            pre_1999=pre_1999,
+            message=(
+                f"cve_all ({cve_all_total:,}) leads CNA data by {-lag:,} after the "
+                f"{pre_1999:,} pre-1999 offset - NVD should never be ahead of cvelistV5"
+            ),
+        )
+
+    if lag > MAX_INGESTION_LAG:
+        return ReconciliationResult(
+            ok=False,
+            lag=lag,
+            pre_1999=pre_1999,
+            message=(
+                f"NVD ingestion lag ({lag:,}) exceeds {MAX_INGESTION_LAG:,} - cvelistV5 "
+                f"has CVEs the NVD feed has not picked up (CNA {repo_total:,} vs "
+                f"cve_all {cve_all_total:,}, pre-1999 offset {pre_1999:,})"
+            ),
+        )
+
+    return ReconciliationResult(
+        ok=True,
+        lag=lag,
+        pre_1999=pre_1999,
+        message=(
+            f"CNA total ({repo_total:,}) reconciles with cve_all ({cve_all_total:,}) "
+            f"[pre-1999: {pre_1999:,}, NVD lag: {lag:,}]"
+        ),
+    )
+
+
 def validate_data_counts(builder: CVESiteBuilder) -> bool:
     """Validate that data counting is consistent across output files.
 
@@ -1703,15 +1810,21 @@ def validate_data_counts(builder: CVESiteBuilder) -> bool:
         else:
             logger.info(f"    ✅ CNA counts consistent: {cna_sum:,}")
 
-        # CNA and cve_all should now be close (both exclude REJECTED).
-        # Allow a small fixed floor plus a tiny percentage to absorb source drift
-        # as the overall CVE corpus grows over time.
-        diff = abs(repo_total - cve_all_total) if cve_all_file.exists() else 0
-        allowed_diff = max(1000, int(cve_all_total * 0.005))
-        if diff <= allowed_diff:
-            logger.info(f"    ✅ CNA total ({repo_total:,}) ≈ cve_all ({cve_all_total:,}) [diff: {diff}]")
-        else:
-            errors.append(f"CNA vs cve_all difference ({diff:,}) too large (expected <={allowed_diff:,})")
+        # Both sides exclude REJECTED, so the remaining gap is the pre-1999
+        # offset plus NVD ingestion lag. Subtract the former, bound the latter.
+        if cve_all_file.exists():
+            excluded_pre_1999 = cve_all.get("excluded_pre_1999")
+            if excluded_pre_1999 is None:
+                warnings.append(
+                    f"cve_all.json has no excluded_pre_1999 field; reconciling against the "
+                    f"{PRE_1999_FALLBACK:,} fallback. Rebuild to measure it."
+                )
+
+            reconciliation = reconcile_cna_vs_year_totals(repo_total, cve_all_total, excluded_pre_1999)
+            if reconciliation.ok:
+                logger.info(f"    ✅ {reconciliation.message}")
+            else:
+                errors.append(reconciliation.message)
     else:
         warnings.append("cna_analysis.json not found")
 
