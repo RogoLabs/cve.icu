@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-02T13:21:54.663609Z",
-  "catalog_version": "2026.09.01",
-  "total_kev_cves": 1687,
+  "generated_at": "2026-09-02T18:33:06.281200Z",
+  "catalog_version": "2026.09.02",
+  "total_kev_cves": 1694,
   "statistics": {
-    "added_last_30_days": 31,
-    "added_last_90_days": 76,
+    "added_last_30_days": 38,
+    "added_last_90_days": 83,
     "ransomware_associated": 352
   },
   "by_year_added": {
@@ -13,7 +13,7 @@
     "2023": 187,
     "2024": 186,
     "2025": 245,
-    "2026": 203
+    "2026": 210
   },
   "by_year_cve": {
     "2002": 1,
@@ -39,7 +39,7 @@
     "2023": 165,
     "2024": 164,
     "2025": 185,
-    "2026": 125
+    "2026": 132
   },
   "by_year_published": {
     "2002": 1,
@@ -65,7 +65,7 @@
     "2023": 165,
     "2024": 160,
     "2025": 195,
-    "2026": 133
+    "2026": 140
   },
   "timeline": {
     "2021-11": 291,
@@ -125,7 +125,8 @@
     "2026-05": 21,
     "2026-06": 23,
     "2026-07": 26,
-    "2026-08": 31
+    "2026-08": 31,
+    "2026-09": 7
   },
   "top_vendors": [
     [
@@ -181,12 +182,12 @@
       23
     ],
     [
-      "Synacor",
+      "SonicWall",
       19
     ],
     [
-      "SonicWall",
-      17
+      "Synacor",
+      19
     ],
     [
       "Android",
@@ -298,7 +299,7 @@
     ],
     [
       "CWE-78",
-      108
+      110
     ],
     [
       "CWE-787",
@@ -326,11 +327,11 @@
     ],
     [
       "CWE-287",
-      43
+      46
     ],
     [
       "CWE-306",
-      40
+      41
     ],
     [
       "CWE-843",
@@ -345,12 +346,12 @@
       33
     ],
     [
-      "CWE-264",
+      "CWE-89",
       31
     ],
     [
-      "CWE-89",
-      30
+      "CWE-264",
+      31
     ],
     [
       "CWE-77",
@@ -370,10 +371,66 @@
     ],
     [
       "CWE-918",
-      20
+      22
     ]
   ],
   "recent_additions": [
+    {
+      "cve_id": "CVE-2026-59822",
+      "vendor": "BerriAI",
+      "product": "LiteLLM",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-16",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-48710",
+      "vendor": "Kludex",
+      "product": "Starlette",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-16",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-49869",
+      "vendor": "Kestra",
+      "product": "Kestra OSS",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-82329",
+      "vendor": "JFrog",
+      "product": "Artifactory",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-9586",
+      "vendor": "Sangoma",
+      "product": "Switchvox",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-83548",
+      "vendor": "SonicWall",
+      "product": "SMA1000 Appliances",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-05",
+      "ransomware": "Unknown"
+    },
+    {
+      "cve_id": "CVE-2026-83549",
+      "vendor": "SonicWall",
+      "product": "SMA1000 Appliances",
+      "date_added": "2026-09-02",
+      "due_date": "2026-09-05",
+      "ransomware": "Unknown"
+    },
     {
       "cve_id": "CVE-2026-82078",
       "vendor": "PaperCut",
@@ -476,62 +533,6 @@
       "product": "HTTP Server and Oracle Weblogic Server Proxy Plug-in",
       "date_added": "2026-08-24",
       "due_date": "2026-08-27",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-73570",
-      "vendor": "Synacor",
-      "product": "Zimbra Collaboration Suite (ZCS)",
-      "date_added": "2026-08-21",
-      "due_date": "2026-08-24",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-72530",
-      "vendor": "TrueConf",
-      "product": "Server",
-      "date_added": "2026-08-20",
-      "due_date": "2026-09-03",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-72529",
-      "vendor": "TrueConf",
-      "product": "Server",
-      "date_added": "2026-08-20",
-      "due_date": "2026-08-23",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-64849",
-      "vendor": "MLflow",
-      "product": "MLflow",
-      "date_added": "2026-08-19",
-      "due_date": "2026-09-02",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-33824",
-      "vendor": "Microsoft",
-      "product": "Internet Key Exchange (IKE) Service Extensions",
-      "date_added": "2026-08-18",
-      "due_date": "2026-08-21",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-59310",
-      "vendor": "Broadcom",
-      "product": "VMware vCenter",
-      "date_added": "2026-08-18",
-      "due_date": "2026-08-21",
-      "ransomware": "Unknown"
-    },
-    {
-      "cve_id": "CVE-2026-55040",
-      "vendor": "Microsoft",
-      "product": "SharePoint",
-      "date_added": "2026-08-18",
-      "due_date": "2026-08-21",
       "ransomware": "Unknown"
     }
   ]
