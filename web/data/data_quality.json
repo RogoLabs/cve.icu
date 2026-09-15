@@ -1,26 +1,26 @@
 {
   "stats": {
     "total_cnas_in_analysis": 470,
-    "official_cna_registry_count": 548,
+    "official_cna_registry_count": 549,
     "exact_matches": 426,
     "case_mismatches": 1,
     "org_name_matches": 6,
     "normalized_matches": 6,
     "partial_matches": 4,
     "unmatched": 27,
-    "exact_match_cves": 369957,
+    "exact_match_cves": 370967,
     "case_mismatch_cves": 170,
     "org_name_match_cves": 767,
     "normalized_match_cves": 1589,
     "partial_match_cves": 72,
     "unmatched_cves": 1053,
-    "exact_match_pct": 99.02,
-    "issues_pct": 0.98
+    "exact_match_pct": 99.03,
+    "issues_pct": 0.97
   },
   "exact_matches": [
     {
       "cna_name": "mitre",
-      "cve_count": 114934,
+      "cve_count": 114946,
       "kev_count": 322,
       "epss_high_count": 1734,
       "official_short_name": "mitre",
@@ -31,7 +31,7 @@
     },
     {
       "cna_name": "GitHub_M",
-      "cve_count": 19562,
+      "cve_count": 19631,
       "kev_count": 41,
       "epss_high_count": 178,
       "official_short_name": "GitHub_M",
@@ -53,7 +53,7 @@
     },
     {
       "cna_name": "VulDB",
-      "cve_count": 16510,
+      "cve_count": 16513,
       "kev_count": 4,
       "epss_high_count": 32,
       "official_short_name": "VulDB",
@@ -86,12 +86,23 @@
     },
     {
       "cna_name": "redhat",
-      "cve_count": 11555,
+      "cve_count": 11558,
       "kev_count": 33,
       "epss_high_count": 187,
       "official_short_name": "redhat",
       "official_org_name": "Red Hat, Inc.",
       "official_id": "CNA-2005-0006",
+      "match_type": "exact_short",
+      "confidence": "high"
+    },
+    {
+      "cna_name": "oracle",
+      "cve_count": 11316,
+      "kev_count": 44,
+      "epss_high_count": 116,
+      "official_short_name": "oracle",
+      "official_org_name": "Oracle",
+      "official_id": "CNA-2008-0001",
       "match_type": "exact_short",
       "confidence": "high"
     },
@@ -107,19 +118,8 @@
       "confidence": "high"
     },
     {
-      "cna_name": "oracle",
-      "cve_count": 10685,
-      "kev_count": 44,
-      "epss_high_count": 116,
-      "official_short_name": "oracle",
-      "official_org_name": "Oracle",
-      "official_id": "CNA-2008-0001",
-      "match_type": "exact_short",
-      "confidence": "high"
-    },
-    {
       "cna_name": "ibm",
-      "cve_count": 7591,
+      "cve_count": 7615,
       "kev_count": 8,
       "epss_high_count": 19,
       "official_short_name": "ibm",
@@ -152,7 +152,7 @@
     },
     {
       "cna_name": "VulnCheck",
-      "cve_count": 7115,
+      "cve_count": 7120,
       "kev_count": 19,
       "epss_high_count": 33,
       "official_short_name": "VulnCheck",
@@ -174,7 +174,7 @@
     },
     {
       "cna_name": "Chrome",
-      "cve_count": 6211,
+      "cve_count": 6253,
       "kev_count": 76,
       "epss_high_count": 17,
       "official_short_name": "Chrome",
@@ -207,7 +207,7 @@
     },
     {
       "cna_name": "icscert",
-      "cve_count": 3773,
+      "cve_count": 3779,
       "kev_count": 8,
       "epss_high_count": 27,
       "official_short_name": "icscert",
@@ -218,7 +218,7 @@
     },
     {
       "cna_name": "zdi",
-      "cve_count": 3414,
+      "cve_count": 3426,
       "kev_count": 6,
       "epss_high_count": 85,
       "official_short_name": "zdi",
@@ -240,7 +240,7 @@
     },
     {
       "cna_name": "certcc",
-      "cve_count": 3126,
+      "cve_count": 3125,
       "kev_count": 7,
       "epss_high_count": 66,
       "official_short_name": "certcc",
@@ -262,7 +262,7 @@
     },
     {
       "cna_name": "mozilla",
-      "cve_count": 2701,
+      "cve_count": 2704,
       "kev_count": 12,
       "epss_high_count": 13,
       "official_short_name": "mozilla",
@@ -306,7 +306,7 @@
     },
     {
       "cna_name": "dell",
-      "cve_count": 2342,
+      "cve_count": 2348,
       "kev_count": 3,
       "epss_high_count": 12,
       "official_short_name": "dell",
@@ -383,7 +383,7 @@
     },
     {
       "cna_name": "hpe",
-      "cve_count": 1425,
+      "cve_count": 1463,
       "kev_count": 2,
       "epss_high_count": 18,
       "official_short_name": "hpe",
@@ -394,7 +394,7 @@
     },
     {
       "cna_name": "GitLab",
-      "cve_count": 1341,
+      "cve_count": 1345,
       "kev_count": 6,
       "epss_high_count": 23,
       "official_short_name": "GitLab",
