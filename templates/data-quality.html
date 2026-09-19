@@ -13,6 +13,14 @@ This is the count of how many line up, and how.</p>
 <h2>How names match</h2>
 <div class="panel"><div class="panel-b"><div id="chart-match"></div></div></div>
 
+<h2>Source agreement <span class="side">two pipelines, two record sets</span></h2>
+<div class="note-box" id="recon-note">
+  Yearly counts come from the NVD mirror. Publisher attribution comes from the CVE Program's
+  own cvelistV5 repository. They are different record sets, so a year can carry two slightly
+  different totals &mdash; measured below rather than hidden.
+</div>
+<div class="panel" style="margin-top:12px"><div id="recon-table"></div></div>
+
 <h2>Names that did not match exactly</h2>
 <div class="cols c2">
   <div class="panel"><div class="panel-h">Matched another way <span class="side" id="n-soft"></span></div>
@@ -76,6 +84,42 @@ CVE.page(async () => {
     ], { sort: { key: 'cves', dir: -1 } });
   } else {
     el('#soft-table').innerHTML = '<div class="empty">Every name matched exactly.</div>';
+  }
+
+  // per-year agreement between the NVD and V5 pipelines
+  try {
+    const r = await CVE.json('source_reconciliation.json');
+    const flagged = new Set(r.flagged_years || []);
+    table('#recon-table', (r.years || []).map(y => ({
+      year: y.year, nvd: y.nvd, v5: y.v5, delta: y.delta, pct: y.pct,
+      era: y.modern ? 'modern' : 'historical',
+      state: flagged.has(y.year) ? 'over threshold' : (y.delta === 0 ? 'identical' : 'within threshold')
+    })), [
+      { key: 'year', label: 'Year', num: true, raw: true },
+      { key: 'nvd', label: 'NVD count', num: true },
+      { key: 'v5', label: 'V5 count', num: true },
+      { key: 'delta', label: 'Difference', num: true,
+        fmt: v => v === 0 ? '<span class="faint">0</span>'
+          : `<span style="color:var(--${Math.abs(v) > 200 ? 'warn' : 'dim'})">${v > 0 ? '+' : ''}${fmt.n(v)}</span>` },
+      { key: 'pct', label: '%', num: true,
+        fmt: v => v === 0 ? '<span class="faint">0</span>' : v.toFixed(2) + '%' },
+      { key: 'era', label: 'Era',
+        fmt: v => `<span class="pill${v === 'historical' ? '' : ' live'}">${v}</span>` },
+      { key: 'state', label: 'Status',
+        fmt: v => `<span class="pill${v === 'over threshold' ? ' warn' : ''}">${CVE.esc(v)}</span>` }
+    ], { sort: { key: 'year', dir: -1 } });
+
+    const t = r.totals || {};
+    el('#recon-note').insertAdjacentHTML('beforeend',
+      `<p style="margin-top:9px">Across all years: NVD <b>${fmt.n(t.nvd)}</b>,
+       cvelistV5 <b>${fmt.n(t.v5)}</b>, a difference of <b>${t.delta > 0 ? '+' : ''}${fmt.n(t.delta)}</b>.
+       Years before ${r.thresholds.modern_year_floor} predate the current publishing arrangements and
+       are recorded but not held to a threshold; from ${r.thresholds.modern_year_floor} on, a year must
+       agree within ${r.thresholds.max_abs} CVEs or ${r.thresholds.max_pct}% or the build warns.
+       ${flagged.size ? `<b style="color:var(--warn)">${flagged.size} year(s) currently over threshold.</b>`
+         : 'All modern years are currently within threshold.'}</p>`);
+  } catch (err) {
+    el('#recon-table').innerHTML = '<div class="empty">Reconciliation data not available.</div>';
   }
 
   const un = (d.unmatched || []).map(x => ({
