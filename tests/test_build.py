@@ -207,9 +207,8 @@ class TestTemplateValidity:
                 if name not in defined:
                     orphans.append(f"{template.name} fills '{name}'")
 
-        assert not orphans, (
-            "These blocks are silently discarded because base.html does not define them: "
-            + "; ".join(orphans)
+        assert not orphans, "These blocks are silently discarded because base.html does not define them: " + "; ".join(
+            orphans
         )
 
     def test_base_template_has_required_blocks(self):

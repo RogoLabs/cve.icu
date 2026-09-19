@@ -820,9 +820,7 @@ class CVESiteBuilder:
         logger.info("  🔍 Generating source_reconciliation.json...")
 
         nvd_years = {
-            int(y["year"]): int(y.get("total_cves", 0))
-            for y in all_year_data
-            if isinstance(y.get("year"), int)
+            int(y["year"]): int(y.get("total_cves", 0)) for y in all_year_data if isinstance(y.get("year"), int)
         }
 
         cna_raw = self._read_json_file("cna_analysis.json", {})
@@ -2003,8 +2001,7 @@ def validate_data_counts(builder: CVESiteBuilder) -> bool:
             )
             if worst:
                 logger.info(
-                    f"    ✅ Modern years agree within threshold "
-                    f"(largest gap {worst['year']}: {worst['delta']:+,})"
+                    f"    ✅ Modern years agree within threshold (largest gap {worst['year']}: {worst['delta']:+,})"
                 )
 
     # 3. Yearly trend in cve_all.json should match year files

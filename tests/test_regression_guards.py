@@ -285,6 +285,4 @@ class TestYearlySourceReconciliation:
         if not recon.exists():
             pytest.skip("source_reconciliation.json not built")
         data = json.loads(recon.read_text())
-        assert data["flagged_years"] == [], (
-            f"years drifting beyond threshold: {data['flagged_years']}"
-        )
+        assert data["flagged_years"] == [], f"years drifting beyond threshold: {data['flagged_years']}"
