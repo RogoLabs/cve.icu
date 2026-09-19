@@ -108,7 +108,7 @@ We especially welcome contributions in:
 
 - Open an issue for discussion
 - Check [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for technical details
-- Review [docs/ROADMAP.md](docs/ROADMAP.md) for project direction
+- Review [docs/COUNTING.md](docs/COUNTING.md) for how CVEs are counted
 
 ---
 

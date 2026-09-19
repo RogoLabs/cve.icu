@@ -169,7 +169,6 @@ cve.icu/
 │   ├── scripts/            # Utility scripts
 │   └── *_analysis.py       # Analysis modules
 ├── docs/
-│   ├── ROADMAP.md          # Development roadmap
 │   └── ARCHITECTURE.md     # This file
 ├── templates/              # Jinja2 HTML templates
 ├── tests/                  # pytest test suite
