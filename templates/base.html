@@ -44,6 +44,9 @@
     <meta name="apple-mobile-web-app-title" content="CVE.ICU">
     <meta name="format-detection" content="telephone=no">
     
+    <!-- Page-specific head content (styles, preloads) -->
+    {% block head %}{% endblock %}
+
     <!-- Open Graph tags -->
     <meta property="og:title" content="{% block og_title %}CVE.ICU - CVE Analysis Dashboard{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Comprehensive CVE analysis and visualization from 1999 to present{% endblock %}">
@@ -138,16 +141,15 @@
             <div class="text-center">
                 <small class="text-muted">
                     &copy; {{ current_year }} CVE.ICU • Built by <a href="https://rogolabs.net" target="_blank" class="text-decoration-none">RogoLabs</a><br>
-                    Data updated every 3 hours • CVE coverage: 1999-{{ current_year }}
+                    Data updated hourly • CVE coverage: 1999-{{ current_year }}
                 </small>
             </div>
         </div>
     </footer>
 
-    <!-- Chart.js Library (UMD version) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    {% block extra_scripts %}{% endblock %}
+    <!-- Chart.js pinned to an exact version. Must be the UMD build: the ESM build
+         (dist/chart.js) cannot be loaded with a classic script tag. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
     <!-- Universal timestamp loader -->
     <script>

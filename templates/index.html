@@ -228,20 +228,18 @@
         <div class="card mb-4 border-0 bg-light">
             <div class="card-body">
                 <h6 class="card-title mb-3">📈 Coverage Statistics</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-unstyled small">
-                            <li class="mb-2">✓ <strong>{{ total_cves|default('300,000+') }} CVE entries</strong> across {{ available_years|length }} years (1999-{{ current_year }})</li>
-                            <li class="mb-2"> <strong>{{ cvss_coverage|default('284,181') }} CVSS scored</strong> vulnerabilities</li>
-                            <li class="mb-2"> <strong>{{ kev_coverage|default('1,463') }} known exploited CVEs</strong> in the CISA KEV catalog</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-unstyled small">
-                            <li class="mb-2">✓ <strong>{{ cwe_coverage|default('206,053') }} CWE classified</strong> weaknesses</li>
-                            <li class="mb-2">✓ <strong>{{ cna_count|default('290') }} active CNAs</strong> with attribution data</li>
-                        </ul>
-                    </div>
+                <!-- Values come from the same homepage_summary.json the stat cards use,
+                     so this block can never disagree with the numbers above it. -->
+                <div class="coverage-grid">
+                    <ul class="coverage-list">
+                        <li>✓ <strong><span id="cov-total-cves">&mdash;</span> CVE entries</strong> across {{ available_years|length }} years (1999-{{ current_year }})</li>
+                        <li>✓ <strong><span id="cov-cvss">&mdash;</span> CVSS scores</strong> across 4 metric versions</li>
+                        <li>✓ <strong><span id="cov-kev">&mdash;</span> known exploited CVEs</strong> in the CISA KEV catalog</li>
+                    </ul>
+                    <ul class="coverage-list">
+                        <li>✓ <strong><span id="cov-cwe">&mdash;</span> CWE classified</strong> weaknesses</li>
+                        <li>✓ <strong><span id="cov-cna">&mdash;</span> active CNAs</strong> with attribution data</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -253,7 +251,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <ul class="list-unstyled small">
-                            <li class="mb-1">✓ <strong>Real-Time Analytics:</strong> 6-hour automated updates</li>
+                            <li class="mb-1">✓ <strong>Real-Time Analytics:</strong> Hourly automated updates</li>
                             <li class="mb-1">✓ <strong>Intelligence Dashboards:</strong> CNA, CVSS, CWE, Growth</li>
                         </ul>
                     </div>
@@ -533,6 +531,25 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('KEV global stats error:', error);
+        });
+
+    // Coverage Statistics in the About block - same source as the stat cards above,
+    // so the two can never drift apart (they previously disagreed: 1,463 vs 1,716).
+    homepageSummaryPromise
+        .then(summary => {
+            const put = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = Number(value || 0).toLocaleString();
+            };
+            const years = (summary.yearly_summary || {}).years || {};
+            put('cov-total-cves', Object.values(years).reduce((sum, y) => sum + (y.total_cves || 0), 0));
+            put('cov-cvss', (summary.cvss_analysis || {}).total_scores_all_versions);
+            put('cov-kev',  (summary.cvss_analysis || {}).kev_global_count);
+            put('cov-cwe',  (summary.cwe_analysis  || {}).total_cves_with_cwe);
+            put('cov-cna',  (summary.cna_analysis  || {}).active_cnas);
+        })
+        .catch(error => {
+            console.error('Coverage statistics error:', error);
         });
 
     // Initialize Threat Intelligence cards

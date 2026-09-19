@@ -5,12 +5,19 @@ on:
   push:
     branches: [ main ]
   
-  # Run every 3 hours
+  # Run hourly. Offset from :00 because scheduled workflows on the hour sit in
+  # the most contended slot on GitHub Actions and are frequently delayed or dropped.
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '25 * * * *'
   
   # Allow manual triggering
   workflow_dispatch:
+
+# A run commits to main and pushes. At hourly cadence a slow run could still be
+# in flight when the next fires, so serialise rather than race the push.
+concurrency:
+  group: build-and-deploy
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -80,5 +87,5 @@ jobs:
         git config --local user.name "GitHub Action"
         git checkout main
         git add web/
-        git diff --staged --quiet || git commit -m "Auto-update CVE data $(date -u +%Y-%m-%d)"
+        git diff --staged --quiet || git commit -m "Auto-update CVE data $(date -u +%Y-%m-%dT%H:%MZ)"
         git push

@@ -843,6 +843,9 @@ class CVESiteBuilder:
             "cvss_analysis": {
                 "score_distribution": cvss_analysis_raw.get("score_distribution", {}),
                 "kev_global_count": cvss_analysis_raw.get("kev_global_count", 0),
+                # Sum across CVSS versions, so a CVE scored under both v3.1 and v4.0
+                # counts twice. This is a count of scores, not of distinct CVEs.
+                "total_scores_all_versions": cvss_analysis_raw.get("total_cves_with_cvss", 0),
             },
             "epss_analysis": {
                 "statistics": epss_analysis_raw.get("statistics", {}),
@@ -855,9 +858,13 @@ class CVESiteBuilder:
             },
             "cwe_analysis": {
                 "top_cwes": cwe_analysis_raw.get("top_cwes", [])[:10],
+                "total_cves_with_cwe": cwe_analysis_raw.get("total_cves_with_cwe", 0),
+                "total_unique_cwes": cwe_analysis_raw.get("total_unique_cwes", 0),
             },
             "cna_analysis": {
                 "cna_list": cna_analysis_raw.get("cna_list", [])[:25],
+                "total_cnas": cna_analysis_raw.get("total_cnas", 0),
+                "active_cnas": cna_analysis_raw.get("active_cnas", 0),
             },
             "cpe_analysis": {
                 "top_cpes": cpe_analysis_raw.get("top_cpes", [])[:25],

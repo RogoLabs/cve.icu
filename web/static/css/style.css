@@ -2291,3 +2291,28 @@ tbody tr:hover {
     }
 
 }
+
+/* ---------------------------------------------------------------------------
+   Utility classes used by templates. These were previously referenced in markup
+   (.row, .col-md-6, .d-flex, .text-white ...) but never defined, and Bootstrap
+   is not loaded - so the layouts that depended on them silently collapsed.
+   Defined here explicitly rather than pulling in a framework for eleven rules.
+   --------------------------------------------------------------------------- */
+.coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--spacing-md) var(--spacing-xl);
+}
+.coverage-list { list-style: none; margin: 0; padding: 0; }
+.coverage-list li { margin-bottom: var(--spacing-sm); font-size: 0.9rem; }
+.coverage-list li:last-child { margin-bottom: 0; }
+
+.d-flex { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+.text-white { color: #fff; }
+.border-0 { border: 0; }
+.small { font-size: 0.875rem; }
+.text-decoration-none { text-decoration: none; }
+.list-unstyled { list-style: none; padding-left: 0; }
+.my-2 { margin-top: var(--spacing-sm); margin-bottom: var(--spacing-sm); }

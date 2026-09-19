@@ -1060,8 +1060,10 @@ class CVEV5Processor:
             "market_concentration": enhanced_stats.get("market_concentration", 0),
             "median_years_active": enhanced_stats.get("median_years_active", 0),
             "type_distribution": enhanced_stats.get("type_distribution", []),
+            # NOTE: a "cna_assigners" alias used to be emitted here holding the exact
+            # same list. It cost ~270K per file and nothing read it - the CNA pages use
+            # cna_list, and years.html reads cna_assigners from the per-year files.
             "cna_list": cna_list,
-            "cna_assigners": cna_list,  # For backward compatibility
         }
 
         # Save comprehensive analysis
@@ -1281,8 +1283,10 @@ class CVEV5Processor:
             "inactive_cnas": 0,
             "official_cnas": len(current_year_cnas),  # All are official
             "unofficial_cnas": 0,  # None are unofficial
+            # NOTE: a "cna_assigners" alias used to be emitted here holding the exact
+            # same list. It cost ~270K per file and nothing read it - the CNA pages use
+            # cna_list, and years.html reads cna_assigners from the per-year files.
             "cna_list": current_year_cnas,
-            "cna_assigners": current_year_cnas,  # For backward compatibility
         }
 
         # Save current year analysis

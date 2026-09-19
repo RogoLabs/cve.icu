@@ -71,7 +71,13 @@ class CVEDataDownloader:
         self.nvd_url: str = "https://nvd.handsonhacking.org/nvd.json"
         self.cache_file: Path = self.cache_dir / "nvd.json"
         self.cache_info_file: Path = self.cache_dir / "cache_info.json"
-        self.cache_duration: timedelta = timedelta(hours=4)  # Cache for 4 hours to match build schedule
+        # Must stay below the build interval or runs re-use the cache and fetch
+        # nothing. Build is hourly, so this expires comfortably inside the hour.
+        self.cache_duration: timedelta = timedelta(minutes=50)
+        # EPSS republishes once a day and KEV a few times a week; re-fetching
+        # either every hour is wasted traffic against FIRST and CISA.
+        self.epss_cache_duration: timedelta = timedelta(hours=6)
+        self.kev_cache_duration: timedelta = timedelta(hours=6)
 
         # Producer-published manifest describing the snapshot behind nvd.json.
         # Small (~2KB), no-cache, and written *after* the data object, so a
@@ -629,7 +635,7 @@ class CVEDataDownloader:
         if self.epss_cache_file.exists() and not force:
             # Basic age check: reuse if within cache_duration
             mtime = datetime.fromtimestamp(self.epss_cache_file.stat().st_mtime)
-            if datetime.now() - mtime < self.cache_duration:
+            if datetime.now() - mtime < self.epss_cache_duration:
                 if not self.quiet:
                     logger.info("✅ Using cached EPSS data")
                 return self.epss_cache_file
@@ -727,7 +733,7 @@ class CVEDataDownloader:
         if self.kev_cache_file.exists() and not force:
             # Basic age check similar to NVD cache
             mtime = datetime.fromtimestamp(self.kev_cache_file.stat().st_mtime)
-            if datetime.now() - mtime < self.cache_duration:
+            if datetime.now() - mtime < self.kev_cache_duration:
                 if not self.quiet:
                     logger.info("✅ Using cached KEV data")
                 return self.kev_cache_file
