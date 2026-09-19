@@ -39,7 +39,7 @@ CVE.page(async () => {
   el('#vsel').innerHTML = versions.map(v =>
     `<button data-v="${v}" class="${v === ver ? 'on' : ''}">${v}</button>`).join('');
 
-  chart.hbars('#versions', versions.map(v => ({ label: v, value: d.total_by_version[v] })));
+  chart.hbars('#versions', versions.map(v => ({ label: v, value: d.total_by_version[v] })), { name: 'cve-icu-cvss-by-version' });
 
   const temporal = d.temporal_data || {};
   const tYears = Object.keys(temporal).sort();
@@ -49,7 +49,7 @@ CVE.page(async () => {
       value: typeof temporal[y] === 'number' ? temporal[y]
         : (temporal[y].total || temporal[y].count || 0),
       current: +y === YR
-    })), { ticks: [tYears[0], tYears[tYears.length - 1]] });
+    })), { ticks: [tYears[0], tYears[tYears.length - 1]] , name: 'cve-icu-cvss-scored-per-year' });
   } else {
     el('#by-year').innerHTML = '<div class="empty">No per-year breakdown in this dataset.</div>';
   }
@@ -76,13 +76,13 @@ CVE.page(async () => {
 
     el('#sev-ver').textContent = ver;
     el('#dist-ver').textContent = ver;
-    if (sevRows.length) chart.hbars('#sev', sevRows);
+    if (sevRows.length) chart.hbars('#sev', sevRows, { name: 'cve-icu-cvss-severity' });
     else el('#sev').innerHTML = '<div class="empty">No severity bands recorded for ' + ver + '.</div>';
 
     const keys = Object.keys(bins).sort((a, b) => parseFloat(a) - parseFloat(b));
     if (keys.length) {
       chart.bars('#dist', keys.map(k => ({ label: k, value: bins[k] })),
-        { tall: true, ticks: [keys[0], keys[keys.length - 1]] });
+        { tall: true, ticks: [keys[0], keys[keys.length - 1]] , name: 'cve-icu-cvss-score-distribution' });
     } else {
       el('#dist').innerHTML = '<div class="empty">No score distribution for ' + ver + '.</div>';
     }

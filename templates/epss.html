@@ -49,7 +49,7 @@ CVE.page(async (S) => {
     high: 'High', very_high: 'Very high', critical: 'Critical'
   };
   chart.hbars('#buckets', Object.entries(d.score_buckets || {})
-    .map(([k, v]) => ({ label: labels[k] || k, value: v })));
+    .map(([k, v]) => ({ label: labels[k] || k, value: v })), { name: 'cve-icu-epss-bands' });
 
   chart.hbars('#thresholds', [
     { label: '> 0.1', value: st.gt_0_1 || 0 },
@@ -57,13 +57,13 @@ CVE.page(async (S) => {
     { label: '> 0.5', value: st.gt_0_5 || 0 },
     { label: '> 0.7', value: st.gt_0_7 || 0 },
     { label: '> 0.9', value: st.gt_0_9 || 0 }
-  ]);
+  ], { name: 'cve-icu-epss-thresholds' });
 
   const cov = d.year_coverage || {};
   const years = Object.keys(cov).sort();
   chart.bars('#coverage', years.map(y => ({
     label: y, value: cov[y].with_epss || 0, current: +y === YR
-  })), { ticks: [years[0], years[years.length - 1]] });
+  })), { ticks: [years[0], years[years.length - 1]] , name: 'cve-icu-epss-coverage-per-year' });
 
   table('#high-table', (d.high_risk_cves || []).slice(0, 50).map(c => ({
     cve: c.cve_id,
@@ -73,7 +73,7 @@ CVE.page(async (S) => {
     { key: 'cve', label: 'CVE' },
     { key: 'score', label: 'EPSS score', num: true, fmt: v => (+v).toFixed(5) },
     { key: 'pct', label: 'Percentile', num: true, fmt: v => (v * 100).toFixed(3) + '%' }
-  ], { sort: { key: 'score', dir: -1 } });
+  ], { sort: { key: 'score', dir: -1 } }, { name: 'cve-icu-epss-highest-scoring' });
 });
 </script>
 {% endblock %}

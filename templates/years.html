@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 {% set nav = 'years' %}
 {% block title %}CVEs by year &mdash; CVE.ICU{% endblock %}
-{% block description %}How many CVEs were published each year from 1999 to {{ current_year }}.{% endblock %}
+{% block description %}How many CVEs were published each year from 1999 to {{ current_year }}. Compare any set of years.{% endblock %}
 
 {% block content %}
 <div class="ph">
   <h1>CVEs by year</h1>
   <span class="note">1999&ndash;{{ current_year }}</span>
+  <span style="margin-left:auto" class="ph-actions">
+    <button class="exp-btn" id="share">Share link</button>
+    <button class="exp-btn" id="print">Print</button>
+  </span>
 </div>
-<p class="lede">Every year on record, and what one year contains. {{ current_year }} is still
-in progress, so its bar keeps growing.</p>
+<p class="lede">Select any set of years to compare. {{ current_year }} is still in progress,
+so its bar keeps growing.</p>
 
+<div class="grid g4" id="tiles"></div>
+
+<h2>Select years <span class="side" id="sel-note"></span></h2>
 <div class="panel">
-  <div class="panel-h">CVEs published each year <span class="side">click a bar to inspect a year</span></div>
-  <div class="panel-b"><div id="chart-years"></div></div>
+  <div class="panel-b">
+    <div class="chips" id="quick" style="margin-bottom:10px">
+      <button class="chip" data-q="recent5">Recent 5 years</button>
+      <button class="chip" data-q="2020s">2020s</button>
+      <button class="chip" data-q="2010s">2010s</button>
+      <button class="chip" data-q="2000s">2000s</button>
+      <button class="chip" data-q="all">All years</button>
+      <button class="chip" data-q="clear">Clear</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
 </div>
 
-<h2>Pick a year</h2>
-<div class="chips" id="chips"></div>
+<h2>CVEs published each year <span class="side">selected years highlighted</span></h2>
+<div class="panel"><div class="panel-b"><div id="chart-years"></div></div></div>
 
-<div id="year-detail" style="margin-top:18px"></div>
+<div id="compare"></div>
+<div id="year-detail"></div>
 
 <h2>All years</h2>
 <div class="panel"><div id="year-table"></div></div>
@@ -28,91 +45,183 @@ in progress, so its bar keeps growing.</p>
 {% block scripts %}
 <script>
 CVE.page(async (S) => {
-  const { fmt, chart, el, table } = CVE;
+  const { fmt, chart, el, table, url } = CVE;
   const YR = {{ current_year }};
   const full = await CVE.json('yearly_summary.json');
   const years = Object.values(full.years).sort((a, b) => a.year - b.year);
-  let selected = YR;
+  const allYears = years.map(y => y.year);
+  const grandTotal = years.reduce((s, y) => s + y.total_cves, 0);
 
-  chart.bars('#chart-years', years.map(y => ({
-    label: String(y.year), value: y.total_cves, current: y.year === YR
-  })), { tall: true, ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String) });
+  const fromUrl = (url.get('years') || '').split(',').map(Number).filter(n => allYears.includes(n));
+  let selected = new Set(fromUrl.length ? fromUrl : [YR]);
 
-  el('#chips').innerHTML = years.map(y =>
-    `<button class="chip ${y.year === YR ? 'on' : ''}" data-y="${y.year}">${y.year}</button>`).join('');
+  const daysInYear = y => y === YR
+    ? Math.max(1, Math.round((Date.now() - new Date(YR, 0, 1)) / 864e5))
+    : ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
 
-  function detail(yr) {
-    const y = years.find(x => x.year === yr);
-    if (!y) return;
-    const months = y.date_data && y.date_data.monthly_distribution || {};
-    const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const monthly = mNames.map((m, i) => ({ label: m, value: months[String(i + 1)] || 0 }));
-    const cvssTotals = Object.entries(y.cvss || {})
-      .map(([v, d]) => ({ label: v, value: d.total || 0 })).filter(x => x.value);
-    const vendors = ((y.vendors || {}).cpe_vendors || []).slice(0, 8)
-      .map(v => ({ label: v.name, value: v.count }));
-    const cwes = ((y.cwe || {}).top_cwes || []).slice(0, 8)
-      .map(c => ({ label: c.cwe, value: c.count }));
-    const status = ((y.metadata || {}).vulnerability_status || [])
-      .map(s => ({ label: s.status, value: s.count }));
-    const prev = years.find(x => x.year === yr - 1);
-    const kevN = (y.kev || {}).kev_count || 0;
+  /* ---------------- selection-aware metrics ---------------- */
+  function tiles() {
+    const sel = [...selected].sort((a, b) => a - b);
+    const picked = years.filter(y => selected.has(y.year));
+    const sum = picked.reduce((s, y) => s + y.total_cves, 0);
+    const days = sel.reduce((s, y) => s + daysInYear(y), 0);
+    const kev = picked.reduce((s, y) => s + ((y.kev || {}).kev_count || 0), 0);
 
-    el('#year-detail').innerHTML = `
-      <div class="grid g3">
-        <div class="c"><div class="lbl">Published in ${yr}</div>
-          <div class="v">${fmt.n(y.total_cves)}</div>
-          <div class="sub">${prev ? `<b>${fmt.pct((y.total_cves / prev.total_cves - 1) * 100)}</b> vs ${yr - 1}`
-            : 'first year on record'}</div></div>
-        <div class="c"><div class="lbl">Average per day</div>
-          <div class="v">${fmt.n(Math.round(y.total_cves / (yr === YR
-            ? Math.max(1, Math.round((Date.now() - new Date(YR,0,1)) / 864e5)) : 365)))}</div>
-          <div class="sub">${yr === YR ? 'year to date' : 'across the full year'}</div></div>
-        <div class="c"><div class="lbl">In the KEV catalog</div>
-          <div class="v">${fmt.n(kevN)}</div>
-          <div class="sub"><b>${fmt.share(kevN, y.total_cves, 2)}</b> of ${yr}</div></div>
+    el('#tiles').innerHTML = [
+      { lbl: 'Years selected', v: fmt.n(sel.length),
+        sub: sel.length ? (sel.length > 6
+          ? `${sel[0]}&ndash;${sel[sel.length - 1]}`
+          : sel.join(', ')) : 'none selected' },
+      { lbl: 'CVEs in selection', v: fmt.n(sum),
+        sub: `<b>${fmt.share(sum, grandTotal)}</b> of all ${fmt.compact(grandTotal)}` },
+      { lbl: 'Average per day', v: fmt.n(days ? Math.round(sum / days) : 0),
+        sub: `across <b>${fmt.n(days)}</b> days` },
+      { lbl: 'In the KEV catalog', v: fmt.n(kev),
+        sub: `<b>${fmt.share(kev, sum, 2)}</b> of the selection` }
+    ].map(t => `<div class="c"><div class="lbl">${t.lbl}</div>
+        <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+    el('#sel-note').textContent = sel.length === 1
+      ? `${sel[0]} selected` : `${sel.length} years selected`;
+  }
+
+  /* ---------------- chips ---------------- */
+  function chips() {
+    el('#chips').innerHTML = allYears.map(y =>
+      `<button class="chip ${selected.has(y) ? 'on' : ''}" data-y="${y}"
+        aria-pressed="${selected.has(y)}">${y}</button>`).join('');
+  }
+
+  /* ---------------- main chart ---------------- */
+  function mainChart() {
+    chart.bars('#chart-years', years.map(y => ({
+      label: String(y.year), value: y.total_cves, current: selected.has(y.year)
+    })), {
+      tall: true, name: 'cve-icu-cves-by-year', label: 'CVEs published each year',
+      ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String),
+      onSelect: key => { toggle(+key); }
+    });
+  }
+
+  /* ---------------- comparison across the selection ---------------- */
+  function compare() {
+    const sel = [...selected].sort((a, b) => a - b);
+    const host = el('#compare');
+    if (sel.length < 2) { host.innerHTML = ''; return; }
+    const picked = years.filter(y => selected.has(y.year));
+    host.innerHTML = `
+      <h2>Comparing ${sel.length} years</h2>
+      <div class="cols c2">
+        <div class="panel"><div class="panel-h">CVEs per selected year</div>
+          <div class="panel-b"><div id="cmp-total"></div></div></div>
+        <div class="panel"><div class="panel-h">Average per day <span class="side">normalises for ${YR} being partial</span></div>
+          <div class="panel-b"><div id="cmp-rate"></div></div></div>
       </div>
-      <div class="cols c2" style="margin-top:10px">
+      <div class="panel" style="margin-top:10px">
+        <div class="panel-h">By month, selected years overlaid</div>
+        <div class="panel-b"><div id="cmp-month"></div></div></div>`;
+
+    chart.hbars('#cmp-total', picked.map(y => ({ label: String(y.year), value: y.total_cves })),
+      { name: 'cve-icu-selected-years-total', label: 'CVEs per selected year' });
+    chart.hbars('#cmp-rate', picked.map(y => ({
+      label: String(y.year), value: Math.round(y.total_cves / daysInYear(y.year))
+    })), { name: 'cve-icu-selected-years-per-day', label: 'Average CVEs per day' });
+
+    const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthRows = mNames.map((m, i) => {
+      const row = { month: m };
+      picked.forEach(y => {
+        row[y.year] = ((y.date_data || {}).monthly_distribution || {})[String(i + 1)] || 0;
+      });
+      return row;
+    });
+    table('#cmp-month', monthRows,
+      [{ key: 'month', label: 'Month' },
+       ...picked.map(y => ({ key: String(y.year), label: String(y.year), num: true, bar: true }))],
+      { sort: { key: 'month', dir: 1 }, name: 'cve-icu-selected-years-by-month' });
+  }
+
+  /* ---------------- single-year detail ---------------- */
+  function detail() {
+    const sel = [...selected];
+    const host = el('#year-detail');
+    if (sel.length !== 1) { host.innerHTML = ''; return; }
+    const yr = sel[0];
+    const y = years.find(x => x.year === yr);
+    if (!y) { host.innerHTML = ''; return; }
+
+    const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = (y.date_data || {}).monthly_distribution || {};
+    const prev = years.find(x => x.year === yr - 1);
+
+    host.innerHTML = `
+      <h2>${yr} in detail</h2>
+      <div class="cols c2">
         <div class="panel"><div class="panel-h">By month <span class="side">${yr}</span></div>
           <div class="panel-b"><div id="d-month"></div></div></div>
-        <div class="panel"><div class="panel-h">CVSS scores by version <span class="side">a CVE may hold more than one</span></div>
+        <div class="panel"><div class="panel-h">CVSS scores by version
+          <span class="side">a CVE may hold more than one</span></div>
           <div class="panel-b"><div id="d-cvss"></div></div></div>
       </div>
       <div class="cols" style="margin-top:10px">
         <div class="panel"><div class="panel-h">Top vendors</div><div class="rows" id="d-vendor"></div></div>
         <div class="panel"><div class="panel-h">Top weaknesses</div><div class="rows" id="d-cwe"></div></div>
         <div class="panel"><div class="panel-h">NVD record status</div><div class="rows" id="d-status"></div></div>
+      </div>
+      <div class="cols c2" style="margin-top:10px">
+        <div class="panel"><div class="panel-h">Reference types
+          <span class="side">how sources are tagged</span></div>
+          <div class="panel-b"><div id="d-refs"></div></div></div>
+        <div class="panel"><div class="panel-h">${yr} against ${yr - 1}</div>
+          <div class="panel-b" id="d-vs" style="font-size:13.5px;line-height:1.7"></div></div>
       </div>`;
 
-    chart.bars('#d-month', monthly.map(m => ({ ...m, current: false })),
-      { ticks: ['Jan', 'Dec'] });
-    chart.hbars('#d-cvss', cvssTotals);
-    chart.rank('#d-vendor', vendors, { compact: true });
-    chart.rank('#d-cwe', cwes, { compact: true });
-    chart.rank('#d-status', status, { compact: true });
-  }
-  detail(selected);
+    chart.bars('#d-month', mNames.map((m, i) => ({ label: m, value: months[String(i + 1)] || 0 })),
+      { ticks: ['Jan', 'Dec'], name: `cve-icu-${yr}-by-month`, label: `${yr} CVEs by month` });
 
-  function select(yr) {
-    selected = yr;
-    CVE.all('#chips .chip').forEach(c => c.classList.toggle('on', +c.dataset.y === yr));
-    detail(yr);
-    el('#year-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-  el('#chips').addEventListener('click', e => {
-    const c = e.target.closest('.chip'); if (c) select(+c.dataset.y);
-  });
-  el('#chart-years').addEventListener('click', e => {
-    const b = e.target.closest('.b'); if (!b) return;
-    select(+b.dataset.t.split(':')[0]);
-  });
+    chart.hbars('#d-cvss', Object.entries(y.cvss || {})
+      .map(([v, d]) => ({ label: v, value: d.total || 0 })).filter(x => x.value),
+      { name: `cve-icu-${yr}-cvss-versions`, label: `${yr} CVSS scores by version` });
 
+    chart.rank('#d-vendor', ((y.vendors || {}).cpe_vendors || []).slice(0, 8)
+      .map(v => ({ label: v.name, value: v.count })), { compact: true, name: `cve-icu-${yr}-vendors` });
+    chart.rank('#d-cwe', ((y.cwe || {}).top_cwes || []).slice(0, 8)
+      .map(c => ({ label: c.cwe, value: c.count })), { compact: true, name: `cve-icu-${yr}-weaknesses` });
+    chart.rank('#d-status', ((y.metadata || {}).vulnerability_status || [])
+      .map(s => ({ label: s.status, value: s.count })), { compact: true, name: `cve-icu-${yr}-status` });
+
+    const refs = ((y.metadata || {}).reference_tags || []).slice(0, 8)
+      .map(r => ({ label: r.tag, value: r.count }));
+    if (refs.length) {
+      chart.hbars('#d-refs', refs, { compact: true, name: `cve-icu-${yr}-reference-types`,
+        label: `${yr} reference types` });
+    } else {
+      el('#d-refs').innerHTML = '<div class="empty">No reference tags recorded for ' + yr + '.</div>';
+    }
+
+    const kevN = (y.kev || {}).kev_count || 0;
+    el('#d-vs').innerHTML = prev ? `
+      <div class="kvline"><span>CVEs</span><b>${fmt.n(y.total_cves)}</b>
+        <span class="faint">vs ${fmt.n(prev.total_cves)}</span>
+        <span style="color:var(--${y.total_cves >= prev.total_cves ? 'live' : 'hot'})">
+        ${fmt.pct((y.total_cves / prev.total_cves - 1) * 100)}</span></div>
+      <div class="kvline"><span>Per day</span><b>${fmt.n(Math.round(y.total_cves / daysInYear(yr)))}</b>
+        <span class="faint">vs ${fmt.n(Math.round(prev.total_cves / daysInYear(yr - 1)))}</span></div>
+      <div class="kvline"><span>In KEV</span><b>${fmt.n(kevN)}</b>
+        <span class="faint">vs ${fmt.n((prev.kev || {}).kev_count || 0)}</span></div>
+      ${yr === YR ? '<p class="faint" style="margin-top:9px">' + yr +
+        ' is a partial year, so the per-day figure is the fair comparison.</p>' : ''}`
+      : '<span class="faint">No prior year on record.</span>';
+  }
+
+  /* ---------------- table ---------------- */
   let run = 0;
   const rows = years.map(y => {
     run += y.total_cves;
     const prev = years.find(x => x.year === y.year - 1);
     return {
       year: y.year, cves: y.total_cves,
+      perday: Math.round(y.total_cves / daysInYear(y.year)),
       change: prev ? +((y.total_cves / prev.total_cves - 1) * 100).toFixed(1) : null,
       kev: (y.kev || {}).kev_count || 0,
       running: run
@@ -122,12 +231,42 @@ CVE.page(async (S) => {
   table('#year-table', rows, [
     { key: 'year', label: 'Year', num: true, raw: true },
     { key: 'cves', label: 'CVEs', num: true, bar: true },
+    { key: 'perday', label: 'Per day', num: true },
     { key: 'change', label: 'vs prior year', num: true,
       fmt: v => v == null ? '<span class="faint">&mdash;</span>'
         : `<span style="color:var(--${v > 0 ? 'live' : 'hot'})">${fmt.pct(v)}</span>` },
     { key: 'kev', label: 'In KEV', num: true },
     { key: 'running', label: 'Running total', num: true }
-  ], { sort: { key: 'year', dir: -1 } });
+  ], { sort: { key: 'year', dir: -1 }, name: 'cve-icu-all-years' });
+
+  /* ---------------- wiring ---------------- */
+  function render() {
+    tiles(); chips(); mainChart(); compare(); detail();
+    url.set({ years: [...selected].sort((a, b) => a - b).join(',') || null });
+  }
+  function toggle(y) {
+    if (selected.has(y)) selected.delete(y); else selected.add(y);
+    render();
+  }
+  render();
+
+  el('#chips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (c) toggle(+c.dataset.y);
+  });
+  el('#quick').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    const q = b.dataset.q;
+    if (q === 'clear') selected = new Set();
+    else if (q === 'all') selected = new Set(allYears);
+    else if (q === 'recent5') selected = new Set(allYears.slice(-5));
+    else {
+      const decade = parseInt(q, 10);
+      selected = new Set(allYears.filter(y => y >= decade && y < decade + 10));
+    }
+    render();
+  });
+  el('#share').addEventListener('click', () => url.share(el('#share')));
+  el('#print').addEventListener('click', () => window.print());
 });
 </script>
 {% endblock %}

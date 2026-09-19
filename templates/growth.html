@@ -58,12 +58,12 @@ CVE.page(async (S) => {
   chart.bars('#chart-growth', withPrev.map(d => ({
     label: String(d.year), value: Math.abs(d.growth_rate || 0),
     current: d.year === YR, alt: (d.growth_rate || 0) < 0
-  })), { tall: true, ticks: ['2000', String(YR)] });
+  })), { tall: true, ticks: ['2000', String(YR)] , name: 'cve-icu-yearly-change' });
 
   chart.bars('#chart-abs', withPrev.map(d => ({
     label: String(d.year), value: Math.abs(d.growth_absolute || 0),
     current: d.year === YR, alt: (d.growth_absolute || 0) < 0
-  })), { ticks: ['2000', String(YR)] });
+  })), { ticks: ['2000', String(YR)] , name: 'cve-icu-yearly-change-absolute' });
 
   table('#growth-table', data.slice().reverse().map(d => ({
     year: d.year, cves: d.cves,
@@ -79,7 +79,7 @@ CVE.page(async (S) => {
     { key: 'abs', label: 'CVEs added', num: true,
       fmt: v => v == null ? '&mdash;' : (v > 0 ? '+' : '') + fmt.n(v) },
     { key: 'partial', label: '', fmt: v => v ? `<span class="pill warn">${v}</span>` : '' }
-  ], { sort: { key: 'year', dir: -1 } });
+  ], { sort: { key: 'year', dir: -1 } }, { name: 'cve-icu-growth-by-year' });
 });
 </script>
 {% endblock %}

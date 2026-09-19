@@ -63,14 +63,14 @@ CVE.page(async (S) => {
         <div class="sub">${t.sub}</div></div>`).join('');
 
     el('#heat-year').textContent = year;
-    chart.heat('#heat', days);
+    chart.heat('#heat', days, { name: 'cve-icu-daily-heatmap' });
 
     chart.bars('#chart-days', days.map(d => ({
       label: d.date, value: d.value || 0
-    })), { tall: true, ticks: days.length ? [fmt.day(days[0].date), fmt.day(days[days.length - 1].date)] : [] });
+    })), { tall: true, ticks: days.length ? [fmt.day(days[0].date), fmt.day(days[days.length - 1].date)] : [] , name: 'cve-icu-daily-counts' });
 
     chart.rank('#busiest', days.slice().sort((a, b) => b.value - a.value).slice(0, 10)
-      .map(d => ({ label: fmt.day(d.date), sub: d.date, value: d.value })));
+      .map(d => ({ label: fmt.day(d.date), sub: d.date, value: d.value })), { name: 'cve-icu-busiest-days' });
   }
   render();
 

@@ -58,23 +58,23 @@ CVE.page(async () => {
   const added = d.by_year_added || {}, addedY = Object.keys(added).sort();
   chart.bars('#by-added', addedY.map(y => ({
     label: y, value: added[y], current: +y === YR
-  })), { ticks: [addedY[0], addedY[addedY.length - 1]] });
+  })), { ticks: [addedY[0], addedY[addedY.length - 1]] , name: 'cve-icu-kev-by-year-added' });
 
   const pub = d.by_year_published || {}, pubY = Object.keys(pub).sort();
   chart.bars('#by-pub', pubY.map(y => ({
     label: y, value: pub[y], current: +y === YR
-  })), { ticks: [pubY[0], pubY[pubY.length - 1]] });
+  })), { ticks: [pubY[0], pubY[pubY.length - 1]] , name: 'cve-icu-kev-by-year-published' });
 
   const tl = d.timeline || {}, months = Object.keys(tl).sort();
   chart.bars('#timeline', months.map(m => ({ label: m, value: tl[m] })),
-    { tall: true, ticks: [months[0], months[months.length - 1]] });
+    { tall: true, ticks: [months[0], months[months.length - 1]] , name: 'cve-icu-kev-additions-per-month' });
 
   // these arrive as [name, count] pairs
   const pairs = a => (a || []).map(x => Array.isArray(x)
     ? { label: x[0], value: x[1] } : { label: x.name || x.vendor || x.product, value: x.count });
-  chart.rank('#vendors', pairs(d.top_vendors).slice(0, 10));
-  chart.rank('#products', pairs(d.top_products).slice(0, 10));
-  chart.rank('#cwes', pairs(d.top_cwes).slice(0, 10));
+  chart.rank('#vendors', pairs(d.top_vendors).slice(0, 10), { name: 'cve-icu-kev-vendors' });
+  chart.rank('#products', pairs(d.top_products).slice(0, 10), { name: 'cve-icu-kev-products' });
+  chart.rank('#cwes', pairs(d.top_cwes).slice(0, 10), { name: 'cve-icu-kev-weaknesses' });
 
   table('#recent-table', (d.recent_additions || []).map(r => ({
     cve: r.cve_id, vendor: r.vendor, product: r.product,
@@ -88,7 +88,7 @@ CVE.page(async () => {
     { key: 'ransomware', label: 'Ransomware',
       fmt: v => v && v !== 'Unknown' ? `<span class="pill warn">${CVE.esc(v)}</span>`
         : `<span class="faint">${CVE.esc(v || '—')}</span>` }
-  ], { sort: { key: 'added', dir: -1 } });
+  ], { sort: { key: 'added', dir: -1 } }, { name: 'cve-icu-kev-recent-additions' });
 });
 </script>
 {% endblock %}

@@ -30,8 +30,20 @@ names line up with the official registry.</p>
   <div class="panel"><div class="panel-h">Status</div><div class="rows" id="status"></div></div>
 </div>
 
-<h2>Every publisher</h2>
-<div class="panel"><div id="cna-table"></div></div>
+<h2>Every publisher <span class="side" id="filter-count"></span></h2>
+<div class="panel">
+  <div class="panel-h" style="gap:12px;flex-wrap:wrap">
+    <label class="fl">Status
+      <select id="f-status"><option value="">Any</option></select></label>
+    <label class="fl">Type
+      <select id="f-type"><option value="">Any</option></select></label>
+    <label class="fl">Name
+      <input id="f-name" type="search" placeholder="filter&hellip;" autocomplete="off"></label>
+    <button class="exp-btn" id="f-reset">Reset</button>
+    <span class="side" id="f-note"></span>
+  </div>
+  <div id="cna-table"></div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -65,7 +77,7 @@ CVE.page(async () => {
         <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
 
     chart.hbars('#chart-cna', ranked.slice(0, 15).filter(c => val(c) > 0)
-      .map(c => ({ label: c.name, value: val(c) })));
+      .map(c => ({ label: c.name, value: val(c) })), { name: 'cve-icu-publishers' });
     el('#scope-side').textContent = scope === 'year' ? `in ${YR}` : 'all time';
 
     const byFirst = {};
@@ -73,15 +85,38 @@ CVE.page(async () => {
     const firstYears = Object.keys(byFirst).sort();
     chart.bars('#chart-first', firstYears.map(y => ({
       label: y, value: byFirst[y], current: +y === YR
-    })), { ticks: [firstYears[0], firstYears[firstYears.length - 1]] });
+    })), { ticks: [firstYears[0], firstYears[firstYears.length - 1]] , name: 'cve-icu-publishers-by-first-year' });
 
     const byStatus = {};
     list.forEach(c => { const s = c.activity_status || 'Unknown';
       byStatus[s] = (byStatus[s] || 0) + 1; });
     chart.rank('#status', Object.entries(byStatus)
-      .map(([k, v]) => ({ label: k, value: v })).sort((a, b) => b.value - a.value));
+      .map(([k, v]) => ({ label: k, value: v })).sort((a, b) => b.value - a.value), { name: 'cve-icu-publisher-status' });
 
-    table('#cna-table', list.map(c => ({
+    const statuses = [...new Set(list.map(c => c.activity_status).filter(Boolean))].sort();
+    const types = [...new Set(list.flatMap(c => c.cna_types || []).filter(Boolean))].sort();
+    const fill = (sel, vals) => {
+      const e = el(sel), keep = e.value;
+      e.innerHTML = '<option value="">Any</option>' +
+        vals.map(v => `<option value="${CVE.esc(v)}">${CVE.esc(v)}</option>`).join('');
+      e.value = keep;
+    };
+    fill('#f-status', statuses);
+    fill('#f-type', types);
+
+    const fStatus = el('#f-status').value;
+    const fType = el('#f-type').value;
+    const fName = (el('#f-name').value || '').trim().toLowerCase();
+    const filtered = list.filter(c =>
+      (!fStatus || c.activity_status === fStatus) &&
+      (!fType || (c.cna_types || []).includes(fType)) &&
+      (!fName || c.name.toLowerCase().includes(fName)));
+
+    el('#filter-count').textContent = filtered.length === list.length
+      ? `all ${fmt.n(list.length)}` : `${fmt.n(filtered.length)} of ${fmt.n(list.length)}`;
+    el('#f-note').textContent = filtered.length === list.length ? '' : 'filtered';
+
+    table('#cna-table', filtered.map(c => ({
       name: c.name,
       year: yearCount(c),
       all: c.count,
@@ -102,6 +137,15 @@ CVE.page(async () => {
     ], { sort: { key: scope === 'year' ? 'year' : 'all', dir: -1 } });
   }
   render();
+
+  ['#f-status', '#f-type'].forEach(sel =>
+    el(sel).addEventListener('change', render));
+  let t;
+  el('#f-name').addEventListener('input', () => { clearTimeout(t); t = setTimeout(render, 160); });
+  el('#f-reset').addEventListener('click', () => {
+    el('#f-status').value = ''; el('#f-type').value = ''; el('#f-name').value = '';
+    render();
+  });
 
   el('#scope').addEventListener('click', e => {
     const b = e.target.closest('button[data-scope]'); if (!b) return;

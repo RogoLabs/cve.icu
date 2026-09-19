@@ -127,15 +127,15 @@ CVE.page(async (S) => {
     const cnas = (S.cna_analysis.cna_list || []).map(c => ({
       label: c.name, value: scope === 'year' ? (c.cves_by_year || {})[YR] || 0 : c.count
     })).sort((a, b) => b.value - a.value).slice(0, 8);
-    chart.rank('#top-cna', cnas, { compact: true });
+    chart.rank('#top-cna', cnas, { compact: true, name: 'cve-icu-top-publishers' });
     el('#side-cna').textContent = scope === 'year' ? `in ${YR}` : 'all time';
 
     chart.rank('#top-cwe', (S.cwe_analysis.top_cwes || []).slice(0, 8)
       .map(c => ({ label: c.description || c.name, sub: 'CWE-' + c.id, value: c.count })),
-      { compact: true });
+      { compact: true, name: 'cve-icu-top-weaknesses' });
 
     chart.rank('#top-cpe', (S.cpe_analysis.top_cpes || []).slice(0, 8)
-      .map(c => ({ label: c.product, sub: c.vendor, value: c.count })), { compact: true });
+      .map(c => ({ label: c.product, sub: c.vendor, value: c.count })), { compact: true, name: 'cve-icu-top-products' });
   }
 
   function render() { tiles(); breakdowns(); }
@@ -143,12 +143,14 @@ CVE.page(async (S) => {
 
   chart.bars('#chart-years', years.map(y => ({
     label: String(y.year), value: y.count, current: y.year === YR
-  })), { tall: true, ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String) });
+  })), { tall: true, ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String),
+       name: 'cve-icu-cves-by-year', label: 'CVEs published each year' });
 
   const recent = daily.slice(-90);
   chart.bars('#chart-days', recent.map(d => ({
     label: d.date, value: d.value || 0, current: d === recent[recent.length - 1]
-  })), { ticks: [fmt.day(recent[0] && recent[0].date), fmt.day(last.date)] });
+  })), { ticks: [fmt.day(recent[0] && recent[0].date), fmt.day(last.date)],
+       name: 'cve-icu-recent-days', label: 'CVEs published per day' });
   el('#days-side').textContent = recent.length
     ? `${fmt.day(recent[0].date)} – ${fmt.day(last.date)}` : '';
 

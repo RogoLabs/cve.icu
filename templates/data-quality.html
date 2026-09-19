@@ -56,7 +56,7 @@ CVE.page(async () => {
     { label: 'Normalised', value: s.normalized_matches || 0 },
     { label: 'Partial', value: s.partial_matches || 0 },
     { label: 'No match', value: s.unmatched || 0 }
-  ].filter(x => x.value));
+  ].filter(x => x.value), { name: 'cve-icu-name-match-types' });
 
   const soft = [
     ...(d.case_mismatches || []).map(x => ({ ...x, how: 'Case differs' })),
@@ -81,7 +81,7 @@ CVE.page(async () => {
       { key: 'how', label: 'Matched by', fmt: v => `<span class="pill">${CVE.esc(v)}</span>` },
       { key: 'confidence', label: 'Confidence',
         fmt: v => `<span class="pill ${v === 'high' ? 'live' : v === 'low' ? 'warn' : ''}">${CVE.esc(v)}</span>` }
-    ], { sort: { key: 'cves', dir: -1 } });
+    ], { sort: { key: 'cves', dir: -1 } }, { name: 'cve-icu-soft-matched-publishers' });
   } else {
     el('#soft-table').innerHTML = '<div class="empty">Every name matched exactly.</div>';
   }
@@ -107,7 +107,7 @@ CVE.page(async () => {
         fmt: v => `<span class="pill${v === 'historical' ? '' : ' live'}">${v}</span>` },
       { key: 'state', label: 'Status',
         fmt: v => `<span class="pill${v === 'over threshold' ? ' warn' : ''}">${CVE.esc(v)}</span>` }
-    ], { sort: { key: 'year', dir: -1 } });
+    ], { sort: { key: 'year', dir: -1 } }, { name: 'cve-icu-source-agreement-by-year' });
 
     const t = r.totals || {};
     el('#recon-note').insertAdjacentHTML('beforeend',
@@ -126,7 +126,7 @@ CVE.page(async () => {
     label: x.cna_name, value: x.cve_count || 0
   }));
   el('#n-un').textContent = un.length + ' publishers';
-  if (un.length) chart.rank('#unmatched', un.sort((a, b) => b.value - a.value));
+  if (un.length) chart.rank('#unmatched', un.sort((a, b) => b.value - a.value), { name: 'cve-icu-unmatched-publishers' });
   else el('#unmatched').innerHTML = '<div class="empty">Nothing unmatched.</div>';
 });
 </script>

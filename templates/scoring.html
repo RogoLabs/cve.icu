@@ -69,7 +69,7 @@ CVE.page(async (S) => {
     { label: 'With EPSS', value: epss.total_cves_with_epss || 0 },
     { label: 'CVSS scores*', value: cvss.total_cves_with_cvss || 0 },
     { label: 'In KEV', value: kevN }
-  ]);
+  ], { name: 'cve-icu-scoring-coverage' });
   el('#coverage').insertAdjacentHTML('beforeend',
     `<p class="faint" style="font-size:12px;margin-top:11px">
      *A CVE can hold a score under more than one CVSS version, so this counts scores, not CVEs.
@@ -77,7 +77,7 @@ CVE.page(async (S) => {
 
   const v31 = (cvss.severity_distribution || {})['v3.1'] || {};
   chart.hbars('#sev', ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'NONE']
-    .filter(k => v31[k]).map(k => ({ label: k, value: v31[k] })));
+    .filter(k => v31[k]).map(k => ({ label: k, value: v31[k] })), { name: 'cve-icu-cvss-severity-bands' });
 });
 </script>
 {% endblock %}

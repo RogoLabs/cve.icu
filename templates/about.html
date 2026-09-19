@@ -99,7 +99,7 @@ CVE.page(async (S) => {
     { key: 'who', label: 'Source' },
     { key: 'how', label: 'Used for' },
     { key: 'freq', label: 'Updated' }
-  ], { sort: { key: 'what', dir: 1 } });
+  ], { sort: { key: 'what', dir: 1 }, name: 'cve-icu-data-sources' });
 
   el('#fresh-tiles').innerHTML = [
     { lbl: 'Site data as of', v: `<span data-asof>&mdash;</span>`, sub: 'when this build ran' },

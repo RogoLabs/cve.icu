@@ -52,7 +52,7 @@ CVE.page(async () => {
 
   chart.rank('#top', list.slice().sort((a, b) => b.count - a.count).slice(0, 12)
     .map(c => ({ label: c.name, sub: `since ${c.first_cve_year || '?'}`, value: c.count })),
-    { compact: true });
+    { compact: true, name: 'cve-icu-largest-publishers' });
 });
 </script>
 {% endblock %}

@@ -38,7 +38,7 @@ CVE.page(async (S) => {
       <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
 
   chart.hbars('#chart-cwe', list.slice(0, 15)
-    .map(c => ({ label: 'CWE-' + c.id, value: c.count })), { compact: false });
+    .map(c => ({ label: 'CWE-' + c.id, value: c.count })), { compact: false , name: 'cve-icu-weakness-types' });
 
   table('#cwe-table', list.map(c => ({
     id: 'CWE-' + c.id, name: c.description || c.name, cves: c.count,

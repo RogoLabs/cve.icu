@@ -43,12 +43,12 @@ CVE.page(async () => {
       <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
 
   chart.rank('#vendors', (d.top_vendors || []).slice(0, 12)
-    .map(v => ({ label: v.vendor || v.name, value: v.count })), { compact: true });
+    .map(v => ({ label: v.vendor || v.name, value: v.count })), { compact: true , name: 'cve-icu-top-vendors' });
   chart.rank('#products', (d.top_products || []).slice(0, 12)
-    .map(p => ({ label: p.product || p.name, sub: p.vendor, value: p.count })), { compact: true });
+    .map(p => ({ label: p.product || p.name, sub: p.vendor, value: p.count })), { compact: true , name: 'cve-icu-top-products' });
 
   chart.hbars('#types', (d.cpe_type_distribution || [])
-    .map(t => ({ label: t.type || t.name, value: t.count })));
+    .map(t => ({ label: t.type || t.name, value: t.count })), { name: 'cve-icu-platform-types' });
 
   table('#cpe-table', (d.top_cpes || []).map(c => ({
     vendor: c.vendor, product: c.product, type: c.type || '—', cves: c.count
@@ -57,11 +57,11 @@ CVE.page(async () => {
     { key: 'product', label: 'Product' },
     { key: 'type', label: 'Type' },
     { key: 'cves', label: 'CVEs', num: true, bar: true }
-  ]);
+  ], { name: 'cve-icu-products' });
 
   chart.rank('#widest', (d.cves_with_most_cpes || []).slice(0, 10).map(c => ({
     label: c.cve || c.cve_id, sub: 'product entries', value: c.cpe_count || c.count
-  })));
+  })), { name: 'cve-icu-cves-naming-most-products' });
 });
 </script>
 {% endblock %}
