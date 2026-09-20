@@ -224,7 +224,10 @@
     const mag = 10 ** Math.floor(Math.log10(raw));
     const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
     const out = [];
-    for (let v = 0; v <= max * 1.001; v += step) out.push(v);
+    // Run past max, not up to it: the top tick is the scale's ceiling, so if it
+    // stops below max the tallest bar is drawn above the plot area.
+    for (let v = 0; v < max; v += step) out.push(v);
+    out.push(out[out.length - 1] + step);
     return out;
   }
 
@@ -267,7 +270,7 @@
       items.forEach((d, i) => {
         const cx = mL + (i + 0.5) * (iw / items.length);
         const hgt = Math.max(1, (d.value / top) * ih);
-        const cls = 'bar' + (d.current ? ' cur' : '') + (d.alt ? ' alt' : '');
+        const cls = 'cbar' + (d.current ? ' cur' : '') + (d.alt ? ' alt' : '');
         parts.push(`<rect class="${cls}" x="${(cx - bw / 2).toFixed(1)}" y="${(mT + ih - hgt).toFixed(1)}"
           width="${bw.toFixed(1)}" height="${hgt.toFixed(1)}" rx="1.5"
           data-tip="${esc(d.label)}: ${fmt.n(d.value)}" data-key="${esc(d.label)}"/>`);
@@ -314,7 +317,7 @@
         const w = Math.max(1, (d.value / max) * iw);
         parts.push(`<text class="ax hb-k" x="${mL - 10}" y="${y + rowH / 2 + 4}" text-anchor="end">${esc(d.label)}</text>`);
         parts.push(`<rect class="track" x="${mL}" y="${y + 4}" width="${iw}" height="${rowH - 9}" rx="2.5"/>`);
-        parts.push(`<rect class="bar" x="${mL}" y="${y + 4}" width="${w.toFixed(1)}" height="${rowH - 9}" rx="2.5"
+        parts.push(`<rect class="cbar" x="${mL}" y="${y + 4}" width="${w.toFixed(1)}" height="${rowH - 9}" rx="2.5"
           data-tip="${esc(d.label)}: ${fmt.n(d.value)}"/>`);
         parts.push(`<text class="ax hb-v" x="${mL + iw + 10}" y="${y + rowH / 2 + 4}">${
           opt.compact ? fmt.compact(d.value) : fmt.n(d.value)}</text>`);

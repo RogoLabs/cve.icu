@@ -6,6 +6,7 @@ Fixed build system that works with existing code structure
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -1200,6 +1201,15 @@ class CVESiteBuilder:
             else:
                 os.environ[output_env_key] = previous_output_env
 
+    def _static_asset_version(self) -> str:
+        """Short hash of the CSS and JS, so the query string changes only when they do."""
+        h = hashlib.sha256()
+        for rel in ("css/style.css", "js/app.js"):
+            f = self.source_static_dir / rel
+            if f.exists():
+                h.update(f.read_bytes())
+        return h.hexdigest()[:8]
+
     def generate_html_pages(self) -> None:
         """Generate HTML pages from templates"""
         self.print_verbose("📄 Generating HTML pages...")
@@ -1222,6 +1232,10 @@ class CVESiteBuilder:
             {"template": "about.html", "output": "about.html", "title": "About CVE.ICU"},
         ]
 
+        # Cache-buster for static assets. The site rebuilds hourly, so without this
+        # a browser keeps serving the previous CSS/JS against the new markup.
+        asset_version = self._static_asset_version()
+
         # Generate each page
         for page in pages:
             try:
@@ -1231,6 +1245,7 @@ class CVESiteBuilder:
                     "title": f"{page['title']} - CVE.ICU",
                     "current_year": self.current_year,
                     "available_years": self.available_years,
+                    "asset_version": asset_version,
                 }
 
                 html_content = template.render(**context)
