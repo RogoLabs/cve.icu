@@ -78,9 +78,9 @@ CVE.page(async (S) => {
     { lead: 1, lbl: 'CVEs counted', v: fmt.n(total),
       sub: `across <b>${years.length}</b> years, 1999&ndash;${YR}` },
     { lbl: `Published in ${YR}`, v: fmt.n(ytd), sub: 'so far this year' },
-    { lbl: 'Publishers', v: fmt.n(S.cna_analysis.total_cnas || 0),
-      sub: `<b>${fmt.n(S.cna_analysis.active_cnas || 0)}</b> active` },
-    { lbl: 'In the KEV catalog', v: fmt.n(S.cvss_analysis.kev_global_count || 0),
+    { lbl: 'Publishers', v: fmt.n(S.cna_analysis.total_cnas),
+      sub: `<b>${fmt.n(S.cna_analysis.active_cnas)}</b> active` },
+    { lbl: 'In the KEV catalog', v: fmt.n(S.cvss_analysis.kev_global_count),
       sub: `<b>${fmt.share(S.cvss_analysis.kev_global_count, total, 2)}</b> of all CVEs` }
   ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
       <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');

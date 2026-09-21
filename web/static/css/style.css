@@ -113,7 +113,9 @@ h2 .side{font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--faint
 .c.lead .v{font-size:56px}
 /* Only the home grid spans its lead tile: elsewhere the tile counts are even,
    and a spanning lead leaves an orphan on the second row. */
-.grid.hero .c.lead{grid-column:span 2}
+/* The hero grid runs 2+2 / 1+1+1+1 / 2+2, so no row is left with a gap. */
+.grid.hero .c.lead,.grid.hero .c.wide{grid-column:span 2}
+.c.wide .v{font-size:44px}
 .c .lbl{font-size:11.5px;letter-spacing:.055em;text-transform:uppercase;color:var(--faint);
   font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .c .v{font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.04;
@@ -254,6 +256,7 @@ td .g i{display:block;height:100%;background:var(--accent);opacity:.7}
 @media(max-width:620px){
   .grid,.grid.g3,.grid.g2,.grid.g4{grid-template-columns:1fr}
   .c.lead .v{font-size:44px}
+  .c.wide .v{font-size:38px}
   .wrap{padding:16px 14px 48px}
   .bar{padding:0 14px;gap:10px}
   .brand{font-size:14px} .live{font-size:12px}

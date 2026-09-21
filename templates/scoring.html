@@ -64,16 +64,36 @@ CVE.page(async (S) => {
   el('#v-epss').textContent = fmt.n(epss.total_cves_with_epss);
   el('#v-kev').textContent = fmt.n(kevN);
 
+  // Quantify the two directions of EPSS/site disagreement from the data itself,
+  // rather than writing today's figures into the page.
+  const yearTotals = S.yearly_summary.years;
+  const cov = epss.year_coverage || {};
+  let epssOver = 0, epssUnder = 0;
+  Object.keys(cov).forEach(y => {
+    const d = (cov[y].with_epss || 0) - ((yearTotals[y] || {}).total_cves || 0);
+    if (d > 0) epssOver += d; else epssUnder -= d;
+  });
+  const epssNet = epssOver - epssUnder;
+
   chart.hbars('#coverage', [
-    { label: 'All CVEs', value: total },
-    { label: 'With EPSS', value: epss.total_cves_with_epss || 0 },
-    { label: 'CVSS scores*', value: cvss.total_cves_with_cvss || 0 },
+    { label: 'CVEs counted here', value: total },
+    { label: 'EPSS records', value: epss.total_cves_with_epss || 0 },
+    { label: 'CVSS scores', value: cvss.total_cves_with_cvss || 0 },
     { label: 'In KEV', value: kevN }
   ], { name: 'cve-icu-scoring-coverage' });
   el('#coverage').insertAdjacentHTML('beforeend',
-    `<p class="faint" style="font-size:12px;margin-top:11px">
-     *A CVE can hold a score under more than one CVSS version, so this counts scores, not CVEs.
-     It is the only bar here that can exceed the total.</p>`);
+    `<p class="faint" style="font-size:12px;margin-top:11px;line-height:1.6">
+     These four count different things, so the lower three are not subsets of the first
+     and two of them can exceed it.<br>
+     <b>CVSS scores</b> counts scores, not CVEs: one CVE can hold a score under several
+     metric versions.<br>
+     <b>EPSS records</b> are keyed by CVE ID year, while this site counts by publication
+     date &mdash; so a CVE-2016 published in 2020 is a 2016 record to EPSS and a 2020 CVE here.
+     EPSS also has not yet scored the newest CVEs. Currently that is
+     <b>+${fmt.n(epssOver)}</b> in one direction and <b>&minus;${fmt.n(epssUnder)}</b> in the
+     other, netting to <b>${epssNet > 0 ? '+' : ''}${fmt.n(epssNet)}</b>.
+     <a href="data-quality.html" style="color:var(--accent)">Source agreement</a> tracks the
+     equivalent gap for yearly counts.</p>`);
 
   const v31 = (cvss.severity_distribution || {})['v3.1'] || {};
   chart.hbars('#sev', ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'NONE']

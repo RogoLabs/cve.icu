@@ -20,7 +20,9 @@
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
-        const res = await fetch(url, { signal: ctrl.signal });
+        // Always revalidate: the build runs hourly, and a cached payload would
+        // quietly serve yesterday's counts. Unchanged files come back 304.
+        const res = await fetch(url, { signal: ctrl.signal, cache: 'no-cache' });
         if (!res.ok) throw Object.assign(new Error(`HTTP ${res.status} for ${url}`), { status: res.status });
         return await res.json();
       } catch (err) {
