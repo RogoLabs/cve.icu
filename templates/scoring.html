@@ -61,7 +61,8 @@ CVE.page(async (S) => {
 
   const kevN = cvss.kev_global_count || 0;
   el('#v-cvss').textContent = fmt.n(cvss.total_cves_with_cvss);
-  el('#v-epss').textContent = fmt.n(epss.total_cves_with_epss);
+  el('#v-epss').textContent =
+    fmt.n(epss.total_cves_with_epss_matched ?? epss.total_cves_with_epss);
   el('#v-kev').textContent = fmt.n(kevN);
 
   // EPSS coverage is bucketed by publication date, so it is directly comparable

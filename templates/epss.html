@@ -33,14 +33,22 @@ CVE.page(async (S) => {
   const YR = {{ current_year }};
   const d = await CVE.json('epss_analysis.json');
   const st = d.statistics || {};
-  const total = d.total_cves_with_epss || 0;
+  // Two different populations, kept apart deliberately:
+  //  - matched: EPSS rows tied to a CVE this site counts. Comparable with every
+  //    other total on the site, so it is the headline.
+  //  - rows: every EPSS row, which is what the threshold statistics are computed
+  //    over, so it must be the denominator for their percentages.
+  const rows = d.total_cves_with_epss || 0;
+  const unmatched = d.epss_without_published_record || 0;
+  const total = d.total_cves_with_epss_matched ?? rows;
 
   el('#tiles').innerHTML = [
     { lead: 1, lbl: 'CVEs with an EPSS score', v: fmt.n(total),
-      sub: `average score <b>${(st.average_score ?? 0).toFixed(5)}</b>` },
-    { lbl: 'Above 0.5', v: fmt.n(st.gt_0_5), sub: `<b>${fmt.share(st.gt_0_5, total, 2)}</b> of scored CVEs` },
-    { lbl: 'Above 0.9', v: fmt.n(st.gt_0_9), sub: `<b>${fmt.share(st.gt_0_9, total, 2)}</b> of scored CVEs` },
-    { lbl: 'Above 0.1', v: fmt.n(st.gt_0_1), sub: `<b>${fmt.share(st.gt_0_1, total, 2)}</b> of scored CVEs` }
+      sub: `average score <b>${(st.average_score ?? 0).toFixed(5)}</b>${unmatched
+        ? ` &middot; <b>${fmt.n(unmatched)}</b> further EPSS rows describe CVEs not counted here` : ''}` },
+    { lbl: 'Above 0.5', v: fmt.n(st.gt_0_5), sub: `<b>${fmt.share(st.gt_0_5, rows, 2)}</b> of scored rows` },
+    { lbl: 'Above 0.9', v: fmt.n(st.gt_0_9), sub: `<b>${fmt.share(st.gt_0_9, rows, 2)}</b> of scored rows` },
+    { lbl: 'Above 0.1', v: fmt.n(st.gt_0_1), sub: `<b>${fmt.share(st.gt_0_1, rows, 2)}</b> of scored rows` }
   ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
       <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
 
