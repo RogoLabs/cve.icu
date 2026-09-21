@@ -19,7 +19,7 @@ number of CVEs. A product's count is how many CVEs name it, not how many bugs it
 <h2>Platform type</h2>
 <div class="panel"><div class="panel-b"><div id="types"></div></div></div>
 
-<h2>Every listed product entry</h2>
+<h2>Most-referenced CPE entries <span class="side">one row per CPE string, not per product</span></h2>
 <div class="panel"><div id="cpe-table"></div></div>
 
 <h2>CVEs naming the most products</h2>
@@ -50,14 +50,28 @@ CVE.page(async () => {
   chart.hbars('#types', (d.cpe_type_distribution || [])
     .map(t => ({ label: t.type || t.name, value: t.count })), { name: 'cve-icu-platform-types' });
 
+  // A CPE string carries version, update, edition and architecture. Without them
+  // rows like windows_server_2012 r2 and windows_server_2012 - look identical.
+  const cpePart = (cpe, i) => {
+    const parts = String(cpe || '').split(':');
+    const v = parts[i];
+    return !v || v === '*' || v === '-' ? '' : v;
+  };
   table('#cpe-table', (d.top_cpes || []).map(c => ({
-    vendor: c.vendor, product: c.product, type: c.type || '—', cves: c.count
+    vendor: c.vendor,
+    product: c.product,
+    version: cpePart(c.cpe, 5) || '—',
+    edition: [cpePart(c.cpe, 6), cpePart(c.cpe, 8), cpePart(c.cpe, 11)].filter(Boolean).join(' ') || '—',
+    type: c.type || '—',
+    cves: c.count
   })), [
     { key: 'vendor', label: 'Vendor' },
     { key: 'product', label: 'Product' },
+    { key: 'version', label: 'Version' },
+    { key: 'edition', label: 'Edition / arch' },
     { key: 'type', label: 'Type' },
-    { key: 'cves', label: 'CVEs', num: true, bar: true }
-  ], { name: 'cve-icu-products' });
+    { key: 'cves', label: 'References', num: true, bar: true }
+  ], { name: 'cve-icu-cpe-entries' });
 
   chart.rank('#widest', (d.cves_with_most_cpes || []).slice(0, 10).map(c => ({
     label: c.cve || c.cve_id, sub: 'product entries', value: c.cpe_count || c.count

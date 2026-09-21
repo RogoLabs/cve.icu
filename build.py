@@ -931,6 +931,10 @@ class CVESiteBuilder:
             "epss_analysis": {
                 "statistics": epss_analysis_raw.get("statistics", {}),
                 "total_cves_with_epss": epss_analysis_raw.get("total_cves_with_epss", 0),
+                # EPSS rows matched to a CVE this site counts, by publication date.
+                # This is the figure comparable with the yearly totals.
+                "total_cves_with_epss_matched": epss_analysis_raw.get("total_cves_with_epss_matched", 0),
+                "epss_without_published_record": epss_analysis_raw.get("epss_without_published_record", 0),
             },
             "kev_analysis": {
                 "statistics": kev_analysis_raw.get("statistics", {}),
@@ -949,6 +953,13 @@ class CVESiteBuilder:
             },
             "cpe_analysis": {
                 "top_cpes": cpe_analysis_raw.get("top_cpes", [])[:25],
+                # Aggregated by product and by vendor. top_cpes is a list of CPE
+                # strings, so it holds several rows per product (version, edition,
+                # architecture) and must not be shown as a product ranking.
+                "top_products": cpe_analysis_raw.get("top_products", [])[:25],
+                "top_vendors": cpe_analysis_raw.get("top_vendors", [])[:25],
+                "total_cpe_entries": cpe_analysis_raw.get("total_cpe_entries", 0),
+                "total_cves_with_cpes": cpe_analysis_raw.get("total_cves_with_cpes", 0),
             },
             "calendar_analysis_current_year": {
                 "daily_data": calendar_current_year_raw.get("daily_data", []),
