@@ -34,6 +34,21 @@ except ImportError:  # pragma: no cover - depends on how the module is imported
 logger = get_logger(__name__)
 
 
+# Sanity floors for the small feeds. Both endpoints answer 200 with a body, so
+# raise_for_status() cannot tell a good download from a truncated or empty one -
+# and both used to be written straight over the cache, so a bad response
+# destroyed the last good copy and surfaced later as a quietly shrinking count
+# rather than an error. Downloads now land in a temp file, are checked, and only
+# then replace the cache.
+MIN_EPSS_BYTES = 500_000  # the real file is ~2.6 MB gzipped
+MIN_EPSS_ROWS = 100_000  # the real feed carries ~377k rows
+MIN_KEV_BYTES = 200_000  # the real catalog is ~2.2 MB
+MIN_KEV_ENTRIES = 500  # the real catalog holds ~1,700
+# A new download may legitimately shrink a little, but not collapse. Reject
+# anything below this fraction of what we already had.
+MIN_RETAINED_FRACTION = 0.6
+
+
 class CVEDataDownloader:
     """Downloads and manages CVE data from NVD source.
 
@@ -71,7 +86,13 @@ class CVEDataDownloader:
         self.nvd_url: str = "https://nvd.handsonhacking.org/nvd.json"
         self.cache_file: Path = self.cache_dir / "nvd.json"
         self.cache_info_file: Path = self.cache_dir / "cache_info.json"
-        self.cache_duration: timedelta = timedelta(hours=4)  # Cache for 4 hours to match build schedule
+        # Must stay below the build interval or runs re-use the cache and fetch
+        # nothing. Build is hourly, so this expires comfortably inside the hour.
+        self.cache_duration: timedelta = timedelta(minutes=50)
+        # EPSS republishes once a day and KEV a few times a week; re-fetching
+        # either every hour is wasted traffic against FIRST and CISA.
+        self.epss_cache_duration: timedelta = timedelta(hours=6)
+        self.kev_cache_duration: timedelta = timedelta(hours=6)
 
         # Producer-published manifest describing the snapshot behind nvd.json.
         # Small (~2KB), no-cache, and written *after* the data object, so a
@@ -629,7 +650,7 @@ class CVEDataDownloader:
         if self.epss_cache_file.exists() and not force:
             # Basic age check: reuse if within cache_duration
             mtime = datetime.fromtimestamp(self.epss_cache_file.stat().st_mtime)
-            if datetime.now() - mtime < self.cache_duration:
+            if datetime.now() - mtime < self.epss_cache_duration:
                 if not self.quiet:
                     logger.info("✅ Using cached EPSS data")
                 return self.epss_cache_file
@@ -637,15 +658,26 @@ class CVEDataDownloader:
         if not self.quiet:
             logger.info(f"🔽 Downloading EPSS data from {self.epss_url}")
 
+        tmp = self.epss_cache_file.with_suffix(self.epss_cache_file.suffix + ".part")
         try:
             response = requests.get(self.epss_url, stream=True, timeout=120)
             response.raise_for_status()
 
-            with open(self.epss_cache_file, "wb") as f:
+            with open(tmp, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     if chunk:
                         f.write(chunk)
 
+            problem = self._epss_download_problem(tmp)
+            if problem:
+                logger.error(f"❌ Rejecting EPSS download: {problem}")
+                tmp.unlink(missing_ok=True)
+                if self.epss_cache_file.exists():
+                    logger.warning("  📝 Keeping the previous EPSS cache")
+                    return self.epss_cache_file
+                return None
+
+            tmp.replace(self.epss_cache_file)
             if not self.quiet:
                 size_mb = self.epss_cache_file.stat().st_size / (1024 * 1024)
                 logger.info(f"✅ EPSS download complete ({size_mb:.2f} MB)")
@@ -654,10 +686,48 @@ class CVEDataDownloader:
 
         except requests.RequestException as e:
             logger.warning(f"⚠️  Warning: EPSS download failed: {e}")
+            tmp.unlink(missing_ok=True)
             if self.epss_cache_file.exists():
                 logger.warning("  📝 Using stale EPSS cache as fallback")
                 return self.epss_cache_file
             return None
+
+    def _epss_download_problem(self, path: Path) -> str | None:
+        """Why this EPSS download should not replace the cache, or None if it is fine.
+
+        The feed redirects to a dated filename, so a client that does not follow
+        redirects gets a 200 with an empty body. That is the case this catches.
+        """
+        size = path.stat().st_size if path.exists() else 0
+        if size < MIN_EPSS_BYTES:
+            return f"{size:,} bytes, below the {MIN_EPSS_BYTES:,} floor (empty or truncated response)"
+
+        try:
+            with gzip.open(path, mode="rt", encoding="utf-8") as f:
+                rows = sum(1 for line in f if line.strip() and not line.startswith("#"))
+        except (gzip.BadGzipFile, OSError, UnicodeDecodeError) as e:
+            return f"not readable as gzipped CSV ({e})"
+
+        rows = max(0, rows - 1)  # drop the header
+        if rows < MIN_EPSS_ROWS:
+            return f"{rows:,} rows, below the {MIN_EPSS_ROWS:,} floor"
+
+        previous = self._parsed_entry_count(self.epss_parsed_file)
+        if previous and rows < previous * MIN_RETAINED_FRACTION:
+            return (
+                f"{rows:,} rows against {previous:,} previously - a drop that large "
+                "is more likely a bad download than a real change"
+            )
+        return None
+
+    @staticmethod
+    def _parsed_entry_count(path: Path) -> int:
+        """How many entries the last good parse held, or 0 if unknown."""
+        try:
+            with open(path, encoding="utf-8") as f:
+                return len(json.load(f))
+        except (OSError, json.JSONDecodeError, TypeError):
+            return 0
 
     def parse_epss_csv(self) -> Path | None:
         """Parse the cached EPSS CSV into a compact JSON mapping.
@@ -701,6 +771,14 @@ class CVEDataDownloader:
                         "epss_percentile": percentile,
                     }
 
+            previous = self._parsed_entry_count(self.epss_parsed_file)
+            if len(mapping) < MIN_EPSS_ROWS or (previous and len(mapping) < previous * MIN_RETAINED_FRACTION):
+                logger.error(
+                    f"❌ Refusing to write an EPSS mapping of {len(mapping):,} CVEs "
+                    f"(previous {previous:,}, floor {MIN_EPSS_ROWS:,}) - keeping the last good parse"
+                )
+                return self.epss_parsed_file if self.epss_parsed_file.exists() else None
+
             with open(self.epss_parsed_file, "w", encoding="utf-8") as out:
                 json.dump(mapping, out)
 
@@ -727,7 +805,7 @@ class CVEDataDownloader:
         if self.kev_cache_file.exists() and not force:
             # Basic age check similar to NVD cache
             mtime = datetime.fromtimestamp(self.kev_cache_file.stat().st_mtime)
-            if datetime.now() - mtime < self.cache_duration:
+            if datetime.now() - mtime < self.kev_cache_duration:
                 if not self.quiet:
                     logger.info("✅ Using cached KEV data")
                 return self.kev_cache_file
@@ -735,13 +813,24 @@ class CVEDataDownloader:
         if not self.quiet:
             logger.info(f"🔽 Downloading KEV data from {self.kev_url}")
 
+        tmp = self.kev_cache_file.with_suffix(".part")
         try:
             response = requests.get(self.kev_url, timeout=60)
             response.raise_for_status()
 
-            with open(self.kev_cache_file, "w", encoding="utf-8") as f:
+            with open(tmp, "w", encoding="utf-8") as f:
                 f.write(response.text)
 
+            problem = self._kev_download_problem(tmp)
+            if problem:
+                logger.error(f"❌ Rejecting KEV download: {problem}")
+                tmp.unlink(missing_ok=True)
+                if self.kev_cache_file.exists():
+                    logger.warning("  📝 Keeping the previous KEV cache")
+                    return self.kev_cache_file
+                return None
+
+            tmp.replace(self.kev_cache_file)
             if not self.quiet:
                 size_kb = self.kev_cache_file.stat().st_size / 1024
                 logger.info(f"✅ KEV download complete ({size_kb:.1f} KB)")
@@ -750,10 +839,42 @@ class CVEDataDownloader:
 
         except requests.RequestException as e:
             logger.warning(f"⚠️  Warning: KEV download failed: {e}")
+            tmp.unlink(missing_ok=True)
             if self.kev_cache_file.exists():
                 logger.warning("  📝 Using stale KEV cache as fallback")
                 return self.kev_cache_file
             return None
+
+    def _kev_download_problem(self, path: Path) -> str | None:
+        """Why this KEV download should not replace the cache, or None if it is fine."""
+        size = path.stat().st_size if path.exists() else 0
+        if size < MIN_KEV_BYTES:
+            return f"{size:,} bytes, below the {MIN_KEV_BYTES:,} floor (empty or truncated response)"
+
+        try:
+            with open(path, encoding="utf-8") as f:
+                catalog = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            return f"not readable as JSON ({e})"
+
+        entries = catalog.get("vulnerabilities")
+        if not isinstance(entries, list):
+            return "no vulnerabilities array"
+        if len(entries) < MIN_KEV_ENTRIES:
+            return f"{len(entries):,} entries, below the {MIN_KEV_ENTRIES:,} floor"
+
+        # The catalog states its own length; a mismatch means a partial body.
+        declared = catalog.get("count")
+        if isinstance(declared, int) and declared != len(entries):
+            return f"catalog declares {declared:,} entries but carries {len(entries):,}"
+
+        previous = self._parsed_entry_count(self.kev_parsed_file)
+        if previous and len(entries) < previous * MIN_RETAINED_FRACTION:
+            return (
+                f"{len(entries):,} entries against {previous:,} previously - a drop that "
+                "large is more likely a bad download than a real change"
+            )
+        return None
 
     def parse_kev_json(self) -> Path | None:
         """Parse the KEV JSON into a compact mapping.

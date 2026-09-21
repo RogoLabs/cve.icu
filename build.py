@@ -6,12 +6,14 @@ Fixed build system that works with existing code structure
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import cache
@@ -315,7 +317,7 @@ class CVESiteBuilder:
                 self.static_dir.mkdir(parents=True, exist_ok=True)
 
         # Check for required files
-        required_files = ["css/style.css", "js/chart.min.js", "images/logo.png"]
+        required_files = ["css/style.css", "js/app.js", "images/logo.png"]
 
         for file_path in required_files:
             full_path = self.static_dir / file_path
@@ -778,6 +780,7 @@ class CVESiteBuilder:
         # Generate cve_all.json from year data
         self.generate_cve_all_json(all_year_data)
         self.generate_homepage_summary_json(all_year_data)
+        self.generate_source_reconciliation_json(all_year_data)
 
         logger.info("✅ Combined analysis JSON files generated")
 
@@ -790,6 +793,7 @@ class CVESiteBuilder:
             "growth_analysis": "generated",
             "cve_all": "generated",
             "homepage_summary": "generated",
+            "source_reconciliation": "generated",
         }
 
     def _read_json_file(self, file_name: str, default: Any) -> Any:
@@ -805,6 +809,83 @@ class CVESiteBuilder:
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"  ⚠️  Could not read {file_name} ({e}), using defaults for homepage summary")
             return default
+
+    def generate_source_reconciliation_json(self, all_year_data: list[dict[str, Any]]) -> None:
+        """Publish the per-year disagreement between the NVD and V5 pipelines.
+
+        The site shows counts from both: yearly figures come from the NVD mirror,
+        publisher attribution from cvelistV5. They are different record sets, so a
+        year can carry two slightly different totals. Rather than hide that, the
+        delta is measured here and surfaced on the data quality page.
+        """
+        logger.info("  🔍 Generating source_reconciliation.json...")
+
+        nvd_years = {
+            int(y["year"]): int(y.get("total_cves", 0)) for y in all_year_data if isinstance(y.get("year"), int)
+        }
+
+        cna_raw = self._read_json_file("cna_analysis.json", {})
+        v5_years: dict[int, int] = defaultdict(int)
+        for cna in cna_raw.get("cna_list", []):
+            for year, count in (cna.get("cves_by_year") or {}).items():
+                try:
+                    v5_years[int(year)] += int(count)
+                except (TypeError, ValueError):
+                    continue
+
+        drifts = reconcile_yearly_sources(nvd_years, dict(v5_years))
+        flagged = [d for d in drifts if not d.ok]
+
+        payload = {
+            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "sources": {
+                "nvd": {
+                    "label": "NVD mirror",
+                    "used_for": "yearly and daily counts, CVSS, CWE, CPE",
+                    "file": "yearly_summary.json",
+                },
+                "v5": {
+                    "label": "CVE Program cvelistV5",
+                    "used_for": "publisher attribution",
+                    "file": "cna_analysis.json",
+                },
+            },
+            "thresholds": {
+                "modern_year_floor": MODERN_YEAR_FLOOR,
+                "max_abs": MAX_YEAR_DRIFT_ABS,
+                "max_pct": MAX_YEAR_DRIFT_PCT,
+            },
+            "totals": {
+                "nvd": sum(nvd_years.values()),
+                "v5": sum(v5_years.values()),
+                "delta": sum(v5_years.values()) - sum(nvd_years.values()),
+            },
+            "years": [
+                {
+                    "year": d.year,
+                    "nvd": d.nvd,
+                    "v5": d.v5,
+                    "delta": d.delta,
+                    "pct": round(d.pct, 3),
+                    "modern": d.modern,
+                    "within_threshold": d.ok,
+                }
+                for d in drifts
+            ],
+            "flagged_years": [d.year for d in flagged],
+        }
+
+        output_file = self.data_dir / "source_reconciliation.json"
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+        if flagged:
+            logger.warning(
+                f"  ⚠️  {len(flagged)} year(s) drift beyond threshold between sources: "
+                + ", ".join(str(d.year) for d in flagged)
+            )
+        else:
+            logger.info("  ✅ Generated source_reconciliation.json (all modern years within threshold)")
 
     def generate_homepage_summary_json(self, all_year_data: list[dict[str, Any]]) -> None:
         """Generate a compact aggregate payload for homepage charts and stat cards."""
@@ -843,10 +924,17 @@ class CVESiteBuilder:
             "cvss_analysis": {
                 "score_distribution": cvss_analysis_raw.get("score_distribution", {}),
                 "kev_global_count": cvss_analysis_raw.get("kev_global_count", 0),
+                # Sum across CVSS versions, so a CVE scored under both v3.1 and v4.0
+                # counts twice. This is a count of scores, not of distinct CVEs.
+                "total_scores_all_versions": cvss_analysis_raw.get("total_cves_with_cvss", 0),
             },
             "epss_analysis": {
                 "statistics": epss_analysis_raw.get("statistics", {}),
                 "total_cves_with_epss": epss_analysis_raw.get("total_cves_with_epss", 0),
+                # EPSS rows matched to a CVE this site counts, by publication date.
+                # This is the figure comparable with the yearly totals.
+                "total_cves_with_epss_matched": epss_analysis_raw.get("total_cves_with_epss_matched", 0),
+                "epss_without_published_record": epss_analysis_raw.get("epss_without_published_record", 0),
             },
             "kev_analysis": {
                 "statistics": kev_analysis_raw.get("statistics", {}),
@@ -855,12 +943,23 @@ class CVESiteBuilder:
             },
             "cwe_analysis": {
                 "top_cwes": cwe_analysis_raw.get("top_cwes", [])[:10],
+                "total_cves_with_cwe": cwe_analysis_raw.get("total_cves_with_cwe", 0),
+                "total_unique_cwes": cwe_analysis_raw.get("total_unique_cwes", 0),
             },
             "cna_analysis": {
                 "cna_list": cna_analysis_raw.get("cna_list", [])[:25],
+                "total_cnas": cna_analysis_raw.get("total_cnas", 0),
+                "active_cnas": cna_analysis_raw.get("active_cnas", 0),
             },
             "cpe_analysis": {
                 "top_cpes": cpe_analysis_raw.get("top_cpes", [])[:25],
+                # Aggregated by product and by vendor. top_cpes is a list of CPE
+                # strings, so it holds several rows per product (version, edition,
+                # architecture) and must not be shown as a product ranking.
+                "top_products": cpe_analysis_raw.get("top_products", [])[:25],
+                "top_vendors": cpe_analysis_raw.get("top_vendors", [])[:25],
+                "total_cpe_entries": cpe_analysis_raw.get("total_cpe_entries", 0),
+                "total_cves_with_cpes": cpe_analysis_raw.get("total_cves_with_cpes", 0),
             },
             "calendar_analysis_current_year": {
                 "daily_data": calendar_current_year_raw.get("daily_data", []),
@@ -1113,6 +1212,15 @@ class CVESiteBuilder:
             else:
                 os.environ[output_env_key] = previous_output_env
 
+    def _static_asset_version(self) -> str:
+        """Short hash of the CSS and JS, so the query string changes only when they do."""
+        h = hashlib.sha256()
+        for rel in ("css/style.css", "js/app.js"):
+            f = self.source_static_dir / rel
+            if f.exists():
+                h.update(f.read_bytes())
+        return h.hexdigest()[:8]
+
     def generate_html_pages(self) -> None:
         """Generate HTML pages from templates"""
         self.print_verbose("📄 Generating HTML pages...")
@@ -1135,6 +1243,10 @@ class CVESiteBuilder:
             {"template": "about.html", "output": "about.html", "title": "About CVE.ICU"},
         ]
 
+        # Cache-buster for static assets. The site rebuilds hourly, so without this
+        # a browser keeps serving the previous CSS/JS against the new markup.
+        asset_version = self._static_asset_version()
+
         # Generate each page
         for page in pages:
             try:
@@ -1144,6 +1256,7 @@ class CVESiteBuilder:
                     "title": f"{page['title']} - CVE.ICU",
                     "current_year": self.current_year,
                     "available_years": self.available_years,
+                    "asset_version": asset_version,
                 }
 
                 html_content = template.render(**context)
@@ -1711,6 +1824,70 @@ class ReconciliationResult:
     message: str
 
 
+# Per-year reconciliation between the two sources.
+#
+# yearly_summary.json counts from the NVD mirror; cna_analysis.json counts from
+# the CVE Program's cvelistV5 repository. Both bucket by publication year, so a
+# year's totals should agree closely - but they are different record sets, and
+# NVD normalised historical publication dates differently. Years before the CNA
+# programme widened are therefore allowed to differ freely; modern years are not.
+MODERN_YEAR_FLOOR = 2016
+MAX_YEAR_DRIFT_ABS = 250
+MAX_YEAR_DRIFT_PCT = 0.5
+
+
+@dataclass(frozen=True)
+class YearDrift:
+    """One year's disagreement between the NVD-sourced and V5-sourced counts."""
+
+    year: int
+    nvd: int
+    v5: int
+    modern: bool
+
+    @property
+    def delta(self) -> int:
+        return self.v5 - self.nvd
+
+    @property
+    def pct(self) -> float:
+        return (self.delta / self.nvd * 100) if self.nvd else 0.0
+
+    @property
+    def ok(self) -> bool:
+        if not self.modern:
+            return True
+        if abs(self.delta) <= MAX_YEAR_DRIFT_ABS:
+            return True
+        # With no NVD baseline the percentage is undefined, and .pct reports 0.0
+        # to stay JSON-safe - so it must never be the thing that approves a year.
+        if not self.nvd:
+            return False
+        return abs(self.pct) <= MAX_YEAR_DRIFT_PCT
+
+
+def reconcile_yearly_sources(
+    nvd_years: dict[int, int],
+    v5_years: dict[int, int],
+) -> list[YearDrift]:
+    """Compare per-year CVE counts from the NVD and V5 pipelines.
+
+    Returns one YearDrift per year present in either source, oldest first.
+    Callers decide what to do with the ones whose .ok is False.
+    """
+    drifts: list[YearDrift] = []
+    for year in sorted({*nvd_years, *v5_years}):
+        drifts.append(
+            YearDrift(
+                year=year,
+                nvd=nvd_years.get(year, 0),
+                v5=v5_years.get(year, 0),
+                modern=year >= MODERN_YEAR_FLOOR,
+            )
+        )
+    return drifts
+
+
 def reconcile_cna_vs_year_totals(
     repo_total: int,
     cve_all_total: int,
@@ -1827,6 +2004,31 @@ def validate_data_counts(builder: CVESiteBuilder) -> bool:
                 errors.append(reconciliation.message)
     else:
         warnings.append("cna_analysis.json not found")
+
+    # 2b. Per-year agreement between the NVD-sourced and V5-sourced counts
+    logger.info("  🔍 Checking per-year agreement between sources...")
+    recon_file = data_dir / "source_reconciliation.json"
+    if recon_file.exists():
+        with open(recon_file, encoding="utf-8") as f:
+            recon = json.load(f)
+        flagged = recon.get("flagged_years", [])
+        if flagged:
+            detail = ", ".join(
+                f"{y['year']} (NVD {y['nvd']:,} vs V5 {y['v5']:,}, {y['delta']:+,})"
+                for y in recon.get("years", [])
+                if y["year"] in flagged
+            )
+            warnings.append(f"Sources disagree beyond threshold for: {detail}")
+        else:
+            worst = max(
+                (y for y in recon.get("years", []) if y["modern"]),
+                key=lambda y: abs(y["delta"]),
+                default=None,
+            )
+            if worst:
+                logger.info(
+                    f"    ✅ Modern years agree within threshold (largest gap {worst['year']}: {worst['delta']:+,})"
+                )
 
     # 3. Yearly trend in cve_all.json should match year files
     logger.info("  📈 Checking yearly trend consistency...")

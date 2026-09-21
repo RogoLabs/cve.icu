@@ -136,8 +136,7 @@ cve.icu/
 ├── docs/
 │   ├── ARCHITECTURE.md      # System architecture
 │   ├── SCHEMAS.md           # JSON output schemas
-│   ├── COUNTING.md          # CVE counting methodology
-│   └── ROADMAP.md           # Development roadmap
+│   └── COUNTING.md          # CVE counting methodology
 ├── templates/               # Jinja2 HTML templates
 ├── tests/                   # pytest test suite
 └── web/                     # Generated output
@@ -209,7 +208,6 @@ The project uses GitHub Actions for automation:
 
 - [Architecture Guide](docs/ARCHITECTURE.md) - System design and data flow
 - [JSON Schemas](docs/SCHEMAS.md) - Output file format specifications
-- [Development Roadmap](docs/ROADMAP.md) - Project history and future plans
 - [Counting Methodology](docs/COUNTING.md) - How CVEs are counted
 
 ## 🤝 Contributing

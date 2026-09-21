@@ -545,7 +545,8 @@ class CNAAnalyzer:
         # Calculate type distribution for current year
         type_distribution = self._calculate_type_distribution_for_current_year(current_year_cnas)
 
-        # Create comprehensive current year data structure with both cna_list and cna_assigners for compatibility
+        # Create current year data structure. No "cna_assigners" alias: it held the
+        # same list as cna_list and nothing consumed it.
         current_year_cna_data = {
             "generated_at": datetime.now().isoformat(),
             "year": self.current_year,
@@ -556,7 +557,6 @@ class CNAAnalyzer:
             "official_cnas": len([c for c in current_year_cnas if c.get("is_official", True)]),
             "unofficial_cnas": len([c for c in current_year_cnas if not c.get("is_official", True)]),
             "cna_list": current_year_cnas,  # For consistency with all-time data
-            "cna_assigners": current_year_cnas,  # For JavaScript compatibility
             "type_distribution": type_distribution,
         }
 

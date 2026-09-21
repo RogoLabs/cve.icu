@@ -85,9 +85,16 @@ class TestBuildOutputExists:
         assert css_dir.exists(), "CSS directory missing"
         assert (css_dir / "style.css").exists(), "Main stylesheet missing"
 
-        # Check JS directory exists
+        # No JS directory is expected: the site vendors no JavaScript. Chart.js is
+        # loaded from a pinned CDN URL in base.html. The directory previously held
+        # an ESM build of Chart.js that could not be loaded with a classic script
+        # tag, so it threw on every page that referenced it.
         js_dir = static_dir / "js"
-        assert js_dir.exists(), "JS directory missing"
+        if js_dir.exists():
+            assert not list(js_dir.glob("chart*.js")), (
+                "A vendored Chart.js is back. If that is intended it must be the UMD "
+                "build (dist/chart.umd.js), and base.html should reference it."
+            )
 
 
 class TestBuildOutputValidity:
@@ -175,6 +182,34 @@ class TestTemplateValidity:
             # Most templates should extend base
             if "{% extends" in content:
                 assert "base.html" in content, f"Template {template.name} extends something other than base.html"
+
+    def test_child_blocks_are_defined_in_base(self):
+        """Every block a child template fills must exist in base.html.
+
+        Jinja silently discards a {% block x %} in a child when the parent
+        defines no matching block. calendar.html filled a "head" block that
+        base.html never declared, so ~200 lines of calendar CSS were dropped
+        from every build and the heatmap rendered unstyled.
+        """
+        import re
+
+        base = (TEMPLATES_DIR / "base.html").read_text()
+        defined = set(re.findall(r"{%-?\s*block\s+([a-zA-Z_][a-zA-Z0-9_]*)", base))
+
+        orphans = []
+        for template in sorted(TEMPLATES_DIR.glob("*.html")):
+            if template.name == "base.html":
+                continue
+            content = template.read_text()
+            if "{% extends" not in content:
+                continue
+            for name in re.findall(r"{%-?\s*block\s+([a-zA-Z_][a-zA-Z0-9_]*)", content):
+                if name not in defined:
+                    orphans.append(f"{template.name} fills '{name}'")
+
+        assert not orphans, "These blocks are silently discarded because base.html does not define them: " + "; ".join(
+            orphans
+        )
 
     def test_base_template_has_required_blocks(self):
         """Base template should define required blocks."""

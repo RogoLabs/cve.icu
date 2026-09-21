@@ -32,6 +32,9 @@ class ScoringAnalyzer:
     epss_file: Path = field(init=False)
     kev_file: Path = field(init=False)
     nvd_file: Path = field(init=False)
+    # CVE ID -> publication year. Populated on first use, or as a side effect of
+    # the risk matrix pass, so nvd.json is read once per build.
+    _pub_years: dict[str, int] = field(init=False, default_factory=dict)
 
     def __post_init__(self) -> None:
         """Set up paths with defaults if not provided."""
@@ -54,6 +57,48 @@ class ScoringAnalyzer:
         self.epss_file = self.cache_dir / "epss_scores-current.json"
         self.kev_file = self.cache_dir / "known_exploited_vulnerabilities.json"
         self.nvd_file = self.cache_dir / "nvd.json"
+
+    @staticmethod
+    def _published_year(cve_info: dict[str, Any]) -> int | None:
+        """Publication year for one NVD record, or None if the site does not count it.
+
+        Mirrors the filter in cve_years.py so EPSS coverage lands on exactly the
+        same population as the yearly totals: a CVE- identifier, not rejected, a
+        parseable published date, and 1999 or later. Anything else returns None
+        rather than being attributed to a year it does not belong in.
+        """
+        cve_id = cve_info.get("id", "")
+        if not cve_id.startswith("CVE-"):
+            return None
+        if "Rejected" in (cve_info.get("vulnStatus") or ""):
+            return None
+
+        published = cve_info.get("published")
+        if isinstance(published, str) and len(published) >= 4:
+            try:
+                year = int(published[:4])
+            except ValueError:
+                return None
+            return year if year >= 1999 else None
+        return None
+
+    def published_year_map(self) -> dict[str, int]:
+        """CVE ID -> publication year, read from NVD once and cached."""
+        if self._pub_years:
+            return self._pub_years
+        if not self.nvd_file.exists():
+            logger.warning("  ⚠️  NVD file not found; EPSS coverage falls back to CVE ID year")
+            return {}
+        logger.info("  📂 Indexing CVE publication dates...")
+        with open(self.nvd_file) as f:
+            for record in json.load(f):
+                cve_info = record.get("cve", {})
+                cve_id = cve_info.get("id", "")
+                year = self._published_year(cve_info)
+                if cve_id and year:
+                    self._pub_years[cve_id] = year
+        logger.info(f"     Indexed {len(self._pub_years):,} publication dates")
+        return self._pub_years
 
     def load_epss_data(self) -> dict[str, dict[str, float]]:
         """Load EPSS scores from parsed JSON"""
@@ -172,16 +217,28 @@ class ScoringAnalyzer:
         year_coverage = defaultdict(lambda: {"total": 0, "with_epss": 0})
         high_risk_cves = []  # EPSS > 0.5
 
+        # Bucket by PUBLICATION year, the same basis the rest of the site counts on.
+        # Keying by CVE ID year instead made EPSS coverage incomparable with the
+        # yearly totals - a CVE-2016 published in 2020 landed in different years on
+        # different pages, and the site's own total could be exceeded.
+        pub_years = self.published_year_map()
+        unmatched_epss = 0
+
+        for cve_id in pub_years:
+            year = str(pub_years[cve_id])
+            year_coverage[year]["total"] += 1
+
         for cve_id, scores in epss_data.items():
             score = scores.get("epss_score", 0)
             percentile = scores.get("epss_percentile", 0)
 
-            # Extract year from CVE ID
-            try:
-                year = cve_id.split("-")[1]
-                year_coverage[year]["with_epss"] += 1
-            except (IndexError, ValueError):
-                pass
+            published = pub_years.get(cve_id)
+            if published is not None:
+                year_coverage[str(published)]["with_epss"] += 1
+            else:
+                # EPSS scores CVE IDs this site has no published record for.
+                # Counted separately rather than silently attributed to a year.
+                unmatched_epss += 1
 
             # Score buckets using match/case with guard patterns
             match score:
@@ -235,6 +292,11 @@ class ScoringAnalyzer:
             "score_buckets": buckets,
             "percentile_distribution": dict(sorted(percentile_buckets.items())),
             "year_coverage": dict(sorted(year_coverage.items())),
+            # EPSS entries with no published CVE record here - they are real EPSS
+            # rows, but cannot be placed on this site's publication timeline.
+            "epss_without_published_record": unmatched_epss,
+            # The comparable figure: EPSS rows that match a CVE this site counts.
+            "total_cves_with_epss_matched": len(epss_data) - unmatched_epss,
             "high_risk_cves": high_risk_cves,
         }
 
@@ -444,6 +506,11 @@ class ScoringAnalyzer:
                 cve_info = record.get("cve", {})
                 cve_id = cve_info.get("id", "")
 
+                # Populate the shared publication-year map while we are here.
+                year = self._published_year(cve_info)
+                if cve_id and year:
+                    self._pub_years[cve_id] = year
+
                 if cve_id not in epss_data:
                     continue
 
@@ -582,9 +649,11 @@ class ScoringAnalyzer:
         logger.info("=" * 50)
 
         results = {}
+        # The risk matrix already walks every NVD record, so running it first
+        # populates the publication-year map EPSS needs - one read, not two.
+        results["risk_matrix"] = self.generate_risk_matrix()
         results["epss"] = self.generate_epss_analysis()
         results["kev"] = self.generate_kev_analysis()
-        results["risk_matrix"] = self.generate_risk_matrix()
         results["comparison"] = self.generate_scoring_comparison()
 
         logger.info("=" * 50)

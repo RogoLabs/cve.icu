@@ -76,7 +76,7 @@ class AsyncCVEDownloader:
     """
 
     cache_dir: Path = field(default_factory=lambda: Path(__file__).parent / "cache")
-    cache_duration: timedelta = field(default_factory=lambda: timedelta(hours=4))
+    cache_duration: timedelta = field(default_factory=lambda: timedelta(minutes=50))
     timeout: int = 120
     quiet: bool = False
 

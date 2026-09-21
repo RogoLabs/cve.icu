@@ -200,3 +200,89 @@ class TestGuardEnforcementMode:
     def test_not_strict_without_ci_env(self, monkeypatch):
         monkeypatch.delenv("CI", raising=False)
         assert CVESiteBuilder(quiet=True).strict_data_guards is False
+
+
+class TestYearlySourceReconciliation:
+    """Per-year agreement between the NVD-sourced and V5-sourced counts.
+
+    yearly_summary.json counts from the NVD mirror; cna_analysis.json counts
+    from cvelistV5. Both bucket by publication year, so modern years should
+    agree closely. Historical years differ because NVD normalised early
+    publication dates differently, and are deliberately exempt.
+    """
+
+    def test_identical_sources_produce_no_drift(self):
+        from build import reconcile_yearly_sources
+
+        years = {2024: 39953, 2025: 48153}
+        drifts = reconcile_yearly_sources(years, dict(years))
+        assert all(d.delta == 0 for d in drifts)
+        assert all(d.ok for d in drifts)
+
+    def test_small_modern_drift_is_allowed(self):
+        from build import reconcile_yearly_sources
+
+        # the real 2026 gap: 76 CVEs on ~68k is 0.11%
+        drifts = reconcile_yearly_sources({2026: 68224}, {2026: 68300})
+        (d,) = drifts
+        assert d.delta == 76
+        assert round(d.pct, 2) == 0.11
+        assert d.ok
+
+    def test_large_modern_drift_is_flagged(self):
+        from build import reconcile_yearly_sources
+
+        # 8% on a modern year clears both the absolute and percentage allowance
+        drifts = reconcile_yearly_sources({2026: 68224}, {2026: 73682})
+        (d,) = drifts
+        assert not d.ok
+        assert d.delta == 5458
+
+    def test_absolute_allowance_covers_small_years(self):
+        from build import MAX_YEAR_DRIFT_ABS, reconcile_yearly_sources
+
+        # 200 on a 3k year is 6.7% - over the percentage bar, under the absolute one
+        drifts = reconcile_yearly_sources({2016: 3000}, {2016: 3000 + MAX_YEAR_DRIFT_ABS - 50})
+        (d,) = drifts
+        assert abs(d.pct) > 0.5
+        assert d.ok, "the absolute allowance should cover small modern years"
+
+    def test_historical_years_are_exempt(self):
+        from build import reconcile_yearly_sources
+
+        # 2005 really does differ by ~36% between the two sources
+        drifts = reconcile_yearly_sources({2005: 4932}, {2005: 6708})
+        (d,) = drifts
+        assert not d.modern
+        assert d.ok, "pre-2016 years are recorded but not held to a threshold"
+
+    def test_years_missing_from_one_source_still_appear(self):
+        from build import reconcile_yearly_sources
+
+        drifts = reconcile_yearly_sources({2024: 100}, {2025: 200})
+        assert [d.year for d in drifts] == [2024, 2025]
+        assert drifts[0].v5 == 0 and drifts[1].nvd == 0
+
+    def test_zero_nvd_count_does_not_divide_by_zero(self):
+        from build import MAX_YEAR_DRIFT_ABS, reconcile_yearly_sources
+
+        # Small gap: passes on the absolute allowance, as any small gap would.
+        (small,) = reconcile_yearly_sources({2026: 0}, {2026: 40})
+        assert small.pct == 0.0, "pct must stay JSON-safe with no baseline"
+        assert small.ok
+
+        # Large gap with no baseline: the percentage is undefined, so it must not
+        # approve the year - the absolute allowance is the only thing that can.
+        (big,) = reconcile_yearly_sources({2026: 0}, {2026: MAX_YEAR_DRIFT_ABS + 1})
+        assert big.pct == 0.0
+        assert not big.ok, "an undefined percentage must never approve a year"
+
+    def test_real_build_output_has_no_flagged_years(self):
+        """The committed data should reconcile; if it stops, the build warns."""
+        from pathlib import Path
+
+        recon = Path(__file__).parent.parent / "web" / "data" / "source_reconciliation.json"
+        if not recon.exists():
+            pytest.skip("source_reconciliation.json not built")
+        data = json.loads(recon.read_text())
+        assert data["flagged_years"] == [], f"years drifting beyond threshold: {data['flagged_years']}"
