@@ -283,8 +283,11 @@ class CVESiteBuilder:
             if downloader.download_kev_data(force=force):
                 downloader.parse_kev_json()
 
-            if manifest is not None:
-                downloader.persist_accepted_manifest(manifest)
+            # download_data may have resolved a newer snapshot than the one we
+            # gated, if a publish landed mid-download. Record what we actually have.
+            accepted = downloader.accepted_manifest
+            if accepted is not None:
+                downloader.persist_accepted_manifest(accepted)
 
             self.print_verbose("✅ Data refresh complete (sequential)")
             return True

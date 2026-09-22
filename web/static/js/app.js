@@ -499,10 +499,18 @@
     };
   }
 
+  /* Two different ages, and conflating them overstated our freshness.
+     source_last_run is when the producer last gathered the data; data_as_of is
+     only when we downloaded it. The producer runs on its own schedule, so a
+     download minutes old routinely carries a snapshot hours old. Anything
+     labelled as data freshness reads source_last_run, and data_as_of is shown
+     only where we mean our own build. Fall back when there is no manifest. */
   function freshness(meta) {
-    all('[data-fresh]').forEach(e => { e.textContent = fmt.ago(meta.data_as_of); });
-    all('[data-asof]').forEach(e => { e.textContent = fmt.date(meta.data_as_of); });
+    const dataAge = meta.source_last_run || meta.data_as_of;
+    all('[data-fresh]').forEach(e => { e.textContent = fmt.ago(dataAge); });
+    all('[data-asof]').forEach(e => { e.textContent = fmt.date(dataAge); });
     all('[data-srcrun]').forEach(e => { e.textContent = fmt.ago(meta.source_last_run); });
+    all('[data-built]').forEach(e => { e.textContent = fmt.ago(meta.data_as_of); });
   }
 
   function fail(node, err) {

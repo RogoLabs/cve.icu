@@ -102,8 +102,8 @@ CVE.page(async (S) => {
   ], { sort: { key: 'what', dir: 1 }, name: 'cve-icu-data-sources' });
 
   el('#fresh-tiles').innerHTML = [
-    { lbl: 'Site data as of', v: `<span data-asof>&mdash;</span>`, sub: 'when this build ran' },
-    { lbl: 'Rebuilt', v: '<span data-fresh>&mdash;</span>', sub: 'hourly schedule' },
+    { lbl: 'Data as of', v: `<span data-asof>&mdash;</span>`, sub: 'newest record in this build' },
+    { lbl: 'Rebuilt', v: '<span data-built>&mdash;</span>', sub: 'when this build last ran' },
     { lbl: 'Upstream feed ran', v: '<span data-srcrun>&mdash;</span>',
       sub: 'the ceiling on freshness' }
   ].map(t => `<div class="c"><div class="lbl">${t.lbl}</div>

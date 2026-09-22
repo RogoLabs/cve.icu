@@ -43,10 +43,19 @@ class TestAsyncUnavailableFallback:
 
 
 class TestRefreshDataSync:
-    def _downloader(self):
+    def _downloader(self, resolves_to=...):
         d = MagicMock()
         d.download_epss_data.return_value = "epss.gz"
         d.download_kev_data.return_value = "kev.json"
+
+        # The real download_data records which snapshot the bytes turned out to
+        # be, which is a newer one when it raced a publish. refresh_data_sync
+        # persists that, not the manifest it asked for.
+        def record(force=False, manifest=None):
+            d.accepted_manifest = manifest if resolves_to is ... else resolves_to
+
+        d.download_data.side_effect = record
+        d.accepted_manifest = None
         return d
 
     def test_downloads_every_source(self, builder):
@@ -69,6 +78,15 @@ class TestRefreshDataSync:
 
         assert d.download_data.call_args.kwargs["manifest"] == manifest
         d.persist_accepted_manifest.assert_called_once_with(manifest)
+
+    def test_persists_the_snapshot_actually_downloaded(self, builder):
+        """A publish landing mid-download must not be recorded as the old one."""
+        raced = {"cve_count": 2, "last_run_iso": "y"}
+        d = self._downloader(resolves_to=raced)
+        with patch("download_cve_data.CVEDataDownloader", return_value=d):
+            builder.refresh_data_sync(force=False, manifest={"cve_count": 1, "last_run_iso": "x"})
+
+        d.persist_accepted_manifest.assert_called_once_with(raced)
 
     def test_manifest_not_persisted_when_absent(self, builder):
         d = self._downloader()
