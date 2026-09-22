@@ -173,6 +173,68 @@ class TestVerifyDownloadAgainstManifest:
         d.verify_download_against_manifest(make_manifest(sha256=hashlib.sha256(payload).hexdigest()), len(payload))
 
 
+class TestPublishRace:
+    """The producer writes nvd.json before metadata.json, so a reader can end up
+    holding the next snapshot while the manifest still names the previous one.
+    That used to fail the build as "Snapshot is incomplete", which was both a
+    false failure and a misleading message. It matters more since the producer
+    moved from a 3-hourly to an hourly cadence on 2026-09-22.
+    """
+
+    def make(self, tmp_path, fresh=None):
+        http = FakeHttpClient()
+        if fresh is not None:
+            http.add_response(MANIFEST_URL, json_data=fresh)
+        return make_downloader(tmp_path, http)
+
+    def test_accepts_bytes_matching_the_newer_snapshot(self, tmp_path):
+        """Raced a publish: the bytes are good, they are just the next snapshot."""
+        stale = make_manifest(bytes=100, sha256="a" * 64)
+        fresh = make_manifest(bytes=200, sha256="b" * 64, cve_count=378500)
+        d = self.make(tmp_path, fresh)
+
+        accepted = d.verify_download_against_manifest(stale, 200, "b" * 64)
+
+        assert accepted == fresh, "must report the snapshot the bytes really are"
+
+    def test_unchanged_manifest_is_still_a_bad_download(self, tmp_path):
+        """No concurrent publish to blame means the bytes really are wrong."""
+        manifest = make_manifest(bytes=100, sha256="a" * 64)
+        d = self.make(tmp_path, manifest)
+        with pytest.raises(OSError, match="has not moved"):
+            d.verify_download_against_manifest(manifest, 999, "a" * 64)
+
+    def test_matching_neither_snapshot_fails(self, tmp_path):
+        stale = make_manifest(bytes=100, sha256="a" * 64)
+        fresh = make_manifest(bytes=200, sha256="b" * 64)
+        d = self.make(tmp_path, fresh)
+        with pytest.raises(OSError, match="neither snapshot"):
+            d.verify_download_against_manifest(stale, 300, "c" * 64)
+
+    def test_unreadable_manifest_fails_closed(self, tmp_path):
+        """Cannot rule out corruption without a second read, so do not guess."""
+        stale = make_manifest(bytes=100, sha256="a" * 64)
+        d = self.make(tmp_path)
+        with pytest.raises(OSError, match="Could not re-read"):
+            d.verify_download_against_manifest(stale, 200, "b" * 64)
+
+    def test_raced_snapshot_must_still_be_healthy(self, tmp_path):
+        """Racing a publish is not a way around the producer-health gate."""
+        stale = make_manifest(bytes=100, sha256="a" * 64)
+        fresh = make_manifest(bytes=200, sha256="b" * 64, degraded=True)
+        d = self.make(tmp_path, fresh)
+        with pytest.raises(ValueError):
+            d.verify_download_against_manifest(stale, 200, "b" * 64)
+
+    def test_clean_match_returns_the_original_manifest(self, tmp_path):
+        """No mismatch means no second manifest read."""
+        manifest = make_manifest(bytes=100, sha256="a" * 64)
+        d = self.make(tmp_path)
+
+        assert d.verify_download_against_manifest(manifest, 100, "a" * 64) == manifest
+        assert d._http_client.request_count == 0
+
+
 class TestStreamingHash:
     def test_matches_hashlib(self, tmp_path):
         import hashlib

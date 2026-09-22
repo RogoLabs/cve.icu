@@ -103,6 +103,12 @@ class CVEDataDownloader:
         # verify_manifest_not_regressed().
         self.manifest_baseline_url: str = "https://cve.icu/data/source_manifest.json"
         self.manifest_file: Path = self.cache_dir / "source_manifest.json"
+        # The manifest the bytes on disk actually match. Usually the one we
+        # fetched before downloading, but a publish landing mid-download
+        # leaves us holding the next snapshot instead. Callers persist this
+        # rather than what they asked for, so the baseline we republish can
+        # never name a snapshot we do not have.
+        self.accepted_manifest: dict[str, Any] | None = None
         # Producer reports its own completeness_ratio. This is a catastrophe
         # backstop only, NOT the primary defence: the regression check against
         # the last accepted manifest is. Calibration caveat: the only healthy
@@ -177,6 +183,7 @@ class CVEDataDownloader:
         if not force and self.is_cache_valid():
             if not self.quiet:
                 logger.info("📋 Using cached data")
+            self.accepted_manifest = manifest
             return self.cache_file
 
         if not self.quiet:
@@ -218,12 +225,16 @@ class CVEDataDownloader:
             # Write using data writer
             self._data_writer.write_bytes(self.cache_file, b"".join(chunks))
 
-            # Verify the object against the producer's manifest before we
-            # treat it as usable. Raises on any mismatch.
-            self.verify_download_against_manifest(manifest, downloaded_size)
-
-            # Calculate file hash for integrity check
+            # Hash once. Both the manifest check below and cache_info need the
+            # digest, and a second streaming pass over ~1.8GB is not free on a
+            # CI runner.
             file_hash = self.calculate_file_hash_streaming(self.cache_file)
+
+            # Verify the object against the producer's manifest before we treat
+            # it as usable. Returns the manifest the bytes actually match, which
+            # is a newer one when we raced a publish. Raises on a real mismatch.
+            manifest = self.verify_download_against_manifest(manifest, downloaded_size, file_hash)
+            self.accepted_manifest = manifest
 
             # Save cache info using data writer
             cache_info = {
@@ -421,42 +432,98 @@ class CVEDataDownloader:
 
         logger.info(f"✅ Manifest not regressed (total {prev_total:,} -> {new_total:,})")
 
-    def verify_download_against_manifest(
+    def describe_manifest_mismatch(
         self,
-        manifest: dict[str, Any] | None,
+        manifest: dict[str, Any],
         downloaded_size: int,
-    ) -> None:
-        """Verify the downloaded object against the manifest's size and digest.
+        actual_sha: str | None = None,
+    ) -> str | None:
+        """Describe how the downloaded bytes differ from the manifest.
 
-        Both fields are optional: they appear only from the first producer run
-        after the integrity work landed, so their absence is logged, not fatal.
-
-        Raises:
-            OSError: on a size or digest mismatch.
+        Returns None when they match. Both manifest fields are optional: they
+        appear only from the first producer run after the integrity work
+        landed, so their absence is logged and skipped, not treated as a
+        mismatch. actual_sha lets the caller reuse a digest it already has
+        rather than re-reading ~1.8GB.
         """
-        if not manifest:
-            return
-
         expected_bytes = manifest.get("bytes")
         if expected_bytes is None:
             logger.warning("⚠️  Manifest has no 'bytes' field; skipping size verification")
         elif downloaded_size != expected_bytes:
-            raise OSError(
-                f"Size mismatch: downloaded {downloaded_size:,} bytes, "
-                f"manifest declares {expected_bytes:,}. Snapshot is incomplete."
-            )
-        else:
-            logger.info(f"✅ Size verified against manifest ({downloaded_size:,} bytes)")
+            return f"Size mismatch: downloaded {downloaded_size:,} bytes, manifest declares {expected_bytes:,}."
 
         expected_sha = manifest.get("sha256")
         if expected_sha is None:
             logger.warning("⚠️  Manifest has no 'sha256' field; skipping digest verification")
-            return
+            return None
 
-        actual_sha = self.calculate_file_hash_streaming(self.cache_file)
+        if actual_sha is None:
+            actual_sha = self.calculate_file_hash_streaming(self.cache_file)
         if actual_sha != expected_sha:
-            raise OSError(f"SHA-256 mismatch: computed {actual_sha}, manifest declares {expected_sha}.")
-        logger.info("✅ SHA-256 verified against manifest")
+            return f"SHA-256 mismatch: computed {actual_sha}, manifest declares {expected_sha}."
+        return None
+
+    def verify_download_against_manifest(
+        self,
+        manifest: dict[str, Any] | None,
+        downloaded_size: int,
+        actual_sha: str | None = None,
+    ) -> dict[str, Any] | None:
+        """Verify the downloaded object against the manifest, tolerating a race.
+
+        A mismatch is not automatically corruption. The producer uploads
+        nvd.json and then metadata.json, so between those two writes the data
+        object is already the new snapshot while the manifest still describes
+        the old one; a download straddling the swap lands in the same state.
+        That used to fail the build outright, under the misleading message
+        "Snapshot is incomplete" — the snapshot is complete, it just moved.
+        The producer went from a 3-hourly to an hourly cadence on 2026-09-22,
+        so this window is hit more often than it was.
+
+        Re-read the manifest once when the bytes disagree. If they match the
+        newer snapshot, we raced a publish and the data is good. A manifest
+        that has not moved means the bytes really are bad, which still fails.
+
+        Returns:
+            The manifest the downloaded bytes actually match, so the caller
+            records the snapshot it has rather than the one it asked for.
+            None when there was no manifest to verify against.
+
+        Raises:
+            OSError: when the bytes match neither the original manifest nor a
+                freshly fetched one.
+            ValueError: when the snapshot we raced into is itself unhealthy.
+        """
+        if not manifest:
+            return None
+
+        mismatch = self.describe_manifest_mismatch(manifest, downloaded_size, actual_sha)
+        if mismatch is None:
+            logger.info(f"✅ Verified against manifest ({downloaded_size:,} bytes)")
+            return manifest
+
+        logger.warning(f"⚠️  {mismatch}")
+        logger.warning("⚠️  Re-reading the manifest in case a publish landed mid-download")
+
+        fresh = self.fetch_source_manifest()
+        if fresh is None:
+            raise OSError(f"{mismatch} Could not re-read the manifest to rule out a concurrent publish.")
+
+        if fresh.get("sha256") == manifest.get("sha256") and fresh.get("bytes") == manifest.get("bytes"):
+            raise OSError(f"{mismatch} The manifest has not moved, so this is a bad download, not a publish.")
+
+        second = self.describe_manifest_mismatch(fresh, downloaded_size, actual_sha)
+        if second is not None:
+            raise OSError(f"{second} The manifest moved mid-download and the bytes match neither snapshot.")
+
+        # We are about to accept a snapshot the caller never gated, so re-run
+        # the producer-health check on it here. The regression check needs a
+        # baseline fetch and a caller-held override flag, so it stays with the
+        # caller, which compares against self.accepted_manifest.
+        self.verify_manifest_healthy(fresh)
+
+        logger.info(f"✅ Raced a publish; bytes match the newer snapshot (run {fresh.get('last_run_iso', 'unknown')})")
+        return fresh
 
     def persist_accepted_manifest(self, manifest: dict[str, Any]) -> None:
         """Record the manifest we accepted so the site can republish it."""
@@ -603,11 +670,23 @@ class CVEDataDownloader:
             # Download data if needed
             data_file = self.download_data(force=force_download, manifest=manifest)
 
+            # download_data resolves which snapshot the bytes actually are,
+            # which is not the one gated above when a publish landed mid-download.
+            # Re-run the regression gate on what we really have, so racing a
+            # publish cannot become a way past it.
+            accepted = self.accepted_manifest
+            if accepted is not None and accepted is not manifest:
+                if accept_baseline:
+                    logger.warning("⚠️  --accept-baseline: skipping regression check on the raced snapshot")
+                else:
+                    logger.info("🔁 Re-checking the snapshot we actually downloaded")
+                    self.verify_manifest_not_regressed(accepted, self.fetch_baseline_manifest())
+
             # Only record the manifest once the object it describes has been
             # downloaded and verified, so the published baseline can never name
             # a snapshot we did not actually accept.
-            if manifest is not None:
-                self.persist_accepted_manifest(manifest)
+            if accepted is not None:
+                self.persist_accepted_manifest(accepted)
 
             # Download CNA mapping files
             self.download_cna_mapping_files()
