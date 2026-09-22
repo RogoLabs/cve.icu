@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="static/css/style.css?v=4128b7f3">
+<link rel="stylesheet" href="static/css/style.css?v=086775d7">
 
 <!-- Page-specific head content (styles, preloads) -->
 
@@ -165,7 +165,7 @@ here is weighted, scored or prioritised by us.</p>
     <div>
       Counts only. Every number is a direct count from the published record &mdash;
       nothing here is weighted, scored or ranked by us.<br>
-      Data as of <b data-asof>&mdash;</b>, rebuilt hourly &middot;
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
       raw JSON at <code>cve.icu/data/</code> &middot;
       <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
       built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
@@ -174,7 +174,7 @@ here is weighted, scored or prioritised by us.</p>
   </div>
 </footer>
 
-<script src="static/js/app.js?v=4128b7f3"></script>
+<script src="static/js/app.js?v=086775d7"></script>
 
 <script>
 CVE.page(async (S) => {
@@ -212,8 +212,8 @@ CVE.page(async (S) => {
   ], { sort: { key: 'what', dir: 1 }, name: 'cve-icu-data-sources' });
 
   el('#fresh-tiles').innerHTML = [
-    { lbl: 'Site data as of', v: `<span data-asof>&mdash;</span>`, sub: 'when this build ran' },
-    { lbl: 'Rebuilt', v: '<span data-fresh>&mdash;</span>', sub: 'hourly schedule' },
+    { lbl: 'Data as of', v: `<span data-asof>&mdash;</span>`, sub: 'newest record in this build' },
+    { lbl: 'Rebuilt', v: '<span data-built>&mdash;</span>', sub: 'when this build last ran' },
     { lbl: 'Upstream feed ran', v: '<span data-srcrun>&mdash;</span>',
       sub: 'the ceiling on freshness' }
   ].map(t => `<div class="c"><div class="lbl">${t.lbl}</div>
