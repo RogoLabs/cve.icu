@@ -5,7 +5,15 @@ on:
   push:
     branches: [ main ]
   
-  # Run hourly. Offset from :00 because scheduled workflows on the hour sit in
+  # Primary trigger: nvd-scrapper sends this right after it publishes a new
+  # snapshot and purges the CDN, so the site rebuilds within minutes of fresh
+  # data instead of waiting on the cron below. It only fires on a clean
+  # publish, so a run the producer refused never triggers a rebuild here.
+  repository_dispatch:
+    types: [nvd-published]
+
+  # Hourly backup, kept because the dispatch above depends on a token in
+  # another repo. Offset from :00 because scheduled workflows on the hour sit in
   # the most contended slot on GitHub Actions and are frequently delayed or dropped.
   schedule:
     - cron: '25 * * * *'
@@ -13,8 +21,9 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-# A run commits to main and pushes. At hourly cadence a slow run could still be
-# in flight when the next fires, so serialise rather than race the push.
+# A run commits to main and pushes. A dispatch and the hourly cron can land
+# close together, and a slow run can still be in flight when the next fires,
+# so serialise rather than race the push.
 concurrency:
   group: build-and-deploy
   cancel-in-progress: false
@@ -80,8 +89,10 @@ jobs:
         publish_branch: gh-pages
         force_orphan: true
         
+    # repository_dispatch is the same unattended data refresh as schedule, just
+    # triggered on time, so it has to persist web/ the same way.
     - name: Commit updated data
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' || github.event_name == 'repository_dispatch'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
