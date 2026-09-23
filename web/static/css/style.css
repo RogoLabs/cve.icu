@@ -113,8 +113,9 @@ h2 .side{font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--faint
 .c.lead .v{font-size:56px}
 /* Only the home grid spans its lead tile: elsewhere the tile counts are even,
    and a spanning lead leaves an orphan on the second row. */
-/* The hero grid runs 2+2 / 1+1+1+1 / 2+2, so no row is left with a gap. */
-.grid.hero .c.lead,.grid.hero .c.wide{grid-column:span 2}
+/* The home page leads with three headline numbers, sized to be read first. */
+.grid.kpi .c{padding:20px var(--pad) 26px}
+.grid.kpi .c .v{font-size:56px}
 .c.wide .v{font-size:44px}
 .c .lbl{font-size:11.5px;letter-spacing:.055em;text-transform:uppercase;color:var(--faint);
   font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -251,10 +252,13 @@ td .g i{display:block;height:100%;background:var(--accent);opacity:.7}
 /* ------------------------------------------------------------ responsive */
 @media(max-width:1000px){
   .grid,.grid.g3,.grid.g4{grid-template-columns:repeat(2,1fr)}
+  .grid.kpi{grid-template-columns:repeat(3,1fr)}
+  .grid.kpi .c .v{font-size:40px}
   .cols,.cols.c2,.cols.wide-first{grid-template-columns:1fr}
 }
 @media(max-width:620px){
-  .grid,.grid.g3,.grid.g2,.grid.g4{grid-template-columns:1fr}
+  .grid,.grid.g3,.grid.g2,.grid.g4,.grid.kpi{grid-template-columns:1fr}
+  .grid.kpi .c .v{font-size:44px}
   .c.lead .v{font-size:44px}
   .c.wide .v{font-size:38px}
   .wrap{padding:16px 14px 48px}

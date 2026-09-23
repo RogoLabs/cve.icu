@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="static/css/style.css?v=086775d7">
+<link rel="stylesheet" href="static/css/style.css?v=93cf1184">
 
 <!-- Page-specific head content (styles, preloads) -->
 
@@ -83,8 +83,8 @@
   </span>
 </div>
 
-<div class="grid hero" id="tiles">
-  <div class="c lead"><div class="lbl">Loading</div><div class="v loading">&mdash;</div></div>
+<div class="grid g3 kpi" id="tiles">
+  <div class="c"><div class="lbl">Loading</div><div class="v loading">&mdash;</div></div>
 </div>
 
 <h2>Per year <span class="side">1999&ndash;2026</span></h2>
@@ -164,7 +164,7 @@
   </div>
 </footer>
 
-<script src="static/js/app.js?v=086775d7"></script>
+<script src="static/js/app.js?v=93cf1184"></script>
 
 <script>
 CVE.page(async (S) => {
@@ -180,67 +180,51 @@ CVE.page(async (S) => {
 
   const daily = (S.calendar_analysis_current_year.daily_data || [])
     .slice().sort((a, b) => a.date.localeCompare(b.date));
-  const sumLast = n => daily.slice(-n).reduce((s, d) => s + (d.value || 0), 0);
-  const last = daily[daily.length - 1] || {}, prev = daily[daily.length - 2] || {};
-  const peak = daily.reduce((m, d) => (d.value || 0) > (m.value || 0) ? d : m, { value: 0 });
+  const last = daily[daily.length - 1] || {};
   const dayNo = Math.max(1, Math.round((Date.now() - new Date(YR, 0, 1)) / 864e5));
 
-  const kev = S.cvss_analysis.kev_global_count || 0;
-  const kev30 = (S.kev_analysis.statistics || {}).added_last_30_days || 0;
-  const epssN = S.epss_analysis.total_cves_with_epss || 0;
-  const epssMatched = S.epss_analysis.total_cves_with_epss_matched ?? epssN;
-
-  const sparkYears = chart.spark(years.map(y => y.count));
-  const sparkDays = chart.spark(daily.slice(-60).map(d => d.value || 0));
+  const growth = S.growth_analysis || {};
+  const ytdRow = (growth.growth_data || []).find(r => r.is_ytd) || {};
 
   // A rate tile wants the rate's trend, not a repeat of the lead's raw counts.
   const rolling = (vals, n) => vals.map((_, i) => {
     const w = vals.slice(Math.max(0, i - n + 1), i + 1);
     return w.reduce((a, b) => a + b, 0) / w.length;
   });
+  const sparkDays = chart.spark(daily.slice(-60).map(d => d.value || 0));
   const sparkRate = chart.spark(rolling(daily.map(d => d.value || 0), 7).slice(6));
+  const sparkYears = chart.spark(years.map(y => y.count));
 
-  // "Published since 1999" is a total, so its trend is the running total;
-  // "CVEs per year" is a rate, so its trend is the per-year counts.
+  // "Published since 1999" is a total, so its trend is the running total.
   let run = 0;
   const sparkCumulative = chart.spark(years.map(y => (run += y.count)));
 
+  // Three headline numbers per scope: how many, how fast, and how that is changing.
+  // Everything else lives in the charts below or on its own page.
   const VIEWS = {
     year: [
-      { lead: 1, lbl: `Published in ${YR}`, v: fmt.n(ytd), spark: sparkDays,
+      { lbl: `CVEs in ${YR}`, v: fmt.n(ytd), spark: sparkDays,
         sub: `day <b>${dayNo}</b> of ${YR}` },
-      { wide: 1, lbl: 'CVEs per day', v: fmt.n(Math.round(ytd / dayNo)), spark: sparkRate,
-        sub: `averaged across <b>${fmt.n(dayNo)}</b> days of ${YR} &middot; line is a 7-day average` },
-      { lbl: 'Today', v: fmt.n(last.value), sub: last.date || '&mdash;' },
-      { lbl: 'Yesterday', v: fmt.n(prev.value), sub: prev.date || '&mdash;' },
-      { lbl: 'Last 7 days', v: fmt.n(sumLast(7)), sub: `<b>${fmt.n(Math.round(sumLast(7) / 7))}</b> per day` },
-      { lbl: 'Last 30 days', v: fmt.n(sumLast(30)), sub: `<b>${fmt.n(Math.round(sumLast(30) / 30))}</b> per day` },
-      { wide: 1, lbl: `Busiest day in ${YR}`, v: fmt.n(peak.value), sub: peak.date || '&mdash;' },
-      { wide: 1, lbl: 'In the KEV catalog', v: fmt.n(kev), sub: `<b>${fmt.n(kev30)}</b> added in 30 days` }
+      { lbl: 'Avg CVEs per day', v: fmt.n(Math.round(ytd / dayNo)), spark: sparkRate,
+        sub: `across <b>${fmt.n(dayNo)}</b> days &middot; line is a 7-day average` },
+      { lbl: 'Year-over-year growth', v: fmt.pct(ytdRow.ytd_vs_prev_ytd),
+        sub: ytdRow.prev_year_ytd_actual
+          ? `vs <b>${fmt.n(ytdRow.prev_year_ytd_actual)}</b> by this date in ${YR - 1}`
+          : `no ${YR - 1} comparison available` }
     ],
     all: [
-      { lead: 1, lbl: 'Published since 1999', v: fmt.n(total), spark: sparkCumulative,
+      { lbl: 'CVEs since 1999', v: fmt.n(total), spark: sparkCumulative,
         sub: `across <b>${years.length}</b> years &middot; line is the running total` },
-      { wide: 1, lbl: 'CVEs per year', v: fmt.n(Math.round(total / years.length)), spark: sparkYears,
-        sub: `averaged across <b>${years.length}</b> years &middot; line is CVEs per year` },
-      (() => { const b = years.reduce((m, y) => y.count > m.count ? y : m);
-        return { lbl: 'Highest year', v: fmt.n(b.count),
-                 sub: b.year === YR ? `${b.year} &mdash; still a partial year` : String(b.year) }; })(),
-      (() => { const b = years.reduce((m, y) => y.count < m.count ? y : m);
-        return { lbl: 'Lowest year', v: fmt.n(b.count), sub: String(b.year) }; })(),
-      { lbl: 'Last 5 years', v: fmt.n(years.slice(-5).reduce((s, y) => s + y.count, 0)),
-        sub: `<b>${fmt.share(years.slice(-5).reduce((s, y) => s + y.count, 0), total, 0)}</b> of all CVEs` },
-      { lbl: 'With an EPSS score', v: fmt.n(epssMatched),
-        sub: `<b>${fmt.share(epssMatched, total, 1)}</b> of all CVEs` },
-      { wide: 1, lbl: 'In the KEV catalog', v: fmt.n(kev), sub: `<b>${fmt.share(kev, total, 2)}</b> of all CVEs` },
-      { wide: 1, lbl: 'Publishers on record', v: fmt.n(S.cna_analysis.total_cnas),
-        sub: `<b>${fmt.n(S.cna_analysis.active_cnas)}</b> active` }
+      { lbl: 'Avg CVEs per year', v: fmt.n(Math.round(total / years.length)), spark: sparkYears,
+        sub: `line is CVEs per year` },
+      { lbl: 'Avg annual growth', v: fmt.pct(growth.avg_annual_growth),
+        sub: `complete years only &middot; ${YR} is partial` }
     ]
   };
 
   function tiles() {
     el('#tiles').innerHTML = VIEWS[scope].map(t => `
-      <div class="c ${t.lead ? 'lead' : ''}${t.wide ? ' wide' : ''}">
+      <div class="c">
         <div class="lbl">${t.lbl}</div>
         <div class="v">${t.v}</div>
         <div class="sub">${t.sub}</div>
