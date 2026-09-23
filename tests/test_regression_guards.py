@@ -120,19 +120,67 @@ class TestVerifyNoRegression:
 
 
 class TestVerifyDataFreshness:
-    def _write_cache_info(self, builder, when: datetime, **extra):
-        payload = {"download_time": when.isoformat(), **extra}
+    """Age is the producer's last run, not our download time.
+
+    Downloading a stale snapshot makes it freshly downloaded, not fresh.
+    """
+
+    def _write_cache_info(self, builder, *, downloaded=None, source_run=None, **extra):
+        payload: dict[str, object] = dict(extra)
+        if downloaded is not None:
+            payload["download_time"] = downloaded.isoformat()
+        if source_run is not None:
+            payload["source_last_run"] = source_run.isoformat()
         (builder.cache_dir / "cache_info.json").write_text(json.dumps(payload))
         builder.source_provenance.cache_clear()
 
     def test_accepts_fresh_data(self, builder):
-        self._write_cache_info(builder, datetime.now(UTC) - timedelta(hours=2))
+        """A normal CI run: producer ran hours ago, we downloaded minutes ago."""
+        now = datetime.now(UTC)
+        self._write_cache_info(builder, downloaded=now - timedelta(minutes=7), source_run=now - timedelta(hours=6))
         builder.verify_data_freshness()
 
     def test_rejects_stale_data(self, builder):
-        self._write_cache_info(builder, datetime.now(UTC) - timedelta(days=50))
+        now = datetime.now(UTC)
+        self._write_cache_info(builder, downloaded=now - timedelta(days=50), source_run=now - timedelta(days=50))
         with pytest.raises(RuntimeError, match="over the 24.0h limit"):
             builder.verify_data_freshness()
+
+    def test_rejects_stale_snapshot_downloaded_moments_ago(self, builder):
+        """The case this guard exists for, and the one it used to miss.
+
+        CI downloads a few minutes before building, so download time is always
+        ~now no matter how old the data behind it is. Gating on that interval
+        meant the guard could never fire.
+        """
+        now = datetime.now(UTC)
+        self._write_cache_info(builder, downloaded=now - timedelta(minutes=7), source_run=now - timedelta(days=3))
+        with pytest.raises(RuntimeError, match=r"72\.\dh old, over the 24\.0h limit"):
+            builder.verify_data_freshness()
+
+    def test_accepts_observed_producer_gap(self, builder):
+        """GitHub drops most scheduled triggers, so 5-7h gaps are routine."""
+        now = datetime.now(UTC)
+        self._write_cache_info(builder, downloaded=now, source_run=now - timedelta(hours=7))
+        builder.verify_data_freshness()
+
+    def test_limit_boundary(self, builder):
+        """Just inside the limit passes; just past it fails."""
+        now = datetime.now(UTC)
+        self._write_cache_info(builder, downloaded=now, source_run=now - timedelta(hours=23, minutes=55))
+        builder.verify_data_freshness()
+
+        self._write_cache_info(builder, downloaded=now, source_run=now - timedelta(hours=24, minutes=10))
+        with pytest.raises(RuntimeError, match="over the 24.0h limit"):
+            builder.verify_data_freshness()
+
+    def test_missing_source_last_run_warns_but_passes(self, builder):
+        """cache_info files from the async path carry no producer timestamp.
+
+        Nothing to measure against, so the build should not be blocked on it.
+        """
+        self._write_cache_info(builder, downloaded=datetime.now(UTC) - timedelta(days=50))
+        builder.verify_data_freshness()
 
     def test_missing_cache_info_warns_but_passes(self, builder):
         """An unreadable cache info should not block a build on its own."""
@@ -159,6 +207,36 @@ class TestSourceProvenance:
         assert 2.9 < p["data_age_hours"] < 3.1
         assert p["data_as_of"].endswith("Z")
 
+    def test_build_latency_and_data_age_are_separate_signals(self, builder, tmp_path):
+        """A recent download of an old snapshot: ~0h latency, 30h of data age."""
+        now = datetime.now(UTC)
+        (tmp_path / "cache_info.json").write_text(
+            json.dumps(
+                {
+                    "download_time": (now - timedelta(minutes=6)).isoformat(),
+                    "source_last_run": (now - timedelta(hours=30)).isoformat(),
+                }
+            )
+        )
+        builder.source_provenance.cache_clear()
+        p = builder.source_provenance()
+        assert 0.0 <= p["data_age_hours"] < 0.2
+        assert 29.9 < p["source_age_hours"] < 30.1
+
+    def test_naive_source_last_run_is_read_as_utc(self, builder, tmp_path):
+        naive = (datetime.now(UTC) - timedelta(hours=5)).replace(tzinfo=None)
+        (tmp_path / "cache_info.json").write_text(json.dumps({"source_last_run": naive.isoformat()}))
+        builder.source_provenance.cache_clear()
+        p = builder.source_provenance()
+        assert 4.9 < p["source_age_hours"] < 5.1
+
+    def test_unparseable_source_last_run_leaves_age_unset(self, builder, tmp_path):
+        (tmp_path / "cache_info.json").write_text(json.dumps({"source_last_run": "not-a-timestamp"}))
+        builder.source_provenance.cache_clear()
+        p = builder.source_provenance()
+        assert p["source_last_run"] == "not-a-timestamp"
+        assert p["source_age_hours"] is None
+
     def test_naive_timestamp_is_read_as_utc(self, builder, tmp_path):
         """Older cache_info files predate the UTC fix."""
         naive = (datetime.now(UTC) - timedelta(hours=1)).replace(tzinfo=None)
@@ -172,6 +250,7 @@ class TestSourceProvenance:
         p = builder.source_provenance()
         assert p["data_as_of"] is None
         assert p["data_age_hours"] is None
+        assert p["source_age_hours"] is None
 
 
 class TestGuardEnforcementMode:
@@ -189,7 +268,9 @@ class TestGuardEnforcementMode:
 
     def test_stale_data_warns_instead_of_raising_outside_ci(self, lenient_builder):
         stale = datetime.now(UTC) - timedelta(days=53)
-        (lenient_builder.cache_dir / "cache_info.json").write_text(json.dumps({"download_time": stale.isoformat()}))
+        (lenient_builder.cache_dir / "cache_info.json").write_text(
+            json.dumps({"download_time": stale.isoformat(), "source_last_run": stale.isoformat()})
+        )
         lenient_builder.source_provenance.cache_clear()
         lenient_builder.verify_data_freshness()
 

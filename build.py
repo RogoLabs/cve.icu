@@ -119,8 +119,12 @@ class CVESiteBuilder:
         # a real number instead of guessing. See docs/COUNTING.md.
         self.excluded_pre_1999: int | None = None
         self.regression_allowance: int = 10
-        # A 3-hourly build should never be running on data a full day old.
-        self.max_data_age_hours: float = 24.0
+        # Measured from the producer's last run (source_age_hours), not from
+        # our download. The producer moved to an hourly cron on 2026-09-22, but
+        # GitHub drops most scheduled triggers, so observed publish gaps run
+        # 5-7h. A day is comfortably clear of that spread while still catching
+        # a feed that has genuinely stopped.
+        self.max_source_age_hours: float = 24.0
         self.accept_baseline: bool = False
         # These guards exist to stop bad data being *published*. A local build
         # publishes nothing, so blocking a developer working from a deliberately
@@ -1533,17 +1537,26 @@ class CVESiteBuilder:
         generated_at records when the build ran, which says nothing about how
         old the underlying data is. This surfaces the difference rather than
         letting a stale cache be published under a fresh timestamp.
+
+        Age is measured from the producer's last run, not from our download.
+        data_age_hours is only the gap between downloading and building - in CI
+        about seven minutes - so a month-old snapshot fetched just now still
+        reports ~0. Gating on that could never fire, which is how this guard
+        originally shipped.
         """
         info = self.source_provenance()
-        age_hours = info.get("data_age_hours")
+        age_hours = info.get("source_age_hours")
         if age_hours is None:
-            logger.warning("  ⚠️  Could not determine data age from cache info")
+            # cache_info files written before source_last_run existed, and
+            # those from the async download path, carry no producer timestamp.
+            # There is nothing to measure, so say so rather than guessing.
+            logger.warning("  ⚠️  Could not determine source age from cache info")
             return
 
-        if age_hours > self.max_data_age_hours:
+        if age_hours > self.max_source_age_hours:
             self.enforce_data_guard(
-                f"Source snapshot is {age_hours:.1f}h old, over the {self.max_data_age_hours}h limit.",
-                f"  downloaded {info.get('data_as_of')}",
+                f"Source snapshot is {age_hours:.1f}h old, over the {self.max_source_age_hours}h limit.",
+                f"  produced {info.get('source_last_run')}, downloaded {info.get('data_as_of')}",
                 "Stale data must not be published under a fresh timestamp. "
                 "Refresh with 'python build.py refresh --force'.",
             )
@@ -1560,8 +1573,14 @@ class CVESiteBuilder:
         cache_info_file = self.cache_dir / "cache_info.json"
         provenance: dict[str, Any] = {
             "data_as_of": None,
+            # Build latency: how long between fetching the snapshot and
+            # building from it. Near zero on a normal run. NOT data age - see
+            # source_age_hours, which is what verify_data_freshness() gates on.
             "data_age_hours": None,
             "source_last_run": None,
+            # True data age: how long since the producer last refreshed the
+            # feed. Independent of when we happened to download it.
+            "source_age_hours": None,
             "source_cve_count": None,
         }
         try:
@@ -1576,17 +1595,31 @@ class CVESiteBuilder:
 
         download_time = info.get("download_time")
         if download_time:
-            try:
-                stamp = datetime.fromisoformat(download_time)
-                # Older cache_info files carry a naive local timestamp.
-                if stamp.tzinfo is None:
-                    stamp = stamp.replace(tzinfo=UTC)
+            stamp = self._parse_cache_timestamp(download_time, "download_time")
+            if stamp is not None:
                 provenance["data_as_of"] = stamp.isoformat().replace("+00:00", "Z")
                 provenance["data_age_hours"] = round((datetime.now(UTC) - stamp).total_seconds() / 3600, 1)
-            except ValueError as e:
-                logger.warning(f"  ⚠️  Could not parse download_time {download_time!r}: {e}")
+
+        source_last_run = info.get("source_last_run")
+        if source_last_run:
+            stamp = self._parse_cache_timestamp(source_last_run, "source_last_run")
+            if stamp is not None:
+                provenance["source_age_hours"] = round((datetime.now(UTC) - stamp).total_seconds() / 3600, 1)
 
         return provenance
+
+    @staticmethod
+    def _parse_cache_timestamp(value: str, field: str) -> datetime | None:
+        """Parse an ISO timestamp from cache_info, or warn and return None."""
+        try:
+            stamp = datetime.fromisoformat(value)
+        except ValueError as e:
+            logger.warning(f"  ⚠️  Could not parse {field} {value!r}: {e}")
+            return None
+        # Older cache_info files carry a naive local timestamp.
+        if stamp.tzinfo is None:
+            stamp = stamp.replace(tzinfo=UTC)
+        return stamp
 
     def verify_historical_year_coverage(self, all_year_data: list[dict[str, Any]]) -> None:
         """Fail the build if any complete historical year has zero CVEs.
