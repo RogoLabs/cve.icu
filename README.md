@@ -200,7 +200,8 @@ python build.py --validate
 
 The project uses GitHub Actions for automation:
 
-- **Scheduled Builds**: Every 6 hours (0:00, 6:00, 12:00, 18:00 UTC)
+- **On New NVD Data**: Builds triggered by a `repository_dispatch` (`nvd-published`) that [nvd-scrapper](https://github.com/jgamblin/nvd-scrapper) sends after each successful hourly publish
+- **Scheduled Builds**: Hourly at :25 UTC, as a backup to the dispatch
 - **On Push**: Builds triggered on commits to main branch
 - **Deployment**: Automatic deployment to GitHub Pages
 
