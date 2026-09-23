@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="static/css/style.css?v=93cf1184">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
 
 <!-- Page-specific head content (styles, preloads) -->
 
@@ -73,14 +73,8 @@
 <main id="main" class="wrap">
 
 <div class="ph">
-  <h1 id="scope-title">CVEs published in 2026</h1>
-  <span class="note" id="scope-note"></span>
-  <span style="margin-left:auto">
-    <span class="seg" id="scope">
-      <button data-scope="year" class="on">2026</button>
-      <button data-scope="all">All time</button>
-    </span>
-  </span>
+  <h1>CVEs published in 2026</h1>
+  <span class="note" id="asof"></span>
 </div>
 
 <div class="grid g3 kpi" id="tiles">
@@ -103,7 +97,7 @@
 <h2>Breakdowns</h2>
 <div class="cols">
   <div class="panel">
-    <div class="panel-h">Publishers <span class="side" id="side-cna"></span></div>
+    <div class="panel-h">Publishers <span class="side">in 2026</span></div>
     <div class="rows" id="top-cna"></div>
     <div class="panel-h" style="border-top:1px solid var(--line);border-bottom:0">
       <a href="cna.html" style="color:var(--accent)">All publishers &rarr;</a></div>
@@ -164,18 +158,16 @@
   </div>
 </footer>
 
-<script src="static/js/app.js?v=93cf1184"></script>
+<script src="static/js/app.js?v=6ef77805"></script>
 
 <script>
 CVE.page(async (S) => {
   const { fmt, chart, el } = CVE;
   const YR = 2026;
-  let scope = 'year';
 
   const years = Object.values(S.yearly_summary.years)
     .map(y => ({ year: y.year, count: y.total_cves }))
     .sort((a, b) => a.year - b.year);
-  const total = years.reduce((s, y) => s + y.count, 0);
   const ytd = (years.find(y => y.year === YR) || {}).count || 0;
 
   const daily = (S.calendar_analysis_current_year.daily_data || [])
@@ -183,79 +175,45 @@ CVE.page(async (S) => {
   const last = daily[daily.length - 1] || {};
   const dayNo = Math.max(1, Math.round((Date.now() - new Date(YR, 0, 1)) / 864e5));
 
-  const growth = S.growth_analysis || {};
-  const ytdRow = (growth.growth_data || []).find(r => r.is_ytd) || {};
+  const ytdRow = ((S.growth_analysis || {}).growth_data || []).find(r => r.is_ytd) || {};
+  const pace = ytdRow.projected_full_year;
 
-  // A rate tile wants the rate's trend, not a repeat of the lead's raw counts.
-  const rolling = (vals, n) => vals.map((_, i) => {
-    const w = vals.slice(Math.max(0, i - n + 1), i + 1);
-    return w.reduce((a, b) => a + b, 0) / w.length;
-  });
-  const sparkDays = chart.spark(daily.slice(-60).map(d => d.value || 0));
-  const sparkRate = chart.spark(rolling(daily.map(d => d.value || 0), 7).slice(6));
-  const sparkYears = chart.spark(years.map(y => y.count));
+  // Three numbers, one line of context each: how many, how fast, how that is
+  // changing. Everything else lives in the charts below or on its own page.
+  const TILES = [
+    { lbl: 'Published to date', v: fmt.n(ytd),
+      sub: pace ? `on pace for <b>~${fmt.n(Math.round(pace / 1000) * 1000)}</b> this year`
+                : `day <b>${dayNo}</b> of ${YR}` },
+    { lbl: 'Average per day', v: fmt.n(Math.round(ytd / dayNo)),
+      sub: `across <b>${fmt.n(dayNo)}</b> days of ${YR}` },
+    { lbl: 'Year-over-year growth', v: fmt.pct(ytdRow.ytd_vs_prev_ytd),
+      sub: ytdRow.prev_year_ytd_actual
+        ? `vs <b>${fmt.n(ytdRow.prev_year_ytd_actual)}</b> by this date in ${YR - 1}`
+        : `no ${YR - 1} comparison available` }
+  ];
 
-  // "Published since 1999" is a total, so its trend is the running total.
-  let run = 0;
-  const sparkCumulative = chart.spark(years.map(y => (run += y.count)));
+  el('#tiles').innerHTML = TILES.map(t => `
+    <div class="c">
+      <div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div>
+      <div class="sub">${t.sub}</div>
+    </div>`).join('');
+  el('#asof').textContent = last.date ? `through ${fmt.day(last.date)}` : `${YR} to date`;
 
-  // Three headline numbers per scope: how many, how fast, and how that is changing.
-  // Everything else lives in the charts below or on its own page.
-  const VIEWS = {
-    year: [
-      { lbl: `CVEs in ${YR}`, v: fmt.n(ytd), spark: sparkDays,
-        sub: `day <b>${dayNo}</b> of ${YR}` },
-      { lbl: 'Avg CVEs per day', v: fmt.n(Math.round(ytd / dayNo)), spark: sparkRate,
-        sub: `across <b>${fmt.n(dayNo)}</b> days &middot; line is a 7-day average` },
-      { lbl: 'Year-over-year growth', v: fmt.pct(ytdRow.ytd_vs_prev_ytd),
-        sub: ytdRow.prev_year_ytd_actual
-          ? `vs <b>${fmt.n(ytdRow.prev_year_ytd_actual)}</b> by this date in ${YR - 1}`
-          : `no ${YR - 1} comparison available` }
-    ],
-    all: [
-      { lbl: 'CVEs since 1999', v: fmt.n(total), spark: sparkCumulative,
-        sub: `across <b>${years.length}</b> years &middot; line is the running total` },
-      { lbl: 'Avg CVEs per year', v: fmt.n(Math.round(total / years.length)), spark: sparkYears,
-        sub: `line is CVEs per year` },
-      { lbl: 'Avg annual growth', v: fmt.pct(growth.avg_annual_growth),
-        sub: `complete years only &middot; ${YR} is partial` }
-    ]
-  };
+  const cnas = (S.cna_analysis.cna_list || []).map(c => ({
+    label: c.name, value: (c.cves_by_year || {})[YR] || 0
+  })).sort((a, b) => b.value - a.value).slice(0, 8);
+  chart.rank('#top-cna', cnas, { compact: true, name: 'cve-icu-top-publishers' });
 
-  function tiles() {
-    el('#tiles').innerHTML = VIEWS[scope].map(t => `
-      <div class="c">
-        <div class="lbl">${t.lbl}</div>
-        <div class="v">${t.v}</div>
-        <div class="sub">${t.sub}</div>
-        ${t.spark || ''}
-      </div>`).join('');
-    el('#scope-title').textContent = scope === 'year'
-      ? `CVEs published in ${YR}` : 'CVEs published since 1999';
-    el('#scope-note').textContent = scope === 'year'
-      ? `${YR} to date` : `${years.length} years of records`;
-  }
+  chart.rank('#top-cwe', (S.cwe_analysis.top_cwes || []).slice(0, 8)
+    .map(c => ({ label: c.description || c.name, sub: 'CWE-' + c.id, value: c.count })),
+    { compact: true, name: 'cve-icu-top-weaknesses' });
 
-  function breakdowns() {
-    const cnas = (S.cna_analysis.cna_list || []).map(c => ({
-      label: c.name, value: scope === 'year' ? (c.cves_by_year || {})[YR] || 0 : c.count
-    })).sort((a, b) => b.value - a.value).slice(0, 8);
-    chart.rank('#top-cna', cnas, { compact: true, name: 'cve-icu-top-publishers' });
-    el('#side-cna').textContent = scope === 'year' ? `in ${YR}` : 'all time';
-
-    chart.rank('#top-cwe', (S.cwe_analysis.top_cwes || []).slice(0, 8)
-      .map(c => ({ label: c.description || c.name, sub: 'CWE-' + c.id, value: c.count })),
-      { compact: true, name: 'cve-icu-top-weaknesses' });
-
-    // top_cpes holds one row per CPE string, so the same product appears several
-    // times (windows_server_2012 r2 vs -, debian_linux 8/9/10/11). Rank the
-    // aggregated product list instead.
-    chart.rank('#top-cpe', (S.cpe_analysis.top_products || []).slice(0, 8)
-      .map(c => ({ label: c.product, value: c.count })), { compact: true, name: 'cve-icu-top-products' });
-  }
-
-  function render() { tiles(); breakdowns(); }
-  render();
+  // top_cpes holds one row per CPE string, so the same product appears several
+  // times (windows_server_2012 r2 vs -, debian_linux 8/9/10/11). Rank the
+  // aggregated product list instead.
+  chart.rank('#top-cpe', (S.cpe_analysis.top_products || []).slice(0, 8)
+    .map(c => ({ label: c.product, value: c.count })), { compact: true, name: 'cve-icu-top-products' });
 
   chart.bars('#chart-years', years.map(y => ({
     label: String(y.year), value: y.count, current: y.year === YR
@@ -270,13 +228,6 @@ CVE.page(async (S) => {
   el('#days-side').textContent = recent.length
     ? `${fmt.day(recent[0].date)} – ${fmt.day(last.date)}` : '';
 
-  el('#scope').addEventListener('click', e => {
-    const b = e.target.closest('button[data-scope]');
-    if (!b) return;
-    scope = b.dataset.scope;
-    CVE.all('#scope button').forEach(x => x.classList.toggle('on', x === b));
-    render();
-  });
 });
 </script>
 

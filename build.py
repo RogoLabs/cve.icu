@@ -923,7 +923,6 @@ class CVESiteBuilder:
             },
             "growth_analysis": {
                 "growth_data": growth_analysis_raw.get("growth_data", []),
-                "avg_annual_growth": growth_analysis_raw.get("avg_annual_growth"),
             },
             "cvss_analysis": {
                 "score_distribution": cvss_analysis_raw.get("score_distribution", {}),
