@@ -38,9 +38,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    # Check out the branch tip as of job start, not the SHA the event was
+    # created at. A dispatch or cron that queues behind a running build
+    # would otherwise start from a main that the running build then pushes
+    # past, and its "Commit updated data" push is rejected as non-fast-forward.
+    # The concurrency group guarantees the previous build has pushed by now.
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
+        ref: ${{ github.ref }}
         persist-credentials: true
         fetch-depth: 0
       
