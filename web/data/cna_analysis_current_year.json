@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T15:29:00.724203",
+  "generated_at": "2026-09-24T15:59:09.497447",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 378,
@@ -11,10 +11,10 @@
     {
       "name": "GitHub_M",
       "assigner_org_id": "a0819718-46f1-4df5-94e2-005712e83aaa",
-      "count": 10617,
+      "count": 10624,
       "rank": 1,
       "first_cve_date": "2026-01-01T15:11:46.028Z",
-      "last_cve_date": "2026-09-24T15:12:35.089Z",
+      "last_cve_date": "2026-09-24T15:46:46.920Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -24,16 +24,16 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Medium": 4274,
-        "Low": 568,
-        "High": 4450,
-        "Critical": 1325
+        "Medium": 4276,
+        "Low": 569,
+        "High": 4453,
+        "Critical": 1326
       },
       "top_cwe_types": {
         "CWE-79": 962,
         "CWE-22": 755,
-        "CWE-918": 640,
-        "CWE-862": 630,
+        "CWE-918": 643,
+        "CWE-862": 631,
         "CWE-863": 518
       },
       "kev_count": 12,
@@ -50,11 +50,11 @@
         ],
         [
           "CWE-918",
-          640
+          643
         ],
         [
           "CWE-862",
-          630
+          631
         ],
         [
           "CWE-863",
@@ -65,10 +65,10 @@
     {
       "name": "Linux",
       "assigner_org_id": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
-      "count": 6564,
+      "count": 6626,
       "rank": 2,
       "first_cve_date": "2026-01-05T09:32:25.534Z",
-      "last_cve_date": "2026-09-24T15:10:44.598Z",
+      "last_cve_date": "2026-09-24T15:52:26.252Z",
       "years_active": 3,
       "first_cve_year": 2024,
       "last_cve_year": 2026,
@@ -172,10 +172,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 5137,
+      "count": 5138,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-09-24T15:00:12.165Z",
+      "last_cve_date": "2026-09-24T15:45:10.969Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -185,7 +185,7 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 3044,
+        "Medium": 3045,
         "Critical": 719,
         "High": 1281,
         "Low": 93
@@ -280,7 +280,7 @@
     {
       "name": "mitre",
       "assigner_org_id": "8254265b-2729-46b6-b9e3-3dfca2d5bfca",
-      "count": 3243,
+      "count": 3252,
       "rank": 6,
       "first_cve_date": "2026-01-01T04:39:48.140Z",
       "last_cve_date": "2026-09-24T14:58:38.367Z",
@@ -623,7 +623,7 @@
         "Low": 42
       },
       "top_cwe_types": {
-        "CWE-78": 78,
+        "CWE-78": 79,
         "CWE-787": 75,
         "CWE-22": 69,
         "CWE-79": 67,
@@ -635,7 +635,7 @@
       "top_cwes": [
         [
           "CWE-78",
-          78
+          79
         ],
         [
           "CWE-787",
@@ -1572,10 +1572,64 @@
       ]
     },
     {
+      "name": "HCL",
+      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
+      "count": 232,
+      "rank": 30,
+      "first_cve_date": "2026-01-07T06:48:19.946Z",
+      "last_cve_date": "2026-09-24T15:21:47.886Z",
+      "years_active": 8,
+      "first_cve_year": 2019,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "Vendor"
+      ],
+      "severity_distribution": {
+        "Low": 100,
+        "High": 22,
+        "Medium": 106,
+        "Critical": 4
+      },
+      "top_cwe_types": {
+        "CWE-200": 26,
+        "CWE-209": 14,
+        "CWE-79": 9,
+        "CWE-20": 8,
+        "CWE-532": 8
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-200",
+          26
+        ],
+        [
+          "CWE-209",
+          14
+        ],
+        [
+          "CWE-79",
+          9
+        ],
+        [
+          "CWE-20",
+          8
+        ],
+        [
+          "CWE-532",
+          8
+        ]
+      ]
+    },
+    {
       "name": "google_android",
       "assigner_org_id": "baff130e-b8d5-4e15-b3d3-c3cf5d5545c6",
       "count": 232,
-      "rank": 30,
+      "rank": 31,
       "first_cve_date": "2026-01-16T18:19:02.047Z",
       "last_cve_date": "2026-09-08T19:20:33.261Z",
       "years_active": 12,
@@ -1622,60 +1676,6 @@
         [
           "CWE-441",
           18
-        ]
-      ]
-    },
-    {
-      "name": "HCL",
-      "assigner_org_id": "1e47fe04-f25f-42fa-b674-36de2c5e3cfc",
-      "count": 231,
-      "rank": 31,
-      "first_cve_date": "2026-01-07T06:48:19.946Z",
-      "last_cve_date": "2026-09-18T11:12:24.764Z",
-      "years_active": 8,
-      "first_cve_year": 2019,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "Vendor"
-      ],
-      "severity_distribution": {
-        "Low": 100,
-        "High": 22,
-        "Medium": 105,
-        "Critical": 4
-      },
-      "top_cwe_types": {
-        "CWE-200": 26,
-        "CWE-209": 14,
-        "CWE-79": 9,
-        "CWE-532": 8,
-        "CWE-20": 7
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-200",
-          26
-        ],
-        [
-          "CWE-209",
-          14
-        ],
-        [
-          "CWE-79",
-          9
-        ],
-        [
-          "CWE-532",
-          8
-        ],
-        [
-          "CWE-20",
-          7
         ]
       ]
     },
@@ -2004,10 +2004,10 @@
     {
       "name": "mongodb",
       "assigner_org_id": "a39b4221-9bd0-4244-95fc-f3e2e07f1deb",
-      "count": 193,
+      "count": 197,
       "rank": 38,
       "first_cve_date": "2026-01-27T17:29:21.423Z",
-      "last_cve_date": "2026-09-18T17:27:51.644Z",
+      "last_cve_date": "2026-09-24T15:51:16.196Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -2017,14 +2017,14 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "High": 122,
-        "Medium": 62,
+        "High": 125,
+        "Medium": 63,
         "Critical": 8,
         "Low": 1
       },
       "top_cwe_types": {
         "CWE-617": 21,
-        "CWE-943": 18,
+        "CWE-943": 19,
         "CWE-863": 13,
         "CWE-416": 12,
         "CWE-770": 10
@@ -2039,7 +2039,7 @@
         ],
         [
           "CWE-943",
-          18
+          19
         ],
         [
           "CWE-863",
@@ -3347,10 +3347,10 @@
     {
       "name": "wikimedia-foundation",
       "assigner_org_id": "c4f26cc8-17ff-4c99-b5e2-38fc1793eacc",
-      "count": 106,
+      "count": 107,
       "rank": 63,
       "first_cve_date": "2026-01-07T17:36:19.258Z",
-      "last_cve_date": "2026-09-23T18:50:13.056Z",
+      "last_cve_date": "2026-09-24T15:27:31.697Z",
       "years_active": 3,
       "first_cve_year": 2024,
       "last_cve_year": 2026,
@@ -3362,10 +3362,10 @@
       "severity_distribution": {
         "Low": 68,
         "High": 3,
-        "Medium": 35
+        "Medium": 36
       },
       "top_cwe_types": {
-        "CWE-79": 43,
+        "CWE-79": 44,
         "CWE-200": 15,
         "CWE-22": 11,
         "CWE-20": 5,
@@ -3377,7 +3377,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          43
+          44
         ],
         [
           "CWE-200",
