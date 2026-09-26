@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Year-over-year change &mdash; CVE.ICU</title>
+
+<meta name="description" content="How CVE publication counts changed from one year to the next, 1999 to 2026.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    class="on" aria-current="page">Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>Year-over-year change</h1>
+  <span class="note">1999&ndash;2026</span>
+</div>
+<p class="lede">The same counts as <a href="years.html" style="color:var(--accent)">Years</a>,
+expressed as change. 2026 is partial, so it is shown against both the same point
+last year and last year's completed total &mdash; those answer different questions.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Change per year</h2>
+<div class="panel">
+  <div class="panel-h">Percent change against the prior year
+    <span class="side">bars above the line are increases</span></div>
+  <div class="panel-b"><div id="chart-growth"></div></div>
+</div>
+
+<h2>Absolute counts</h2>
+<div class="panel">
+  <div class="panel-h">CVEs added compared with the year before</div>
+  <div class="panel-b"><div id="chart-abs"></div></div>
+</div>
+
+<h2>All years</h2>
+<div class="panel"><div id="growth-table"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el, table } = CVE;
+  const YR = 2026;
+  const g = await CVE.json('growth_analysis.json');
+  const data = g.growth_data || [];
+  const cur = data.find(d => d.is_ytd) || data[data.length - 1] || {};
+  const prevFull = (data.find(d => d.year === YR - 1) || {}).cves;
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: `${YR} so far`, v: fmt.n(cur.cves),
+      sub: `projected full year <b>${fmt.compact(cur.projected_full_year)}</b>` },
+    { lbl: `vs same point in ${YR - 1}`, v: fmt.pct(cur.ytd_vs_prev_ytd),
+      sub: `against <b>${fmt.n(cur.prev_year_ytd_actual)}</b> by this date` },
+    { lbl: `vs all of ${YR - 1}`, v: fmt.pct(cur.ytd_vs_prev_full),
+      sub: `against <b>${fmt.n(prevFull)}</b> for the full year` },
+    { lbl: 'Average annual change', v: fmt.pct(g.avg_annual_growth),
+      sub: 'across all years on record' }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}">
+      <div class="lbl">${t.lbl}</div><div class="v">${t.v}</div>
+      <div class="sub">${t.sub}</div></div>`).join('');
+
+  const withPrev = data.filter(d => d.year > 1999);
+  chart.bars('#chart-growth', withPrev.map(d => ({
+    label: String(d.year), value: Math.abs(d.growth_rate || 0),
+    current: d.year === YR, alt: (d.growth_rate || 0) < 0
+  })), { tall: true, ticks: ['2000', String(YR)] , name: 'cve-icu-yearly-change' });
+
+  chart.bars('#chart-abs', withPrev.map(d => ({
+    label: String(d.year), value: Math.abs(d.growth_absolute || 0),
+    current: d.year === YR, alt: (d.growth_absolute || 0) < 0
+  })), { ticks: ['2000', String(YR)] , name: 'cve-icu-yearly-change-absolute' });
+
+  table('#growth-table', data.slice().reverse().map(d => ({
+    year: d.year, cves: d.cves,
+    rate: d.growth_rate == null ? null : d.growth_rate,
+    abs: d.growth_absolute,
+    partial: d.is_ytd ? 'year to date' : ''
+  })), [
+    { key: 'year', label: 'Year', num: true, raw: true },
+    { key: 'cves', label: 'CVEs', num: true, bar: true },
+    { key: 'rate', label: 'Change', num: true,
+      fmt: v => v == null ? '<span class="faint">&mdash;</span>'
+        : `<span style="color:var(--${v > 0 ? 'live' : 'hot'})">${fmt.pct(v)}</span>` },
+    { key: 'abs', label: 'CVEs added', num: true,
+      fmt: v => v == null ? '&mdash;' : (v > 0 ? '+' : '') + fmt.n(v) },
+    { key: 'partial', label: '', fmt: v => v ? `<span class="pill warn">${v}</span>` : '' }
+  ], { sort: { key: 'year', dir: -1 } }, { name: 'cve-icu-growth-by-year' });
+});
+</script>
+
+</body>
+</html>

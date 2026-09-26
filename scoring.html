@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scoring &mdash; CVE.ICU</title>
+
+<meta name="description" content="Counts for the three CVE scoring systems: CVSS, EPSS and CISA KEV.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  class="on" aria-current="page">Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph"><h1>Scoring</h1><span class="note">three systems, three different questions</span></div>
+<p class="lede">Three separate records attach to CVEs. They are not ranks of each other and we do
+not combine them &mdash; below is how many CVEs each one covers.</p>
+
+<div class="grid g3" id="systems"></div>
+
+<h2>Coverage</h2>
+<div class="panel"><div class="panel-b"><div id="coverage"></div></div></div>
+
+<h2>How many carry each record</h2>
+<div class="cols">
+  <a class="panel" href="cvss.html" style="display:block">
+    <div class="panel-h">CVSS <span class="side">&rarr;</span></div>
+    <div class="panel-b"><div class="v" id="v-cvss" style="font:700 30px var(--num);letter-spacing:-.02em"></div>
+      <div class="muted" style="font-size:12.5px;margin-top:5px">scores recorded, across four metric versions</div></div>
+  </a>
+  <a class="panel" href="epss.html" style="display:block">
+    <div class="panel-h">EPSS <span class="side">&rarr;</span></div>
+    <div class="panel-b"><div class="v" id="v-epss" style="font:700 30px var(--num);letter-spacing:-.02em"></div>
+      <div class="muted" style="font-size:12.5px;margin-top:5px">CVEs with an exploit-probability score</div></div>
+  </a>
+  <a class="panel" href="kev.html" style="display:block">
+    <div class="panel-h">KEV <span class="side">&rarr;</span></div>
+    <div class="panel-b"><div class="v" id="v-kev" style="font:700 30px var(--num);letter-spacing:-.02em"></div>
+      <div class="muted" style="font-size:12.5px;margin-top:5px">CVEs in the CISA catalog</div></div>
+  </a>
+</div>
+
+<h2>Severity bands <span class="side">CVSS v3.1, the most-used version</span></h2>
+<div class="panel"><div class="panel-b"><div id="sev"></div></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el } = CVE;
+  const [cmp, cvss, epss] = await Promise.all([
+    CVE.json('scoring_comparison.json'),
+    CVE.json('cvss_analysis.json'),
+    CVE.json('epss_analysis.json')
+  ]);
+  const total = Object.values(S.yearly_summary.years).reduce((s, y) => s + y.total_cves, 0);
+  const sys = cmp.systems || {};
+
+  el('#systems').innerHTML = ['cvss', 'epss', 'kev'].map(k => {
+    const s = sys[k] || {};
+    return `<div class="c">
+      <div class="lbl">${CVE.esc(s.name || k.toUpperCase())}</div>
+      <div class="v" style="font-size:19px;letter-spacing:-.01em;font-family:var(--sans);font-weight:650">
+        ${CVE.esc(s.question || '')}</div>
+      <div class="sub">${CVE.esc(s.description || '')}<br>
+        <span class="faint">${CVE.esc(s.source || '')} &middot; updated ${CVE.esc(s.update_frequency || '')}</span></div>
+    </div>`;
+  }).join('');
+
+  const kevN = cvss.kev_global_count || 0;
+  el('#v-cvss').textContent = fmt.n(cvss.total_cves_with_cvss);
+  el('#v-epss').textContent =
+    fmt.n(epss.total_cves_with_epss_matched ?? epss.total_cves_with_epss);
+  el('#v-kev').textContent = fmt.n(kevN);
+
+  // EPSS coverage is bucketed by publication date, so it is directly comparable
+  // with the site's own counts. A few EPSS rows describe CVEs this site does not
+  // count at all (rejected, or not yet published here) - shown separately.
+  const epssMatched = epss.total_cves_with_epss_matched ?? epss.total_cves_with_epss ?? 0;
+  const epssUnmatched = epss.epss_without_published_record ?? 0;
+
+  chart.hbars('#coverage', [
+    { label: 'CVEs counted here', value: total },
+    { label: 'With an EPSS score', value: epssMatched },
+    { label: 'CVSS scores', value: cvss.total_cves_with_cvss || 0 },
+    { label: 'In KEV', value: kevN }
+  ], { name: 'cve-icu-scoring-coverage' });
+  el('#coverage').insertAdjacentHTML('beforeend',
+    `<p class="faint" style="font-size:12px;margin-top:11px;line-height:1.6">
+     <b>With an EPSS score</b> is a genuine subset: EPSS rows are matched to CVEs by
+     publication date, the same basis every other count here uses.${epssUnmatched ? `
+     A further <b>${fmt.n(epssUnmatched)}</b> EPSS rows describe CVEs this site does not
+     count &mdash; rejected records, or ones not published here yet &mdash; and are left out
+     rather than attributed to a year.` : ''}<br>
+     <b>CVSS scores</b> is not a subset: it counts scores, not CVEs, because one CVE can
+     hold a score under several metric versions. It is the only bar that can exceed the total.</p>`);
+
+  const v31 = (cvss.severity_distribution || {})['v3.1'] || {};
+  chart.hbars('#sev', ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'NONE']
+    .filter(k => v31[k]).map(k => ({ label: k, value: v31[k] })), { name: 'cve-icu-cvss-severity-bands' });
+});
+</script>
+
+</body>
+</html>

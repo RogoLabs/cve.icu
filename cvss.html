@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVSS scores &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs carry each CVSS severity and score, by metric version.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  class="on" aria-current="page">Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>CVSS scores</h1>
+  <span class="note">severity, by metric version</span>
+  <span style="margin-left:auto"><span class="seg" id="vsel"></span></span>
+</div>
+<p class="lede">A CVE can hold a score under more than one CVSS version, so these counts add up
+to more than the number of CVEs. Each version is counted separately below.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Scores per version</h2>
+<div class="panel"><div class="panel-b"><div id="versions"></div></div></div>
+
+<h2>Severity bands <span class="side" id="sev-ver"></span></h2>
+<div class="panel"><div class="panel-b"><div id="sev"></div></div></div>
+
+<h2>Score distribution <span class="side" id="dist-ver"></span></h2>
+<div class="panel"><div class="panel-b"><div id="dist"></div></div></div>
+
+<h2>Scored CVEs per year</h2>
+<div class="panel"><div class="panel-b"><div id="by-year"></div></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async () => {
+  const { fmt, chart, el } = CVE;
+  const YR = 2026;
+  const d = await CVE.json('cvss_analysis.json');
+  const versions = Object.keys(d.total_by_version || {});
+  let ver = versions.includes('v3.1') ? 'v3.1' : versions[versions.length - 1];
+
+  el('#vsel').innerHTML = versions.map(v =>
+    `<button data-v="${v}" class="${v === ver ? 'on' : ''}">${v}</button>`).join('');
+
+  chart.hbars('#versions', versions.map(v => ({ label: v, value: d.total_by_version[v] })), { name: 'cve-icu-cvss-by-version' });
+
+  const temporal = d.temporal_data || {};
+  const tYears = Object.keys(temporal).sort();
+  if (tYears.length) {
+    chart.bars('#by-year', tYears.map(y => ({
+      label: y,
+      value: typeof temporal[y] === 'number' ? temporal[y]
+        : (temporal[y].total || temporal[y].count || 0),
+      current: +y === YR
+    })), { ticks: [tYears[0], tYears[tYears.length - 1]] , name: 'cve-icu-cvss-scored-per-year' });
+  } else {
+    el('#by-year').innerHTML = '<div class="empty">No per-year breakdown in this dataset.</div>';
+  }
+
+  function render() {
+    const sev = (d.severity_distribution || {})[ver] || {};
+    const bins = (d.binned_score_distribution || {})[ver] || {};
+    const totalV = d.total_by_version[ver] || 0;
+    const order = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'NONE', 'UNKNOWN'];
+    const sevRows = order.filter(k => sev[k]).map(k => ({ label: k, value: sev[k] }));
+
+    el('#tiles').innerHTML = [
+      { lead: 1, lbl: `Scores recorded under ${ver}`, v: fmt.n(totalV),
+        sub: `of <b>${fmt.n(d.total_cves_with_cvss)}</b> across all versions` },
+      { lbl: 'Highest band', v: fmt.n(sev.CRITICAL || sev.HIGH || 0),
+        sub: sev.CRITICAL ? `<b>${fmt.share(sev.CRITICAL, totalV)}</b> rated critical`
+          : 'this version has no critical band' },
+      { lbl: 'In the KEV catalog', v: fmt.n(d.kev_global_count),
+        sub: 'across all versions and years' },
+      { lbl: 'Metric versions in use', v: String(versions.length),
+        sub: versions.join(' &middot; ') }
+    ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+        <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+    el('#sev-ver').textContent = ver;
+    el('#dist-ver').textContent = ver;
+    if (sevRows.length) chart.hbars('#sev', sevRows, { name: 'cve-icu-cvss-severity' });
+    else el('#sev').innerHTML = '<div class="empty">No severity bands recorded for ' + ver + '.</div>';
+
+    const keys = Object.keys(bins).sort((a, b) => parseFloat(a) - parseFloat(b));
+    if (keys.length) {
+      chart.bars('#dist', keys.map(k => ({ label: k, value: bins[k] })),
+        { tall: true, ticks: [keys[0], keys[keys.length - 1]] , name: 'cve-icu-cvss-score-distribution' });
+    } else {
+      el('#dist').innerHTML = '<div class="empty">No score distribution for ' + ver + '.</div>';
+    }
+  }
+  render();
+
+  el('#vsel').addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if (!b) return;
+    ver = b.dataset.v;
+    CVE.all('#vsel button').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+});
+</script>
+
+</body>
+</html>
