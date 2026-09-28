@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T07:19:12.582272",
+  "generated_at": "2026-09-28T08:44:36.746447",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 378,
@@ -172,10 +172,10 @@
     {
       "name": "VulDB",
       "assigner_org_id": "1af790b2-7ee1-4545-860a-a788eba489b5",
-      "count": 5230,
+      "count": 5236,
       "rank": 4,
       "first_cve_date": "2026-01-01T09:02:10.684Z",
-      "last_cve_date": "2026-09-28T07:00:10.261Z",
+      "last_cve_date": "2026-09-28T08:30:08.347Z",
       "years_active": 5,
       "first_cve_year": 2022,
       "last_cve_year": 2026,
@@ -185,14 +185,14 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 3097,
+        "Medium": 3099,
         "Critical": 728,
-        "High": 1311,
+        "High": 1315,
         "Low": 94
       },
       "top_cwe_types": {
-        "CWE-74": 1435,
-        "CWE-89": 1051,
+        "CWE-74": 1439,
+        "CWE-89": 1055,
         "CWE-119": 829,
         "CWE-77": 625,
         "CWE-94": 545
@@ -203,11 +203,11 @@
       "top_cwes": [
         [
           "CWE-74",
-          1435
+          1439
         ],
         [
           "CWE-89",
-          1051
+          1055
         ],
         [
           "CWE-119",
@@ -712,10 +712,10 @@
     {
       "name": "apache",
       "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 845,
+      "count": 863,
       "rank": 14,
       "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-09-25T08:17:38.849Z",
+      "last_cve_date": "2026-09-28T08:27:20.763Z",
       "years_active": 11,
       "first_cve_year": 2016,
       "last_cve_year": 2026,
@@ -725,16 +725,16 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Critical": 180,
-        "High": 362,
-        "Medium": 278,
+        "Critical": 183,
+        "High": 369,
+        "Medium": 286,
         "Low": 24
       },
       "top_cwe_types": {
         "CWE-20": 67,
-        "CWE-502": 49,
-        "CWE-200": 37,
-        "CWE-863": 37,
+        "CWE-502": 50,
+        "CWE-200": 38,
+        "CWE-863": 38,
         "CWE-770": 33
       },
       "kev_count": 2,
@@ -747,15 +747,15 @@
         ],
         [
           "CWE-502",
-          49
+          50
         ],
         [
           "CWE-200",
-          37
+          38
         ],
         [
           "CWE-863",
-          37
+          38
         ],
         [
           "CWE-770",
@@ -1249,10 +1249,64 @@
       ]
     },
     {
+      "name": "TR-CERT",
+      "assigner_org_id": "ca940d4e-fea4-4aa2-9a58-591a58b1ce21",
+      "count": 292,
+      "rank": 24,
+      "first_cve_date": "2026-01-22T09:10:16.989Z",
+      "last_cve_date": "2026-09-28T08:32:19.323Z",
+      "years_active": 6,
+      "first_cve_year": 2021,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Medium": 98,
+        "High": 121,
+        "Critical": 70,
+        "Low": 3
+      },
+      "top_cwe_types": {
+        "CWE-79": 58,
+        "CWE-89": 38,
+        "CWE-639": 27,
+        "CWE-306": 16,
+        "CWE-862": 16
+      },
+      "kev_count": 0,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          58
+        ],
+        [
+          "CWE-89",
+          38
+        ],
+        [
+          "CWE-639",
+          27
+        ],
+        [
+          "CWE-306",
+          16
+        ],
+        [
+          "CWE-862",
+          16
+        ]
+      ]
+    },
+    {
       "name": "CPANSec",
       "assigner_org_id": "9b29abf9-4ab0-4765-b253-1875cd9b441e",
       "count": 291,
-      "rank": 24,
+      "rank": 25,
       "first_cve_date": "2026-01-06T00:22:50.114Z",
       "last_cve_date": "2026-09-25T01:31:22.472Z",
       "years_active": 2,
@@ -1298,60 +1352,6 @@
         ],
         [
           "CWE-732",
-          16
-        ]
-      ]
-    },
-    {
-      "name": "TR-CERT",
-      "assigner_org_id": "ca940d4e-fea4-4aa2-9a58-591a58b1ce21",
-      "count": 289,
-      "rank": 25,
-      "first_cve_date": "2026-01-22T09:10:16.989Z",
-      "last_cve_date": "2026-09-24T14:41:57.290Z",
-      "years_active": 6,
-      "first_cve_year": 2021,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Medium": 96,
-        "High": 120,
-        "Critical": 70,
-        "Low": 3
-      },
-      "top_cwe_types": {
-        "CWE-79": 57,
-        "CWE-89": 38,
-        "CWE-639": 27,
-        "CWE-306": 16,
-        "CWE-862": 16
-      },
-      "kev_count": 0,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          57
-        ],
-        [
-          "CWE-89",
-          38
-        ],
-        [
-          "CWE-639",
-          27
-        ],
-        [
-          "CWE-306",
-          16
-        ],
-        [
-          "CWE-862",
           16
         ]
       ]
@@ -1520,10 +1520,10 @@
     {
       "name": "jpcert",
       "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 240,
+      "count": 242,
       "rank": 29,
       "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-09-25T06:25:15.249Z",
+      "last_cve_date": "2026-09-28T08:14:36.848Z",
       "years_active": 17,
       "first_cve_year": 2010,
       "last_cve_year": 2026,
@@ -1534,13 +1534,13 @@
       ],
       "severity_distribution": {
         "Medium": 106,
-        "High": 114,
+        "High": 116,
         "Critical": 17,
         "Low": 3
       },
       "top_cwe_types": {
         "CWE-79": 35,
-        "CWE-78": 27,
+        "CWE-78": 28,
         "CWE-427": 19,
         "CWE-306": 10,
         "CWE-276": 10
@@ -1555,7 +1555,7 @@
         ],
         [
           "CWE-78",
-          27
+          28
         ],
         [
           "CWE-427",
@@ -3401,10 +3401,10 @@
     {
       "name": "suse",
       "assigner_org_id": "404e59f5-483d-4b8a-8e7a-e67604dd8afb",
-      "count": 98,
+      "count": 100,
       "rank": 64,
       "first_cve_date": "2026-01-08T10:23:18.934Z",
-      "last_cve_date": "2026-09-24T16:23:50.110Z",
+      "last_cve_date": "2026-09-28T08:34:14.230Z",
       "years_active": 8,
       "first_cve_year": 2019,
       "last_cve_year": 2026,
@@ -3414,15 +3414,15 @@
         "Vendor"
       ],
       "severity_distribution": {
-        "Medium": 30,
+        "Medium": 32,
         "High": 51,
         "Low": 3,
         "Critical": 14
       },
       "top_cwe_types": {
+        "CWE-125": 9,
         "CWE-863": 7,
         "CWE-122": 7,
-        "CWE-125": 7,
         "CWE-23": 5,
         "CWE-78": 5
       },
@@ -3431,15 +3431,15 @@
       "epss_elevated_count": 0,
       "top_cwes": [
         [
+          "CWE-125",
+          9
+        ],
+        [
           "CWE-863",
           7
         ],
         [
           "CWE-122",
-          7
-        ],
-        [
-          "CWE-125",
           7
         ],
         [
