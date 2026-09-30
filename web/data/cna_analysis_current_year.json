@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T07:18:41.702094",
+  "generated_at": "2026-09-30T07:53:45.478690",
   "source": "CVE V5 List (Authoritative)",
   "year": 2026,
   "total_cnas": 379,
@@ -334,10 +334,10 @@
     {
       "name": "Wordfence",
       "assigner_org_id": "b15e7b5b-3da4-40ae-a43c-f7aa60e62599",
-      "count": 3102,
+      "count": 3111,
       "rank": 7,
       "first_cve_date": "2026-01-01T16:19:30.690Z",
-      "last_cve_date": "2026-09-30T06:40:23.149Z",
+      "last_cve_date": "2026-09-30T07:41:07.474Z",
       "years_active": 6,
       "first_cve_year": 2021,
       "last_cve_year": 2026,
@@ -347,15 +347,15 @@
         "Security Researcher"
       ],
       "severity_distribution": {
-        "Medium": 2169,
+        "Medium": 2177,
         "Critical": 188,
-        "High": 732,
+        "High": 733,
         "Low": 13
       },
       "top_cwe_types": {
-        "CWE-79": 1165,
+        "CWE-79": 1172,
         "CWE-862": 588,
-        "CWE-89": 263,
+        "CWE-89": 265,
         "CWE-352": 187,
         "CWE-639": 128
       },
@@ -365,7 +365,7 @@
       "top_cwes": [
         [
           "CWE-79",
-          1165
+          1172
         ],
         [
           "CWE-862",
@@ -373,7 +373,7 @@
         ],
         [
           "CWE-89",
-          263
+          265
         ],
         [
           "CWE-352",
@@ -712,10 +712,10 @@
     {
       "name": "apache",
       "assigner_org_id": "f0158376-9dc2-43b6-827c-5f631a4d8d09",
-      "count": 884,
+      "count": 885,
       "rank": 14,
       "first_cve_date": "2026-01-01T16:14:00.837Z",
-      "last_cve_date": "2026-09-29T13:57:32.682Z",
+      "last_cve_date": "2026-09-30T07:42:43.537Z",
       "years_active": 11,
       "first_cve_year": 2016,
       "last_cve_year": 2026,
@@ -725,7 +725,7 @@
         "Open Source"
       ],
       "severity_distribution": {
-        "Critical": 183,
+        "Critical": 184,
         "High": 375,
         "Medium": 295,
         "Low": 24
@@ -1465,10 +1465,64 @@
       ]
     },
     {
+      "name": "jpcert",
+      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
+      "count": 255,
+      "rank": 28,
+      "first_cve_date": "2026-01-06T06:34:11.329Z",
+      "last_cve_date": "2026-09-30T07:47:50.234Z",
+      "years_active": 17,
+      "first_cve_year": 2010,
+      "last_cve_year": 2026,
+      "is_official": true,
+      "activity_status": "Active",
+      "cna_types": [
+        "CERT"
+      ],
+      "severity_distribution": {
+        "Medium": 114,
+        "High": 121,
+        "Critical": 17,
+        "Low": 3
+      },
+      "top_cwe_types": {
+        "CWE-79": 38,
+        "CWE-78": 29,
+        "CWE-427": 19,
+        "CWE-306": 11,
+        "CWE-121": 10
+      },
+      "kev_count": 1,
+      "epss_high_count": 0,
+      "epss_elevated_count": 0,
+      "top_cwes": [
+        [
+          "CWE-79",
+          38
+        ],
+        [
+          "CWE-78",
+          29
+        ],
+        [
+          "CWE-427",
+          19
+        ],
+        [
+          "CWE-306",
+          11
+        ],
+        [
+          "CWE-121",
+          10
+        ]
+      ]
+    },
+    {
       "name": "nvidia",
       "assigner_org_id": "9576f279-3576-44b5-a4af-b9a8644b2de6",
       "count": 250,
-      "rank": 28,
+      "rank": 29,
       "first_cve_date": "2026-01-14T18:30:41.061Z",
       "last_cve_date": "2026-09-29T14:12:12.949Z",
       "years_active": 11,
@@ -1514,60 +1568,6 @@
         [
           "CWE-787",
           8
-        ]
-      ]
-    },
-    {
-      "name": "jpcert",
-      "assigner_org_id": "ede6fdc4-6654-4307-a26d-3331c018e2ce",
-      "count": 244,
-      "rank": 29,
-      "first_cve_date": "2026-01-06T06:34:11.329Z",
-      "last_cve_date": "2026-09-30T01:51:54.487Z",
-      "years_active": 17,
-      "first_cve_year": 2010,
-      "last_cve_year": 2026,
-      "is_official": true,
-      "activity_status": "Active",
-      "cna_types": [
-        "CERT"
-      ],
-      "severity_distribution": {
-        "Medium": 108,
-        "High": 116,
-        "Critical": 17,
-        "Low": 3
-      },
-      "top_cwe_types": {
-        "CWE-79": 35,
-        "CWE-78": 29,
-        "CWE-427": 19,
-        "CWE-306": 10,
-        "CWE-276": 10
-      },
-      "kev_count": 1,
-      "epss_high_count": 0,
-      "epss_elevated_count": 0,
-      "top_cwes": [
-        [
-          "CWE-79",
-          35
-        ],
-        [
-          "CWE-78",
-          29
-        ],
-        [
-          "CWE-427",
-          19
-        ],
-        [
-          "CWE-306",
-          10
-        ],
-        [
-          "CWE-276",
-          10
         ]
       ]
     },
