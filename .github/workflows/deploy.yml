@@ -21,9 +21,8 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-# A run commits to main and pushes. A dispatch and the hourly cron can land
-# close together, and a slow run can still be in flight when the next fires,
-# so serialise rather than race the push.
+# A dispatch and the hourly cron can land close together, so serialise site
+# deployments rather than allowing them to race.
 concurrency:
   group: build-and-deploy
   cancel-in-progress: false
@@ -39,10 +38,7 @@ jobs:
     
     steps:
     # Check out the branch tip as of job start, not the SHA the event was
-    # created at. A dispatch or cron that queues behind a running build
-    # would otherwise start from a main that the running build then pushes
-    # past, and its "Commit updated data" push is rejected as non-fast-forward.
-    # The concurrency group guarantees the previous build has pushed by now.
+    # created at, so a queued refresh builds from the latest source.
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
@@ -94,15 +90,3 @@ jobs:
         publish_dir: ./web
         publish_branch: gh-pages
         force_orphan: true
-        
-    # repository_dispatch is the same unattended data refresh as schedule, just
-    # triggered on time, so it has to persist web/ the same way.
-    - name: Commit updated data
-      if: github.event_name == 'schedule' || github.event_name == 'repository_dispatch'
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git checkout main
-        git add web/
-        git diff --staged --quiet || git commit -m "Auto-update CVE data $(date -u +%Y-%m-%dT%H:%MZ)"
-        git push
