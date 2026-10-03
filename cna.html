@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVEs by publisher &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs each CVE Numbering Authority has published, this year and all time.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      class="on" aria-current="page">Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>CVEs by publisher</h1>
+  <span class="note">CVE Numbering Authorities</span>
+  <span style="margin-left:auto"><span class="seg" id="scope">
+    <button data-scope="year" class="on">2026</button>
+    <button data-scope="all">All time</button>
+  </span></span>
+</div>
+<p class="lede">Each CVE is assigned by exactly one authority. These are counts of what each
+publisher is credited with in the CVE record, which can differ by a few dozen from the
+<a href="years.html" style="color:var(--accent)">yearly totals</a> as records are reassigned.
+<a href="data-quality.html" style="color:var(--accent)">Name matching</a> covers how these
+names line up with the official registry.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Largest publishers <span class="side" id="scope-side"></span></h2>
+<div class="panel"><div class="panel-b"><div id="chart-cna"></div></div></div>
+
+<h2>Activity</h2>
+<div class="cols c2">
+  <div class="panel"><div class="panel-h">Publishers by first year <span class="side">when they started</span></div>
+    <div class="panel-b"><div id="chart-first"></div></div></div>
+  <div class="panel"><div class="panel-h">Status</div><div class="rows" id="status"></div></div>
+</div>
+
+<h2>Every publisher <span class="side" id="filter-count"></span></h2>
+<div class="panel">
+  <div class="panel-h" style="gap:12px;flex-wrap:wrap">
+    <label class="fl">Status
+      <select id="f-status"><option value="">Any</option></select></label>
+    <label class="fl">Type
+      <select id="f-type"><option value="">Any</option></select></label>
+    <label class="fl">Name
+      <input id="f-name" type="search" placeholder="filter&hellip;" autocomplete="off"></label>
+    <button class="exp-btn" id="f-reset">Reset</button>
+    <span class="side" id="f-note"></span>
+  </div>
+  <div id="cna-table"></div>
+</div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async () => {
+  const { fmt, chart, el, table } = CVE;
+  const YR = 2026;
+  const d = await CVE.json('cna_analysis.json');
+  const list = d.cna_list || [];
+  let scope = 'year';
+  const yearCount = c => (c.cves_by_year || {})[YR] || 0;
+
+  function render() {
+    const val = c => scope === 'year' ? yearCount(c) : c.count;
+    const activeNow = list.filter(c => yearCount(c) > 0);
+    const totalScope = list.reduce((s, c) => s + val(c), 0);
+    const ranked = list.slice().sort((a, b) => val(b) - val(a));
+    const top5 = ranked.slice(0, 5).reduce((s, c) => s + val(c), 0);
+
+    el('#tiles').innerHTML = [
+      { lead: 1, lbl: scope === 'year' ? `Attributed in ${YR}` : 'Attributed since 1999',
+        v: fmt.n(totalScope),
+        sub: `by <b>${fmt.n(scope === 'year' ? activeNow.length : list.length)}</b> publishers` },
+      { lbl: 'Publishers on record', v: fmt.n(d.total_cnas),
+        sub: `<b>${fmt.n(d.active_cnas)}</b> currently active` },
+      { lbl: 'Largest publisher', v: fmt.compact(val(ranked[0] || {})),
+        sub: `<b>${CVE.esc((ranked[0] || {}).name || '')}</b>` },
+      { lbl: 'Top 5 share', v: fmt.share(top5, totalScope, 0),
+        sub: 'of the CVEs in this view' }
+    ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+        <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+    chart.hbars('#chart-cna', ranked.slice(0, 15).filter(c => val(c) > 0)
+      .map(c => ({ label: c.name, value: val(c) })), { name: 'cve-icu-publishers' });
+    el('#scope-side').textContent = scope === 'year' ? `in ${YR}` : 'all time';
+
+    const byFirst = {};
+    list.forEach(c => { const y = c.first_cve_year; if (y) byFirst[y] = (byFirst[y] || 0) + 1; });
+    const firstYears = Object.keys(byFirst).sort();
+    chart.bars('#chart-first', firstYears.map(y => ({
+      label: y, value: byFirst[y], current: +y === YR
+    })), { ticks: [firstYears[0], firstYears[firstYears.length - 1]] , name: 'cve-icu-publishers-by-first-year' });
+
+    const byStatus = {};
+    list.forEach(c => { const s = c.activity_status || 'Unknown';
+      byStatus[s] = (byStatus[s] || 0) + 1; });
+    chart.rank('#status', Object.entries(byStatus)
+      .map(([k, v]) => ({ label: k, value: v })).sort((a, b) => b.value - a.value), { name: 'cve-icu-publisher-status' });
+
+    const statuses = [...new Set(list.map(c => c.activity_status).filter(Boolean))].sort();
+    const types = [...new Set(list.flatMap(c => c.cna_types || []).filter(Boolean))].sort();
+    const fill = (sel, vals) => {
+      const e = el(sel), keep = e.value;
+      e.innerHTML = '<option value="">Any</option>' +
+        vals.map(v => `<option value="${CVE.esc(v)}">${CVE.esc(v)}</option>`).join('');
+      e.value = keep;
+    };
+    fill('#f-status', statuses);
+    fill('#f-type', types);
+
+    const fStatus = el('#f-status').value;
+    const fType = el('#f-type').value;
+    const fName = (el('#f-name').value || '').trim().toLowerCase();
+    const filtered = list.filter(c =>
+      (!fStatus || c.activity_status === fStatus) &&
+      (!fType || (c.cna_types || []).includes(fType)) &&
+      (!fName || c.name.toLowerCase().includes(fName)));
+
+    el('#filter-count').textContent = filtered.length === list.length
+      ? `all ${fmt.n(list.length)}` : `${fmt.n(filtered.length)} of ${fmt.n(list.length)}`;
+    el('#f-note').textContent = filtered.length === list.length ? '' : 'filtered';
+
+    table('#cna-table', filtered.map(c => ({
+      name: c.name,
+      year: yearCount(c),
+      all: c.count,
+      kev: c.kev_count || 0,
+      since: c.first_cve_year || null,
+      active: c.years_active || 0,
+      status: c.activity_status || '—'
+    })), [
+      { key: 'name', label: 'Publisher' },
+      { key: 'year', label: String(YR), num: true, bar: true },
+      { key: 'all', label: 'All time', num: true, bar: true },
+      { key: 'kev', label: 'In KEV', num: true },
+      { key: 'since', label: 'Since', num: true, raw: true,
+        fmt: v => v == null ? '<span class="faint">&mdash;</span>' : String(v) },
+      { key: 'active', label: 'Years active', num: true, raw: true },
+      { key: 'status', label: 'Status',
+        fmt: v => `<span class="pill ${v === 'Active' ? 'live' : ''}">${CVE.esc(v)}</span>` }
+    ], { sort: { key: scope === 'year' ? 'year' : 'all', dir: -1 } });
+  }
+  render();
+
+  ['#f-status', '#f-type'].forEach(sel =>
+    el(sel).addEventListener('change', render));
+  let t;
+  el('#f-name').addEventListener('input', () => { clearTimeout(t); t = setTimeout(render, 160); });
+  el('#f-reset').addEventListener('click', () => {
+    el('#f-status').value = ''; el('#f-type').value = ''; el('#f-name').value = '';
+    render();
+  });
+
+  el('#scope').addEventListener('click', e => {
+    const b = e.target.closest('button[data-scope]'); if (!b) return;
+    scope = b.dataset.scope;
+    CVE.all('#scope button').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+});
+</script>
+
+</body>
+</html>
