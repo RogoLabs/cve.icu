@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVEs by product &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs affect each vendor and product, counted from CPE records.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      class="on" aria-current="page">Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph"><h1>CVEs by product</h1><span class="note">from CPE records</span></div>
+<p class="lede">A CVE can list many affected products, so these counts sum to more than the
+number of CVEs. A product's count is how many CVEs name it, not how many bugs it has.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Vendors</h2>
+<div class="cols c2">
+  <div class="panel"><div class="panel-h">Most-named vendors</div><div class="rows" id="vendors"></div></div>
+  <div class="panel"><div class="panel-h">Most-named products</div><div class="rows" id="products"></div></div>
+</div>
+
+<h2>Platform type</h2>
+<div class="panel"><div class="panel-b"><div id="types"></div></div></div>
+
+<h2>Most-referenced CPE entries <span class="side">one row per CPE string, not per product</span></h2>
+<div class="panel"><div id="cpe-table"></div></div>
+
+<h2>CVEs naming the most products</h2>
+<div class="panel"><div class="rows" id="widest"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async () => {
+  const { fmt, chart, el, table } = CVE;
+  const d = await CVE.json('cpe_analysis.json');
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: 'CVEs with product data', v: fmt.n(d.total_cves_with_cpes),
+      sub: `<b>${fmt.n(d.average_cpes_per_cve)}</b> product entries per CVE on average` },
+    { lbl: 'Distinct vendors', v: fmt.n(d.total_unique_vendors), sub: 'named across all CVEs' },
+    { lbl: 'Distinct products', v: fmt.n(d.total_unique_products), sub: 'named across all CVEs' },
+    { lbl: 'Total CPE entries', v: fmt.compact(d.total_cpe_entries),
+      sub: `<b>${fmt.compact(d.total_unique_cpes)}</b> unique strings` }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+  chart.rank('#vendors', (d.top_vendors || []).slice(0, 12)
+    .map(v => ({ label: v.vendor || v.name, value: v.count })), { compact: true , name: 'cve-icu-top-vendors' });
+  chart.rank('#products', (d.top_products || []).slice(0, 12)
+    .map(p => ({ label: p.product || p.name, sub: p.vendor, value: p.count })), { compact: true , name: 'cve-icu-top-products' });
+
+  chart.hbars('#types', (d.cpe_type_distribution || [])
+    .map(t => ({ label: t.type || t.name, value: t.count })), { name: 'cve-icu-platform-types' });
+
+  // A CPE string carries version, update, edition and architecture. Without them
+  // rows like windows_server_2012 r2 and windows_server_2012 - look identical.
+  const cpePart = (cpe, i) => {
+    const parts = String(cpe || '').split(':');
+    const v = parts[i];
+    return !v || v === '*' || v === '-' ? '' : v;
+  };
+  table('#cpe-table', (d.top_cpes || []).map(c => ({
+    vendor: c.vendor,
+    product: c.product,
+    version: cpePart(c.cpe, 5) || '—',
+    edition: [cpePart(c.cpe, 6), cpePart(c.cpe, 8), cpePart(c.cpe, 11)].filter(Boolean).join(' ') || '—',
+    type: c.type || '—',
+    cves: c.count
+  })), [
+    { key: 'vendor', label: 'Vendor' },
+    { key: 'product', label: 'Product' },
+    { key: 'version', label: 'Version' },
+    { key: 'edition', label: 'Edition / arch' },
+    { key: 'type', label: 'Type' },
+    { key: 'cves', label: 'References', num: true, bar: true }
+  ], { name: 'cve-icu-cpe-entries' });
+
+  chart.rank('#widest', (d.cves_with_most_cpes || []).slice(0, 10).map(c => ({
+    label: c.cve || c.cve_id, sub: 'product entries', value: c.cpe_count || c.count
+  })), { name: 'cve-icu-cves-naming-most-products' });
+});
+</script>
+
+</body>
+</html>

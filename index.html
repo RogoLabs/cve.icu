@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVE.ICU &mdash; how many CVEs</title>
+
+<meta name="description" content="Counts and statistics for every CVE published from 1999 to 2026. Updated hourly.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    class="on" aria-current="page">Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>CVEs published in 2026</h1>
+  <span class="note" id="asof"></span>
+</div>
+
+<div class="grid g3 kpi" id="tiles">
+  <div class="c"><div class="lbl">Loading</div><div class="v loading">&mdash;</div></div>
+</div>
+
+<h2>Per year <span class="side">1999&ndash;2026</span></h2>
+<div class="panel">
+  <div class="panel-h">CVEs published each year
+    <span class="side">2026 is a partial year</span></div>
+  <div class="panel-b"><div id="chart-years"></div></div>
+</div>
+
+<h2>Recent days <span class="side">most recent 90 days with data</span></h2>
+<div class="panel">
+  <div class="panel-h">CVEs published per day <span class="side" id="days-side"></span></div>
+  <div class="panel-b"><div id="chart-days"></div></div>
+</div>
+
+<h2>Breakdowns</h2>
+<div class="cols">
+  <div class="panel">
+    <div class="panel-h">Publishers <span class="side">in 2026</span></div>
+    <div class="rows" id="top-cna"></div>
+    <div class="panel-h" style="border-top:1px solid var(--line);border-bottom:0">
+      <a href="cna.html" style="color:var(--accent)">All publishers &rarr;</a></div>
+  </div>
+  <div class="panel">
+    <div class="panel-h">Weakness types <span class="side">all time</span></div>
+    <div class="rows" id="top-cwe"></div>
+    <div class="panel-h" style="border-top:1px solid var(--line);border-bottom:0">
+      <a href="cwe.html" style="color:var(--accent)">All weakness types &rarr;</a></div>
+  </div>
+  <div class="panel">
+    <div class="panel-h">Products <span class="side">CPE references</span></div>
+    <div class="rows" id="top-cpe"></div>
+    <div class="panel-h" style="border-top:1px solid var(--line);border-bottom:0">
+      <a href="cpe.html" style="color:var(--accent)">All products &rarr;</a></div>
+  </div>
+</div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el } = CVE;
+  const YR = 2026;
+
+  const years = Object.values(S.yearly_summary.years)
+    .map(y => ({ year: y.year, count: y.total_cves }))
+    .sort((a, b) => a.year - b.year);
+  const ytd = (years.find(y => y.year === YR) || {}).count || 0;
+
+  const daily = (S.calendar_analysis_current_year.daily_data || [])
+    .slice().sort((a, b) => a.date.localeCompare(b.date));
+  const last = daily[daily.length - 1] || {};
+  const dayNo = Math.max(1, Math.round((Date.now() - new Date(YR, 0, 1)) / 864e5));
+
+  const ytdRow = ((S.growth_analysis || {}).growth_data || []).find(r => r.is_ytd) || {};
+  const pace = ytdRow.projected_full_year;
+
+  // Three numbers, one line of context each: how many, how fast, how that is
+  // changing. Everything else lives in the charts below or on its own page.
+  const TILES = [
+    { lbl: 'Published to date', v: fmt.n(ytd),
+      sub: pace ? `on pace for <b>~${fmt.n(Math.round(pace / 1000) * 1000)}</b> this year`
+                : `day <b>${dayNo}</b> of ${YR}` },
+    { lbl: 'Average per day', v: fmt.n(Math.round(ytd / dayNo)),
+      sub: `across <b>${fmt.n(dayNo)}</b> days of ${YR}` },
+    { lbl: 'Year-over-year growth', v: fmt.pct(ytdRow.ytd_vs_prev_ytd),
+      sub: ytdRow.prev_year_ytd_actual
+        ? `vs <b>${fmt.n(ytdRow.prev_year_ytd_actual)}</b> by this date in ${YR - 1}`
+        : `no ${YR - 1} comparison available` }
+  ];
+
+  el('#tiles').innerHTML = TILES.map(t => `
+    <div class="c">
+      <div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div>
+      <div class="sub">${t.sub}</div>
+    </div>`).join('');
+  el('#asof').textContent = last.date ? `through ${fmt.day(last.date)}` : `${YR} to date`;
+
+  const cnas = (S.cna_analysis.cna_list || []).map(c => ({
+    label: c.name, value: (c.cves_by_year || {})[YR] || 0
+  })).sort((a, b) => b.value - a.value).slice(0, 8);
+  chart.rank('#top-cna', cnas, { compact: true, name: 'cve-icu-top-publishers' });
+
+  chart.rank('#top-cwe', (S.cwe_analysis.top_cwes || []).slice(0, 8)
+    .map(c => ({ label: c.description || c.name, sub: 'CWE-' + c.id, value: c.count })),
+    { compact: true, name: 'cve-icu-top-weaknesses' });
+
+  // top_cpes holds one row per CPE string, so the same product appears several
+  // times (windows_server_2012 r2 vs -, debian_linux 8/9/10/11). Rank the
+  // aggregated product list instead.
+  chart.rank('#top-cpe', (S.cpe_analysis.top_products || []).slice(0, 8)
+    .map(c => ({ label: c.product, value: c.count })), { compact: true, name: 'cve-icu-top-products' });
+
+  chart.bars('#chart-years', years.map(y => ({
+    label: String(y.year), value: y.count, current: y.year === YR
+  })), { tall: true, ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String),
+       name: 'cve-icu-cves-by-year', label: 'CVEs published each year' });
+
+  const recent = daily.slice(-90);
+  chart.bars('#chart-days', recent.map(d => ({
+    label: d.date, value: d.value || 0, current: d === recent[recent.length - 1]
+  })), { ticks: [fmt.day(recent[0] && recent[0].date), fmt.day(last.date)],
+       name: 'cve-icu-recent-days', label: 'CVEs published per day' });
+  el('#days-side').textContent = recent.length
+    ? `${fmt.day(recent[0].date)} – ${fmt.day(last.date)}` : '';
+
+});
+</script>
+
+</body>
+</html>
