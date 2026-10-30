@@ -421,6 +421,17 @@ class CVESiteBuilder:
             self.print_verbose("🔽 Initializing CVE data processing...")
             analyzer = CVEYearsAnalyzer(quiet=self.quiet)
 
+            # Load the feed before the per-year loop. requests exceptions
+            # subclass OSError, so a failed download inside the loop was caught
+            # as one bad year: on 2026-10-30 a connection reset dropped 1999,
+            # the next year's call downloaded again, and the build carried on
+            # until the zero-year guard stopped it. RuntimeError escapes the
+            # fallback handlers below and fails the build with the real cause.
+            try:
+                analyzer.ensure_data_loaded()
+            except (OSError, ValueError) as e:
+                raise RuntimeError(f"CVE data download failed: {e}") from e
+
             # Generate data for all years
             all_year_data = []
 

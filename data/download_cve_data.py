@@ -11,6 +11,7 @@ import csv
 import gzip
 import hashlib
 import json
+import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,26 @@ MIN_KEV_ENTRIES = 500  # the real catalog holds ~1,700
 # A new download may legitimately shrink a little, but not collapse. Reject
 # anything below this fraction of what we already had.
 MIN_RETAINED_FRACTION = 0.6
+
+# nvd.json is ~1.8 GB and R2 occasionally resets the connection partway
+# through (twice on 2026-10-30). Without a timeout a stalled read would hang
+# the job until Actions kills it; without retries one reset fails the build.
+NVD_READ_TIMEOUT = 120  # seconds, applied to connect and to each read
+NVD_RETRY_DELAYS: tuple[float, ...] = (10, 30)  # sleeps between the 3 attempts
+
+
+class TruncatedDownloadError(OSError):
+    """The body ended before the declared content-length."""
+
+
+# Network failures worth another attempt. HTTP status errors are not here: a
+# 404 or 403 will not fix itself in thirty seconds.
+TRANSIENT_DOWNLOAD_ERRORS: tuple[type[Exception], ...] = (
+    requests.ConnectionError,
+    requests.exceptions.ChunkedEncodingError,
+    requests.Timeout,
+    TruncatedDownloadError,
+)
 
 
 class CVEDataDownloader:
@@ -89,6 +110,7 @@ class CVEDataDownloader:
         # Must stay below the build interval or runs re-use the cache and fetch
         # nothing. Build is hourly, so this expires comfortably inside the hour.
         self.cache_duration: timedelta = timedelta(minutes=50)
+        self.download_retry_delays: tuple[float, ...] = NVD_RETRY_DELAYS
         # EPSS republishes once a day and KEV a few times a week; re-fetching
         # either every hour is wasted traffic against FIRST and CISA.
         self.epss_cache_duration: timedelta = timedelta(hours=6)
@@ -190,40 +212,11 @@ class CVEDataDownloader:
             logger.info(f"🔽 Downloading CVE data from {self.nvd_url}")
 
         try:
-            # Start download with progress tracking (use injected HTTP client)
-            response = self._http_client.get(self.nvd_url, stream=True)
-            response.raise_for_status()
-
-            # Get file size for progress tracking
-            total_size = int(response.headers.get("content-length", 0))
-            downloaded_size = 0
-
-            # Download with progress updates - collect chunks then write
-            chunks: list[bytes] = []
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    chunks.append(chunk)
-                    downloaded_size += len(chunk)
-
-                    # Show progress every 10MB
-                    if downloaded_size % (10 * 1024 * 1024) == 0 or downloaded_size == total_size:
-                        if total_size > 0:
-                            progress = (downloaded_size / total_size) * 100
-                            logger.debug(
-                                f"  📥 Downloaded {downloaded_size // (1024 * 1024)}MB / {total_size // (1024 * 1024)}MB ({progress:.1f}%)"
-                            )
-
-            # A dropped connection previously produced a short file that was
-            # written and reported as a success. content-length is advisory,
-            # but when the server sends one, a mismatch means truncation.
-            if total_size and downloaded_size != total_size:
-                raise OSError(
-                    f"Truncated download: received {downloaded_size:,} of "
-                    f"{total_size:,} bytes declared by content-length"
-                )
+            body, downloaded_size = self._fetch_nvd_with_retries()
 
             # Write using data writer
-            self._data_writer.write_bytes(self.cache_file, b"".join(chunks))
+            self._data_writer.write_bytes(self.cache_file, body)
+            del body
 
             # Hash once. Both the manifest check below and cache_info need the
             # digest, and a second streaming pass over ~1.8GB is not free on a
@@ -268,6 +261,55 @@ class CVEDataDownloader:
         except (OSError, json.JSONDecodeError) as e:
             logger.error(f"❌ File or JSON error during download: {e}")
             raise
+
+    def _fetch_nvd_with_retries(self) -> tuple[bytes, int]:
+        """Fetch nvd.json, retrying transient network failures.
+
+        Each attempt starts from byte zero rather than resuming with a Range
+        request: the object can be republished between attempts, and two
+        halves of different snapshots would be a corrupt file.
+        """
+        for attempt, delay in enumerate(self.download_retry_delays, start=1):
+            try:
+                return self._fetch_nvd()
+            except TRANSIENT_DOWNLOAD_ERRORS as e:
+                logger.warning(f"⚠️  NVD download attempt {attempt} failed ({e}); retrying in {delay:g}s")
+                time.sleep(delay)
+        return self._fetch_nvd()
+
+    def _fetch_nvd(self) -> tuple[bytes, int]:
+        """One attempt at downloading nvd.json. Returns the body and its size."""
+        response = self._http_client.get(self.nvd_url, timeout=NVD_READ_TIMEOUT, stream=True)
+        response.raise_for_status()
+
+        # Get file size for progress tracking
+        total_size = int(response.headers.get("content-length", 0))
+        downloaded_size = 0
+
+        # Download with progress updates - collect chunks then write
+        chunks: list[bytes] = []
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                chunks.append(chunk)
+                downloaded_size += len(chunk)
+
+                # Show progress every 10MB
+                if downloaded_size % (10 * 1024 * 1024) == 0 or downloaded_size == total_size:
+                    if total_size > 0:
+                        progress = (downloaded_size / total_size) * 100
+                        logger.debug(
+                            f"  📥 Downloaded {downloaded_size // (1024 * 1024)}MB / {total_size // (1024 * 1024)}MB ({progress:.1f}%)"
+                        )
+
+        # A dropped connection previously produced a short file that was
+        # written and reported as a success. content-length is advisory,
+        # but when the server sends one, a mismatch means truncation.
+        if total_size and downloaded_size != total_size:
+            raise TruncatedDownloadError(
+                f"Truncated download: received {downloaded_size:,} of {total_size:,} bytes declared by content-length"
+            )
+
+        return b"".join(chunks), downloaded_size
 
     def download_cna_mapping_files(self) -> None:
         """Download CNA mapping files for proper name resolution"""
