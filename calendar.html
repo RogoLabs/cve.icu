@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVEs by day &mdash; CVE.ICU</title>
+
+<meta name="description" content="Daily CVE publication counts, every day on record.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" class="on" aria-current="page">Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>CVEs by day</h1>
+  <span class="note" id="span-note"></span>
+  <span style="margin-left:auto"><span class="seg" id="yearsel"></span></span>
+</div>
+<p class="lede">One square per day. Publication is bursty &mdash; large batches from a single
+publisher can land on one day, so daily counts swing far more than yearly ones.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Heatmap <span class="side" id="heat-year"></span></h2>
+<div class="panel"><div class="panel-b"><div id="heat"></div></div></div>
+
+<h2>Daily counts</h2>
+<div class="panel">
+  <div class="panel-h">Every day in the selected year</div>
+  <div class="panel-b"><div id="chart-days"></div></div>
+</div>
+
+<h2>Busiest days</h2>
+<div class="panel"><div class="rows" id="busiest"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el } = CVE;
+  const YR = 2026;
+  const cal = await CVE.json('calendar_analysis.json');
+  const all = (cal.daily_data || []).slice().sort((a, b) => a.date.localeCompare(b.date));
+  const yearsAvail = [...new Set(all.map(d => d.date.slice(0, 4)))].sort().reverse().slice(0, 6);
+  let year = String(YR);
+
+  el('#yearsel').innerHTML = yearsAvail.map(y =>
+    `<button data-y="${y}" class="${y === year ? 'on' : ''}">${y}</button>`).join('');
+  el('#span-note').textContent = all.length
+    ? `${all[0].date} to ${all[all.length - 1].date}` : '';
+
+  function render() {
+    const days = all.filter(d => d.date.startsWith(year));
+    const total = days.reduce((s, d) => s + (d.value || 0), 0);
+    const active = days.filter(d => d.value > 0).length;
+    const peak = days.reduce((m, d) => (d.value || 0) > (m.value || 0) ? d : m, { value: 0 });
+    const quiet = days.filter(d => d.value > 0)
+      .reduce((m, d) => (d.value || 0) < (m.value || 0) ? d : m, { value: Infinity });
+
+    el('#tiles').innerHTML = [
+      { lead: 1, lbl: `Published in ${year}`, v: fmt.n(total),
+        sub: `across <b>${fmt.n(active)}</b> days with at least one CVE` },
+      { lbl: 'Average per active day', v: fmt.n(active ? Math.round(total / active) : 0),
+        sub: `${fmt.n(days.length)} days in range` },
+      { lbl: 'Busiest day', v: fmt.n(peak.value), sub: peak.date || '&mdash;' },
+      { lbl: 'Quietest active day', v: fmt.n(quiet.value === Infinity ? 0 : quiet.value),
+        sub: quiet.date || '&mdash;' }
+    ].map(t => `<div class="c ${t.lead ? 'lead' : ''}">
+        <div class="lbl">${t.lbl}</div><div class="v">${t.v}</div>
+        <div class="sub">${t.sub}</div></div>`).join('');
+
+    el('#heat-year').textContent = year;
+    chart.heat('#heat', days, { name: 'cve-icu-daily-heatmap' });
+
+    chart.bars('#chart-days', days.map(d => ({
+      label: d.date, value: d.value || 0
+    })), { tall: true, ticks: days.length ? [fmt.day(days[0].date), fmt.day(days[days.length - 1].date)] : [] , name: 'cve-icu-daily-counts' });
+
+    chart.rank('#busiest', days.slice().sort((a, b) => b.value - a.value).slice(0, 10)
+      .map(d => ({ label: fmt.day(d.date), sub: d.date, value: d.value })), { name: 'cve-icu-busiest-days' });
+  }
+  render();
+
+  el('#yearsel').addEventListener('click', e => {
+    const b = e.target.closest('button[data-y]'); if (!b) return;
+    year = b.dataset.y;
+    CVE.all('#yearsel button').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVEs by weakness type &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs carry each CWE weakness classification.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      class="on" aria-current="page">Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph"><h1>CVEs by weakness type</h1><span class="note">from CWE classifications</span></div>
+<p class="lede">Not every CVE carries a CWE. These counts cover the ones that do.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Most common weaknesses</h2>
+<div class="panel"><div class="panel-b"><div id="chart-cwe"></div></div></div>
+
+<h2>Every classified weakness</h2>
+<div class="panel"><div id="cwe-table"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el, table } = CVE;
+  const d = await CVE.json('cwe_analysis.json');
+  const total = Object.values(S.yearly_summary.years).reduce((s, y) => s + y.total_cves, 0);
+  const list = d.top_cwes || [];
+  const top = list[0] || {};
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: 'CVEs with a weakness type', v: fmt.n(d.total_cves_with_cwe),
+      sub: `<b>${fmt.share(d.total_cves_with_cwe, total)}</b> of all ${fmt.compact(total)} CVEs` },
+    { lbl: 'Distinct weakness types', v: fmt.n(d.total_unique_cwes), sub: 'seen at least once' },
+    { lbl: 'Most common', v: fmt.compact(top.count),
+      sub: `<b>${CVE.esc(top.description || '')}</b>` },
+    { lbl: 'Top 10 share', v: fmt.share(list.slice(0, 10).reduce((s, c) => s + c.count, 0),
+        d.total_cves_with_cwe, 0),
+      sub: 'of all classified CVEs' }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+  chart.hbars('#chart-cwe', list.slice(0, 15)
+    .map(c => ({ label: 'CWE-' + c.id, value: c.count })), { compact: false , name: 'cve-icu-weakness-types' });
+
+  table('#cwe-table', list.map(c => ({
+    id: 'CWE-' + c.id, name: c.description || c.name, cves: c.count,
+    share: +(c.count / d.total_cves_with_cwe * 100).toFixed(2)
+  })), [
+    { key: 'id', label: 'CWE' },
+    { key: 'name', label: 'Weakness' },
+    { key: 'cves', label: 'CVEs', num: true, bar: true },
+    { key: 'share', label: 'Share', num: true, fmt: v => v + '%' }
+  ]);
+});
+</script>
+
+</body>
+</html>
