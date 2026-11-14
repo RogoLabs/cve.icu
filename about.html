@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About &mdash; CVE.ICU</title>
+
+<meta name="description" content="What CVE.ICU counts, where the data comes from, and how often it updates.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    class="on" aria-current="page">About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph"><h1>About</h1><span class="note">what this counts, and what it does not</span></div>
+<p class="lede">CVE.ICU counts CVEs. That is the whole product: how many were published this year,
+how many all time, and how those break down by publisher, product and weakness type. Nothing
+here is weighted, scored or prioritised by us.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Where the numbers come from</h2>
+<div class="panel"><div id="src-table"></div></div>
+
+<h2>How counting works</h2>
+<div class="cols c2">
+  <div class="panel">
+    <div class="panel-h">Counts that add up</div>
+    <div class="panel-b muted" style="font-size:13.5px;line-height:1.65">
+      <p>Each CVE is published by exactly one authority and belongs to exactly one year, so
+      <a href="years.html" style="color:var(--accent)">yearly</a> and
+      <a href="cna.html" style="color:var(--accent)">publisher</a> counts sum to the total.</p>
+      <p style="margin-top:9px">A day's count is the CVEs published that day. Publication is
+      bursty: a single publisher can file thousands at once, so daily figures swing hard.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-h">Counts that do not</div>
+    <div class="panel-b muted" style="font-size:13.5px;line-height:1.65">
+      <p>A CVE can name many affected <a href="cpe.html" style="color:var(--accent)">products</a>,
+      so product counts sum to far more than the number of CVEs.</p>
+      <p style="margin-top:9px">A CVE can also hold a <a href="cvss.html" style="color:var(--accent)">CVSS</a>
+      score under several metric versions at once. The total scored figure counts scores, not
+      CVEs, which is why it can exceed the number of CVEs that exist.</p>
+      <p style="margin-top:9px">Not every CVE carries a
+      <a href="cwe.html" style="color:var(--accent)">weakness type</a>, so those counts cover a
+      subset.</p>
+    </div>
+  </div>
+</div>
+
+<h2>Freshness</h2>
+<div class="note-box" id="fresh-box">
+  The site rebuilds <b>hourly</b>. Its data comes from an upstream mirror of the NVD and CVE
+  Program records, so the site can never be fresher than that feed &mdash; both timestamps are
+  shown below and in the header.
+</div>
+<div class="grid g3" style="margin-top:12px" id="fresh-tiles"></div>
+
+<h2>Using the data</h2>
+<div class="note-box">
+  Every number on this site is read from a JSON file you can fetch directly at
+  <code>cve.icu/data/</code>. No key, no rate limit, no registration. If you want the counts
+  rather than the pages, start there.
+</div>
+
+<h2>Built with</h2>
+<div class="panel"><div class="panel-b muted" style="font-size:13.5px;line-height:1.7">
+  Python builds the data and renders static pages with Jinja. The pages ship no charting
+  library &mdash; the charts here are counts, and counts draw fine with SVG and CSS.
+  Hosted on GitHub Pages. Source is on
+  <a href="https://github.com/rogolabs/cve.icu" style="color:var(--accent)" rel="noopener">GitHub</a>.
+</div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, el, table } = CVE;
+  const years = Object.values(S.yearly_summary.years);
+  const total = years.reduce((s, y) => s + y.total_cves, 0);
+  const YR = 2026;
+  const ytd = (years.find(y => y.year === YR) || {}).total_cves || 0;
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: 'CVEs counted', v: fmt.n(total),
+      sub: `across <b>${years.length}</b> years, 1999&ndash;${YR}` },
+    { lbl: `Published in ${YR}`, v: fmt.n(ytd), sub: 'so far this year' },
+    { lbl: 'Publishers', v: fmt.n(S.cna_analysis.total_cnas),
+      sub: `<b>${fmt.n(S.cna_analysis.active_cnas)}</b> active` },
+    { lbl: 'In the KEV catalog', v: fmt.n(S.cvss_analysis.kev_global_count),
+      sub: `<b>${fmt.share(S.cvss_analysis.kev_global_count, total, 2)}</b> of all CVEs` }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+  table('#src-table', [
+    { what: 'CVE records', who: 'CVE Program / NVD', how: 'every count on the site',
+      freq: 'continuous' },
+    { what: 'EPSS scores', who: 'FIRST.org', how: 'exploit probability bands',
+      freq: 'daily' },
+    { what: 'KEV catalog', who: 'CISA', how: 'known-exploited counts',
+      freq: 'a few times a week' },
+    { what: 'CNA registry', who: 'CVE Program', how: 'publisher name matching',
+      freq: 'occasional' }
+  ], [
+    { key: 'what', label: 'Data' },
+    { key: 'who', label: 'Source' },
+    { key: 'how', label: 'Used for' },
+    { key: 'freq', label: 'Updated' }
+  ], { sort: { key: 'what', dir: 1 }, name: 'cve-icu-data-sources' });
+
+  el('#fresh-tiles').innerHTML = [
+    { lbl: 'Data as of', v: `<span data-asof>&mdash;</span>`, sub: 'newest record in this build' },
+    { lbl: 'Rebuilt', v: '<span data-built>&mdash;</span>', sub: 'when this build last ran' },
+    { lbl: 'Upstream feed ran', v: '<span data-srcrun>&mdash;</span>',
+      sub: 'the ceiling on freshness' }
+  ].map(t => `<div class="c"><div class="lbl">${t.lbl}</div>
+      <div class="v" style="font-size:20px;font-family:var(--sans);font-weight:650">${t.v}</div>
+      <div class="sub">${t.sub}</div></div>`).join('');
+  CVE.freshness(S);
+});
+</script>
+
+</body>
+</html>

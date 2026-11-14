@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KEV catalog &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs are in the CISA Known Exploited Vulnerabilities catalog.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  class="on" aria-current="page">Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>KEV catalog</h1>
+  <span class="note">CISA Known Exploited Vulnerabilities &middot; catalog <b id="catver"></b></span>
+</div>
+<p class="lede">CVEs that CISA records as having been exploited. Counted two ways below: the year
+the CVE was published, and the year it was added to the catalog &mdash; those differ a lot.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Added to the catalog</h2>
+<div class="cols c2">
+  <div class="panel"><div class="panel-h">By year added <span class="side">when CISA listed it</span></div>
+    <div class="panel-b"><div id="by-added"></div></div></div>
+  <div class="panel"><div class="panel-h">By year published <span class="side">when the CVE was issued</span></div>
+    <div class="panel-b"><div id="by-pub"></div></div></div>
+</div>
+
+<h2>Additions per month</h2>
+<div class="panel"><div class="panel-b"><div id="timeline"></div></div></div>
+
+<h2>Breakdowns</h2>
+<div class="cols">
+  <div class="panel"><div class="panel-h">Vendors</div><div class="rows" id="vendors"></div></div>
+  <div class="panel"><div class="panel-h">Products</div><div class="rows" id="products"></div></div>
+  <div class="panel"><div class="panel-h">Weakness types</div><div class="rows" id="cwes"></div></div>
+</div>
+
+<h2>Most recent additions</h2>
+<div class="panel"><div id="recent-table"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async () => {
+  const { fmt, chart, el, table } = CVE;
+  const YR = 2026;
+  const d = await CVE.json('kev_analysis.json');
+  const st = d.statistics || {};
+  const total = d.total_kev_cves || 0;
+  el('#catver').textContent = d.catalog_version || '—';
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: 'CVEs in the catalog', v: fmt.n(total),
+      sub: `catalog version <b>${CVE.esc(d.catalog_version || '—')}</b>` },
+    { lbl: 'Added in 30 days', v: fmt.n(st.added_last_30_days), sub: 'most recent month' },
+    { lbl: 'Added in 90 days', v: fmt.n(st.added_last_90_days), sub: 'most recent quarter' },
+    { lbl: 'Linked to ransomware', v: fmt.n(st.ransomware_associated),
+      sub: `<b>${fmt.share(st.ransomware_associated, total, 0)}</b> of the catalog` }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+  const added = d.by_year_added || {}, addedY = Object.keys(added).sort();
+  chart.bars('#by-added', addedY.map(y => ({
+    label: y, value: added[y], current: +y === YR
+  })), { ticks: [addedY[0], addedY[addedY.length - 1]] , name: 'cve-icu-kev-by-year-added' });
+
+  const pub = d.by_year_published || {}, pubY = Object.keys(pub).sort();
+  chart.bars('#by-pub', pubY.map(y => ({
+    label: y, value: pub[y], current: +y === YR
+  })), { ticks: [pubY[0], pubY[pubY.length - 1]] , name: 'cve-icu-kev-by-year-published' });
+
+  const tl = d.timeline || {}, months = Object.keys(tl).sort();
+  chart.bars('#timeline', months.map(m => ({ label: m, value: tl[m] })),
+    { tall: true, ticks: [months[0], months[months.length - 1]] , name: 'cve-icu-kev-additions-per-month' });
+
+  // these arrive as [name, count] pairs
+  const pairs = a => (a || []).map(x => Array.isArray(x)
+    ? { label: x[0], value: x[1] } : { label: x.name || x.vendor || x.product, value: x.count });
+  chart.rank('#vendors', pairs(d.top_vendors).slice(0, 10), { name: 'cve-icu-kev-vendors' });
+  chart.rank('#products', pairs(d.top_products).slice(0, 10), { name: 'cve-icu-kev-products' });
+  chart.rank('#cwes', pairs(d.top_cwes).slice(0, 10), { name: 'cve-icu-kev-weaknesses' });
+
+  table('#recent-table', (d.recent_additions || []).map(r => ({
+    cve: r.cve_id, vendor: r.vendor, product: r.product,
+    added: r.date_added, due: r.due_date, ransomware: r.ransomware
+  })), [
+    { key: 'cve', label: 'CVE' },
+    { key: 'vendor', label: 'Vendor' },
+    { key: 'product', label: 'Product' },
+    { key: 'added', label: 'Added' },
+    { key: 'due', label: 'Remediation due' },
+    { key: 'ransomware', label: 'Ransomware',
+      fmt: v => v && v !== 'Unknown' ? `<span class="pill warn">${CVE.esc(v)}</span>`
+        : `<span class="faint">${CVE.esc(v || '—')}</span>` }
+  ], { sort: { key: 'added', dir: -1 } }, { name: 'cve-icu-kev-recent-additions' });
+});
+</script>
+
+</body>
+</html>

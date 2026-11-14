@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EPSS scores &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs carry each EPSS exploit-probability score band.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    >Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  class="on" aria-current="page">Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph"><h1>EPSS scores</h1><span class="note">exploit probability, from FIRST</span></div>
+<p class="lede">EPSS gives each CVE a probability of exploitation in the next 30 days. Counts of
+how many sit in each band &mdash; the distribution is heavily weighted to the bottom.</p>
+
+<div class="grid" id="tiles"></div>
+
+<h2>Score bands</h2>
+<div class="panel"><div class="panel-b"><div id="buckets"></div></div></div>
+
+<h2>CVEs above each threshold</h2>
+<div class="panel"><div class="panel-b"><div id="thresholds"></div></div></div>
+
+<h2>Scored CVEs per year</h2>
+<div class="panel">
+  <div class="panel-h">How many CVEs from each year carry an EPSS score</div>
+  <div class="panel-b"><div id="coverage"></div></div>
+</div>
+
+<h2>Highest-scoring CVEs</h2>
+<div class="panel"><div id="high-table"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el, table } = CVE;
+  const YR = 2026;
+  const d = await CVE.json('epss_analysis.json');
+  const st = d.statistics || {};
+  // Two different populations, kept apart deliberately:
+  //  - matched: EPSS rows tied to a CVE this site counts. Comparable with every
+  //    other total on the site, so it is the headline.
+  //  - rows: every EPSS row, which is what the threshold statistics are computed
+  //    over, so it must be the denominator for their percentages.
+  const rows = d.total_cves_with_epss || 0;
+  const unmatched = d.epss_without_published_record || 0;
+  const total = d.total_cves_with_epss_matched ?? rows;
+
+  el('#tiles').innerHTML = [
+    { lead: 1, lbl: 'CVEs with an EPSS score', v: fmt.n(total),
+      sub: `average score <b>${(st.average_score ?? 0).toFixed(5)}</b>${unmatched
+        ? ` &middot; <b>${fmt.n(unmatched)}</b> further EPSS rows describe CVEs not counted here` : ''}` },
+    { lbl: 'Above 0.5', v: fmt.n(st.gt_0_5), sub: `<b>${fmt.share(st.gt_0_5, rows, 2)}</b> of scored rows` },
+    { lbl: 'Above 0.9', v: fmt.n(st.gt_0_9), sub: `<b>${fmt.share(st.gt_0_9, rows, 2)}</b> of scored rows` },
+    { lbl: 'Above 0.1', v: fmt.n(st.gt_0_1), sub: `<b>${fmt.share(st.gt_0_1, rows, 2)}</b> of scored rows` }
+  ].map(t => `<div class="c ${t.lead ? 'lead' : ''}"><div class="lbl">${t.lbl}</div>
+      <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+  const labels = {
+    very_low: 'Very low', low: 'Low', medium: 'Medium',
+    high: 'High', very_high: 'Very high', critical: 'Critical'
+  };
+  chart.hbars('#buckets', Object.entries(d.score_buckets || {})
+    .map(([k, v]) => ({ label: labels[k] || k, value: v })), { name: 'cve-icu-epss-bands' });
+
+  chart.hbars('#thresholds', [
+    { label: '> 0.1', value: st.gt_0_1 || 0 },
+    { label: '> 0.3', value: st.gt_0_3 || 0 },
+    { label: '> 0.5', value: st.gt_0_5 || 0 },
+    { label: '> 0.7', value: st.gt_0_7 || 0 },
+    { label: '> 0.9', value: st.gt_0_9 || 0 }
+  ], { name: 'cve-icu-epss-thresholds' });
+
+  const cov = d.year_coverage || {};
+  const years = Object.keys(cov).sort();
+  chart.bars('#coverage', years.map(y => ({
+    label: y, value: cov[y].with_epss || 0, current: +y === YR
+  })), { ticks: [years[0], years[years.length - 1]] , name: 'cve-icu-epss-coverage-per-year' });
+
+  table('#high-table', (d.high_risk_cves || []).slice(0, 50).map(c => ({
+    cve: c.cve_id,
+    score: c.epss_score,
+    pct: c.epss_percentile
+  })), [
+    { key: 'cve', label: 'CVE' },
+    { key: 'score', label: 'EPSS score', num: true, fmt: v => (+v).toFixed(5) },
+    { key: 'pct', label: 'Percentile', num: true, fmt: v => (v * 100).toFixed(3) + '%' }
+  ], { sort: { key: 'score', dir: -1 } }, { name: 'cve-icu-epss-highest-scoring' });
+});
+</script>
+
+</body>
+</html>

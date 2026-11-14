@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVEs by year &mdash; CVE.ICU</title>
+
+<meta name="description" content="How many CVEs were published each year from 1999 to 2026. Compare any set of years.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1116">
+<meta name="apple-mobile-web-app-title" content="CVE.ICU">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:title" content="CVE.ICU">
+<meta property="og:description" content="Counts and statistics for every CVE published from 1999 to 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cve.icu">
+<meta property="og:image" content="https://cve.icu/static/images/logo.png">
+
+<link rel="icon" type="image/png" href="static/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css?v=6ef77805">
+
+<!-- Page-specific head content (styles, preloads) -->
+
+
+<script>
+  // Applied before first paint so the theme never flashes.
+  (function(){
+    try {
+      var t = localStorage.getItem('cveicu-theme');
+      if (t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W0CE61HN2F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W0CE61HN2F');
+</script>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<header class="bar">
+  <a href="index.html" class="brand">CVE<i>.</i>ICU</a>
+  <span class="live"><span class="pip"></span> updated <b data-fresh>&mdash;</b></span>
+  <span class="right">
+    <button class="ico" id="theme" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </span>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <ul>
+    <li><a href="index.html"    >Home</a></li>
+    <li><a href="years.html"    class="on" aria-current="page">Years</a></li>
+    <li><a href="calendar.html" >Calendar</a></li>
+    <li><a href="cna.html"      >Publishers</a></li>
+    <li><a href="cpe.html"      >Products</a></li>
+    <li><a href="cwe.html"      >Weaknesses</a></li>
+    <li><a href="scoring.html"  >Scoring</a></li>
+    <li><a href="about.html"    >About</a></li>
+  </ul>
+</nav>
+
+<main id="main" class="wrap">
+
+<div class="ph">
+  <h1>CVEs by year</h1>
+  <span class="note">1999&ndash;2026</span>
+  <span style="margin-left:auto" class="ph-actions">
+    <button class="exp-btn" id="share">Share link</button>
+    <button class="exp-btn" id="print">Print</button>
+  </span>
+</div>
+<p class="lede">Select any set of years to compare. 2026 is still in progress,
+so its bar keeps growing.</p>
+
+<div class="grid g4" id="tiles"></div>
+
+<h2>Select years <span class="side" id="sel-note"></span></h2>
+<div class="panel">
+  <div class="panel-b">
+    <div class="chips" id="quick" style="margin-bottom:10px">
+      <button class="chip" data-q="recent5">Recent 5 years</button>
+      <button class="chip" data-q="2020s">2020s</button>
+      <button class="chip" data-q="2010s">2010s</button>
+      <button class="chip" data-q="2000s">2000s</button>
+      <button class="chip" data-q="all">All years</button>
+      <button class="chip" data-q="clear">Clear</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<h2>CVEs published each year <span class="side">selected years highlighted</span></h2>
+<div class="panel"><div class="panel-b"><div id="chart-years"></div></div></div>
+
+<div id="compare"></div>
+<div id="year-detail"></div>
+
+<h2>All years</h2>
+<div class="panel"><div id="year-table"></div></div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <b>Counts</b>
+        <a href="years.html">By year</a> &middot;
+        <a href="calendar.html">By day</a> &middot;
+        <a href="growth.html">Year over year</a>
+      </div>
+      <div>
+        <b>Breakdowns</b>
+        <a href="cna.html">Publishers</a> &middot;
+        <a href="cpe.html">Products</a> &middot;
+        <a href="cwe.html">Weaknesses</a>
+      </div>
+      <div>
+        <b>Scoring</b>
+        <a href="cvss.html">CVSS</a> &middot;
+        <a href="epss.html">EPSS</a> &middot;
+        <a href="kev.html">KEV</a>
+      </div>
+      <div>
+        <b>Data</b>
+        <a href="https://nvd.nist.gov/" rel="noopener">NVD</a> &middot;
+        <a href="https://cve.org/" rel="noopener">CVE Program</a> &middot;
+        <a href="data-quality.html">Name matching</a>
+      </div>
+    </div>
+    <div>
+      Counts only. Every number is a direct count from the published record &mdash;
+      nothing here is weighted, scored or ranked by us.<br>
+      Data as of <b data-asof>&mdash;</b>, rebuilt <b data-built>&mdash;</b> &middot;
+      raw JSON at <code>cve.icu/data/</code> &middot;
+      <a href="https://github.com/rogolabs/cve.icu" rel="noopener">source</a> &middot;
+      built by <a href="https://rogolabs.net" rel="noopener">RogoLabs</a>
+      &middot; &copy; 2026
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/app.js?v=6ef77805"></script>
+
+<script>
+CVE.page(async (S) => {
+  const { fmt, chart, el, table, url } = CVE;
+  const YR = 2026;
+  const full = await CVE.json('yearly_summary.json');
+  const years = Object.values(full.years).sort((a, b) => a.year - b.year);
+  const allYears = years.map(y => y.year);
+  const grandTotal = years.reduce((s, y) => s + y.total_cves, 0);
+
+  const fromUrl = (url.get('years') || '').split(',').map(Number).filter(n => allYears.includes(n));
+  let selected = new Set(fromUrl.length ? fromUrl : [YR]);
+
+  const daysInYear = y => y === YR
+    ? Math.max(1, Math.round((Date.now() - new Date(YR, 0, 1)) / 864e5))
+    : ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
+
+  /* ---------------- selection-aware metrics ---------------- */
+  function tiles() {
+    const sel = [...selected].sort((a, b) => a - b);
+    const picked = years.filter(y => selected.has(y.year));
+    const sum = picked.reduce((s, y) => s + y.total_cves, 0);
+    const days = sel.reduce((s, y) => s + daysInYear(y), 0);
+    const kev = picked.reduce((s, y) => s + ((y.kev || {}).kev_count || 0), 0);
+
+    el('#tiles').innerHTML = [
+      { lbl: 'Years selected', v: fmt.n(sel.length),
+        sub: sel.length ? (sel.length > 6
+          ? `${sel[0]}&ndash;${sel[sel.length - 1]}`
+          : sel.join(', ')) : 'none selected' },
+      { lbl: 'CVEs in selection', v: fmt.n(sum),
+        sub: `<b>${fmt.share(sum, grandTotal)}</b> of all ${fmt.compact(grandTotal)}` },
+      { lbl: 'Average per day', v: fmt.n(days ? Math.round(sum / days) : 0),
+        sub: `across <b>${fmt.n(days)}</b> days` },
+      { lbl: 'In the KEV catalog', v: fmt.n(kev),
+        sub: `<b>${fmt.share(kev, sum, 2)}</b> of the selection` }
+    ].map(t => `<div class="c"><div class="lbl">${t.lbl}</div>
+        <div class="v">${t.v}</div><div class="sub">${t.sub}</div></div>`).join('');
+
+    el('#sel-note').textContent = sel.length === 1
+      ? `${sel[0]} selected` : `${sel.length} years selected`;
+  }
+
+  /* ---------------- chips ---------------- */
+  function chips() {
+    el('#chips').innerHTML = allYears.map(y =>
+      `<button class="chip ${selected.has(y) ? 'on' : ''}" data-y="${y}"
+        aria-pressed="${selected.has(y)}">${y}</button>`).join('');
+  }
+
+  /* ---------------- main chart ---------------- */
+  function mainChart() {
+    chart.bars('#chart-years', years.map(y => ({
+      label: String(y.year), value: y.total_cves, current: selected.has(y.year)
+    })), {
+      tall: true, name: 'cve-icu-cves-by-year', label: 'CVEs published each year',
+      ticks: [1999, 2005, 2010, 2015, 2020, YR].map(String),
+      onSelect: key => { toggle(+key); }
+    });
+  }
+
+  /* ---------------- comparison across the selection ---------------- */
+  function compare() {
+    const sel = [...selected].sort((a, b) => a - b);
+    const host = el('#compare');
+    if (sel.length < 2) { host.innerHTML = ''; return; }
+    const picked = years.filter(y => selected.has(y.year));
+    host.innerHTML = `
+      <h2>Comparing ${sel.length} years</h2>
+      <div class="cols c2">
+        <div class="panel"><div class="panel-h">CVEs per selected year</div>
+          <div class="panel-b"><div id="cmp-total"></div></div></div>
+        <div class="panel"><div class="panel-h">Average per day <span class="side">normalises for ${YR} being partial</span></div>
+          <div class="panel-b"><div id="cmp-rate"></div></div></div>
+      </div>
+      <div class="panel" style="margin-top:10px">
+        <div class="panel-h">By month, selected years overlaid</div>
+        <div class="panel-b"><div id="cmp-month"></div></div></div>`;
+
+    chart.hbars('#cmp-total', picked.map(y => ({ label: String(y.year), value: y.total_cves })),
+      { name: 'cve-icu-selected-years-total', label: 'CVEs per selected year' });
+    chart.hbars('#cmp-rate', picked.map(y => ({
+      label: String(y.year), value: Math.round(y.total_cves / daysInYear(y.year))
+    })), { name: 'cve-icu-selected-years-per-day', label: 'Average CVEs per day' });
+
+    const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthRows = mNames.map((m, i) => {
+      const row = { month: m };
+      picked.forEach(y => {
+        row[y.year] = ((y.date_data || {}).monthly_distribution || {})[String(i + 1)] || 0;
+      });
+      return row;
+    });
+    table('#cmp-month', monthRows,
+      [{ key: 'month', label: 'Month' },
+       ...picked.map(y => ({ key: String(y.year), label: String(y.year), num: true, bar: true }))],
+      { sort: { key: 'month', dir: 1 }, name: 'cve-icu-selected-years-by-month' });
+  }
+
+  /* ---------------- single-year detail ---------------- */
+  function detail() {
+    const sel = [...selected];
+    const host = el('#year-detail');
+    if (sel.length !== 1) { host.innerHTML = ''; return; }
+    const yr = sel[0];
+    const y = years.find(x => x.year === yr);
+    if (!y) { host.innerHTML = ''; return; }
+
+    const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = (y.date_data || {}).monthly_distribution || {};
+    const prev = years.find(x => x.year === yr - 1);
+
+    host.innerHTML = `
+      <h2>${yr} in detail</h2>
+      <div class="cols c2">
+        <div class="panel"><div class="panel-h">By month <span class="side">${yr}</span></div>
+          <div class="panel-b"><div id="d-month"></div></div></div>
+        <div class="panel"><div class="panel-h">CVSS scores by version
+          <span class="side">a CVE may hold more than one</span></div>
+          <div class="panel-b"><div id="d-cvss"></div></div></div>
+      </div>
+      <div class="cols" style="margin-top:10px">
+        <div class="panel"><div class="panel-h">Top vendors</div><div class="rows" id="d-vendor"></div></div>
+        <div class="panel"><div class="panel-h">Top weaknesses</div><div class="rows" id="d-cwe"></div></div>
+        <div class="panel"><div class="panel-h">NVD record status</div><div class="rows" id="d-status"></div></div>
+      </div>
+      <div class="cols c2" style="margin-top:10px">
+        <div class="panel"><div class="panel-h">Reference types
+          <span class="side">how sources are tagged</span></div>
+          <div class="panel-b"><div id="d-refs"></div></div></div>
+        <div class="panel"><div class="panel-h">${yr} against ${yr - 1}</div>
+          <div class="panel-b" id="d-vs" style="font-size:13.5px;line-height:1.7"></div></div>
+      </div>`;
+
+    chart.bars('#d-month', mNames.map((m, i) => ({ label: m, value: months[String(i + 1)] || 0 })),
+      { ticks: ['Jan', 'Dec'], name: `cve-icu-${yr}-by-month`, label: `${yr} CVEs by month` });
+
+    chart.hbars('#d-cvss', Object.entries(y.cvss || {})
+      .map(([v, d]) => ({ label: v, value: d.total || 0 })).filter(x => x.value),
+      { name: `cve-icu-${yr}-cvss-versions`, label: `${yr} CVSS scores by version` });
+
+    chart.rank('#d-vendor', ((y.vendors || {}).cpe_vendors || []).slice(0, 8)
+      .map(v => ({ label: v.name, value: v.count })), { compact: true, name: `cve-icu-${yr}-vendors` });
+    chart.rank('#d-cwe', ((y.cwe || {}).top_cwes || []).slice(0, 8)
+      .map(c => ({ label: c.cwe, value: c.count })), { compact: true, name: `cve-icu-${yr}-weaknesses` });
+    chart.rank('#d-status', ((y.metadata || {}).vulnerability_status || [])
+      .map(s => ({ label: s.status, value: s.count })), { compact: true, name: `cve-icu-${yr}-status` });
+
+    const refs = ((y.metadata || {}).reference_tags || []).slice(0, 8)
+      .map(r => ({ label: r.tag, value: r.count }));
+    if (refs.length) {
+      chart.hbars('#d-refs', refs, { compact: true, name: `cve-icu-${yr}-reference-types`,
+        label: `${yr} reference types` });
+    } else {
+      el('#d-refs').innerHTML = '<div class="empty">No reference tags recorded for ' + yr + '.</div>';
+    }
+
+    const kevN = (y.kev || {}).kev_count || 0;
+    el('#d-vs').innerHTML = prev ? `
+      <div class="kvline"><span>CVEs</span><b>${fmt.n(y.total_cves)}</b>
+        <span class="faint">vs ${fmt.n(prev.total_cves)}</span>
+        <span style="color:var(--${y.total_cves >= prev.total_cves ? 'live' : 'hot'})">
+        ${fmt.pct((y.total_cves / prev.total_cves - 1) * 100)}</span></div>
+      <div class="kvline"><span>Per day</span><b>${fmt.n(Math.round(y.total_cves / daysInYear(yr)))}</b>
+        <span class="faint">vs ${fmt.n(Math.round(prev.total_cves / daysInYear(yr - 1)))}</span></div>
+      <div class="kvline"><span>In KEV</span><b>${fmt.n(kevN)}</b>
+        <span class="faint">vs ${fmt.n((prev.kev || {}).kev_count || 0)}</span></div>
+      ${yr === YR ? '<p class="faint" style="margin-top:9px">' + yr +
+        ' is a partial year, so the per-day figure is the fair comparison.</p>' : ''}`
+      : '<span class="faint">No prior year on record.</span>';
+  }
+
+  /* ---------------- table ---------------- */
+  let run = 0;
+  const rows = years.map(y => {
+    run += y.total_cves;
+    const prev = years.find(x => x.year === y.year - 1);
+    return {
+      year: y.year, cves: y.total_cves,
+      perday: Math.round(y.total_cves / daysInYear(y.year)),
+      change: prev ? +((y.total_cves / prev.total_cves - 1) * 100).toFixed(1) : null,
+      kev: (y.kev || {}).kev_count || 0,
+      running: run
+    };
+  }).reverse();
+
+  table('#year-table', rows, [
+    { key: 'year', label: 'Year', num: true, raw: true },
+    { key: 'cves', label: 'CVEs', num: true, bar: true },
+    { key: 'perday', label: 'Per day', num: true },
+    { key: 'change', label: 'vs prior year', num: true,
+      fmt: v => v == null ? '<span class="faint">&mdash;</span>'
+        : `<span style="color:var(--${v > 0 ? 'live' : 'hot'})">${fmt.pct(v)}</span>` },
+    { key: 'kev', label: 'In KEV', num: true },
+    { key: 'running', label: 'Running total', num: true }
+  ], { sort: { key: 'year', dir: -1 }, name: 'cve-icu-all-years' });
+
+  /* ---------------- wiring ---------------- */
+  function render() {
+    tiles(); chips(); mainChart(); compare(); detail();
+    url.set({ years: [...selected].sort((a, b) => a - b).join(',') || null });
+  }
+  function toggle(y) {
+    if (selected.has(y)) selected.delete(y); else selected.add(y);
+    render();
+  }
+  render();
+
+  el('#chips').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (c) toggle(+c.dataset.y);
+  });
+  el('#quick').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    const q = b.dataset.q;
+    if (q === 'clear') selected = new Set();
+    else if (q === 'all') selected = new Set(allYears);
+    else if (q === 'recent5') selected = new Set(allYears.slice(-5));
+    else {
+      const decade = parseInt(q, 10);
+      selected = new Set(allYears.filter(y => y >= decade && y < decade + 10));
+    }
+    render();
+  });
+  el('#share').addEventListener('click', () => url.share(el('#share')));
+  el('#print').addEventListener('click', () => window.print());
+});
+</script>
+
+</body>
+</html>
